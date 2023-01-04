@@ -1,0 +1,15 @@
+configuration:
+  - key: FAST_REFRESH
+    value: true
+  - key: REACT_APP_MAP_KEY
+    value: 
+  - key: ESLINT_NO_DEV_ERRORS
+    value: true
+  - key: DISABLE_ESLINT_PLUGIN
+    value: true
+    
+    ## API URL LIBRARY
+  - key: FRONT_GO_PUBLIC_BASE_API_URL
+    value: http://front.payment.backend.test/api/v1
+  - key: FRONT_GO_PUBLIC_BASE_API_URL_USER_MANAGEMENT
+    value: http://front.payment.backend.test/api/v1/users

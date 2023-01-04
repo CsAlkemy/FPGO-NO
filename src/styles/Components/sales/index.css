@@ -1,0 +1,78 @@
+.product-list-grid-container {
+    display: grid;
+    grid-template-columns: 25% 17%  5% 13% 9% 9% 11% 5%;
+    grid-auto-flow: row;
+}
+.product-list-grid-container-height {
+    padding: 10px;
+    min-height: 40px;
+    border-bottom: 1px solid #323434;
+}
+.product-list-form-container {
+    padding: 0 1rem;
+}
+.custom-add-button-color svg {
+    @apply text-main
+}
+.custom-input-height div:nth-child(1) {
+    max-height: 44px !important;
+    min-height: 44px !important;
+}
+.custom-select-create-order div:nth-child(1) {
+    padding: 1rem .7rem !important;
+}
+
+.border-half-bottom {
+    border: -.8px solid #E8E8E8 !important;
+}
+.create-order-date-container {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-20 w-full my-20 px-10;
+}
+
+.create-order-send-order-conf {
+    @apply w-full my-32 px-10;
+}
+.send-order-by {
+    @apply flex flex-col gap-10;
+}
+.create-order-capsule-active {
+    @apply rounded-32 border-1 border-MonochromeGray-500  text-MonochromeGray-700;
+}
+.create-order-capsule {
+    @apply rounded-32 border-1 border-MonochromeGray-50  text-MonochromeGray-300;
+}
+.create-order-capsule-button {
+    @apply rounded-4 min-w-120 border-1 border-MonochromeGray-50;
+}
+.create-order-capsule-button-active {
+   @apply rounded-4 min-w-120 border-2 border-main bg-primary-50;
+}
+.create-order-capsule-button-active-details {
+    @apply rounded-4 min-w-120 border-2 border-MonochromeGray-300 bg-MonochromeGray-50;
+ }
+.create-order-dialog div:nth-child(1) {
+    @apply rounded-4 !important;
+}
+.muiltr-7en360-MuiPaper-root-MuiDialog-paper {
+    border-radius: none !important;
+}
+.create-order-due-date {
+    position:  relative !important;
+}
+.custom-order-info-bg-none {
+    background: #fff;
+}
+.order-receipt-container {
+    @apply px-20 md:px-32 py-16;
+}
+
+.order-receipt-table {
+    display: grid;
+    grid-template-columns: 40% 18%  10% 14% 18%;
+    grid-auto-flow: row;
+}
+.product-list-grid-container-payment {
+    display: grid;
+    grid-template-columns: 4% 25% 17%  6% 12% 9% 9% 11% 5%;
+    grid-auto-flow: row;
+}

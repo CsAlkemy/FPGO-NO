@@ -1,0 +1,12 @@
+.custom-accordion::before {
+    content: none !important;
+}
+.no-padding-x {
+    padding: 1rem 0 !important;
+}
+.custom-accent50bg {
+    background-color:  #EEFAF8 !important;
+} 
+.custom-accent10bg {
+    background-color: #E6FFEB !important;
+}

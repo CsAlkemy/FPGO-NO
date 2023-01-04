@@ -1,0 +1,21 @@
+.twofactor-input-box {
+    @apply bg-grey-100 border-b-2 border-black p-10 flex justify-center text-6xl;
+}
+.login-hero-image-padding {
+    @apply pt-36 pb-36 pr-112 pl-20;
+}
+.custom-drop-shadow {
+    filter: drop-shadow(0px 20px 40px rgba(27, 59, 68, 0.08))
+}
+.login-contact-button {
+    border: 1px solid #E8E8E8 !important;
+}
+.button-min-height {
+    min-height: 48px !important;
+}
+.remove-mui-paper-transition {
+    transition: none !important;
+}
+.muiltr-piv2u8-MuiPaper-root {
+    transition: none !important;
+}

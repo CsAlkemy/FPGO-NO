@@ -1,0 +1,371 @@
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import PhoneInput from "react-phone-input-2";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import {
+  schemaUserProfileFpAdmin,
+  schemaUserProfileFpAdminSubClient,
+  schemaUserProfile,
+} from "../utils/helper";
+import UserService from "../../../data-access/services/userService/UserService";
+import { defaultValue } from "../../clientManagement/utils/helper";
+import { useSelector } from "react-redux";
+import { selectUser } from "app/store/userSlice";
+import {
+  BUSINESS_ADMIN,
+  FP_ADMIN,
+  GENERAL_USER,
+} from "../../../utils/user-roles/UserRoles";
+import * as yup from 'yup';
+import { useTranslation } from 'react-i18next';
+
+const defaultValues = {
+  email: "",
+  fullName: "",
+  phoneNumber: "",
+  designation: "",
+  role: "",
+  organization: "",
+  subClient: "",
+  branch: "",
+  userID: "",
+  preferredLanguage: ""
+};
+
+const fpAdminProfileForm = ({ submitRef, role }) => {
+  const {t} = useTranslation()
+  const [roleList, setRoleList] = React.useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const [isUserID, setIsUserID] = React.useState(true);
+  const [dialCode, setDialCode] = React.useState("47");
+  const [organizationsList, setOrganizationsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  const Location = window.location.href;
+  const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+  const [languageList, setLanguageList] = useState([{ title : "English", value : "en"}, { title : "Norwegian", value : "no"}]);
+
+  const schema =
+    isUserID === true ? schemaUserProfile : schemaUserProfileFpAdmin;
+  const userID = "1039826589";
+  const handleOnBlurGetDialCode = (value, data, event) => {
+    setDialCode(data?.dialCode);
+  };
+
+  const { control, formState, handleSubmit, reset } = useForm({
+    mode: "onChange",
+    defaultValues,
+    resolver: yupResolver(schema),
+  });
+
+  const { isValid, dirtyFields, errors } = formState;
+  function onSubmit(values) {
+    const phoneNumber = values?.phoneNumber
+      ? values.phoneNumber.split("+")
+      : null;
+    const msisdn = phoneNumber
+      ? phoneNumber[phoneNumber.length - 1].slice(2)
+      : null;
+    const countryCode = phoneNumber
+      ? "+" + phoneNumber[phoneNumber.length - 1].slice(0, 2)
+      : null;
+    const userData = {
+      name: values?.fullName,
+      email: values?.email,
+      countryCode,
+      msisdn,
+      organizationUuid: values?.organization || null,
+      userRoleSlug: values?.role,
+      designation: values?.designation,
+      preferredLanguage : values?.preferredLanguage ? values?.preferredLanguage : null
+    };
+    UserService.updateUserByUUID(userProfile?.uuid, userData)
+      .then((response) => {
+        if (response?.status_code === 202) {
+          enqueueSnackbar(response?.message, { variant: "success" });
+        }
+        navigate(-1)
+      })
+      .catch((error) => {
+        enqueueSnackbar(error, { variant: "error" });
+      });
+  }
+
+  React.useEffect(() => {
+    defaultValues.email = userProfile?.email ? userProfile.email : "";
+    defaultValues.fullName = userProfile?.name ? userProfile.name : "";
+    defaultValues.phoneNumber =
+      userProfile?.countryCode && userProfile?.msisdn
+        ? userProfile.countryCode + userProfile.msisdn
+        : "";
+    defaultValues.designation = userProfile?.designation
+      ? userProfile?.designation
+      : "";
+    defaultValues.role = userProfile["userRoleDetails"]?.slug
+      ? userProfile["userRoleDetails"].slug
+      : "";
+    defaultValues.organization = userProfile["organizationDetails"]?.uuid
+      ? userProfile["organizationDetails"]?.uuid
+      : "";
+    defaultValues.preferredLanguage = userProfile?.preferredLanguage ? userProfile.preferredLanguage : "";
+    // defaultValues.branch = userProfile['organizationDetails']?.name
+    reset({ ...defaultValues });
+
+    UserService.userRoleList().then((response) => {
+      if (response?.status_code === 200 && response?.is_data === true) {
+        setRoleList(response.data);
+      } else if (response?.is_data === false) {
+        setRoleList([]);
+      } else {
+        enqueueSnackbar("No role found", { variant: "warning" });
+      }
+    });
+
+    UserService.organizationsList()
+      .then((response) => {
+        if (response?.status_code === 200 && response?.is_data) {
+          setOrganizationsList(response.data);
+          setIsLoading(false);
+        } else if (response?.is_data === false) {
+          setOrganizationsList([]);
+        } else {
+          enqueueSnackbar("No Organization found", { variant: "warning" });
+        }
+      })
+      .catch((error) => {
+        console.log("E : ", error);
+      });
+    // return ()=> {
+    //   localStorage.removeItem("userProfile")
+    // }
+  }, [Location, isLoading]);
+
+  return (
+    <>
+      <form name="createUserForm" noValidate onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col justify-center w-full mt-32 mb-32 px-0 md:px-14">
+          <div className="form-pair-input">
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  // disabled={true}
+                  label={t("label:emailId")}
+                  // disabled={role === 1 || role === 4 || role === 5}
+                  disabled={true}
+                  type="email"
+                  autoComplete="off"
+                  error={!!errors.email}
+                  helperText={errors?.email?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+            <Controller
+              name="fullName"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label={t("label:fullName")}
+                  type="text"
+                  autoComplete="off"
+                  error={!!errors.fullName}
+                  helperText={errors?.fullName?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+            <Controller
+              name="phoneNumber"
+              control={control}
+              render={({ field }) => (
+                <FormControl error={!!errors.phoneNumber} required fullWidth>
+                  <PhoneInput
+                    {...field}
+                    className={
+                      errors.phoneNumber
+                        ? "input-phone-number-field border-1 rounded-md border-red-300"
+                        : "input-phone-number-field"
+                    }
+                    country="no"
+                    enableSearch
+                    autocompleteSearch
+                    countryCodeEditable={false}
+                    specialLabel={`${t("label:phone")}*`}
+                    onBlur={handleOnBlurGetDialCode}
+                  />
+                  <FormHelperText>
+                    {errors?.phoneNumber?.message}
+                  </FormHelperText>
+                </FormControl>
+              )}
+            />
+
+            <Controller
+              name="organization"
+              control={control}
+              render={({ field }) => (
+                <FormControl error={!!errors.organization} required fullWidth>
+                  <InputLabel id="demo-simple-select-label-org">
+                    {t("label:organization")}
+                  </InputLabel>
+                  <Select
+                    {...field}
+                    labelId="demo-simple-select-label-org"
+                    id="demo-simple-select"
+                    label="Organization"
+                    disabled={
+                      user.role[0] === BUSINESS_ADMIN ||
+                      userProfile["userRoleDetails"].slug === FP_ADMIN ||
+                      role !== 0
+                    }
+                  >
+                    {organizationsList.map((item, index) => {
+                      return (
+                        <MenuItem key={index} value={item.uuid}>
+                          {item.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              )}
+            />
+
+            <Controller
+              name="designation"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label={t("label:designation")}
+                  type="text"
+                  autoComplete="off"
+                  error={!!errors.designation}
+                  helperText={errors?.designation?.message}
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
+            <Controller
+              name="role"
+              control={control}
+              disabled={
+                role === 1 ||
+                role === 4 ||
+                role === 5 ||
+                (role === 0 && userProfile["userRoleDetails"].slug === FP_ADMIN)
+              }
+              render={({ field }) => (
+                <FormControl error={!!errors.role} required fullWidth>
+                  <InputLabel id="demo-simple-select-label-role">
+                    {t("label:role")}
+                  </InputLabel>
+                  <Select
+                    {...field}
+                    labelId="demo-simple-select-label-role"
+                    id="demo-simple-select"
+                    label="Role"
+                    disabled={
+                      role === 1 ||
+                      role === 5 ||
+                      role === 4 ||
+                      (role === 0 &&
+                        userProfile["userRoleDetails"].slug === FP_ADMIN)
+                    }
+                  >
+                    {(role === 1 &&
+                      roleList.length > 0 &&
+                      user.role[0] === FP_ADMIN) ||
+                    (role === 0 &&
+                      userProfile["userRoleDetails"].slug === FP_ADMIN) ? (
+                      roleList.map((item, index) => {
+                        return (
+                          <MenuItem key={index} value={item.slug}>
+                            {item.title}
+                          </MenuItem>
+                        );
+                      })
+                    ) : roleList.length > 0 ? (
+                      roleList
+                        .filter((num) => {
+                          return num.hierarchy >= 2;
+                        })
+                        .map((item, index) => {
+                          return (
+                            <MenuItem key={index} value={item.slug}>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })
+                    ) : (
+                      <MenuItem disabled>{t("label:noRoleFound")}</MenuItem>
+                    )}
+                  </Select>
+                  <FormHelperText>{errors?.role?.message}</FormHelperText>
+                </FormControl>
+              )}
+            />
+            <Controller
+              name="preferredLanguage"
+              control={control}
+              render={({ field }) => (
+                <FormControl
+                  error={!!errors.preferredLanguage}
+                  required
+                  fullWidth
+                >
+                  <InputLabel id="demo-simple-select-label-role">
+                    {t("label:preferredLanguage")}
+                  </InputLabel>
+                  <Select
+                    {...field}
+                    labelId="demo-simple-select-label-role"
+                    id="demo-simple-select"
+                    label={t("label:preferredLanguage")}
+                  >
+                    {languageList.map((item, index) => {
+                      return (
+                        <MenuItem
+                          key={index}
+                          value={item.value}
+                        >
+                          {item.title}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                  <FormHelperText>
+                    {errors.preferredLanguage?.message}
+                  </FormHelperText>
+                </FormControl>
+              )}
+            />
+          </div>
+        </div>
+        <button ref={submitRef} type="submit" style={{ display: "none" }} />
+      </form>
+    </>
+  );
+};
+
+export default fpAdminProfileForm;

@@ -1,0 +1,387 @@
+@import "@fontsource/metropolis";
+@import "@fontsource/metropolis/100.css";
+@import "@fontsource/metropolis/200.css";
+@import "@fontsource/metropolis/300.css";
+@import "@fontsource/metropolis/400.css";
+@import "@fontsource/metropolis/500.css";
+@import "@fontsource/metropolis/600.css";
+@import "@fontsource/metropolis/700.css";
+@import "@fontsource/metropolis/800.css";
+@import "@fontsource/metropolis/900.css";
+
+* {
+  /* Text rendering */
+  text-rendering: optimizeLegibility;
+  -o-text-rendering: optimizeLegibility;
+  -ms-text-rendering: optimizeLegibility;
+  -moz-text-rendering: optimizeLegibility;
+  -webkit-text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+* :focus {
+  outline: none !important;
+}
+
+html {
+  font-size: 62.5%;
+  font-family: Metropolis, LatoRegular !important;
+  background-color: #121212;
+}
+
+
+body {
+  font-family: Metropolis !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  color: #323434 !important;
+}
+
+html,
+body {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: auto;
+}
+
+html,
+body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 0;
+  min-height: 100%;
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+#root {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+.body2 {
+  font-family: LatoRegular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+
+}
+
+.body3 {
+  font-family: LatoRegular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px !important;
+  line-height: 20px;
+  letter-spacing: 0.02em !important;
+}
+.body4 {
+  font-family: LatoRegular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px !important;
+}
+
+h1,
+.header1 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 400;
+  font-size: 95px;
+  line-height: 108px;
+  letter-spacing: 0.01em;
+}
+
+h2,
+.header2 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 400;
+  font-size: 60px;
+  line-height: 72px;
+  letter-spacing: 0.01em;
+}
+
+h3,
+.header3 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 56px;
+  letter-spacing: 0.01em;
+}
+
+h4,
+.header4 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 600;
+  font-size: 33px;
+  line-height: 40px;
+  letter-spacing: 0.01em;
+}
+
+h5,
+.header5 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 600;
+  font-size: 27px;
+  line-height: 36px;
+  letter-spacing: 0.01em;
+}
+
+h6,
+.header6 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 28px;
+  letter-spacing: 0.01em;
+}
+
+.subtitle1 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 24px;
+  letter-spacing: 0.01em;
+}
+
+.subtitle2 {
+  font-style: normal;
+  font-weight: 600;
+  font-family: Metropolis !important;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+}
+
+.subtitle3 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+}
+.subtitle3:focus {
+  color: #003949;
+}
+
+.button1 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+
+.button2 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+
+.button3 {
+  font-style: normal;
+  font-family: Metropolis !important;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+
+.caption1 {
+  font-style: normal;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  line-height: 20px;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+}
+
+.caption2 {
+  font-style: normal;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.caption2  > :last-child {
+  font-style: normal;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+::-ms-reveal {
+  display: none;
+}
+
+
+.overline1 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: capitalize;
+}
+
+.chips1 {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+.chips2 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 16px;
+  display: flex;
+  align-items: flex-end;
+  letter-spacing: 0.02em;
+}
+
+.ps > .ps__rail-y,
+.ps > .ps__rail-x {
+  z-index: 99;
+}
+a {
+  text-decoration-line: none !important;
+}
+
+a[role="button"] {
+  text-decoration: none;
+}
+
+[role="tooltip"] {
+  z-index: 9999;
+}
+
+/* Medium Devices, Desktops Only */
+@media only screen and (min-width: 992px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  ::-webkit-scrollbar:hover {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 20px;
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    border-radius: 20px;
+  }
+}
+
+/* form label {
+  z-index: 99;
+} */
+
+body.no-animate *,
+body.no-animate *::before,
+body.no-animate *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Removes webkit's autofill backgorund color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transitiondelay: 9999s;
+  transitionproperty: background-color, color;
+}
+
+:focus {
+  outline-color: transparent;
+}
+
+/*fullcalendar Fix*/
+.fc-scrollgrid-section-liquid {
+  height: 1px !important;
+}
+
+/*MUI Tabs Customization*/
+.muiltr-1ogicd3-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: #323434 !important;
+  font-family: 'LatoRegular';
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+  text-align: center !important;
+  letter-spacing: 0.02em !important;
+}
+
+.muiltr-1ogicd3-MuiButtonBase-root-MuiTab-root {
+  font-family: LatoRegular !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+  color: #838585 !important;
+  letter-spacing: 0.02em !important;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+.important-monogrom {
+  @apply bg-MonochromeGray-25 border-b-0 !important;
+}
+.mt0-5{
+  margin-top: 0.5px;
+}
+.header-navigation {
+  @apply text-MonochromeGray-500;
+  padding: 7px !important;
+}
+.header-navigation-disable {
+  @apply bg-MonochromeGray-50 text-MonochromeGray-300;
+  padding: 7px !important;
+}
+.mb32ri {
+  margin-bottom: 3.2rem !important;
+}
+.custom-bg-teal-500 {
+  color: #50C9B1;
+}

@@ -1,0 +1,35 @@
+.create-product-container {
+  @apply flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl;
+}
+
+.inside-div-product {
+  @apply flex-auto p-10 md:p-20 sm:p-0 w-full mx-auto bg-white;
+}
+.button-container-product {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-10 w-full justify-between sm:w-auto;
+}
+.button-outline-product {
+  @apply font-semibold rounded-4 border-2 hover:border-2 hover:border-MonochromeGray-50 border-MonochromeGray-50 w-full sm:w-auto;
+}
+.main-layout-product {
+  @apply grid md:grid-cols-6 p-5 md:px-5 gap-x-0 md:gap-x-10;
+}
+.header-bg-900-product {
+  @apply mt-10 mb-20 p-16 bg-MonochromeGray-25 rounded-2 text-MonochromeGray-700;
+}
+.layout-left {
+  @apply grid grid-cols-1 sm:grid-cols-2 py-40 px-20 gap-20 bg-MonochromeGray-25 rounded-4;
+}
+.mb-0-i {
+  @apply mb-0 !important;
+}
+.mt-0-i {
+  @apply mt-0 !important;
+}
+.custom-button-shadow {
+  box-shadow: 0px 6px 10px 0px #00000024 !important;
+}
+
+.custom-position-for-nav-button {
+  @apply w-3/4 mx-auto !important;
+}

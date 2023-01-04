@@ -1,0 +1,32 @@
+.button-with-icon {
+    @apply flex justify-center items-center;
+}
+.client-details-container {
+    @apply grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 my-40;
+}
+.contract-details-container {
+    @apply grid grid-cols-1 sm:grid-cols-4 gap-x-20 gap-y-40 my-40;
+}
+.upload-button {
+    @apply flex justify-center items-center rounded-4 w-full sm:max-w-224 gap-x-10 text-primary-800 bg-primary-25 py-24 hover:bg-main hover:text-white !important;
+}
+.billing-address-head {
+    @apply flex items-center p-10 border-b-1 border-MonochromeGray-25 text-MonochromeGray-700 tracking-wide gap-10 font-600;
+}
+.form-pair-three-by-one {
+    @apply grid grid-cols-1 sm:grid-cols-4 gap-x-0 sm:gap-x-20 gap-y-32 my-32;
+}
+.custom-margin-two-payment {
+    @apply mt-32 mb-28 gap-y-32 !important;
+}
+
+.muiltr-151dozb-MuiFormControlLabel-root .MuiFormControlLabel-label {
+    @apply tracking-wide gap-10 font-600 text-MonochromeGray-500 !important;
+}
+
+.modeal-header {
+    @apply font-semibold text-16 tracking-wide text-MonochromeGray-700
+}
+.modeal-text {
+    @apply font-400 tracking-wide text-MonochromeGray-500 text-16
+}

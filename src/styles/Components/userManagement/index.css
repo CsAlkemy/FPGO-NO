@@ -1,0 +1,49 @@
+.header-click-to-action {
+    @apply flex flex-col sm:flex-row gap-y-10 sm:gap-y-0 justify-between items-center py-10 sm:px-10 px-0   border-b-1 border-b-MonochromeGray-50;
+}
+.header-text {
+    @apply my-10 sm:my-5;
+}
+.call-to-action-notactive {
+   @apply w-full sm:w-auto  text-base font-600 tracking-wide rounded-4 py-2 px-10 md:px-32 bg-white text-main border-2 border-MonochromeGray-50 min-h-40 hover:bg-main hover:text-white;
+}
+.call-to-action-active {
+    @apply w-full sm:w-auto text-base font-600 ml-10 tracking-wide rounded-4 py-2 px-10 md:px-32  bg-main text-white hover:bg-black hover:text-white min-h-40;
+}
+.create-user-form-header {
+    @apply p-16 text-MonochromeGray-700 mt-20;
+}
+.create-user-roles {
+    @apply text-md uppercase text-gray-500 font-600 my-20 tracking-widest;
+}
+.create-user-role-button {
+    @apply text-base font-400 tracking-wide rounded-4 py-2 px-10 md:px-14 bg-white text-black border-1 border-MonochromeGray-50 min-h-40 hover:border-2 hover:border-main hover:text-main;
+}
+.create-user-role-button-active {
+    @apply text-base font-400 tracking-wide rounded-4 py-2 px-10 md:px-0 bg-white text-main border-2 border-main min-h-40;
+}
+.form-pair-input {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-32 mt-10 mb-32
+}
+.set-password {
+    @apply -ml-10 -mr-10 !important;
+}
+.input-phone-number-field {
+    @apply focus:bg-black focus:outline-none focus:border-red-600 !important;
+}
+.input-phone-number-field > input {
+    @apply w-full pt-14 pl-56 pr-14 focus:border-main !important;
+}
+.react-tel-input .form-control:focus {
+    border: 1px solid #33A0BE !important;
+    box-shadow: 0 0 0 1px #33A0BE !important;   
+}
+
+
+/* UpdatePassword */
+.change-password-header {
+    @apply mb-10 p-20 text-center md:text-left text-black font-600 bg-primary-25 ;
+}
+.front-go-button {
+    @apply flex justify-center items-center w-full text-base font-600 tracking-wide rounded-4 my-auto bg-main text-white min-h-40 hover:border-1 hover:border-main hover:text-white hover:bg-black !important;
+}

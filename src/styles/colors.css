@@ -1,0 +1,197 @@
+/* ----------- Background Colours -----------*/
+.bg-primary-25 {
+    background-color: #F2FAFD;
+}
+.bg-primary-50 {
+    background-color: #E6F3F7;
+}
+.bg-primary-100 {
+    background-color: #B0DAE6;
+}
+.bg-primary-200 {
+    background-color: #8AC8DA;
+}
+.bg-primary-300 {
+    background-color: #54AFC9;
+}
+.bg-primary-400 {
+    background-color: #33A0BE;
+}
+.bg-primary-400:hover {
+    background-color: #33A0BE;
+}
+.bg-primary-500 {
+    background-color: #0088AE;
+}
+.bg-primary-600 {
+    background-color: #007C9E;
+}
+.bg-primary-700 {
+    background-color: #00617C;
+}
+.bg-primary-800 {
+    background-color: #004B60;
+}
+.bg-primary-900 {
+    background-color: #003949;
+}
+.bg-m-surface {
+    background-color: #FFFFFF;
+}
+.bg-m-grey-25 {
+    background-color: #F7F7F7;
+}
+.bg-m-grey-50 {
+    background-color: #E8E8E8;
+}
+.bg-m-grey-100 {
+    background-color:#C6C7C7
+}
+.bg-m-grey-300 {
+    background-color: #838585;
+}
+.bg-m-grey-500 {
+    background-color: #464949;
+}
+.bg-m-grey-700 {
+    background-color: #323434;
+}
+.bg-m-grey-900 {
+    background-color: #1D1F1F;
+}
+.bg-a-teal-50 {
+    background-color: #EEFAF8;
+}
+.bg-a-teal-100 {
+    background-color: #C9EEE7;
+}
+.bg-a-teal-300 {
+    background-color: #8ADBCB;
+}
+.bg-a-teal-500 {
+    background-color: #50C9B1;
+}
+.bg-a-blue-50 {
+    background-color: #F0F9FD;
+}
+.bg-a-blue-100 {
+    background-color: #D0EEF8;
+}
+.bg-a-blue-300 {
+    background-color: #9AD9EF;
+}
+.bg-a-blue-500 {
+    background-color: #68C7E7;
+}
+/* -------- Status bg colors -------- */
+.bg-active {
+    background-color: #E6FFEB;
+}
+.bg-inactive {
+    background-color: #FFE6E6;
+}
+.bg-confirmed {
+    background-color: #E6FFEB;
+}
+.bg-rejected {
+    background-color: #FFE6E6;
+}
+.bg-pending {
+    background-color: #FFF8DF;
+}
+.bg-paid {
+    background-color: #E6FFEB;
+}
+.bg-sent {
+    background-color: #FFF8DF;
+}
+.bg-invoiced {
+    background-color: #DFF7FF;
+}
+.bg-expired {
+    background-color: #FFE5E5;
+}
+
+
+/* ----------- Text Colours -----------*/
+.text-primary-25 {
+    color: #F2FAFD;
+}
+.text-primary-50 {
+    color: #E6F3F7;
+}
+.text-primary-100 {
+    color: #B0DAE6;
+}
+.text-primary-200 {
+    color: #8AC8DA;
+}
+.text-primary-300 {
+    color: #54AFC9;
+}
+.text-primary-400 {
+    color: #33A0BE;
+}
+.text-primary-500 {
+    color: #0088AE;
+}
+.text-primary-600 {
+    color: #007C9E;
+}
+.text-primary-700 {
+    color: #00617C;
+}
+.text-primary-800 {
+    color: #004B60;
+}
+.text-primary-900 {
+    color: #003949;
+}
+.text-m-surface {
+    color: #FFFFFF;
+}
+.text-m-grey-25 {
+    color: #F7F7F7;
+}
+.text-m-grey-50 {
+    color: #E8E8E8;
+}
+.text-m-grey-100 {
+    color:#C6C7C7
+}
+.text-m-grey-300 {
+    color: #838585;
+}
+.text-m-grey-500 {
+    color: #464949;
+}
+.text-m-grey-700 {
+    color: #323434;
+}
+.text-m-grey-900 {
+    color: #1D1F1F;
+}
+.text-a-teal-50 {
+    color: #EEFAF8;
+}
+.text-a-teal-100 {
+    color: #C9EEE7;
+}
+.text-a-teal-300 {
+    color: #8ADBCB;
+}
+.text-a-teal-500 {
+    color: #50C9B1;
+}
+.text-a-blue-50 {
+    color: #F0F9FD;
+}
+.text-a-blue-100 {
+    color: #D0EEF8;
+}
+.text-a-blue-300 {
+    color: #9AD9EF;
+}
+.text-a-blue-500 {
+    color: #68C7E7;
+}
