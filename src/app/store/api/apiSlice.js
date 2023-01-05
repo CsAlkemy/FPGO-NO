@@ -18,8 +18,8 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log("args : ",args);
-  console.log("RESULT : ",result);
+  console.log("args : ", args);
+  console.log("RESULT : ", result);
   if (result.error && result.error.status === 401) {
     // try to get a new token
     const refreshResult = await baseQuery(
@@ -115,7 +115,50 @@ export const apiSlice = createApi({
       query: () => "/customer/list",
       providesTags: ["CustomersList"],
     }),
+    createPrivateCustomer: builder.mutation({
+      query: (payload) => ({
+        url: `/customer/create/private`,
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["CustomersList"],
+    }),
+    createCorporateCustomer: builder.mutation({
+      query: (payload) => ({
+        url: `/customer/create/corporate`,
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["CustomersList"],
+    }),
+    updatePrivateCustomer: builder.mutation({
+      query: (payload) => ({
+        url: `/customer/update/private/${payload.customerID}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["CustomersList"],
+    }),
+    updateCorporateCustomer: builder.mutation({
+      query: (payload) => ({
+        url: `/customer/update/corporate/${payload.customerID}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["CustomersList"],
+    }),
   }),
 });
 
-export const { useGetOrdersListQuery, useRefundOrderMutation, useCreateOrderMutation, useResendOrderMutation, useCancelOrderMutation, useGetCustomersListQuery } = apiSlice;
+export const {
+  useGetOrdersListQuery,
+  useRefundOrderMutation,
+  useCreateOrderMutation,
+  useResendOrderMutation,
+  useCancelOrderMutation,
+  useGetCustomersListQuery,
+  useCreatePrivateCustomerMutation,
+  useCreateCorporateCustomerMutation,
+  useUpdatePrivateCustomerMutation,
+  useUpdateCorporateCustomerMutation,
+} = apiSlice;

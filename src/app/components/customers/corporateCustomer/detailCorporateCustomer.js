@@ -30,6 +30,7 @@ import { CreateCorporateDefaultValue, validateSchema } from "../utils/helper";
 import Journal from "./CorporateCustomerDetails/Journal";
 import Orders from "./CorporateCustomerDetails/Orders";
 import Timeline from "./CorporateCustomerDetails/Timeline";
+import { useUpdateCorporateCustomerMutation } from 'app/store/api/apiSlice';
 
 const detailCorporateCustomer = (onSubmit = () => { }) => {
   const { t } = useTranslation()
@@ -61,6 +62,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const user = useSelector(selectUser);
+  const [updateCorporateCustomer] = useUpdateCorporateCustomerMutation()
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -223,22 +225,38 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
     //   contact: Object.values(values.contact),
     // });
     setLoading(true)
-    CustomersService.updateCorporateCustomerByUUID(values, sameAddress, info)
-      .then((res) => {
-        if (res?.status_code === 202) {
-          enqueueSnackbar(res.message, {
-            variant: "success",
-            autoHideDuration: 3000,
-          });
-          navigate("/customers/customers-list");
-          setLoading(false)
-        }
-      })
-      .catch((e) => {
-        console.log("Service call E : ", e);
-        enqueueSnackbar('Operation failed', { variant: "error" });
-        setLoading(false)
-      });
+    // CustomersService.updateCorporateCustomerByUUID(values, sameAddress, info)
+    //   .then((res) => {
+    //     if (res?.status_code === 202) {
+    //       enqueueSnackbar(res.message, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/customers/customers-list");
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log("Service call E : ", e);
+    //     enqueueSnackbar('Operation failed', { variant: "error" });
+    //     setLoading(false)
+    //   });
+    const preparedPayload =
+      CustomersService.prepareUpdateCorporateCustomerPayload(
+        values,
+        sameAddress,
+        info
+      );
+    updateCorporateCustomer(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        navigate("/customers/customers-list");
+        setLoading(false);
+      } else if (response?.error?.data?.status_code === 417) {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        setLoading(false);
+      }
+    })
   };
   // form end
 
