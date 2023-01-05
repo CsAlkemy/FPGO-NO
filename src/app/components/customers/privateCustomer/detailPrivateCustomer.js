@@ -12,28 +12,30 @@ import {
   Select,
   Switch,
   Tab,
-  TextField
+  TextField,
 } from "@mui/material";
-import { selectUser } from 'app/store/userSlice';
+import { selectUser } from "app/store/userSlice";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import PhoneInput from "react-phone-input-2";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
-import { FP_ADMIN } from '../../../utils/user-roles/UserRoles';
+import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import {
-  PrivateDefaultValue, validateSchemaUpdatePrivateCustomer
+  PrivateDefaultValue,
+  validateSchemaUpdatePrivateCustomer,
 } from "../utils/helper";
 import Journal from "./PrivateCustomerDetails/Journal";
 import Orders from "./PrivateCustomerDetails/Orders";
 import Timeline from "./PrivateCustomerDetails/Timeline";
+import { useUpdatePrivateCustomerMutation } from "app/store/api/apiSlice";
 
-const detailPrivateCustomer = (onSubmit = () => { }) => {
-  const { t } = useTranslation()
+const detailPrivateCustomer = (onSubmit = () => {}) => {
+  const { t } = useTranslation();
   const [sameAddress, setSameAddress] = React.useState(false);
   const [countries, setCountries] = React.useState([
     {
@@ -49,7 +51,8 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
   const sameAddRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [tabValue, setTabValue] = React.useState('1');
+  const [tabValue, setTabValue] = React.useState("1");
+  const [updatePrivateCustomer] = useUpdatePrivateCustomerMutation();
 
   // form
   const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
@@ -91,11 +94,10 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
     if (
       info?.addresses &&
       info?.addresses?.billing?.street ===
-      info?.addresses["shipping"]?.street &&
+        info?.addresses["shipping"]?.street &&
       info?.addresses?.billing?.zip === info?.addresses["shipping"]?.zip &&
       info?.addresses?.billing?.city === info?.addresses["shipping"]?.city &&
-      info?.addresses?.billing?.country ===
-      info?.addresses["shipping"]?.country
+      info?.addresses?.billing?.country === info?.addresses["shipping"]?.country
     ) {
       setSameAddress(true);
     } else setSameAddress(false);
@@ -140,13 +142,12 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
     PrivateDefaultValue.shippingCity = info?.addresses?.shipping?.city
       ? info.addresses.shipping?.city
       : "";
-    PrivateDefaultValue.shippingCountry = info?.addresses?.shipping
-      ?.country
+    PrivateDefaultValue.shippingCountry = info?.addresses?.shipping?.country
       ? info.addresses.shipping?.country
       : "";
     reset({ ...PrivateDefaultValue });
 
-    setIsLoading(false)
+    setIsLoading(false);
     // return () => {
     //   localStorage.removeItem("tableRowDetails");
     // };
@@ -157,30 +158,51 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
   };
 
   const onRawSubmit = (values) => {
-    const billingUUID = info?.addresses?.billing?.uuid ? info?.addresses?.billing?.uuid : "";
-    const shippingUUID = info?.addresses?.shipping?.uuid ? info?.addresses?.shipping?.uuid : "";
+    const billingUUID = info?.addresses?.billing?.uuid
+      ? info?.addresses?.billing?.uuid
+      : "";
+    const shippingUUID = info?.addresses?.shipping?.uuid
+      ? info?.addresses?.shipping?.uuid
+      : "";
 
-    setLoading(true)
-    CustomersService.updatePrivateCustomerByUUID(
-      values,
-      sameAddress,
-      billingUUID,
-      shippingUUID
-    )
-      .then((res) => {
-        if (res?.status_code === 202) {
-          enqueueSnackbar(res.message, {
-            variant: "success",
-            autoHideDuration: 3000,
-          });
-          navigate("/customers/customers-list");
-          setLoading(false)
-        }
-      })
-      .catch((e) => {
-        console.log("Service call E : ", e);
-        setLoading(false)
-      });
+    setLoading(true);
+    // CustomersService.updatePrivateCustomerByUUID(
+    //   values,
+    //   sameAddress,
+    //   billingUUID,
+    //   shippingUUID
+    // )
+    //   .then((res) => {
+    //     if (res?.status_code === 202) {
+    //       enqueueSnackbar(res.message, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/customers/customers-list");
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log("Service call E : ", e);
+    //     setLoading(false)
+    //   });
+    const preparedPayload =
+      CustomersService.prepareUpdatePrivateCustomerPayload(
+        values,
+        sameAddress,
+        billingUUID,
+        shippingUUID
+      );
+    updatePrivateCustomer(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        navigate("/customers/customers-list");
+        setLoading(false);
+      } else if (response?.error?.data?.status_code === 417) {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        setLoading(false);
+      }
+    });
   };
   // form end
   const handleMakeInactive = () => {
@@ -193,7 +215,9 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
           navigate(`/customers/customers-list`);
         }
       })
-      .catch((e) => { enqueueSnackbar("Operation failed", { variant: "error" }); });
+      .catch((e) => {
+        enqueueSnackbar("Operation failed", { variant: "error" });
+      });
   };
 
   return (
@@ -210,7 +234,9 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                 <div className="h-36 w-36 rounded-full custom-accent50bg flex justify-center items-center">
                   <PersonIcon className="icon-size-20 text-accentBlue-500" />
                 </div>
-                <div className="header-text header6">{t("label:customerDetails")}</div>
+                <div className="header-text header6">
+                  {t("label:customerDetails")}
+                </div>
                 {info?.status === "Inactive" ? (
                   <div className="py-3 px-10 bg-rejected rounded-md body3 text-MonochromeGray-700">
                     {t("label:inactive")}
@@ -230,7 +256,9 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                   onClick={() => handleMakeInactive()}
                   disabled={user.role[0] === FP_ADMIN}
                 >
-                  {info?.status === "Active" ? t("label:makeInactive") : t("label:makeActive")}
+                  {info?.status === "Active"
+                    ? t("label:makeInactive")
+                    : t("label:makeActive")}
                 </Button>
                 <LoadingButton
                   variant="contained"
@@ -245,14 +273,23 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                 >
                   {t("label:update")}
                 </LoadingButton>
-
               </div>
             </div>
             <div className="my-20 custom-tab-order-details">
               <TabContext value={tabValue}>
-                <Box sx={{ background: '#F7F7F7' }}>
-                  <TabList onChange={handleChange} aria-label="lab API tabs example" TabIndicatorProps={{ style: { background: '#33A0BE', height: '4px' } }}>
-                    <Tab label="Customer Information" className="subtitle3" value="1" />
+                <Box sx={{ background: "#F7F7F7" }}>
+                  <TabList
+                    onChange={handleChange}
+                    aria-label="lab API tabs example"
+                    TabIndicatorProps={{
+                      style: { background: "#33A0BE", height: "4px" },
+                    }}
+                  >
+                    <Tab
+                      label="Customer Information"
+                      className="subtitle3"
+                      value="1"
+                    />
                     <Tab label="Timeline" className="subtitle3" value="2" />
                     <Tab label="Orders" className="subtitle3" value="3" />
                     <Tab label="Notes" className="subtitle3" value="4" />
@@ -265,10 +302,10 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                         <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                           {t("label:primaryInformation")}
                           {dirtyFields.customerID &&
-                            dirtyFields.primaryPhoneNumber &&
-                            dirtyFields.customerName &&
-                            dirtyFields.customerEmail &&
-                            dirtyFields.pNumber ? (
+                          dirtyFields.primaryPhoneNumber &&
+                          dirtyFields.customerName &&
+                          dirtyFields.customerEmail &&
+                          dirtyFields.pNumber ? (
                             <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                           ) : (
                             <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -315,7 +352,7 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                                     autocompleteSearch
                                     countryCodeEditable={false}
                                     specialLabel={`${t("label:phone")}*`}
-                                  // onBlur={handleOnBlurGetDialCode}
+                                    // onBlur={handleOnBlurGetDialCode}
                                   />
                                   <FormHelperText>
                                     {errors?.primaryPhoneNumber?.message}
@@ -387,9 +424,9 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                           <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                             {t("label:billingAndShippingInformation")}
                             {dirtyFields.billingAddress &&
-                              dirtyFields.billingZip &&
-                              dirtyFields.billingCity &&
-                              dirtyFields.billingCountry ? (
+                            dirtyFields.billingZip &&
+                            dirtyFields.billingCity &&
+                            dirtyFields.billingCountry ? (
                               <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                             ) : (
                               <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -399,9 +436,9 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                             <div className="billing-address-head no-padding-x my-14">
                               {t("label:billingAddress")}
                               {dirtyFields.billingAddress &&
-                                dirtyFields.billingZip &&
-                                dirtyFields.billingCity &&
-                                dirtyFields.billingCountry ? (
+                              dirtyFields.billingZip &&
+                              dirtyFields.billingCity &&
+                              dirtyFields.billingCountry ? (
                                 <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                               ) : (
                                 <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -420,7 +457,9 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                                         type="text"
                                         autoComplete="off"
                                         error={!!errors.billingAddress}
-                                        helperText={errors?.billingAddress?.message}
+                                        helperText={
+                                          errors?.billingAddress?.message
+                                        }
                                         variant="outlined"
                                         required
                                         fullWidth
@@ -491,7 +530,10 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                                         }
                                       >
                                         {countries.map((country, index) => (
-                                          <MenuItem key={index} value={country.name}>
+                                          <MenuItem
+                                            key={index}
+                                            value={country.name}
+                                          >
                                             {country.title}
                                           </MenuItem>
                                         ))}
@@ -510,14 +552,15 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                               <div className="flex justify-between items-center billing-address-head no-padding-x">
                                 <div className="billing-address-head no-padding-x">
                                   {t("label:shippingAddress")}
-                                  {sameAddress && dirtyFields.billingAddress &&
+                                  {(sameAddress &&
+                                    dirtyFields.billingAddress &&
                                     dirtyFields.billingZip &&
                                     dirtyFields.billingCity &&
-                                    dirtyFields.billingCountry ||
-                                    dirtyFields.shippingAddress &&
+                                    dirtyFields.billingCountry) ||
+                                  (dirtyFields.shippingAddress &&
                                     dirtyFields.shippingZip &&
                                     dirtyFields.shippingCity &&
-                                    dirtyFields.shippingCountry ? (
+                                    dirtyFields.shippingCountry) ? (
                                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                                   ) : (
                                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -528,7 +571,9 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                                     className="font-bold"
                                     control={
                                       <Switch
-                                        onChange={() => setSameAddress(!sameAddress)}
+                                        onChange={() =>
+                                          setSameAddress(!sameAddress)
+                                        }
                                         name="jason"
                                         color="secondary"
                                         ref={sameAddRef}
@@ -545,162 +590,165 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                                   />
                                 </div>
                               </div>
-                              {
-                                !sameAddress &&
-                                ((billingAddress &&
-                                  zip &&
-                                  city &&
-                                  country) ||
+                              {!sameAddress &&
+                                ((billingAddress && zip && city && country) ||
                                   shippingAddress ||
                                   shippingZip ||
                                   shippingCity ||
                                   shippingCountry ||
-                                  !info?.addresses) &&
-                                (<div className="">
-                                  {/*<div className="form-pair-input gap-x-20">*/}
-                                  {/*<Controller*/}
-                                  {/*  name="shippingPhoneNumber"*/}
-                                  {/*  control={control}*/}
-                                  {/*  render={({ field }) => (*/}
-                                  {/*    <FormControl*/}
-                                  {/*      error={!!errors.shippingPhoneNumber}*/}
-                                  {/*      fullWidth*/}
-                                  {/*    >*/}
-                                  {/*      <PhoneInput*/}
-                                  {/*        {...field}*/}
-                                  {/*        className={*/}
-                                  {/*          errors.shippingPhoneNumber*/}
-                                  {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
-                                  {/*            : "input-phone-number-field"*/}
-                                  {/*        }*/}
-                                  {/*        country="no"*/}
-                                  {/*        enableSearch*/}
-                                  {/*        disabled={sameAddress}*/}
-                                  {/*        autocompleteSearch*/}
-                                  {/*        countryCodeEditable={false}*/}
-                                  {/*        specialLabel={t("label:phone")}*/}
-                                  {/*      // onBlur={handleOnBlurGetDialCode}*/}
-                                  {/*      />*/}
-                                  {/*      <FormHelperText>*/}
-                                  {/*        {errors?.shippingPhoneNumber?.message}*/}
-                                  {/*      </FormHelperText>*/}
-                                  {/*    </FormControl>*/}
-                                  {/*  )}*/}
-                                  {/*/>*/}
-                                  {/*<Controller*/}
-                                  {/*  name="shippingEmail"*/}
-                                  {/*  control={control}*/}
-                                  {/*  render={({ field }) => (*/}
-                                  {/*    <TextField*/}
-                                  {/*      {...field}*/}
-                                  {/*      label={t("label:email")}*/}
-                                  {/*      type="email"*/}
-                                  {/*      autoComplete="off"*/}
-                                  {/*      disabled={sameAddress}*/}
-                                  {/*      error={!!errors.shippingEmail}*/}
-                                  {/*      helperText={errors?.shippingEmail?.message}*/}
-                                  {/*      variant="outlined"*/}
-                                  {/*      fullWidth*/}
-                                  {/*    />*/}
-                                  {/*  )}*/}
-                                  {/*/>*/}
-                                  {/*</div>*/}
-                                  <div className="form-pair-three-by-one">
-                                    <div className="col-span-3">
+                                  !info?.addresses) && (
+                                  <div className="">
+                                    {/*<div className="form-pair-input gap-x-20">*/}
+                                    {/*<Controller*/}
+                                    {/*  name="shippingPhoneNumber"*/}
+                                    {/*  control={control}*/}
+                                    {/*  render={({ field }) => (*/}
+                                    {/*    <FormControl*/}
+                                    {/*      error={!!errors.shippingPhoneNumber}*/}
+                                    {/*      fullWidth*/}
+                                    {/*    >*/}
+                                    {/*      <PhoneInput*/}
+                                    {/*        {...field}*/}
+                                    {/*        className={*/}
+                                    {/*          errors.shippingPhoneNumber*/}
+                                    {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                                    {/*            : "input-phone-number-field"*/}
+                                    {/*        }*/}
+                                    {/*        country="no"*/}
+                                    {/*        enableSearch*/}
+                                    {/*        disabled={sameAddress}*/}
+                                    {/*        autocompleteSearch*/}
+                                    {/*        countryCodeEditable={false}*/}
+                                    {/*        specialLabel={t("label:phone")}*/}
+                                    {/*      // onBlur={handleOnBlurGetDialCode}*/}
+                                    {/*      />*/}
+                                    {/*      <FormHelperText>*/}
+                                    {/*        {errors?.shippingPhoneNumber?.message}*/}
+                                    {/*      </FormHelperText>*/}
+                                    {/*    </FormControl>*/}
+                                    {/*  )}*/}
+                                    {/*/>*/}
+                                    {/*<Controller*/}
+                                    {/*  name="shippingEmail"*/}
+                                    {/*  control={control}*/}
+                                    {/*  render={({ field }) => (*/}
+                                    {/*    <TextField*/}
+                                    {/*      {...field}*/}
+                                    {/*      label={t("label:email")}*/}
+                                    {/*      type="email"*/}
+                                    {/*      autoComplete="off"*/}
+                                    {/*      disabled={sameAddress}*/}
+                                    {/*      error={!!errors.shippingEmail}*/}
+                                    {/*      helperText={errors?.shippingEmail?.message}*/}
+                                    {/*      variant="outlined"*/}
+                                    {/*      fullWidth*/}
+                                    {/*    />*/}
+                                    {/*  )}*/}
+                                    {/*/>*/}
+                                    {/*</div>*/}
+                                    <div className="form-pair-three-by-one">
+                                      <div className="col-span-3">
+                                        <Controller
+                                          name="shippingAddress"
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              label={t("label:streetAddress")}
+                                              type="text"
+                                              autoComplete="off"
+                                              disabled={sameAddress}
+                                              error={!!errors.shippingAddress}
+                                              helperText={
+                                                errors?.shippingAddress?.message
+                                              }
+                                              variant="outlined"
+                                              fullWidth
+                                            />
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="col-span-1">
+                                        <Controller
+                                          name="shippingZip"
+                                          className="col-span-1"
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              label={t("label:zipCode")}
+                                              type="number"
+                                              autoComplete="off"
+                                              disabled={sameAddress}
+                                              error={!!errors.shippingZip}
+                                              helperText={
+                                                errors?.shippingZip?.message
+                                              }
+                                              variant="outlined"
+                                              fullWidth
+                                            />
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="form-pair-input gap-x-20">
                                       <Controller
-                                        name="shippingAddress"
+                                        name="shippingCity"
                                         control={control}
                                         render={({ field }) => (
                                           <TextField
                                             {...field}
-                                            label={t("label:streetAddress")}
+                                            label={t("label:city")}
                                             type="text"
                                             autoComplete="off"
                                             disabled={sameAddress}
-                                            error={!!errors.shippingAddress}
+                                            error={!!errors.shippingCity}
                                             helperText={
-                                              errors?.shippingAddress?.message
+                                              errors?.shippingCity?.message
                                             }
                                             variant="outlined"
                                             fullWidth
                                           />
                                         )}
                                       />
-                                    </div>
-                                    <div className="col-span-1">
                                       <Controller
-                                        name="shippingZip"
-                                        className="col-span-1"
+                                        name="shippingCountry"
                                         control={control}
                                         render={({ field }) => (
-                                          <TextField
-                                            {...field}
-                                            label={t("label:zipCode")}
-                                            type="number"
-                                            autoComplete="off"
-                                            disabled={sameAddress}
-                                            error={!!errors.shippingZip}
-                                            helperText={errors?.shippingZip?.message}
-                                            variant="outlined"
+                                          <FormControl
+                                            error={!!errors.shippingCountry}
                                             fullWidth
-                                          />
+                                          >
+                                            <InputLabel id="demo-simple-select-label">
+                                              {t("label:country")}
+                                            </InputLabel>
+                                            <Select
+                                              {...field}
+                                              labelId="demo-simple-select-label"
+                                              id="demo-simple-select"
+                                              label={t("label:country")}
+                                              disabled={sameAddress}
+                                              defaultValue={
+                                                info?.addresses &&
+                                                info?.addresses?.shipping &&
+                                                info?.addresses?.shipping
+                                                  ?.country
+                                              }
+                                            >
+                                              <MenuItem value="" />
+                                              <MenuItem value="norway">
+                                                Norway
+                                              </MenuItem>
+                                            </Select>
+                                            <FormHelperText>
+                                              {errors?.shippingCountry?.message}
+                                            </FormHelperText>
+                                          </FormControl>
                                         )}
                                       />
                                     </div>
                                   </div>
-                                  <div className="form-pair-input gap-x-20">
-                                    <Controller
-                                      name="shippingCity"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          {...field}
-                                          label={t("label:city")}
-                                          type="text"
-                                          autoComplete="off"
-                                          disabled={sameAddress}
-                                          error={!!errors.shippingCity}
-                                          helperText={errors?.shippingCity?.message}
-                                          variant="outlined"
-                                          fullWidth
-                                        />
-                                      )}
-                                    />
-                                    <Controller
-                                      name="shippingCountry"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <FormControl
-                                          error={!!errors.shippingCountry}
-                                          fullWidth
-                                        >
-                                          <InputLabel id="demo-simple-select-label">
-                                            {t("label:country")}
-                                          </InputLabel>
-                                          <Select
-                                            {...field}
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            label={t("label:country")}
-                                            disabled={sameAddress}
-                                            defaultValue={
-                                              info?.addresses &&
-                                              info?.addresses?.shipping &&
-                                              info?.addresses?.shipping?.country
-                                            }
-                                          >
-                                            <MenuItem value="" />
-                                            <MenuItem value="norway">Norway</MenuItem>
-                                          </Select>
-                                          <FormHelperText>
-                                            {errors?.shippingCountry?.message}
-                                          </FormHelperText>
-                                        </FormControl>
-                                      )}
-                                    />
-                                  </div>
-                                </div>)
-                              }
+                                )}
                             </div>
                           </div>
                         </div>
@@ -720,7 +768,6 @@ const detailPrivateCustomer = (onSubmit = () => { }) => {
                 </TabPanel>
               </TabContext>
             </div>
-
           </form>
         </div>
       </div>

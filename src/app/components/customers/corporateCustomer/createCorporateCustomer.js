@@ -29,6 +29,7 @@ import FAQs from '../../common/faqs';
 import { CreateCorporateDefaultValue, validateSchema } from '../utils/helper';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
+import { useCreateCorporateCustomerMutation } from 'app/store/api/apiSlice';
 
 const createCorporateCustomer = () => {
   const { t } = useTranslation()
@@ -40,6 +41,7 @@ const createCorporateCustomer = () => {
   const [loading, setLoading] = React.useState(false);
   const [loadingfind, setLoadingfind] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [createCorporateCustomer] = useCreateCorporateCustomerMutation();
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -73,21 +75,33 @@ const createCorporateCustomer = () => {
 
   const onSubmit = (values) => {
     setLoading(true)
-    CustomersService.createCorporateCustomer(values, sameAddress)
-      .then((response) => {
-        if (response?.status_code === 201) {
-          enqueueSnackbar(response.message, { variant: "success" });
-          navigate("/customers/customers-list");
-          setLoading(false)
-        } else if (response?.status_code === 417) {
-          enqueueSnackbar(response.error[0], { variant: "error" });
-          setLoading(false)
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-        setLoading(false)
-      });
+    const preparedPayload =
+      CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress);
+    createCorporateCustomer(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 201) {
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        navigate("/customers/customers-list");
+        setLoading(false);
+      } else if (response?.error?.data?.status_code === 417) {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        setLoading(false);
+      }
+    });
+    // CustomersService.createCorporateCustomer(values, sameAddress)
+    //   .then((response) => {
+    //     if (response?.status_code === 201) {
+    //       enqueueSnackbar(response.message, { variant: "success" });
+    //       navigate("/customers/customers-list");
+    //       setLoading(false)
+    //     } else if (response?.status_code === 417) {
+    //       enqueueSnackbar(response.error[0], { variant: "error" });
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //     setLoading(false)
+    //   });
   };
   // form end
 
