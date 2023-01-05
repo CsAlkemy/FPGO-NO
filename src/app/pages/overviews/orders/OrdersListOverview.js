@@ -108,7 +108,7 @@ export default function OrdersListOverview() {
 
   const preparedData = data?.is_data ?  OrdersService.mapOrderList(data.data) : []
 
-  return isSuccess ? (
+  return (
     <OverviewMainTable
       headerSubtitle={headerSubtitle}
       headerButtonLabel={headerButtonLabel}
@@ -122,17 +122,5 @@ export default function OrdersListOverview() {
       // isLoading={isLoading}
       isLoading={isFetching}
     />
-  ) : (<OverviewMainTable
-    headerSubtitle={headerSubtitle}
-    headerButtonLabel={headerButtonLabel}
-    tableName={ordersListOverview}
-    headerRows={orderListOverviewHeaderRows}
-    // tableData={ordersList.tableData}
-    tableData={[]}
-    rowDataFields={orderListOverviewRowDataFields}
-    tabPanelsLabel={tabPanelsLabel}
-    tabs={tabs}
-    // isLoading={isLoading}
-    isLoading={isFetching}
-  />)
+  )
 }

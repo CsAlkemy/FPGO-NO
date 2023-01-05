@@ -216,7 +216,6 @@ const createOrder = () => {
     })
     createOrder(data)
       .then((response)=> {
-        console.log("R : ",response)
         if (response?.data?.status_code === 201) {
               enqueueSnackbar(response?.data?.message, { variant: "success" });
               navigate(`/sales/orders-list`);

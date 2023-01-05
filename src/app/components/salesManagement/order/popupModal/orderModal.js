@@ -150,7 +150,6 @@ const OrderModal = (props) => {
       //     },1000)
       //   })
       resendOrder(preparedPayload).then((res) => {
-        console.log("Res : ", res);
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
         }
@@ -197,7 +196,6 @@ const OrderModal = (props) => {
       //     }, 1000);
       //   });
       cancelOrder(data).then((res) => {
-        console.log("Res : ", res);
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
         }
@@ -216,7 +214,6 @@ const OrderModal = (props) => {
       }
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (r) => {
-          console.log("R : ", r);
           setTimeout(() => {
             setOpen(false);
           }, 1000);

@@ -317,6 +317,36 @@ class CustomersService {
     });
   };
 
+  mapCustomersList = (data)=> {
+    let d;
+    d = data.map((row) => {
+      const preparePhone = row.countryCode && row.msisdn
+        ? row.countryCode + row.msisdn
+        : null
+      const phone = preparePhone ? preparePhone.split("+") : null
+      return {
+        uuid: row.uuid,
+        type: row.type,
+        name: row.name,
+        orgIdOrPNumber: row.organizationId
+          ? row.organizationId
+          : row.personalNumber,
+        phone: phone ? "+" + phone[phone.length - 1] : null,
+        email: row.email,
+        lastInvoicedOn: row.lastOrderOn,
+        lastOrderAmount: row.lastOrderAmount,
+        status: row.status,
+        street: row?.billingAddress?.street,
+        city: row?.billingAddress?.city,
+        zip: row?.billingAddress?.zip,
+        country: row?.billingAddress?.country,
+      };
+    });
+    // d.status_code = 200;
+    // d.is_data = true;
+    return d;
+  }
+
   customersList = async () => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()

@@ -62,7 +62,7 @@ export const apiSlice = createApi({
   // The cache reducer expects to be added at `state.api` (already default - this is optional)
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["OrdersList"],
+  tagTypes: ["OrdersList, CustomersList"],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
       query: () => "/orders/list",
@@ -111,7 +111,11 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["OrdersList"],
     }),
+    getCustomersList: builder.query({
+      query: () => "/customer/list",
+      providesTags: ["CustomersList"],
+    }),
   }),
 });
 
-export const { useGetOrdersListQuery, useRefundOrderMutation, useCreateOrderMutation, useResendOrderMutation, useCancelOrderMutation } = apiSlice;
+export const { useGetOrdersListQuery, useRefundOrderMutation, useCreateOrderMutation, useResendOrderMutation, useCancelOrderMutation, useGetCustomersListQuery } = apiSlice;
