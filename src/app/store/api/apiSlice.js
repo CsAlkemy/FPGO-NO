@@ -147,6 +147,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["CustomersList"],
     }),
+    updateCustomerStatus: builder.mutation({
+      query: (uuid) => ({
+        url: `/customer/change/status/${uuid}`,
+        method: "PUT"
+      }),
+      invalidatesTags: ["CustomersList"],
+    }),
   }),
 });
 
@@ -161,4 +168,5 @@ export const {
   useCreateCorporateCustomerMutation,
   useUpdatePrivateCustomerMutation,
   useUpdateCorporateCustomerMutation,
+  useUpdateCustomerStatusMutation,
 } = apiSlice;
