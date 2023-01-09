@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
-import { LoadingButton, TabContext, TabList, TabPanel } from '@mui/lab';
+import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import {
   Box,
   Button,
@@ -12,38 +12,42 @@ import {
   Select,
   Switch,
   Tab,
-  TextField
+  TextField,
 } from "@mui/material";
-import { selectUser } from 'app/store/userSlice';
+import { selectUser } from "app/store/userSlice";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { MdOutlineAdd, MdRemoveCircle } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
-import { FP_ADMIN } from '../../../utils/user-roles/UserRoles';
+import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import { CreateCorporateDefaultValue, validateSchema } from "../utils/helper";
 import Journal from "./CorporateCustomerDetails/Journal";
 import Orders from "./CorporateCustomerDetails/Orders";
 import Timeline from "./CorporateCustomerDetails/Timeline";
-import { useUpdateCorporateCustomerMutation } from 'app/store/api/apiSlice';
+import {
+  useUpdateCorporateCustomerMutation,
+  useUpdateCustomerStatusMutation,
+} from "app/store/api/apiSlice";
 
-const detailCorporateCustomer = (onSubmit = () => { }) => {
-  const { t } = useTranslation()
+const detailCorporateCustomer = (onSubmit = () => {}) => {
+  const { t } = useTranslation();
   const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [sameAddress, setSameAddress] = React.useState(false);
   const sameAddRef = useRef(null);
-  const [tabValue, setTabValue] = React.useState('1');
+  const [tabValue, setTabValue] = React.useState("1");
 
   const [loading, setLoading] = React.useState(false);
   const [expanded, setExpanded] = React.useState(true);
   const [expandedPanel2, setExpandedPanel2] = React.useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const addAnotherContactRef = useRef(null)
+  const addAnotherContactRef = useRef(null);
+  const [updateCustomerStatus] = useUpdateCustomerStatusMutation();
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -56,13 +60,11 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
   // const [addContactIndex, setAddContactIndex] = React.useState(
   //   info?.additionalContactDetails.length-1
   // );
-  const [addContactIndex, setAddContactIndex] = React.useState(
-    [0, 1, 2]
-  );
+  const [addContactIndex, setAddContactIndex] = React.useState([0, 1, 2]);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const user = useSelector(selectUser);
-  const [updateCorporateCustomer] = useUpdateCorporateCustomerMutation()
+  const [updateCorporateCustomer] = useUpdateCorporateCustomerMutation();
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -114,8 +116,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
     CreateCorporateDefaultValue.billingZip = info?.addresses?.billing?.zip
       ? info.addresses.billing.zip
       : "";
-    CreateCorporateDefaultValue.billingCity = info?.addresses?.billing
-      ?.city
+    CreateCorporateDefaultValue.billingCity = info?.addresses?.billing?.city
       ? info.addresses.billing.city
       : "";
     CreateCorporateDefaultValue.billingCountry = info?.addresses?.billing
@@ -127,12 +128,10 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
       ?.street
       ? info.addresses.shipping?.street
       : "";
-    CreateCorporateDefaultValue.shippingZip = info?.addresses?.shipping
-      ?.zip
+    CreateCorporateDefaultValue.shippingZip = info?.addresses?.shipping?.zip
       ? info.addresses.shipping?.zip
       : "";
-    CreateCorporateDefaultValue.shippingCity = info?.addresses?.shipping
-      ?.city
+    CreateCorporateDefaultValue.shippingCity = info?.addresses?.shipping?.city
       ? info.addresses.shipping?.city
       : "";
     CreateCorporateDefaultValue.shippingCountry = info?.addresses?.shipping
@@ -140,28 +139,40 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
       ? info.addresses.shipping?.country
       : "";
 
-    if (info?.additionalContactDetails && info?.additionalContactDetails.length) {
-      if (info?.additionalContactDetails && info?.additionalContactDetails.length >= 2) {
-        setAddContactIndex(addContactIndex.filter((item, index) => item < info?.additionalContactDetails.length - 1))
+    if (
+      info?.additionalContactDetails &&
+      info?.additionalContactDetails.length
+    ) {
+      if (
+        info?.additionalContactDetails &&
+        info?.additionalContactDetails.length >= 2
+      ) {
+        setAddContactIndex(
+          addContactIndex.filter(
+            (item, index) => item < info?.additionalContactDetails.length - 1
+          )
+        );
       }
       CreateCorporateDefaultValue.fullName = info?.additionalContactDetails[0]
         ?.name
         ? info.additionalContactDetails[0].name
         : "";
-      CreateCorporateDefaultValue.designation = info?.additionalContactDetails[0]
-        ?.designation
+      CreateCorporateDefaultValue.designation = info
+        ?.additionalContactDetails[0]?.designation
         ? info.additionalContactDetails[0].designation
         : "";
       CreateCorporateDefaultValue.phone =
         info?.additionalContactDetails[0]?.countryCode &&
-          info.additionalContactDetails[0].msisdn
+        info.additionalContactDetails[0].msisdn
           ? info.additionalContactDetails[0].countryCode +
-          info.additionalContactDetails[0].msisdn
+            info.additionalContactDetails[0].msisdn
           : "";
-      CreateCorporateDefaultValue.email = info?.additionalContactDetails[0]?.email
+      CreateCorporateDefaultValue.email = info?.additionalContactDetails[0]
+        ?.email
         ? info.additionalContactDetails[0].email
         : "";
-      CreateCorporateDefaultValue.notes = info?.additionalContactDetails[0]?.notes
+      CreateCorporateDefaultValue.notes = info?.additionalContactDetails[0]
+        ?.notes
         ? info.additionalContactDetails[0].notes
         : "";
     }
@@ -199,20 +210,39 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
 
     reset({ ...CreateCorporateDefaultValue });
     // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
-    if (info?.additionalContactDetails && info?.additionalContactDetails.length) {
+    if (
+      info?.additionalContactDetails &&
+      info?.additionalContactDetails.length
+    ) {
       for (let i = 0; i < info.additionalContactDetails.length - 1; i++) {
-        setValue(`contact[${i}].fullName`, info.additionalContactDetails[`${i + 1}`].name);
-        setValue(`contact[${i}].designation`, info.additionalContactDetails[`${i + 1}`].designation);
-        setValue(`contact[${i}].phone`, info.additionalContactDetails[`${i + 1}`].countryCode + info.additionalContactDetails[`${i}`].msisdn);
-        setValue(`contact[${i}].notes`, info.additionalContactDetails[`${i + 1}`].notes);
-        setValue(`contact[${i}].email`, info.additionalContactDetails[`${i + 1}`].email);
+        setValue(
+          `contact[${i}].fullName`,
+          info.additionalContactDetails[`${i + 1}`].name
+        );
+        setValue(
+          `contact[${i}].designation`,
+          info.additionalContactDetails[`${i + 1}`].designation
+        );
+        setValue(
+          `contact[${i}].phone`,
+          info.additionalContactDetails[`${i + 1}`].countryCode +
+            info.additionalContactDetails[`${i}`].msisdn
+        );
+        setValue(
+          `contact[${i}].notes`,
+          info.additionalContactDetails[`${i + 1}`].notes
+        );
+        setValue(
+          `contact[${i}].email`,
+          info.additionalContactDetails[`${i + 1}`].email
+        );
         // CreateCorporateDefaultValue.contact[i].designation = info.additionalContactDetails[i].designation;
         // CreateCorporateDefaultValue.contact[i].phone = info.additionalContactDetails[i].countryCode+info.additionalContactDetails[i].msisdn;
         // CreateCorporateDefaultValue.contact[i].email = info.additionalContactDetails[i].email;
         // CreateCorporateDefaultValue.contact[i].notes = info.additionalContactDetails[i].notes ? info.additionalContactDetails[i].notes: "";
       }
     }
-    setIsLoading(false)
+    setIsLoading(false);
 
     // return () => {
     //   localStorage.removeItem("tableRowDetails");
@@ -224,7 +254,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
     //   ...values,
     //   contact: Object.values(values.contact),
     // });
-    setLoading(true)
+    setLoading(true);
     // CustomersService.updateCorporateCustomerByUUID(values, sameAddress, info)
     //   .then((res) => {
     //     if (res?.status_code === 202) {
@@ -256,7 +286,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
         enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
         setLoading(false);
       }
-    })
+    });
   };
   // form end
 
@@ -274,17 +304,26 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
   };
 
   const handleMakeInactive = () => {
-    CustomersService.makeInactiveCustomerByUUID(info.uuid)
-      .then((res) => {
-        if (res?.status_code === 202) {
-          enqueueSnackbar(res.message, { variant: "success" });
-          navigate(`/customers/customers-list`);
-        }
-      })
-      .catch((e) => {
-        console.log("E :", e)
-        enqueueSnackbar('Operation failed', { variant: "error" });
-      });
+    updateCustomerStatus(info.uuid).then((response) => {
+      console.log("RES : ", response);
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(response.message, { variant: "success" });
+        navigate(`/customers/customers-list`);
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      }
+    });
+    // CustomersService.makeInactiveCustomerByUUID(info.uuid)
+    //   .then((res) => {
+    //     if (res?.status_code === 202) {
+    //       enqueueSnackbar(res.message, { variant: "success" });
+    //       navigate(`/customers/customers-list`);
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log("E :", e)
+    //     enqueueSnackbar('Operation failed', { variant: "error" });
+    //   });
   };
 
   return (
@@ -301,7 +340,9 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                 <div className="h-36 w-36 rounded-full custom-accent50bg flex justify-center items-center">
                   <LocationCityIcon className="icon-size-20 text-AccentTeal-500" />
                 </div>
-                <div className="header-text header6">{t("label:customerDetails")}</div>
+                <div className="header-text header6">
+                  {t("label:customerDetails")}
+                </div>
                 {info?.status === "Inactive" ? (
                   <div className="py-3 px-10 bg-rejected rounded-md body3 text-MonochromeGray-700">
                     {t("label:inactive")}
@@ -321,7 +362,9 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                   onClick={() => handleMakeInactive()}
                   disabled={user.role[0] === FP_ADMIN}
                 >
-                  {info?.status === "Active" ? t("label:makeInactive") : t("label:makeActive")}
+                  {info?.status === "Active"
+                    ? t("label:makeInactive")
+                    : t("label:makeActive")}
                 </Button>
                 <LoadingButton
                   variant="contained"
@@ -340,9 +383,19 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
             </div>
             <div className="my-20 custom-tab-order-details">
               <TabContext value={tabValue}>
-                <Box sx={{ background: '#F7F7F7' }}>
-                  <TabList onChange={handleChange} aria-label="lab API tabs example" TabIndicatorProps={{ style: { background: '#33A0BE', height: '4px' } }}>
-                    <Tab label="Customer Information" className="subtitle3" value="1" />
+                <Box sx={{ background: "#F7F7F7" }}>
+                  <TabList
+                    onChange={handleChange}
+                    aria-label="lab API tabs example"
+                    TabIndicatorProps={{
+                      style: { background: "#33A0BE", height: "4px" },
+                    }}
+                  >
+                    <Tab
+                      label="Customer Information"
+                      className="subtitle3"
+                      value="1"
+                    />
                     <Tab label="Timeline" className="subtitle3" value="2" />
                     <Tab label="Orders" className="subtitle3" value="3" />
                     <Tab label="Notes" className="subtitle3" value="4" />
@@ -355,9 +408,9 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                         <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                           {t("label:primaryInformation")}
                           {dirtyFields.billingAddress &&
-                            dirtyFields.zip &&
-                            dirtyFields.city &&
-                            dirtyFields.country ? (
+                          dirtyFields.zip &&
+                          dirtyFields.city &&
+                          dirtyFields.country ? (
                             <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                           ) : (
                             <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -398,7 +451,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                   variant="outlined"
                                   required
                                   fullWidth
-                                //disabled
+                                  //disabled
                                 />
                               )}
                             />
@@ -418,7 +471,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                   helperText={errors?.OrganizationName?.message}
                                   variant="outlined"
                                   fullWidth
-                                //disabled
+                                  //disabled
                                 />
                               )}
                             />
@@ -460,7 +513,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                     autocompleteSearch
                                     countryCodeEditable={false}
                                     specialLabel={`${t("label:phone")}*`}
-                                  // onBlur={handleOnBlurGetDialCode}
+                                    // onBlur={handleOnBlurGetDialCode}
                                   />
                                   <FormHelperText>
                                     {errors?.primaryPhoneNumber?.message}
@@ -475,28 +528,26 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                         <div className="corporate-customer-details-form">
                           <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                             {t("label:billingAndShippingInformation")}
-                            {
-                              dirtyFields.billingAddress &&
-                                dirtyFields.zip &&
-                                dirtyFields.city &&
-                                dirtyFields.country ? (
-                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
-                              ) : (
-                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
-                              )}
+                            {dirtyFields.billingAddress &&
+                            dirtyFields.zip &&
+                            dirtyFields.city &&
+                            dirtyFields.country ? (
+                              <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                            ) : (
+                              <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                            )}
                           </div>
                           <div className="w-full px-7 sm:px-14">
                             <div className="billing-address-head no-padding-x my-14">
                               {t("label:billingAddress")}
-                              {
-                                dirtyFields.billingAddress &&
-                                  dirtyFields.zip &&
-                                  dirtyFields.city &&
-                                  dirtyFields.country ? (
-                                  <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
-                                ) : (
-                                  <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
-                                )}
+                              {dirtyFields.billingAddress &&
+                              dirtyFields.zip &&
+                              dirtyFields.city &&
+                              dirtyFields.country ? (
+                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                              ) : (
+                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                              )}
                             </div>
                             <div className="">
                               <div className="form-pair-three-by-one">
@@ -511,7 +562,9 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                         type="text"
                                         autoComplete="off"
                                         error={!!errors.billingAddress}
-                                        helperText={errors?.billingAddress?.message}
+                                        helperText={
+                                          errors?.billingAddress?.message
+                                        }
                                         variant="outlined"
                                         fullWidth
                                       />
@@ -578,7 +631,10 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                         }
                                       >
                                         {countries.map((country, index) => (
-                                          <MenuItem key={index} value={country.name}>
+                                          <MenuItem
+                                            key={index}
+                                            value={country.name}
+                                          >
                                             {country.title}
                                           </MenuItem>
                                         ))}
@@ -597,12 +653,11 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                               <div className="flex justify-between items-center billing-address-head no-padding-x">
                                 <div className="billing-address-head no-padding-x">
                                   {t("label:shippingAddress")}
-                                  {(
-                                    shippingAddress &&
+                                  {(shippingAddress &&
                                     shippingZip &&
                                     shippingCity &&
                                     shippingCountry) ||
-                                    sameAddress ? (
+                                  sameAddress ? (
                                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                                   ) : (
                                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -613,7 +668,9 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                     className="font-bold"
                                     control={
                                       <Switch
-                                        onChange={() => setSameAddress(!sameAddress)}
+                                        onChange={() =>
+                                          setSameAddress(!sameAddress)
+                                        }
                                         name="jason"
                                         color="secondary"
                                         ref={sameAddRef}
@@ -621,135 +678,142 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                     }
                                     label={t("label:sameAsBillingAddress")}
                                     labelPlacement="start"
-                                  // disabled={
-                                  //   !billingPhoneNumber ||
-                                  //   !billingEmail ||
-                                  //   !billingAddress ||
-                                  //   !zip ||
-                                  //   !city ||
-                                  //   !country
-                                  // }
+                                    // disabled={
+                                    //   !billingPhoneNumber ||
+                                    //   !billingEmail ||
+                                    //   !billingAddress ||
+                                    //   !zip ||
+                                    //   !city ||
+                                    //   !country
+                                    // }
                                   />
                                 </div>
                               </div>
 
-                              {
-                                (!sameAddress &&
-                                  (
-                                    // (billingPhoneNumber &&
-                                    //   billingEmail &&
-                                    //   billingAddress &&
-                                    //   zip &&
-                                    //   city &&
-                                    //   country)
-                                    // ||
-                                    shippingAddress ||
-                                    shippingZip ||
-                                    shippingCity ||
-                                    shippingCountry ||
-                                    !info?.addresses)) &&
-                                (<div className="">
-                                  <div className="form-pair-three-by-one">
-                                    <div className="col-span-3">
+                              {!sameAddress &&
+                                // (billingPhoneNumber &&
+                                //   billingEmail &&
+                                //   billingAddress &&
+                                //   zip &&
+                                //   city &&
+                                //   country)
+                                // ||
+                                (shippingAddress ||
+                                  shippingZip ||
+                                  shippingCity ||
+                                  shippingCountry ||
+                                  !info?.addresses) && (
+                                  <div className="">
+                                    <div className="form-pair-three-by-one">
+                                      <div className="col-span-3">
+                                        <Controller
+                                          name="shippingAddress"
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              label={t("label:streetAddress")}
+                                              type="text"
+                                              autoComplete="off"
+                                              disabled={sameAddress}
+                                              error={!!errors.shippingAddress}
+                                              helperText={
+                                                errors?.shippingAddress?.message
+                                              }
+                                              variant="outlined"
+                                              fullWidth
+                                            />
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="col-span-1">
+                                        <Controller
+                                          name="shippingZip"
+                                          className="col-span-1"
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              label={t("label:zipCode")}
+                                              type="number"
+                                              autoComplete="off"
+                                              disabled={sameAddress}
+                                              error={!!errors.shippingZip}
+                                              helperText={
+                                                errors?.shippingZip?.message
+                                              }
+                                              variant="outlined"
+                                              fullWidth
+                                            />
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="form-pair-input gap-x-20">
                                       <Controller
-                                        name="shippingAddress"
+                                        name="shippingCity"
                                         control={control}
                                         render={({ field }) => (
                                           <TextField
                                             {...field}
-                                            label={t("label:streetAddress")}
+                                            label={t("label:city")}
                                             type="text"
                                             autoComplete="off"
                                             disabled={sameAddress}
-                                            error={!!errors.shippingAddress}
+                                            error={!!errors.shippingCity}
                                             helperText={
-                                              errors?.shippingAddress?.message
+                                              errors?.shippingCity?.message
                                             }
                                             variant="outlined"
                                             fullWidth
                                           />
                                         )}
                                       />
-                                    </div>
-                                    <div className="col-span-1">
                                       <Controller
-                                        name="shippingZip"
-                                        className="col-span-1"
+                                        name="shippingCountry"
                                         control={control}
                                         render={({ field }) => (
-                                          <TextField
-                                            {...field}
-                                            label={t("label:zipCode")}
-                                            type="number"
-                                            autoComplete="off"
-                                            disabled={sameAddress}
-                                            error={!!errors.shippingZip}
-                                            helperText={errors?.shippingZip?.message}
-                                            variant="outlined"
+                                          <FormControl
+                                            error={!!errors.shippingCountry}
                                             fullWidth
-                                          />
+                                          >
+                                            <InputLabel id="demo-simple-select-label">
+                                              {t("label:country")}
+                                            </InputLabel>
+                                            <Select
+                                              {...field}
+                                              labelId="demo-simple-select-label"
+                                              id="demo-simple-select"
+                                              label="Country"
+                                              disabled={sameAddress}
+                                              defaultValue={
+                                                info?.addresses &&
+                                                info?.addresses?.shipping &&
+                                                info?.addresses?.shipping?.country.toLowerCase()
+                                              }
+                                            >
+                                              {/*<MenuItem value="" />*/}
+                                              {/*<MenuItem value="norway">{t("label:norway")}</MenuItem>*/}
+                                              {countries.map(
+                                                (country, index) => (
+                                                  <MenuItem
+                                                    key={index}
+                                                    value={country.name}
+                                                  >
+                                                    {country.title}
+                                                  </MenuItem>
+                                                )
+                                              )}
+                                            </Select>
+                                            <FormHelperText>
+                                              {errors?.shippingCountry?.message}
+                                            </FormHelperText>
+                                          </FormControl>
                                         )}
                                       />
                                     </div>
                                   </div>
-                                  <div className="form-pair-input gap-x-20">
-                                    <Controller
-                                      name="shippingCity"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          {...field}
-                                          label={t("label:city")}
-                                          type="text"
-                                          autoComplete="off"
-                                          disabled={sameAddress}
-                                          error={!!errors.shippingCity}
-                                          helperText={errors?.shippingCity?.message}
-                                          variant="outlined"
-                                          fullWidth
-                                        />
-                                      )}
-                                    />
-                                    <Controller
-                                      name="shippingCountry"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <FormControl
-                                          error={!!errors.shippingCountry}
-                                          fullWidth
-                                        >
-                                          <InputLabel id="demo-simple-select-label">
-                                            {t("label:country")}
-                                          </InputLabel>
-                                          <Select
-                                            {...field}
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            label="Country"
-                                            disabled={sameAddress}
-                                            defaultValue={
-                                              info?.addresses &&
-                                              info?.addresses?.shipping &&
-                                              info?.addresses?.shipping?.country.toLowerCase()
-                                            }
-                                          >
-                                            {/*<MenuItem value="" />*/}
-                                            {/*<MenuItem value="norway">{t("label:norway")}</MenuItem>*/}
-                                            {countries.map((country, index) => (
-                                              <MenuItem key={index} value={country.name}>
-                                                {country.title}
-                                              </MenuItem>
-                                            ))}
-                                          </Select>
-                                          <FormHelperText>
-                                            {errors?.shippingCountry?.message}
-                                          </FormHelperText>
-                                        </FormControl>
-                                      )}
-                                    />
-                                  </div>
-                                </div>)
-                              }
+                                )}
                             </div>
                           </div>
                           <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
@@ -764,10 +828,10 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                             <div className="billing-address-head no-padding-x my-14">
                               {t("label:primaryContact")}
                               {dirtyFields.fullName &&
-                                dirtyFields.designation &&
-                                dirtyFields.phone &&
-                                dirtyFields.email &&
-                                dirtyFields.notes ? (
+                              dirtyFields.designation &&
+                              dirtyFields.phone &&
+                              dirtyFields.email &&
+                              dirtyFields.notes ? (
                                 <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                               ) : (
                                 <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -813,7 +877,10 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                   name="phone"
                                   control={control}
                                   render={({ field }) => (
-                                    <FormControl error={!!errors.phone} fullWidth>
+                                    <FormControl
+                                      error={!!errors.phone}
+                                      fullWidth
+                                    >
                                       <PhoneInput
                                         {...field}
                                         className={
@@ -826,7 +893,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                         autocompleteSearch
                                         countryCodeEditable={false}
                                         specialLabel={t("label:phone")}
-                                      // onBlur={handleOnBlurGetDialCode}
+                                        // onBlur={handleOnBlurGetDialCode}
                                       />
                                       <FormHelperText>
                                         {errors?.billingPhoneNumber?.message}
@@ -878,10 +945,10 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                   <div className="billing-address-head no-padding-x">
                                     {t("label:contact")} {index + 1}
                                     {dirtyFields.fullName &&
-                                      dirtyFields.designation &&
-                                      dirtyFields.phone &&
-                                      dirtyFields.email &&
-                                      dirtyFields.notes ? (
+                                    dirtyFields.designation &&
+                                    dirtyFields.phone &&
+                                    dirtyFields.email &&
+                                    dirtyFields.notes ? (
                                       <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                                     ) : (
                                       <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -911,7 +978,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                           helperText={errors?.fullName}
                                           variant="outlined"
                                           fullWidth
-                                        // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].name ? info.additionalContactDetails[index+1].name : ""}
+                                          // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].name ? info.additionalContactDetails[index+1].name : ""}
                                         />
                                       )}
                                     />
@@ -925,10 +992,12 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors?.designation}
-                                          helperText={errors?.designation?.message}
+                                          helperText={
+                                            errors?.designation?.message
+                                          }
                                           variant="outlined"
                                           fullWidth
-                                        // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].designation ? info.additionalContactDetails[index+1].designation : ""}
+                                          // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].designation ? info.additionalContactDetails[index+1].designation : ""}
                                         />
                                       )}
                                     />
@@ -954,8 +1023,8 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                             autocompleteSearch
                                             countryCodeEditable={false}
                                             specialLabel={t("label:phone")}
-                                          // onBlur={handleOnBlurGetDialCode}
-                                          // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].msisdn ? info.additionalContactDetails[index+1].msisdn : ""}
+                                            // onBlur={handleOnBlurGetDialCode}
+                                            // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].msisdn ? info.additionalContactDetails[index+1].msisdn : ""}
                                           />
                                           <FormHelperText>
                                             {errors?.phone?.message}
@@ -976,7 +1045,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                           // helperText={errors?.contact[index]?.email?.message}
                                           variant="outlined"
                                           fullWidth
-                                        // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].email ? info.additionalContactDetails[index+1].email : ""}
+                                          // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].email ? info.additionalContactDetails[index+1].email : ""}
                                         />
                                       )}
                                     />
@@ -997,7 +1066,7 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                                           helperText={errors?.message}
                                           variant="outlined"
                                           fullWidth
-                                        // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].notes ? info.additionalContactDetails[index+1].notes : ""}
+                                          // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].notes ? info.additionalContactDetails[index+1].notes : ""}
                                         />
                                       )}
                                     />
@@ -1035,7 +1104,6 @@ const detailCorporateCustomer = (onSubmit = () => { }) => {
                 </TabPanel>
               </TabContext>
             </div>
-
           </form>
         </div>
       </div>
