@@ -81,9 +81,18 @@ const createOrder = () => {
             </Hidden>
           </div>
           <div className="my-20 custom-tab-order-details">
-            <TabContext value={value}>
+            <TabContext
+              value={value}
+            >
               <Box sx={{ background: '#F7F7F7' }}>
-                <TabList onChange={handleChange} aria-label="lab API tabs example" TabIndicatorProps={{ style: { background: '#33A0BE', height: '4px' } }}>
+                <TabList
+                   onChange={handleChange}
+                   aria-label="lab API tabs example"
+                   TabIndicatorProps={{ style: { background: '#33A0BE', height: '4px' } }}
+                  variant="scrollable"
+                  scrollButtons
+                  allowScrollButtonsMobile
+              >
                   <Tab label="Order Information" className="subtitle3" value="1" />
                   <Tab label="Order Log" className="subtitle3" value="2" />
                   <Tab label="Order Receipt" className="subtitle3" value="3" />

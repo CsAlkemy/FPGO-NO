@@ -630,7 +630,9 @@ const ClientDetails = () => {
               </div>
             </div>
             <div className="my-20 custom-tab-order-details">
-              <TabContext value={tabValue}>
+              <TabContext
+                value={tabValue}
+              >
                 <Box sx={{ background: "#F7F7F7" }}>
                   <TabList
                     onChange={handleChange}
@@ -638,6 +640,9 @@ const ClientDetails = () => {
                     TabIndicatorProps={{
                       style: { background: "#33A0BE", height: "4px" },
                     }}
+                    variant="scrollable"
+                    scrollButtons
+                    allowScrollButtonsMobile
                   >
                     <Tab
                       label="Client Information"

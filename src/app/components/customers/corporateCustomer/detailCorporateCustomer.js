@@ -386,6 +386,9 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                 <Box sx={{ background: "#F7F7F7" }}>
                   <TabList
                     onChange={handleChange}
+                    variant="scrollable"
+                    scrollButtons
+                    allowScrollButtonsMobile
                     aria-label="lab API tabs example"
                     TabIndicatorProps={{
                       style: { background: "#33A0BE", height: "4px" },
