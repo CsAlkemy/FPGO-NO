@@ -9,6 +9,7 @@ import { setOverviewMainTableDataSlice } from "app/store/overview-table/overview
 import ProductService from "../../../data-access/services/productsService/ProductService";
 import { useSnackbar } from "notistack";
 import { useTranslation } from 'react-i18next';
+import { useGetProductsListQuery } from 'app/store/api/apiSlice';
 
 export default function ProductOverview() {
   const {t} = useTranslation()
@@ -16,10 +17,11 @@ export default function ProductOverview() {
   const tabs = [0, 1, 2];
   const headerSubtitle = t("label:allProduct");
   const headerButtonLabel = t("label:createProduct");
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
+  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetProductsListQuery()
   const producstListHeaderRows = [
     {
       id: 'id',
@@ -72,23 +74,25 @@ export default function ProductOverview() {
     },
   ];
 
-  useEffect(() => {
-    ProductService.productsList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          dispatch(setOverviewMainTableDataSlice(res));
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          dispatch(setOverviewMainTableDataSlice([]));
-        }
-      })
-      .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
-        setIsLoading(false);
-        dispatch(setOverviewMainTableDataSlice([]));
-      });
-  }, [isLoading]);
+  // useEffect(() => {
+  //   ProductService.productsList()
+  //     .then((res) => {
+  //       if (res?.status_code === 200 && res?.is_data) {
+  //         dispatch(setOverviewMainTableDataSlice(res));
+  //         setIsLoading(false);
+  //       } else {
+  //         setIsLoading(false);
+  //         dispatch(setOverviewMainTableDataSlice([]));
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       enqueueSnackbar(e, { variant: "error" });
+  //       setIsLoading(false);
+  //       dispatch(setOverviewMainTableDataSlice([]));
+  //     });
+  // }, [isLoading]);
+
+  const preparedData = data?.is_data ?  ProductService.mapProductsList(data.data) : []
 
   return (
     <OverviewMainTable
@@ -96,12 +100,14 @@ export default function ProductOverview() {
       headerButtonLabel={headerButtonLabel}
       tableName={productsListOverview}
       headerRows={producstListHeaderRows}
-      tableData={productList.tableData}
+      // tableData={productList.tableData}
+      tableData={data?.is_data ? preparedData : []}
       // tableData={productListRows}
       rowDataFields={productsListRowDataFields}
       tabPanelsLabel={tabPanelsLabel}
       tabs={tabs}
-      isLoading={isLoading}
+      isLoading={isFetching}
+      // isLoading={isLoading}
     />
   );
 }
