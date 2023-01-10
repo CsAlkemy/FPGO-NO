@@ -26,7 +26,13 @@ import { useTranslation } from 'react-i18next';
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  personalId: yup.string().required("Please enter the Personal ID"),
+  personalId: yup
+          .string()
+          .matches(/^[0-9]+$/, { message: 'P number must be number', excludeEmptyString: true })
+          .required('P Number is required')
+          .nullable().transform((o, c) => o === '' ? null : c)
+          .min(11, 'Must be exactly 11 numbers')
+          .max(11, 'Must be exactly 11 numbers'),
   trems: yup
     .bool()
     .required("You need to accept the terms and conditions")
