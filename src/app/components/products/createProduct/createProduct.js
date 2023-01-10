@@ -29,6 +29,7 @@ import {
   defaultValueCreateProduct, validateSchemaProductCreate
 } from "../utils/helper";
 import ClientService from '../../../data-access/services/clientsService/ClientService';
+import { useCreateProductMutation } from 'app/store/api/apiSlice';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -43,6 +44,7 @@ const createProducts = (onSubmit = () => { }) => {
   const [taxes, setTaxes] = React.useState([])
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const [createProduct] = useCreateProductMutation();
 
   const [categoriesList, setCategoriesList] = useState([]);
   // form
@@ -54,18 +56,29 @@ const createProducts = (onSubmit = () => { }) => {
   const { isValid, dirtyFields, errors } = formState;
   const onRawSubmit = (values) => {
     setLoading(true)
-    ProductService.createProduct(values)
-      .then((res) => {
-        if (res?.status_code === 201) {
-          enqueueSnackbar(res.message, { variant: "success" });
+    const preparedPaload = ProductService.prepareCreateProductPayload(values)
+    createProduct(preparedPaload)
+      .then((response)=> {
+        if (response?.data?.status_code === 201) {
+          enqueueSnackbar(response?.data?.message, { variant: "success" });
           navigate("/products/products-list");
           setLoading(false)
+        } else {
+          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
         }
       })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-        setLoading(false)
-      });
+    // ProductService.createProduct(values)
+    //   .then((res) => {
+    //     if (res?.status_code === 201) {
+    //       enqueueSnackbar(res.message, { variant: "success" });
+    //       navigate("/products/products-list");
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //     setLoading(false)
+    //   });
   };
   // form end
 

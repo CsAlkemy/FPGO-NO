@@ -27,6 +27,7 @@ import {
 } from "../utils/helper";
 import { useTranslation } from 'react-i18next';
 import ClientService from '../../../data-access/services/clientsService/ClientService';
+import { useUpdateProductMutation, useUpdateProductStatusMutation } from 'app/store/api/apiSlice';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -42,6 +43,8 @@ const createProducts = () => {
   const navigate = useNavigate();
   const params = useParams();
   const user = useSelector(selectUser);
+  const [updateProduct] = useUpdateProductMutation();
+  const [updateProductStatus] = useUpdateProductStatusMutation();
   // form
   const { control, formState, handleSubmit, reset, setValue } = useForm({
     mode: "onChange",
@@ -60,19 +63,29 @@ const createProducts = () => {
       );
       values.assignedCategories = updatedAssignToCategories;
     }
-    ProductService.updateProductByUUID(info.uuid, productType, values)
-      .then((response) => {
-        if (response?.status_code === 202){
-          enqueueSnackbar(`Updated Successfully`, {
-            variant: "success",
-            autoHideDuration: 3000,
-          });
+    const preparedPayload = ProductService.prepareUpdateProductPayload(info.uuid, productType, values)
+    updateProduct(preparedPayload)
+      .then((response)=> {
+        if (response?.data?.status_code === 202) {
+          enqueueSnackbar(response?.data?.message, { variant: "success" });
           navigate("/products/products-list");
+        } else {
+          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
         }
       })
-      .catch((e) => {
-        console.log("E : ", e);
-      });
+    // ProductService.updateProductByUUID(info.uuid, productType, values)
+    //   .then((response) => {
+    //     if (response?.status_code === 202){
+    //       enqueueSnackbar(`Updated Successfully`, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/products/products-list");
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log("E : ", e);
+    //   });
   };
   // form end
 
@@ -135,19 +148,28 @@ const createProducts = () => {
 
   // inactiveProductByUUID
   const changeProductStatus = async () => {
-    ProductService.inactiveProductByUUID(info.uuid)
+    updateProductStatus(info.uuid)
       .then((response) => {
-        if (response?.status_code === 202){
-          enqueueSnackbar(response.message, {
-            variant: "success",
-            autoHideDuration: 3000,
-          });
+        if (response?.data?.status_code === 202){
+          enqueueSnackbar(response?.data?.message, { variant: "success" });
           navigate("/products/products-list");
+        } else {
+          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
         }
       })
-      .catch((e) => {
-        console.log("E : ", e);
-      });
+    // ProductService.inactiveProductByUUID(info.uuid)
+    //   .then((response) => {
+    //     if (response?.status_code === 202){
+    //       enqueueSnackbar(response.message, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/products/products-list");
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log("E : ", e);
+    //   });
   };
 
   return (

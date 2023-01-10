@@ -305,7 +305,6 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
 
   const handleMakeInactive = () => {
     updateCustomerStatus(info.uuid).then((response) => {
-      console.log("RES : ", response);
       if (response?.data?.status_code === 202) {
         enqueueSnackbar(response.message, { variant: "success" });
         navigate(`/customers/customers-list`);

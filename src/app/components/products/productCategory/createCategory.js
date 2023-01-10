@@ -141,7 +141,7 @@ const createCategory = () => {
                         multiline
                         className="col-span-2"
                         rows={5}
-                        label={t("label:designation")}
+                        label={t("label:description")}
                         type="text"
                         autoComplete="off"
                         error={!!errors.description}

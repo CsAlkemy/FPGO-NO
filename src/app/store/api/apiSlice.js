@@ -62,7 +62,7 @@ export const apiSlice = createApi({
   // The cache reducer expects to be added at `state.api` (already default - this is optional)
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["OrdersList, CustomersList"],
+  tagTypes: ["OrdersList, CustomersList, ProductsList"],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
       query: () => "/orders/list",
@@ -154,6 +154,33 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["CustomersList"],
     }),
+    getProductsList: builder.query({
+      query: () => "/products/list",
+      providesTags: ["ProductsList"],
+    }),
+    createProduct: builder.mutation({
+      query: (payload) => ({
+        url: "/products/create",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["ProductsList"],
+    }),
+    updateProduct: builder.mutation({
+      query: (payload) => ({
+        url: `/products/update/${payload.uuid}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["ProductsList"],
+    }),
+    updateProductStatus: builder.mutation({
+      query: (uuid) => ({
+        url: `/products/change/status/${uuid}`,
+        method: "PUT"
+      }),
+      invalidatesTags: ["ProductsList"],
+    }),
   }),
 });
 
@@ -169,4 +196,8 @@ export const {
   useUpdatePrivateCustomerMutation,
   useUpdateCorporateCustomerMutation,
   useUpdateCustomerStatusMutation,
+  useGetProductsListQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useUpdateProductStatusMutation,
 } = apiSlice;
