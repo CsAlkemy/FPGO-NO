@@ -28,13 +28,12 @@ import { useTranslation } from 'react-i18next';
  */
 const schema = yup.object().shape({
   organizationId: yup
-    .number()
-    .test(
-      "len",
-      "Must be exactly 9 characters",
-      (val) => val.toString().length === 9
-    )
-    .typeError("Amount must be a number"),
+          .string()
+          .matches(/^[0-9]+$/, { message: 'Organization ID must be number', excludeEmptyString: true })
+          .required('Organization ID is required')
+          .nullable().transform((o, c) => o === '' ? null : c)
+          .min(9, 'Must be exactly 9 numbers')
+          .max(9, 'Must be exactly 9 numbers'),
   // trems: yup
   //   .bool()
   //   .required("You need to accept the terms and conditions")
