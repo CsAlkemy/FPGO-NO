@@ -61,6 +61,56 @@ class ProductService {
     });
   };
 
+  mapProductsList = (data) => {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        id: row.productId,
+        name: row.name,
+        type: row.type,
+        category: row.categories
+          ? row.categories.length === 1
+            ? row.categories
+            : row.categories.map((row, index) => {
+              return row.length - 1 === index
+                ? row
+                : row + ", ";
+            })
+          : null,
+        unit: row.unit,
+        pricePerUnit: row.price,
+        taxRate: row.tax,
+        status: row.status,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
+  }
+
+  prepareCreateProductPayload = (params)=> {
+    const categoryUuids = params.assignedCategories
+      ? params.assignedCategories.map((product) => {
+        return `${product.uuid}`;
+      })
+      : null;
+
+    return  {
+      // type: type === 1 ? "Good" : "Service",
+      type: "Good",
+      productId: params.productID,
+      name: params.productName,
+      description: params.description,
+      unit: params.unit,
+      price: params.price,
+      manufacturerId: params?.manufacturer ? params?.manufacturer : null,
+      categoryUuids,
+      taxRate: params.tax,
+      cost: params.cost ? params.cost : null,
+    };
+  }
+
   createProduct = async (params) => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
@@ -131,6 +181,28 @@ class ProductService {
         });
     });
   };
+
+  prepareUpdateProductPayload = (uuid, type, params)=> {
+    const categoryUuids = params.assignedCategories
+      ? params.assignedCategories.map((product) => {
+        return `${product.uuid}`;
+      })
+      : null;
+
+    return {
+      uuid,
+      type: type === 1 ? "Good" : "Service",
+      productId: params.productID,
+      name: params.productName,
+      description: params.description,
+      unit: params.unit,
+      price: params.price,
+      manufacturerId: type === 1 ? params.manufacturer : "Test",
+      categoryUuids,
+      taxRate: params.tax,
+      cost: params.cost ? params.cost : null,
+    };
+  }
 
   updateProductByUUID = async (uuid, type, params) => {
     return new Promise((resolve, reject) => {

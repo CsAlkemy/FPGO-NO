@@ -391,7 +391,7 @@ class AuthService extends FuseUtils.EventEmitter {
           .then((response) => {
             if (response?.data?.status_code === 201) {
               return this.bypassOtpForQA(params.loginToken).then((res) => {
-                console.warn("OPT : ", res.data.otp);
+                console.warn("OTP : ", res.data.otp);
                 resolve([response.data, res.data.otp]);
               });
             }else reject("Something went wrong")

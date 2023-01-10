@@ -219,6 +219,8 @@ const createOrder = () => {
         if (response?.data?.status_code === 201) {
               enqueueSnackbar(response?.data?.message, { variant: "success" });
               navigate(`/sales/orders-list`);
+        } else {
+          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
         }
       })
       // .then((response) => {
