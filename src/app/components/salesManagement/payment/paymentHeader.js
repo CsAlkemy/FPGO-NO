@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LanguageIcon from '@mui/icons-material/Language';
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Box, MenuItem } from '@mui/material';
@@ -23,6 +23,10 @@ const paymentHeader = () => {
   const {t} = useTranslation()
   const dispatch = useDispatch()
 
+  useEffect(()=>{
+    dispatch(changeLanguage("no"))
+  },[])
+
   const handleLanguageChange = (lng)=> {
     dispatch(changeLanguage(lng));
   }
@@ -37,7 +41,8 @@ const paymentHeader = () => {
             <div>
                 <Select
                     sx={{ height: 36 }}
-                    defaultValue="English"
+                    // defaultValue="English"
+                    defaultValue="Norwegian"
                     displayEmpty
                     renderValue={(value) => {
                         return (

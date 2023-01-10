@@ -488,8 +488,8 @@ const createCorporateCustomer = () => {
 
                             (findOrg
                               ? !(
-                                getValues("primaryPhoneNumber") === "" ||
-                                getValues("orgEmail") === "" ||
+                                // getValues("primaryPhoneNumber") === "" ||
+                                // getValues("orgEmail") === "" ||
                                 getValues("billingAddress") === "" ||
                                 getValues("billingZip") === "" ||
                                 getValues("billingCity") === ""
