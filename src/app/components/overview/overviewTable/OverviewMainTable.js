@@ -87,7 +87,6 @@ export default function OverviewMainTable(props) {
       setData(props.tableData);
     }
   }, [props.isLoading, searchText]);
-
   const [sortOrder, setSortOrder] = useState({
     direction: "asc",
     id: null,

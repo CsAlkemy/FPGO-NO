@@ -15,6 +15,7 @@ import { setOverviewMainTableDataSlice } from "app/store/overview-table/overview
 import CategoryService from "../../../data-access/services/categoryService/CategoryService";
 import { useSnackbar } from "notistack";
 import { useTranslation } from 'react-i18next';
+import { useGetCategoriesListQuery } from 'app/store/api/apiSlice';
 
 export default function CategoriesListOverview() {
   const {t} = useTranslation()
@@ -22,11 +23,12 @@ export default function CategoriesListOverview() {
   const tabs = [0];
   const headerSubtitle = t("label:allCategories");
   const headerButtonLabel = t("label:createCategory");
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [data, setData] = useState([]);
+  // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const categoryList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
+  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetCategoriesListQuery();
   const categoriesListOverviewHeaderRows = [
     {
       id: 'name',
@@ -51,23 +53,25 @@ export default function CategoriesListOverview() {
     }
   ];
 
-  useEffect(() => {
-    CategoryService.categoryList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          dispatch(setOverviewMainTableDataSlice(res));
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          dispatch(setOverviewMainTableDataSlice([]));
-        }
-      })
-      .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
-        setIsLoading(false);
-        dispatch(setOverviewMainTableDataSlice([]));
-      });
-  }, [isLoading]);
+  // useEffect(() => {
+  //   CategoryService.categoryList()
+  //     .then((res) => {
+  //       if (res?.status_code === 200 && res?.is_data) {
+  //         dispatch(setOverviewMainTableDataSlice(res));
+  //         setIsLoading(false);
+  //       } else {
+  //         setIsLoading(false);
+  //         dispatch(setOverviewMainTableDataSlice([]));
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       enqueueSnackbar(e, { variant: "error" });
+  //       setIsLoading(false);
+  //       dispatch(setOverviewMainTableDataSlice([]));
+  //     });
+  // }, [isLoading]);
+
+  const preparedData = data?.is_data ?  CategoryService.mapCategoriesList(data.data) : []
 
   return (
     <OverviewMainTable
@@ -75,12 +79,14 @@ export default function CategoriesListOverview() {
       headerButtonLabel={headerButtonLabel}
       tableName={categoriesListOverview}
       headerRows={categoriesListOverviewHeaderRows}
-      tableData={categoryList.tableData}
+      // tableData={categoryList.tableData}
+      tableData={data?.is_data ? preparedData : []}
       // tableData={categoriesRow}
       rowDataFields={categoriesListRowDataFields}
       tabPanelsLabel={tabPanelsLabel}
       tabs={tabs}
-      isLoading={isLoading}
+      // isLoading={isLoading}
+      isLoading={isFetching}
     />
   );
 }

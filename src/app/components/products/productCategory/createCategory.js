@@ -18,6 +18,7 @@ import ProductService from "../../../data-access/services/productsService/Produc
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import FAQs from "../../common/faqs";
 import { defaultValue, validateSchema } from "../utils/helper";
+import { useCreateCategoryMutation } from 'app/store/api/apiSlice';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -30,6 +31,7 @@ const createCategory = () => {
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [productsList, setProductsList] = useState([]);
+  const [createCategory] = useCreateCategoryMutation();
   // form
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
@@ -57,18 +59,29 @@ const createCategory = () => {
 
   const onRawSubmit = (values) => {
     setLoading(true)
-    CategoryService.createCategory(values)
-      .then((res) => {
-        if (res?.status_code === 201) {
-          enqueueSnackbar(res.message, { variant: "success" });
+    const preparedPayload = CategoryService.prepareCreateCategoryPayload(values)
+    createCategory(preparedPayload)
+      .then((response)=> {
+        if (response?.data?.status_code === 201) {
+          enqueueSnackbar(response?.data?.message, { variant: "success" });
           navigate("/categories/categories-list");
           setLoading(false)
+        } else {
+          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
         }
       })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-        setLoading(false)
-      });
+    // CategoryService.createCategory(values)
+    //   .then((res) => {
+    //     if (res?.status_code === 201) {
+    //       enqueueSnackbar(res.message, { variant: "success" });
+    //       navigate("/categories/categories-list");
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //     setLoading(false)
+    //   });
   };
   // form end
 

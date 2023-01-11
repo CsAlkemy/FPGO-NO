@@ -9,7 +9,8 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryService from "../../data-access/services/categoryService/CategoryService";
 import ClientService from "../../data-access/services/clientsService/ClientService";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useDeleteCategoryMutation } from "app/store/api/apiSlice";
 
 export default function ConfirmModal({
   open,
@@ -19,11 +20,12 @@ export default function ConfirmModal({
   uuid,
   refKey,
 }) {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("lg");
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const [deleteCategory] = useDeleteCategoryMutation();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,32 +37,46 @@ export default function ConfirmModal({
 
   const deleteClient = () => {
     if (refKey === "category") {
-      CategoryService.deleteCategoryByUUID(uuid)
-        .then((response) => {
-          // if (response?.status_code === 204) {
-          if (response?.status === 204) {
-            enqueueSnackbar(`Deleted Successfully`, {
-              variant: "success",
-              autoHideDuration: 3000,
-            });
-            navigate("/categories/categories-list");
-            setOpen(true);
-          }
-          // enqueueSnackbar(`Deleted Successfully`, {
-          //   variant: "success",
-          //   autoHideDuration: 3000,
-          // });
-          // navigate("/categories/categories-list");
-          // setOpen(true);
-        })
-        .catch((e) => {
-          console.log("E : ", e);
-        });
+      deleteCategory(uuid).then((response) => {
+        if (!response.data) {
+          enqueueSnackbar(`Deleted Successfully`, {
+            variant: "success",
+            autoHideDuration: 3000,
+          });
+          navigate("/categories/categories-list");
+          setOpen(true);
+        } else {
+          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        }
+      });
+      // CategoryService.deleteCategoryByUUID(uuid)
+      //   .then((response) => {
+      //     // if (response?.status_code === 204) {
+      //     if (response?.status === 204) {
+      //       enqueueSnackbar(`Deleted Successfully`, {
+      //         variant: "success",
+      //         autoHideDuration: 3000,
+      //       });
+      //       navigate("/categories/categories-list");
+      //       setOpen(true);
+      //     } else {
+      //       enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      //     }
+      //     // enqueueSnackbar(`Deleted Successfully`, {
+      //     //   variant: "success",
+      //     //   autoHideDuration: 3000,
+      //     // });
+      //     // navigate("/categories/categories-list");
+      //     // setOpen(true);
+      //   })
+      //   .catch((e) => {
+      //     console.log("E : ", e);
+      //   });
     } else if (refKey === "deleteClient") {
       ClientService.deleteClient(uuid)
         .then((res) => {
           // if (res?.status_code === 204){
-          if (res?.status === 204){
+          if (res?.status === 204) {
             enqueueSnackbar("Request Deleted", {
               variant: "success",
               autoHideDuration: 3000,

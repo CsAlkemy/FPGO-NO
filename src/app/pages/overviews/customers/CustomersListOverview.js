@@ -23,7 +23,7 @@ export default function CustomersListOverview() {
   const dispatch = useDispatch();
   const customersList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetCustomersListQuery()
+  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetCustomersListQuery();
   const customersListHeaderRows = [
     {
       id: 'name',
@@ -88,7 +88,6 @@ export default function CustomersListOverview() {
   // }, [isLoading]);
 
   const preparedData = data?.is_data ?  CustomersService.mapCustomersList(data.data) : []
-
   return (
     <OverviewMainTable
       headerSubtitle={headerSubtitle}
