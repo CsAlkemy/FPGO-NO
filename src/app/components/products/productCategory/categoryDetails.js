@@ -21,6 +21,7 @@ import ProductService from "../../../data-access/services/productsService/Produc
 import { FP_ADMIN } from '../../../utils/user-roles/UserRoles';
 import ConfirmModal from "../../common/confirmmationDialog";
 import { defaultValue, validateSchema } from "../utils/helper";
+import { useUpdateCategoryMutation } from 'app/store/api/apiSlice';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -37,6 +38,7 @@ const createCategory = (onSubmit = () => { }) => {
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector(selectUser);
+  const [updateCategory] = useUpdateCategoryMutation()
   // form
   const { control, formState, handleSubmit, reset, setValue } = useForm({
     mode: "onChange",
@@ -56,21 +58,35 @@ const createCategory = (onSubmit = () => { }) => {
       values.assignToProducts = updatedAssignToProducts;
     }
     setLoading(true)
-    CategoryService.updateCategoryByUUID(info.uuid, values)
-      .then((response) => {
-        if (response?.status_code === 202) {
+    const preparedPayload = CategoryService.prepareUpdateCategoryPayload(info.uuid, values);
+    updateCategory(preparedPayload)
+      .then((response)=> {
+        if (response?.data?.status_code === 202) {
           enqueueSnackbar(`Updated Successfully`, {
             variant: "success",
             autoHideDuration: 3000,
           });
           navigate("/categories/categories-list");
           setLoading(false)
+        } else {
+          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
         }
       })
-      .catch((e) => {
-        console.log("E : ", e);
-        setLoading(false)
-      });
+    // CategoryService.updateCategoryByUUID(info.uuid, values)
+    //   .then((response) => {
+    //     if (response?.status_code === 202) {
+    //       enqueueSnackbar(`Updated Successfully`, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/categories/categories-list");
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log("E : ", e);
+    //     setLoading(false)
+    //   });
   };
 
   useEffect(() => {

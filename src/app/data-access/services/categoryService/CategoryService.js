@@ -4,6 +4,21 @@ import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 
 class CategoryService {
+  mapCategoriesList = (data)=> {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        name: row.name,
+        description: row.description,
+        noOfProducts: row.productCount,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
+  }
+
   categoryList = async () => {
     return new Promise((resolve, reject) => {
       AuthService.axiosRequestHelper()
@@ -48,6 +63,20 @@ class CategoryService {
         });
     });
   };
+
+  prepareCreateCategoryPayload = (params)=>{
+    const productUuids = params.assignToProducts
+      ? params.assignToProducts.map((product) => {
+        return `${product.uuid}`;
+      })
+      : null;
+
+    return  {
+      name: params.name,
+      description: params.description ? params.description : null,
+      productUuids,
+    };
+  }
 
   createCategory = async (params) => {
     return new Promise((resolve, reject) => {
@@ -109,6 +138,21 @@ class CategoryService {
         });
     });
   };
+
+  prepareUpdateCategoryPayload = (uuid, params)=> {
+    const productUuids = params.assignToProducts
+      ? params.assignToProducts.map((product) => {
+        return `${product.uuid}`;
+      })
+      : null;
+
+    return  {
+      uuid,
+      name: params.name,
+      description: params.description ? params.description : null,
+      productUuids,
+    };
+  }
 
   updateCategoryByUUID = async (uuid, params) => {
     return new Promise((resolve, reject) => {
