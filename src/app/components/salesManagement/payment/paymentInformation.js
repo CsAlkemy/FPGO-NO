@@ -14,7 +14,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -28,9 +28,10 @@ import {
   PaymentDefaultValue,
   validateSchemaCreditCheckForCheckout,
   validateSchemaPaymentCheckout,
-  validateSchemaPaymentCheckoutCorporate
+  validateSchemaPaymentCheckoutCorporate,
 } from "../utils/helper";
 import PaymentHeader from "./paymentHeader";
+import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -42,6 +43,7 @@ const paymentInformation = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState([]);
   const [creditCheckMessage, setCreditCheckMessage] = useState("N/A");
+  const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -87,45 +89,42 @@ const paymentInformation = () => {
     },
   ]);
 
-  const {
-    control,
-    formState,
-    handleSubmit,
-    getValues,
-    reset,
-    watch
-  } = useForm({
-    mode: "onChange",
-    PaymentDefaultValue,
-    resolver: yupResolver(
-      customData.isCeditCheck
-        ? validateSchemaCreditCheckForCheckout
-        : customData.customerType === "private"
+  const { control, formState, handleSubmit, getValues, reset, watch } = useForm(
+    {
+      mode: "onChange",
+      PaymentDefaultValue,
+      resolver: yupResolver(
+        customData.isCeditCheck
+          ? validateSchemaCreditCheckForCheckout
+          : customData.customerType === "private"
           ? validateSchemaPaymentCheckout
           : validateSchemaPaymentCheckoutCorporate
-    ),
-  });
+      ),
+    }
+  );
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
   const onSubmit = (values) => {
     // console.log("custom data", customData);
     setOpen(true);
-    const data = isUpdateData ? {
-      ...updatedData,
-      ...customData,
-      orderUuid,
-      customerUuid: orderDetails?.customerDetails?.uuid
-        ? orderDetails?.customerDetails?.uuid
-        : null,
-    } : {
-      ...values,
-      ...customData,
-      orderUuid,
-      customerUuid: orderDetails?.customerDetails?.uuid
-        ? orderDetails?.customerDetails?.uuid
-        : null,
-    };
+    const data = isUpdateData
+      ? {
+          ...updatedData,
+          ...customData,
+          orderUuid,
+          customerUuid: orderDetails?.customerDetails?.uuid
+            ? orderDetails?.customerDetails?.uuid
+            : null,
+        }
+      : {
+          ...values,
+          ...customData,
+          orderUuid,
+          customerUuid: orderDetails?.customerDetails?.uuid
+            ? orderDetails?.customerDetails?.uuid
+            : null,
+        };
     OrdersService.updateOrder(data)
       .then((response) => {
         if (
@@ -154,13 +153,13 @@ const paymentInformation = () => {
     OrdersService.getOrdersDetailsByUUIDPayment(orderUuid)
       .then((response) => {
         if (response?.status_code === 200 && response?.is_data) {
-          if (response?.data?.status !== "SENT") return navigate("404")
+          if (response?.data?.status !== "SENT") return navigate("404");
           setOrderDetails(response.data);
           PaymentDefaultValue.phone =
             response?.data?.customerDetails?.countryCode &&
-              response?.data?.customerDetails?.msisdn
+            response?.data?.customerDetails?.msisdn
               ? response?.data?.customerDetails?.countryCode +
-              response?.data?.customerDetails?.msisdn
+                response?.data?.customerDetails?.msisdn
               : "";
           PaymentDefaultValue.email = response?.data?.customerDetails?.email
             ? response?.data?.customerDetails?.email
@@ -173,33 +172,33 @@ const paymentInformation = () => {
             ?.personalNumber
             ? response?.data?.customerDetails?.personalNumber
             : response?.data?.customerDetails?.organizationId
-              ? response?.data?.customerDetails?.organizationId
-              : "";
+            ? response?.data?.customerDetails?.organizationId
+            : "";
           PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
             ?.personalNumber
             ? response?.data?.customerDetails?.personalNumber
             : response?.data?.customerDetails?.organizationId
-              ? response?.data?.customerDetails?.organizationId
-              : "";
+            ? response?.data?.customerDetails?.organizationId
+            : "";
 
           PaymentDefaultValue.billingAddress =
             response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.street
+            response?.data?.customerDetails?.address?.street
               ? response?.data?.customerDetails?.address?.street
               : "";
           PaymentDefaultValue.billingZip =
             response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.zip
+            response?.data?.customerDetails?.address?.zip
               ? response?.data?.customerDetails?.address?.zip
               : "";
           PaymentDefaultValue.billingCity =
             response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.city
+            response?.data?.customerDetails?.address?.city
               ? response?.data?.customerDetails?.address?.city
               : "";
           PaymentDefaultValue.billingCountry =
             response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.country
+            response?.data?.customerDetails?.address?.country
               ? response?.data?.customerDetails?.address?.country
               : "";
           setCustomData({
@@ -219,7 +218,7 @@ const paymentInformation = () => {
       .catch((e) => {
         setIsLoading(false);
         // enqueueSnackbar(e, { variant: "error" });
-        return navigate("404")
+        return navigate("404");
       });
   }, [isLoading]);
 
@@ -230,17 +229,38 @@ const paymentInformation = () => {
         getValues("orgIdCreditCheck").length === 9 ? "corporate" : "private",
       creditCheckId: getValues("orgIdCreditCheck"),
     };
-    CreditCheckService.creditCheckForCheckout(params)
-      .then((response) => {
-        // console.log("RES :", response);
-        if (response?.data?.isApproved)
-          setCreditCheckMessage("Credit check was successful");
-        else setCreditCheckMessage("Credit check was declined");
-      })
-      .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
-        setCreditCheckMessage("N/A");
-      });
+    if (params.creditCheckId.length !== 11 && params.creditCheckId.length !== 9)
+      return setCreditCheckMessage("N/A");
+    const creditCheckPrivateData = {
+      personalId: params.creditCheckId,
+      type: params.type,
+    };
+    const creditCheckCorporateData = {
+      organizationId: params.creditCheckId,
+      type: params.type,
+    };
+    const preparedPayload =
+      params.type === "private"
+        ? creditCheckPrivateData
+        : creditCheckCorporateData;
+
+    paymentScreenCreditCheck(preparedPayload).then((response) => {
+      // console.log("RES :", response);
+      if (response?.data?.data?.isApproved)
+        setCreditCheckMessage("Credit check was successful");
+      else setCreditCheckMessage("Credit check was declined");
+    });
+    // CreditCheckService.creditCheckForCheckout(preparedPayload, params.type)
+    //   .then((response) => {
+    //     // console.log("RES :", response);
+    //     if (response?.data?.isApproved)
+    //       setCreditCheckMessage("Credit check was successful");
+    //     else setCreditCheckMessage("Credit check was declined");
+    //   })
+    //   .catch((e) => {
+    //     enqueueSnackbar(e, { variant: "error" });
+    //     setCreditCheckMessage("N/A");
+    //   });
     setCustomData({
       ...customData,
       isCeditCheck: true,
@@ -257,7 +277,7 @@ const paymentInformation = () => {
   const watchCountry = watch("billingCountry");
 
   const handleUpdate = () => {
-    setIsUpdateData(true)
+    setIsUpdateData(true);
     setUpdatedData({
       ...updatedData,
       phone: watchPhone || "",
@@ -291,8 +311,8 @@ const paymentInformation = () => {
                         {updatedData?.customerName
                           ? updatedData.customerName
                           : orderDetails?.customerDetails?.name
-                            ? orderDetails?.customerDetails?.name
-                            : "-"}
+                          ? orderDetails?.customerDetails?.name
+                          : "-"}
                       </div>
                       <div>
                         <IconButton
@@ -311,51 +331,51 @@ const paymentInformation = () => {
                         {updatedData?.orgIdOrPNumber
                           ? updatedData.orgIdOrPNumber
                           : orderDetails?.customerDetails?.personalNumber
-                            ? orderDetails?.customerDetails?.personalNumber
-                            : "-"}
+                          ? orderDetails?.customerDetails?.personalNumber
+                          : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2 mt-16">
                         {updatedData?.phone
                           ? updatedData.phone
                           : orderDetails?.customerDetails?.countryCode &&
                             orderDetails?.customerDetails?.msisdn
-                            ? orderDetails?.customerDetails?.countryCode +
+                          ? orderDetails?.customerDetails?.countryCode +
                             orderDetails?.customerDetails?.msisdn
-                            : "-"}
+                          : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
                         {updatedData?.email
                           ? updatedData.email
                           : orderDetails?.customerDetails?.email
-                            ? orderDetails?.customerDetails?.email
-                            : "-"}
+                          ? orderDetails?.customerDetails?.email
+                          : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
                         {updatedData?.street
                           ? updatedData.street + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.street
-                            ? orderDetails?.customerDetails?.address?.street +
+                          ? orderDetails?.customerDetails?.address?.street +
                             ", "
-                            : "-, "}
+                          : "-, "}
                         {updatedData?.city
                           ? updatedData.city + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.city
-                            ? orderDetails?.customerDetails?.address?.city + " "
-                            : "-"}
+                          ? orderDetails?.customerDetails?.address?.city + " "
+                          : "-"}
                         {updatedData?.zip
                           ? updatedData.zip + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.zip
-                            ? orderDetails?.customerDetails?.address?.zip + ", "
-                            : "-, "}
+                          ? orderDetails?.customerDetails?.address?.zip + ", "
+                          : "-, "}
                         {updatedData?.country
                           ? updatedData.country
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.country
-                            ? orderDetails?.customerDetails?.address?.country
-                            : "-"}
+                          ? orderDetails?.customerDetails?.address?.country
+                          : "-"}
                       </div>
                     </div>
                   </div>
@@ -381,14 +401,15 @@ const paymentInformation = () => {
                               <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20">
                                 <Button
                                   variant="outlined"
-                                  className={`body2 ${customData?.customerType === "private" ||
-                                      (orderDetails &&
-                                        orderDetails?.customerDetails?.type ===
+                                  className={`body2 ${
+                                    customData?.customerType === "private" ||
+                                    (orderDetails &&
+                                      orderDetails?.customerDetails?.type ===
                                         "Private" &&
-                                        !customData?.isNewCustomer)
+                                      !customData?.isNewCustomer)
                                       ? "create-order-capsule-button-active"
                                       : "create-order-capsule-button"
-                                    }`}
+                                  }`}
                                   onClick={() => {
                                     setCustomData({
                                       ...customData,
@@ -398,7 +419,7 @@ const paymentInformation = () => {
                                   disabled={
                                     orderDetails &&
                                     orderDetails?.customerDetails?.type ===
-                                    "Corporate" &&
+                                      "Corporate" &&
                                     !customData?.isNewCustomer
                                   }
                                 >
@@ -406,14 +427,15 @@ const paymentInformation = () => {
                                 </Button>
                                 <Button
                                   variant="outlined"
-                                  className={`body2 ${customData?.customerType === "corporate" ||
-                                      (orderDetails &&
-                                        orderDetails?.customerDetails?.type ===
+                                  className={`body2 ${
+                                    customData?.customerType === "corporate" ||
+                                    (orderDetails &&
+                                      orderDetails?.customerDetails?.type ===
                                         "Corporate" &&
-                                        !customData?.isNewCustomer)
+                                      !customData?.isNewCustomer)
                                       ? "create-order-capsule-button-active"
                                       : "create-order-capsule-button"
-                                    }`}
+                                  }`}
                                   onClick={() => {
                                     setCustomData({
                                       ...customData,
@@ -423,7 +445,7 @@ const paymentInformation = () => {
                                   disabled={
                                     orderDetails &&
                                     orderDetails?.customerDetails?.type ===
-                                    "Private" &&
+                                      "Private" &&
                                     !customData?.isNewCustomer
                                   }
                                 >
@@ -454,7 +476,7 @@ const paymentInformation = () => {
                                         countryCodeEditable={false}
                                         specialLabel={
                                           customData.customerType ===
-                                            "corporate"
+                                          "corporate"
                                             ? t("label:phone")
                                             : `${t("label:phone")}*`
                                         }
@@ -484,7 +506,7 @@ const paymentInformation = () => {
                                       fullWidth
                                       required={
                                         customData.customerType ===
-                                        "corporate" ||
+                                          "corporate" ||
                                         customData.orderBy === "email"
                                       }
                                       value={field.value || ""}
@@ -708,11 +730,12 @@ const paymentInformation = () => {
                           return (
                             <div
                               key={item.id}
-                              className={`p-10 md:p-20 rounded-6 h-auto md:h-120 flex flex-row-reverse md:flex-col items-center justify-between md:justify-end gap-10 ${customData.paymentMethod ===
-                                  item.name.toLowerCase()
+                              className={`p-10 md:p-20 rounded-6 h-auto md:h-120 flex flex-row-reverse md:flex-col items-center justify-between md:justify-end gap-10 ${
+                                customData.paymentMethod ===
+                                item.name.toLowerCase()
                                   ? `border-2 border-primary-500`
                                   : `border-1 border-MonochromeGray-50`
-                                }`}
+                              }`}
                               onClick={() => {
                                 setCustomData({
                                   ...customData,

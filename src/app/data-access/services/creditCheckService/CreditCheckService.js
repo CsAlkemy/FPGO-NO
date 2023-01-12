@@ -4,6 +4,33 @@ import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 
 class CreditCheckService {
+  mapCreditCheckList = (data) => {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        // date: row.checked_on,
+        date: row.date,
+        customerName: row.name,
+        orgIdOrPNumber: row.organizationId
+          ? row.organizationId
+          : row.personalNumber,
+        phone:
+          row.countryCode && row.msisdn ? row.countryCode + row.msisdn : "",
+        // status: row.status,
+        status: row.scoreMessage,
+        // defaultProbability: row.default_probability,
+        defaultProbability: row.defaultProbability,
+        // scoreStatus: row.scoreStatus,
+        scoreStatus: row.riskLevel.toLowerCase(),
+        type: row.type,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
+  };
+
   creditCheckList = async () => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
@@ -27,7 +54,10 @@ class CreditCheckService {
                       orgIdOrPNumber: row.organizationId
                         ? row.organizationId
                         : row.personalNumber,
-                      phone: row.countryCode && row.msisdn ? row.countryCode + row.msisdn : "",
+                      phone:
+                        row.countryCode && row.msisdn
+                          ? row.countryCode + row.msisdn
+                          : "",
                       // status: row.status,
                       status: row.scoreMessage,
                       // defaultProbability: row.default_probability,
@@ -48,8 +78,9 @@ class CreditCheckService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -57,6 +88,12 @@ class CreditCheckService {
           return reject("Something went wrong");
         });
     });
+  };
+
+  prepareCorporateCreditCheckPayload = (params) => {
+    return {
+      organizationId: `${params.organizationId}`,
+    };
   };
 
   creditCheckCorporate = async (params) => {
@@ -86,6 +123,17 @@ class CreditCheckService {
     });
   };
 
+  preparePrivateCreditCheckPayload = (params) => {
+    const phoneNumber = params.phoneNumber.slice(2);
+    const phoneCountryCode = "+" + params.phoneNumber.slice(0, 2);
+    return {
+      personalId: `${params.personalId}`,
+      countryCode:
+        phoneNumber && phoneCountryCode ? `${phoneCountryCode}` : null,
+      msisdn: phoneNumber && phoneCountryCode ? `${phoneNumber}` : null,
+    };
+  };
+
   creditCheckPrivate = async (params) => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
@@ -105,8 +153,8 @@ class CreditCheckService {
               .post(URL, data)
               .then((response) => {
                 if (response?.data?.status_code === 200) {
-                  resolve(response.data)
-                }else reject("Something went wrong");
+                  resolve(response.data);
+                } else reject("Something went wrong");
               })
               .catch((e) => {
                 e?.response?.data?.error
@@ -122,9 +170,27 @@ class CreditCheckService {
     });
   };
 
+  preparePaymentScreenCreditCheckPayload = (params) => {
+    const creditCheckPrivateData = {
+      personalId: params.creditCheckId,
+      type: params.type,
+    };
+    const creditCheckCorporateData = {
+      organizationId: params.creditCheckId,
+      type: params.type,
+    };
+    return params.type === "private"
+      ? creditCheckPrivateData
+      : creditCheckCorporateData;
+  };
+
   creditCheckForCheckout = async (params) => {
     return new Promise((resolve, reject) => {
-      if (params.creditCheckId.length !== 11 && params.creditCheckId.length !== 9) return reject("Invalid Credit Check Id!")
+      if (
+        params.creditCheckId.length !== 11 &&
+        params.creditCheckId.length !== 9
+      )
+        return reject("Invalid Credit Check Id!");
       // return AuthService.axiosRequestHelper()
       //   .then((status) => {
       //     if (status) {
@@ -141,20 +207,23 @@ class CreditCheckService {
       const creditCheckCorporateData = {
         organizationId: params.creditCheckId,
       };
-      const data = params.type === "private" ? creditCheckPrivateData : creditCheckCorporateData
+      const data =
+        params.type === "private"
+          ? creditCheckPrivateData
+          : creditCheckCorporateData;
 
       const config = {
         headers: {
-          Authorization : `Bearer QXNrZUFtYXJNb25WYWxvTmVpO01vbkFtYXJLZW1vbktlbW9uS29yZQ==`
-        }
-      }
+          Authorization: `Bearer QXNrZUFtYXJNb25WYWxvTmVpO01vbkFtYXJLZW1vbktlbW9uS29yZQ==`,
+        },
+      };
       const URL = `${EnvVariable.BASEURL}/credit/check/checkout/${params.type}`;
       return axios
         .post(URL, data, config)
         .then((response) => {
           if (response?.data?.status_code === 200) {
-            resolve(response.data)
-          }else reject("Something went wrong");
+            resolve(response.data);
+          } else reject("Something went wrong");
         })
         .catch((e) => {
           e?.response?.data?.error

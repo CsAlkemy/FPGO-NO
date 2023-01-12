@@ -8,81 +8,92 @@ import { useDispatch, useSelector } from "react-redux";
 import { setOverviewMainTableDataSlice } from "app/store/overview-table/overviewTableSlice";
 import CreditCheckService from "../../../data-access/services/creditCheckService/CreditCheckService";
 import { useSnackbar } from "notistack";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useGetCreditChecksListQuery } from "app/store/api/apiSlice";
 
 export default function CreditChecksListOverview() {
-  const {t} = useTranslation()
-  const tabPanelsLabel = [t("label:all"), t("label:private"), t("label:corporate")];
+  const { t } = useTranslation();
+  const tabPanelsLabel = [
+    t("label:all"),
+    t("label:private"),
+    t("label:corporate"),
+  ];
   const tabs = [0, 1, 2];
   const headerSubtitle = t("label:allCreditCheck");
   const headerButtonLabel = t("label:newCreditCheck");
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [data, setData] = useState([]);
+  // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const creditCheckList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
+  const { data, isLoading, isFetching, isSuccess, isError, error } =
+    useGetCreditChecksListQuery();
   const creditChecksListHeaderRows = [
     {
-      id: 'date',
-      align: 'left',
+      id: "date",
+      align: "left",
       disablePadding: false,
       label: t("label:date"),
       sort: true,
     },
     {
-      id: 'customerName',
-      align: 'left',
+      id: "customerName",
+      align: "left",
       disablePadding: false,
       label: t("label:customerName"),
       sort: true,
     },
     {
-      id: 'orgIdOrPNumber',
-      align: 'left',
+      id: "orgIdOrPNumber",
+      align: "left",
       disablePadding: false,
       label: t("label:orgIdPNumber"),
       sort: true,
     },
     {
-      id: 'phone',
-      align: 'left',
+      id: "phone",
+      align: "left",
       disablePadding: false,
       label: t("label:phoneNo"),
       sort: true,
     },
     {
-      id: 'defaultProbability',
-      align: 'left',
+      id: "defaultProbability",
+      align: "left",
       disablePadding: false,
       label: t("label:probabilityToDefault"),
       sort: true,
     },
     {
-      id: 'status',
-      align: 'center',
+      id: "status",
+      align: "center",
       disablePadding: false,
       label: t("label:status"),
       sort: true,
     },
   ];
 
-  useEffect(() => {
-    CreditCheckService.creditCheckList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          dispatch(setOverviewMainTableDataSlice(res));
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          dispatch(setOverviewMainTableDataSlice([]));
-        }
-      })
-      .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
-        setIsLoading(false);
-        dispatch(setOverviewMainTableDataSlice([]));
-      });
-  }, [isLoading]);
+  // useEffect(() => {
+  //   CreditCheckService.creditCheckList()
+  //     .then((res) => {
+  //       if (res?.status_code === 200 && res?.is_data) {
+  //         dispatch(setOverviewMainTableDataSlice(res));
+  //         setIsLoading(false);
+  //       } else {
+  //         setIsLoading(false);
+  //         dispatch(setOverviewMainTableDataSlice([]));
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       enqueueSnackbar(e, { variant: "error" });
+  //       setIsLoading(false);
+  //       dispatch(setOverviewMainTableDataSlice([]));
+  //     });
+  // }, [isLoading]);
+
+  const preparedData = data?.is_data
+    ? CreditCheckService.mapCreditCheckList(data.data)
+    : [];
 
   return (
     <OverviewMainTable
@@ -90,11 +101,13 @@ export default function CreditChecksListOverview() {
       headerButtonLabel={headerButtonLabel}
       tableName={creditChecksListOverview}
       headerRows={creditChecksListHeaderRows}
-      tableData={creditCheckList.tableData}
+      // tableData={creditCheckList.tableData}
+      tableData={data?.is_data ? preparedData : []}
       rowDataFields={creditChecksListRowDataFields}
       tabPanelsLabel={tabPanelsLabel}
       tabs={tabs}
-      isLoading={isLoading}
+      // isLoading={isLoading}
+      isLoading={isFetching}
     />
   );
 }
