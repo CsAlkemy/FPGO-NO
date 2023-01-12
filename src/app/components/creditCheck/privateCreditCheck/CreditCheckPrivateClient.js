@@ -20,19 +20,24 @@ import PhoneInput from "react-phone-input-2";
 import CreditCheckService from "../../../data-access/services/creditCheckService/CreditCheckService";
 import { BsQuestionCircle } from "react-icons/bs";
 import { LoadingButton } from "@mui/lab";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { usePrivateCreditCheckMutation } from "app/store/api/apiSlice";
 
 /**
  * Form Validation Schema
  */
 const schema = yup.object().shape({
   personalId: yup
-          .string()
-          .matches(/^[0-9]+$/, { message: 'P number must be number', excludeEmptyString: true })
-          .required('P Number is required')
-          .nullable().transform((o, c) => o === '' ? null : c)
-          .min(11, 'Must be exactly 11 numbers')
-          .max(11, 'Must be exactly 11 numbers'),
+    .string()
+    .matches(/^[0-9]+$/, {
+      message: "P number must be number",
+      excludeEmptyString: true,
+    })
+    .required("P Number is required")
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(11, "Must be exactly 11 numbers")
+    .max(11, "Must be exactly 11 numbers"),
   trems: yup
     .bool()
     .required("You need to accept the terms and conditions")
@@ -40,13 +45,14 @@ const schema = yup.object().shape({
 });
 
 export default function CreditCheckPrivateClient() {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [privateCreditCheck] = usePrivateCreditCheckMutation();
   const creditCheckedId = useSelector(
     (state) => state.creditcheck.creditCheckInfo.id
   );
@@ -59,27 +65,47 @@ export default function CreditCheckPrivateClient() {
 
   function onSubmit(data) {
     setLoading(true);
-    CreditCheckService.creditCheckPrivate(data)
-      .then((response) => {
-        if (response?.status_code === 200) {
-          dispatch(
-            setCreditCheckTypeAndId({
-              type: "private",
-              id: data.personalId,
-            })
-          );
-          response?.message ? enqueueSnackbar(response?.message, { variant: "success" }) : "";
-          setLoading(false);
-          setIsSuccess(true);
-        } else {
-          enqueueSnackbar(response, { variant: "error" });
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
+    const preparedPayload =
+      CreditCheckService.preparePrivateCreditCheckPayload(data);
+    privateCreditCheck(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 200) {
+        dispatch(
+          setCreditCheckTypeAndId({
+            type: "private",
+            id: data.personalId,
+          })
+        );
+        response?.data?.message
+          ? enqueueSnackbar(response?.data?.message, { variant: "success" })
+          : "";
         setLoading(false);
-      });
+        setIsSuccess(true);
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        setLoading(false);
+      }
+    });
+    // CreditCheckService.creditCheckPrivate(data)
+    //   .then((response) => {
+    //     if (response?.status_code === 200) {
+    //       dispatch(
+    //         setCreditCheckTypeAndId({
+    //           type: "private",
+    //           id: data.personalId,
+    //         })
+    //       );
+    //       response?.message ? enqueueSnackbar(response?.message, { variant: "success" }) : "";
+    //       setLoading(false);
+    //       setIsSuccess(true);
+    //     } else {
+    //       enqueueSnackbar(response, { variant: "error" });
+    //       setLoading(false);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //     setLoading(false);
+    //   });
   }
 
   const { control, formState, handleSubmit, reset } = useForm({
@@ -161,7 +187,7 @@ export default function CreditCheckPrivateClient() {
                               autocompleteSearch
                               countryCodeEditable={false}
                               specialLabel={t("label:phoneNumber")}
-                            //onBlur={handleOnBlurGetDialCode}
+                              //onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
                               {errors?.phoneNumber?.message}
@@ -186,7 +212,9 @@ export default function CreditCheckPrivateClient() {
                                   <Checkbox
                                     checked={value}
                                     onBlur={onBlur}
-                                    onChange={(ev) => onChange(ev.target.checked)}
+                                    onChange={(ev) =>
+                                      onChange(ev.target.checked)
+                                    }
                                     inputRef={ref}
                                     required
                                     defaultValue={false}
@@ -219,7 +247,13 @@ export default function CreditCheckPrivateClient() {
                       {t("label:requestSuccessful")}
                     </div>
                     <div className="text-center body2 w-auto sm:w-2/3">
-                      {`${t("label:yourCreditCheckRequestFor")} ${t("label:privateClient")} ${creditCheckedId} ${t("label:hasBeenSuccessfullySent")}. ${t("label:youCanTrackTheStatusOfThisRequestOnTheCreditCheckPage")}.`}
+                      {`${t("label:yourCreditCheckRequestFor")} ${t(
+                        "label:privateClient"
+                      )} ${creditCheckedId} ${t(
+                        "label:hasBeenSuccessfullySent"
+                      )}. ${t(
+                        "label:youCanTrackTheStatusOfThisRequestOnTheCreditCheckPage"
+                      )}.`}
                     </div>
                     <Link to={"/credit-check/credit-checks-list"}>
                       <Button

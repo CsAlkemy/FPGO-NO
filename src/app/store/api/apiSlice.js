@@ -15,9 +15,23 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
+const baseQueryWithSaltToken = fetchBaseQuery({
+  baseUrl: `${EnvVariable.BASEURL}`,
+  prepareHeaders: (headers, { getState }) => {
+    headers.set(
+      "authorization",
+      `Bearer QXNrZUFtYXJNb25WYWxvTmVpO01vbkFtYXJLZW1vbktlbW9uS29yZQ==`
+    );
+    return headers;
+  },
+});
 
-const baseQueryWithReauth = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
+const baseQueryWithReAuth = async (args, api, extraOptions) => {
+  let result =
+    args?.url === `/credit/check/checkout/private` ||
+    args?.url === `/credit/check/checkout/corporate`
+      ? await baseQueryWithSaltToken(args, api, extraOptions)
+      : await baseQuery(args, api, extraOptions);
   if (
     window.location.hostname === "dev.frontpayment.no" ||
     window.location.hostname === "localhost"
@@ -66,7 +80,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
   // The cache reducer expects to be added at `state.api` (already default - this is optional)
   reducerPath: "api",
-  baseQuery: baseQueryWithReauth,
+  baseQuery: baseQueryWithReAuth,
   tagTypes: ["OrdersList, CustomersList, ProductsList, CategoriesList"],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -213,6 +227,34 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["CategoriesList"],
     }),
+    getCreditChecksList: builder.query({
+      query: () => "/credit/check/list",
+      providesTags: ["CreditChecksList"],
+    }),
+    corporateCreditCheck: builder.mutation({
+      query: (payload) => ({
+        url: "/credit/check/corporate",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["CreditChecksList"],
+    }),
+    privateCreditCheck: builder.mutation({
+      query: (payload) => ({
+        url: "/credit/check/private",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["CreditChecksList"],
+    }),
+    paymentScreenCreditCheck: builder.mutation({
+      query: (payload) => ({
+        url: `/credit/check/checkout/${payload.type}`,
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["CreditChecksList"],
+    }),
   }),
 });
 
@@ -236,4 +278,8 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetCreditChecksListQuery,
+  useCorporateCreditCheckMutation,
+  usePrivateCreditCheckMutation,
+  usePaymentScreenCreditCheckMutation,
 } = apiSlice;

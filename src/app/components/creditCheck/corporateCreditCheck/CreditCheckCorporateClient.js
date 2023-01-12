@@ -9,7 +9,7 @@ import {
   FormControlLabel,
   FormHelperText,
   InputAdornment,
-  TextField
+  TextField,
 } from "@mui/material";
 import { setCreditCheckTypeAndId } from "app/store/credit-check/creditCheck";
 import { useSnackbar } from "notistack";
@@ -21,19 +21,24 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import CreditCheckService from "../../../data-access/services/creditCheckService/CreditCheckService";
 import FAQs from "../../common/faqs";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useCorporateCreditCheckMutation } from "app/store/api/apiSlice";
 
 /**
  * Form Validation Schema
  */
 const schema = yup.object().shape({
   organizationId: yup
-          .string()
-          .matches(/^[0-9]+$/, { message: 'Organization ID must be number', excludeEmptyString: true })
-          .required('Organization ID is required')
-          .nullable().transform((o, c) => o === '' ? null : c)
-          .min(9, 'Must be exactly 9 numbers')
-          .max(9, 'Must be exactly 9 numbers'),
+    .string()
+    .matches(/^[0-9]+$/, {
+      message: "Organization ID must be number",
+      excludeEmptyString: true,
+    })
+    .required("Organization ID is required")
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(9, "Must be exactly 9 numbers")
+    .max(9, "Must be exactly 9 numbers"),
   // trems: yup
   //   .bool()
   //   .required("You need to accept the terms and conditions")
@@ -41,13 +46,14 @@ const schema = yup.object().shape({
 });
 
 export default function CreditCheckCorporateClient() {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [corporateCreditCheck] = useCorporateCreditCheckMutation();
   const creditCheckedId = useSelector(
     (state) => state.creditcheck.creditCheckInfo.id
   );
@@ -56,28 +62,49 @@ export default function CreditCheckCorporateClient() {
     organizationId: "",
   };
   const onSubmit = (data) => {
-    setLoading(true)
-    CreditCheckService.creditCheckCorporate(data)
-      .then((response) => {
-        if (response?.status_code === 200) {
-          dispatch(
-            setCreditCheckTypeAndId({
-              type: "corporate",
-              id: data.organizationId,
-            })
-          );
-          response?.message ? enqueueSnackbar(response?.message, { variant: "success" }) : "";
-          setLoading(false)
-          setIsSuccess(true);
-        } else {
-          enqueueSnackbar(response, { variant: "error" });
-          setLoading(false)
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-        setLoading(false)
-      });
+    setLoading(true);
+    const preparedPayload =
+      CreditCheckService.prepareCorporateCreditCheckPayload(data);
+
+    corporateCreditCheck(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 200) {
+        dispatch(
+          setCreditCheckTypeAndId({
+            type: "corporate",
+            id: data.organizationId,
+          })
+        );
+        response?.data?.message
+          ? enqueueSnackbar(response?.data?.message, { variant: "success" })
+          : "";
+        setLoading(false);
+        setIsSuccess(true);
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        setLoading(false);
+      }
+    });
+    // CreditCheckService.creditCheckCorporate(data)
+    //   .then((response) => {
+    //     if (response?.status_code === 200) {
+    //       dispatch(
+    //         setCreditCheckTypeAndId({
+    //           type: "corporate",
+    //           id: data.organizationId,
+    //         })
+    //       );
+    //       response?.message ? enqueueSnackbar(response?.message, { variant: "success" }) : "";
+    //       setLoading(false)
+    //       setIsSuccess(true);
+    //     } else {
+    //       enqueueSnackbar(response, { variant: "error" });
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //     setLoading(false)
+    //   });
   };
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
@@ -199,7 +226,13 @@ export default function CreditCheckCorporateClient() {
                       {t("label:requestSuccess")}
                     </div>
                     <div className="text-center body2 w-auto sm:w-2/3">
-                      {`${t("label:yourCreditCheckRequestFor")} ${t("label:corporateClient")} ${creditCheckedId} ${t("label:hasBeenSuccessfullySent")}. ${t("label:youCanTrackTheStatusOfThisRequestOnTheCreditCheckPage")}.`}
+                      {`${t("label:yourCreditCheckRequestFor")} ${t(
+                        "label:corporateClient"
+                      )} ${creditCheckedId} ${t(
+                        "label:hasBeenSuccessfullySent"
+                      )}. ${t(
+                        "label:youCanTrackTheStatusOfThisRequestOnTheCreditCheckPage"
+                      )}.`}
                     </div>
                     <Link to={"/credit-check/credit-checks-list"}>
                       <Button
