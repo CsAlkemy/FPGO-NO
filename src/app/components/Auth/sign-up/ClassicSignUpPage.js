@@ -1,6 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import LanguageIcon from "@mui/icons-material/Language";
-import { Box, Hidden, InputLabel, MenuItem, Paper, Select, SvgIcon } from "@mui/material";
+import {
+  Box,
+  Hidden,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  SvgIcon,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
@@ -8,12 +16,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { changeLanguage } from 'app/store/i18nSlice';
+import { changeLanguage } from "app/store/i18nSlice";
 import MuiPhoneNumber from "material-ui-phone-number";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -21,13 +29,18 @@ import "../../../../styles/colors.css";
 import AuthService from "../../../data-access/services/authService";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import AuthMobileHeader from "../Layout/authMobileHeader";
+import { useCreateRegistrationRequestMutation } from "app/store/api/apiSlice";
 
 /**
  * Form Validation Schema
  */
 const schema = yup.object().shape({
   organizationid: yup
-    .string().matches(/\b\d{9}\b/, { message: 'Must be 9 digits', excludeEmptyString: true })
+    .string()
+    .matches(/\b\d{9}\b/, {
+      message: "Must be 9 digits",
+      excludeEmptyString: true,
+    })
     .required("You must enter your Organization ID"),
   companyname: yup.string().required("You must enter your Company Name"),
   name: yup.string().required("You must enter your name"),
@@ -67,7 +80,8 @@ function ClassicSignUpPage() {
   const { enqueueSnackbar } = useSnackbar();
   const [orgTypeList, setOrgTypeList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const [createRegistrationRequest] = useCreateRegistrationRequestMutation();
 
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
@@ -78,16 +92,24 @@ function ClassicSignUpPage() {
   const { isValid, dirtyFields, errors } = formState;
 
   function onSubmit(values) {
-    AuthService.userRegistration(values)
-      .then((response) => {
-        if (response?.status_code === 201) {
-          navigate("/under-review");
-        } else {
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-      });
+    const preparedPayload = AuthService.prepareUserRegistrationPayload(values);
+    createRegistrationRequest(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 201) {
+        navigate("/under-review");
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      }
+    });
+    // AuthService.userRegistration(values)
+    //   .then((response) => {
+    //     if (response?.status_code === 201) {
+    //       navigate("/under-review");
+    //     } else {
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //   });
     //reset(defaultValues);
   }
 
@@ -99,7 +121,7 @@ function ClassicSignUpPage() {
           setIsLoading(false);
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   }, [isLoading]);
 
   const languages = [
@@ -115,7 +137,7 @@ function ClassicSignUpPage() {
 
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
-  }
+  };
 
   return (
     <div className="flex flex-col flex-auto items-center justify-around sm:justify-center md:p-32 bg-ccc">
@@ -125,7 +147,9 @@ function ClassicSignUpPage() {
             <div className="col-span-1 md:col-span-4">
               <AuthMobileHeader isShow={true} />
               <div className="flex justify-between items-center">
-                <div className="header4 mt-32 sm:mt-0">{t("label:registration")}</div>
+                <div className="header4 mt-32 sm:mt-0">
+                  {t("label:registration")}
+                </div>
                 <Hidden smDown>
                   <Select
                     sx={{ height: 36 }}
@@ -156,7 +180,6 @@ function ClassicSignUpPage() {
                     ))}
                   </Select>
                 </Hidden>
-
               </div>
               <Typography className="bg-gray-100 p-14 my-16 subtitle3 text-MonochromeGray-700">
                 {t("label:companyInformation")}
@@ -369,7 +392,7 @@ function ClassicSignUpPage() {
             <div className="col-span-1 md:col-span-2">
               <div className="border-1 border-MonochromeGray-50 rounded-2">
                 <div className="subtitle2 bg-primary-25 p-16 ">
-                  {t("label:howMuchItCost")}  ?
+                  {t("label:howMuchItCost")} ?
                 </div>
                 <Typography className="px-32 py-10 body2">
                   {t("label:howMuchItCostMessage")}

@@ -8,82 +8,93 @@ import ClientService from "../../../../data-access/services/clientsService/Clien
 import { useDispatch, useSelector } from "react-redux";
 import { setOverviewMainTableDataSlice } from "app/store/overview-table/overviewTableSlice";
 import { useSnackbar } from "notistack";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useGetApprovedClientsListQuery } from "app/store/api/apiSlice";
 
 export default function ClientListOverview() {
-  const {t} = useTranslation()
-  const tabPanelsLabel = [t("label:all"), t("label:active"), t("label:inactive")];
+  const { t } = useTranslation();
+  const tabPanelsLabel = [
+    t("label:all"),
+    t("label:active"),
+    t("label:inactive"),
+  ];
   const tabs = [0, 1, 2];
   const headerSubtitle = t("label:allClients");
   const headerButtonLabel = t("label:createClient");
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const approvedClientList = useSelector(
     (state) => state.overviewMainTableData
   );
   const { enqueueSnackbar } = useSnackbar();
+  const { data, isLoading, isFetching, isSuccess, isError, error } =
+    useGetApprovedClientsListQuery();
   const clientsListOverviewHeaderRows = [
     {
-      id: 'name',
-      align: 'left',
+      id: "name",
+      align: "left",
       disablePadding: false,
       label: t("label:name"),
       sort: true,
     },
     {
-      id: 'orgId',
-      align: 'left',
+      id: "orgId",
+      align: "left",
       disablePadding: false,
       label: t("label:organizationId"),
       sort: true,
     },
     {
-      id: 'orgType',
-      align: 'left',
+      id: "orgType",
+      align: "left",
       disablePadding: false,
       label: t("label:organizationType"),
       sort: true,
     },
     {
-      id: 'primaryContact',
-      align: 'left',
+      id: "primaryContact",
+      align: "left",
       disablePadding: false,
       label: t("label:primaryContact"),
       sort: true,
     },
     {
-      id: 'phone',
-      align: 'left',
+      id: "phone",
+      align: "left",
       disablePadding: false,
       label: t("label:phoneNo"),
       sort: true,
     },
     {
-      id: 'email',
-      align: 'left',
+      id: "email",
+      align: "left",
       disablePadding: false,
       label: t("label:email"),
       sort: true,
     },
   ];
 
-  useEffect(() => {
-    ClientService.approvedClientList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          dispatch(setOverviewMainTableDataSlice(res));
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          dispatch(setOverviewMainTableDataSlice([]));
-        }
-      })
-      .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
-        setIsLoading(false);
-        dispatch(setOverviewMainTableDataSlice([]));
-      });
-  }, [isLoading]);
+  // useEffect(() => {
+  //   ClientService.approvedClientList()
+  //     .then((res) => {
+  //       if (res?.status_code === 200 && res?.is_data) {
+  //         dispatch(setOverviewMainTableDataSlice(res));
+  //         setIsLoading(false);
+  //       } else {
+  //         setIsLoading(false);
+  //         dispatch(setOverviewMainTableDataSlice([]));
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       enqueueSnackbar(e, { variant: "error" });
+  //       setIsLoading(false);
+  //       dispatch(setOverviewMainTableDataSlice([]));
+  //     });
+  // }, [isLoading]);
+
+  const preparedData = data?.is_data
+    ? ClientService.mapApprovedClientList(data.data)
+    : [];
 
   return (
     <OverviewMainTable
@@ -91,11 +102,13 @@ export default function ClientListOverview() {
       headerButtonLabel={headerButtonLabel}
       tableName={clientsListOverview}
       headerRows={clientsListOverviewHeaderRows}
-      tableData={approvedClientList.tableData}
+      // tableData={approvedClientList.tableData}
+      tableData={preparedData}
       rowDataFields={clientsListRowDataFields}
       tabPanelsLabel={tabPanelsLabel}
       tabs={tabs}
-      isLoading={isLoading}
+      // isLoading={isLoading}
+      isLoading={isFetching}
     />
   );
 }

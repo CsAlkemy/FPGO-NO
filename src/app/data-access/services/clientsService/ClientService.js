@@ -4,6 +4,32 @@ import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 
 class ClientService {
+  mapApprovalList = (data)=> {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        organizationUuid: row.uuid,
+        nameOrgId: row.name + " ( " + row.id + " ) ",
+        reqOn: row.requestedOn,
+        orgType: row.type ? row.type : "-",
+        primaryContact:
+          row.primaryContactDetails.name +
+          (row.primaryContactDetails?.designation
+            ? " ( " +
+            row.primaryContactDetails?.designation +
+            " ) "
+            : ""),
+        phone:
+          row.primaryContactDetails.countryCode +
+          row.primaryContactDetails.msisdn,
+        email: row.primaryContactDetails.email,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
+  }
   approvalList = async () => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
@@ -84,6 +110,35 @@ class ClientService {
 
     return `${day} ${monthName}, ${year}`;
   };
+
+  mapApprovedClientList = (data)=> {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        organizationUuid: row.uuid,
+        name: row.name,
+        orgId: row.id ? row.id : "-",
+        orgType: row.type ? row.type : "-",
+        primaryContact:
+          row.primaryContactDetails?.name +
+          (row.primaryContactDetails?.designation
+            ? " ( " +
+            row.primaryContactDetails?.designation +
+            " ) "
+            : ""),
+        phone:
+          row.primaryContactDetails?.countryCode +
+          row.primaryContactDetails?.msisdn,
+        email: row.primaryContactDetails?.email,
+        status: row.status,
+        // role: row.userRole,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
+  }
 
   approvedClientList = async () => {
     return new Promise((resolve, reject) => {

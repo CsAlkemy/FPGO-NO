@@ -3,7 +3,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 // import jwtServiceConfig from "./jwtServiceConfig";
 import { EnvVariable } from "../../utils/EnvVariables";
-import MultiLanguageService from '../multiLanguageService/MultiLanguageService';
+import MultiLanguageService from "../multiLanguageService/MultiLanguageService";
 
 /* eslint-disable camelcase */
 
@@ -36,44 +36,44 @@ class AuthService extends FuseUtils.EventEmitter {
   //     }
   //   );
   // };
-  setTranslation = ()=> {
+  setTranslation = () => {
     MultiLanguageService.translations()
-      .then((response)=>{
-        localStorage.setItem("translation", JSON.stringify(response.data))
+      .then((response) => {
+        localStorage.setItem("translation", JSON.stringify(response.data));
       })
-      .catch((e)=> {
-        console.log(e)
-      })
-  }
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   axiosRequestHelper = () => {
     const userInfo = this.getUserInfo();
     return new Promise((resolve, reject) => {
-      if (userInfo){
+      if (userInfo) {
         if (this.isRefreshTokenValid()) {
           if (this.isAccessTokenValid()) {
-            if (userInfo){
+            if (userInfo) {
               this.isAuthenticated(userInfo?.user_data?.uuid)
-                .then((res)=>{
+                .then((res) => {
                   resolve(res);
                 })
-                .catch((e)=> {
+                .catch((e) => {
                   this.emit("onAutoLogout");
-                  reject(false)
-                })
+                  reject(false);
+                });
             }
           } else if (!this.isAccessTokenValid()) {
             this.refreshAccessToken().then((res) => {
               if (res) {
-                if (userInfo){
+                if (userInfo) {
                   this.isAuthenticated(userInfo.uuid)
-                    .then((res)=>{
+                    .then((res) => {
                       resolve(res);
                     })
-                    .catch((e)=> {
+                    .catch((e) => {
                       this.emit("onAutoLogout");
-                      reject(false)
-                    })
+                      reject(false);
+                    });
                 }
               } else reject(false);
             });
@@ -106,7 +106,8 @@ class AuthService extends FuseUtils.EventEmitter {
               userInfo["token_data"] = res.data.data;
               this.setUserInfo(userInfo);
               resolve(true);
-            }reject(false);
+            }
+            reject(false);
           })
           .catch((e) => {
             console.warn((e) => "isRefreshTokenValid E: ", e);
@@ -198,19 +199,37 @@ class AuthService extends FuseUtils.EventEmitter {
 
   isAuthenticated = (uuid) => {
     const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${uuid}`;
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
       axios
         .get(URL)
         .then((res) => {
           if (res.data.status_code === 200) {
-            resolve(true)
-          } else reject(false)
+            resolve(true);
+          } else reject(false);
         })
         .catch((error) => {
-          reject(false)
+          reject(false);
         });
-    })
-  }
+    });
+  };
+
+  prepareUserRegistrationPayload = (data) => {
+    const phoneNumber = data.phonenumber.slice(4);
+    const phoneCountryCode = data.phonenumber.split(" ")[0];
+    return {
+      organizationId: `${data.organizationid}`,
+      organizationName: `${data.companyname}`,
+      organizationType: data.organizationtype
+        ? `${data.organizationtype}`
+        : null,
+      name: `${data.name}`,
+      countryCode: `${phoneCountryCode}`,
+      msisdn: `${phoneNumber}`,
+      email: `${data.email}`,
+      designation: data.designation ? `${data.designation}` : null,
+      isTnCAccepted: data.acceptTermsConditions,
+    };
+  };
 
   userRegistration = (data) => {
     const phoneNumber = data.phonenumber.slice(4);
@@ -232,11 +251,11 @@ class AuthService extends FuseUtils.EventEmitter {
           isTnCAccepted: data.acceptTermsConditions,
         })
         .then((res) => {
-          if (res.data.status_code === 201)  resolve(res.data);
-          else reject("Something went wrong")
+          if (res.data.status_code === 201) resolve(res.data);
+          else reject("Something went wrong");
         })
         .catch((e) => {
-          reject(e.response.data.errors)
+          reject(e.response.data.errors);
         });
     });
   };
@@ -394,10 +413,10 @@ class AuthService extends FuseUtils.EventEmitter {
                 console.warn("OTP : ", res.data.otp);
                 resolve([response.data, res.data.otp]);
               });
-            }else reject("Something went wrong")
+            } else reject("Something went wrong");
           })
           .catch((error) => {
-            reject(error.response.data.message)
+            reject(error.response.data.message);
           });
       }
       return axios
