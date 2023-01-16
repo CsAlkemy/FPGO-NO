@@ -331,14 +331,14 @@ export const apiSlice = createApi({
         method: "PUT",
         body: payload,
       }),
-      invalidatesTags: ["ApprovedClientsList"],
+      invalidatesTags: ["ApprovedClientsList, ClientOrganizationsSummaryList"],
     }),
     updateClientStatus: builder.mutation({
       query: (uuid) => ({
         url: `/clients/change/status/${uuid}`,
         method: "PUT",
       }),
-      invalidatesTags: ["ApprovedClientsList"],
+      invalidatesTags: ["ApprovedClientsList, ClientOrganizationsSummaryList"],
     }),
     deleteClient: builder.mutation({
       query: (uuid) => ({
