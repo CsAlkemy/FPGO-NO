@@ -26,8 +26,9 @@ import {
   FP_ADMIN,
   GENERAL_USER,
 } from "../../../utils/user-roles/UserRoles";
-import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
+import * as yup from "yup";
+import { useTranslation } from "react-i18next";
+import { useUpdateUserMutation } from "app/store/api/apiSlice";
 
 const defaultValues = {
   email: "",
@@ -39,11 +40,11 @@ const defaultValues = {
   subClient: "",
   branch: "",
   userID: "",
-  preferredLanguage: ""
+  preferredLanguage: "",
 };
 
 const fpAdminProfileForm = ({ submitRef, role }) => {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const [roleList, setRoleList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const [isUserID, setIsUserID] = React.useState(true);
@@ -54,7 +55,11 @@ const fpAdminProfileForm = ({ submitRef, role }) => {
   const user = useSelector(selectUser);
   const Location = window.location.href;
   const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-  const [languageList, setLanguageList] = useState([{ title : "English", value : "en"}, { title : "Norwegian", value : "no"}]);
+  const [languageList, setLanguageList] = useState([
+    { title: "English", value: "en" },
+    { title: "Norwegian", value: "no" },
+  ]);
+  const [updateUser] = useUpdateUserMutation();
 
   const schema =
     isUserID === true ? schemaUserProfile : schemaUserProfileFpAdmin;
@@ -81,6 +86,7 @@ const fpAdminProfileForm = ({ submitRef, role }) => {
       ? "+" + phoneNumber[phoneNumber.length - 1].slice(0, 2)
       : null;
     const userData = {
+      uuid: userProfile?.uuid,
       name: values?.fullName,
       email: values?.email,
       countryCode,
@@ -88,18 +94,28 @@ const fpAdminProfileForm = ({ submitRef, role }) => {
       organizationUuid: values?.organization || null,
       userRoleSlug: values?.role,
       designation: values?.designation,
-      preferredLanguage : values?.preferredLanguage ? values?.preferredLanguage : null
+      preferredLanguage: values?.preferredLanguage
+        ? values?.preferredLanguage
+        : null,
     };
-    UserService.updateUserByUUID(userProfile?.uuid, userData)
-      .then((response) => {
-        if (response?.status_code === 202) {
-          enqueueSnackbar(response?.message, { variant: "success" });
-        }
-        navigate(-1)
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-      });
+    updateUser(userData).then((response) => {
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        navigate(-1);
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      }
+    });
+    // UserService.updateUserByUUID(userProfile?.uuid, userData)
+    //   .then((response) => {
+    //     if (response?.status_code === 202) {
+    //       enqueueSnackbar(response?.message, { variant: "success" });
+    //     }
+    //     navigate(-1)
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //   });
   }
 
   React.useEffect(() => {
@@ -118,7 +134,9 @@ const fpAdminProfileForm = ({ submitRef, role }) => {
     defaultValues.organization = userProfile["organizationDetails"]?.uuid
       ? userProfile["organizationDetails"]?.uuid
       : "";
-    defaultValues.preferredLanguage = userProfile?.preferredLanguage ? userProfile.preferredLanguage : "";
+    defaultValues.preferredLanguage = userProfile?.preferredLanguage
+      ? userProfile.preferredLanguage
+      : "";
     // defaultValues.branch = userProfile['organizationDetails']?.name
     reset({ ...defaultValues });
 
@@ -345,10 +363,7 @@ const fpAdminProfileForm = ({ submitRef, role }) => {
                   >
                     {languageList.map((item, index) => {
                       return (
-                        <MenuItem
-                          key={index}
-                          value={item.value}
-                        >
+                        <MenuItem key={index} value={item.value}>
                           {item.title}
                         </MenuItem>
                       );

@@ -27,7 +27,7 @@ class UserService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -51,7 +51,7 @@ class UserService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -116,8 +116,9 @@ class UserService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -125,6 +126,24 @@ class UserService {
           reject("Something went wrong");
         });
     });
+  };
+
+  mapFPAdminUsersList = (data) => {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        name: row?.name ? row.name : "-",
+        email: row?.email ? row.email : "-",
+        phone:
+          row?.countryCode && row?.msisdn ? row.countryCode + row.msisdn : "-",
+        designation: row?.designation ? row.designation : "-",
+        status: row?.status,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
   };
 
   fpAdminUsersList = async () => {
@@ -167,8 +186,9 @@ class UserService {
               .catch((e) => {
                 // if (e.code === "ERR_NETWORK") return { status_code: 500 };
                 // return e.response.data.error;
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -176,6 +196,32 @@ class UserService {
           reject("Something went wrong");
         });
     });
+  };
+
+  mapClientOrganizationsSummaryList = (data) => {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        organizationUuid: row.uuid,
+        nameOrgId: row.name + " ( " + row.id + " ) ",
+        orgType: row.type ? row.type : "-",
+        primaryContact:
+          row.primaryContactDetails.name +
+          " ( " +
+          row.primaryContactDetails?.designation +
+          " ) ",
+        phone:
+          row.primaryContactDetails.countryCode +
+          row.primaryContactDetails.msisdn,
+        email: row.primaryContactDetails.email,
+        userCount: row.userCount,
+        status: row.status,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
   };
 
   businessAdminUsersList = async () => {
@@ -223,8 +269,9 @@ class UserService {
                 // return response.data;
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -232,6 +279,25 @@ class UserService {
           reject("Something went wrong");
         });
     });
+  };
+
+  mapOrgWiseUsersList = (data) => {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        name: row?.name ? row.name : "-",
+        email: row?.email ? row.email : "-",
+        phone:
+          row?.countryCode && row?.msisdn ? row.countryCode + row.msisdn : "-",
+        designation: row?.designation ? row.designation : "-",
+        role: row?.userRole ? row.userRole : "-",
+        status: row?.status,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
   };
 
   organizationWiseUsersList = async (uuid) => {
@@ -274,8 +340,9 @@ class UserService {
                 // return response.data;
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -294,12 +361,15 @@ class UserService {
             return axios
               .get(URL)
               .then((response) => {
-                if (response?.data?.status_code === 200 && response?.data?.is_data) {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
                   resolve(response.data);
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -323,7 +393,7 @@ class UserService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -347,7 +417,7 @@ class UserService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -357,6 +427,37 @@ class UserService {
     });
   };
 
+  prepareCreateUserByRolePayload = (params, role) => {
+    const phoneNumber = params?.phoneNumber
+      ? params.phoneNumber.split("+")
+      : null;
+    const msisdn = phoneNumber
+      ? phoneNumber[phoneNumber.length - 1].slice(2)
+      : null;
+    const countryCode = phoneNumber
+      ? "+" + phoneNumber[phoneNumber.length - 1].slice(0, 2)
+      : null;
+
+    return {
+      role,
+      name: params.fullName,
+      email: params.email,
+      countryCode,
+      msisdn,
+      organizationUuid:
+        role === FP_ADMIN
+          ? null
+          : params?.organization
+          ? params?.organization
+          : null,
+      designation: params?.designation ? params.designation : null,
+      password: params.password,
+      sendEmail: params.isSend,
+      preferredLanguage: params.preferredLanguage,
+      // managerUuid: role === GENERAL_USER ? params.manager : null
+    };
+  };
+
   createUserByRole = async (params, role) => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
@@ -364,12 +465,14 @@ class UserService {
           if (status) {
             const URL = `${EnvVariable.BASEURL}/users/create/${role}`;
 
-            const phoneNumber = params?.phoneNumber ? params.phoneNumber.split("+") : null
+            const phoneNumber = params?.phoneNumber
+              ? params.phoneNumber.split("+")
+              : null;
             const msisdn = phoneNumber
               ? phoneNumber[phoneNumber.length - 1].slice(2)
               : null;
             const countryCode = phoneNumber
-              ? "+"+phoneNumber[phoneNumber.length - 1].slice(0, 2)
+              ? "+" + phoneNumber[phoneNumber.length - 1].slice(0, 2)
               : null;
 
             const body = {
@@ -386,7 +489,7 @@ class UserService {
               designation: params?.designation ? params.designation : null,
               password: params.password,
               sendEmail: params.isSend,
-              preferredLanguage : params.preferredLanguage
+              preferredLanguage: params.preferredLanguage,
               // managerUuid: role === GENERAL_USER ? params.manager : null
             };
 
@@ -399,7 +502,7 @@ class UserService {
                 resolve(response.data);
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e.response.data.errors);
               });
           } else reject("Something went wrong");
         })
@@ -423,7 +526,7 @@ class UserService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e.response.data.errors);
               });
           }
           reject("Something went wrong");

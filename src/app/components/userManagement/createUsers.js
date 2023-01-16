@@ -2,19 +2,21 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
-  Button, FormControl, FormHelperText,
+  Button,
+  FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
   MenuItem,
   Select,
-  TextField
-} from '@mui/material';
+  TextField,
+} from "@mui/material";
 import { selectUser } from "app/store/userSlice";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -22,18 +24,19 @@ import UserService from "../../data-access/services/userService/UserService";
 import {
   BUSINESS_ADMIN,
   FP_ADMIN,
-  GENERAL_USER
+  GENERAL_USER,
 } from "../../utils/user-roles/UserRoles";
-import DiscardConfirmModal from '../common/confirmDiscard';
+import DiscardConfirmModal from "../common/confirmDiscard";
 import {
   defaultValues,
   validateSchemaCreateBusinessAdmin,
   validateSchemaCreateCompanyAdmin,
-  validateSchemaGeneralAdmin
+  validateSchemaGeneralAdmin,
 } from "./utils/helper";
+import { useCreateUserMutation } from "app/store/api/apiSlice";
 
 export default function CreateUsers() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const user = useSelector(selectUser);
   const [hide, setHide] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
@@ -46,32 +49,40 @@ export default function CreateUsers() {
   const navigate = useNavigate();
   const [roleList, setRoleList] = useState([]);
   const [organizationsList, setOrganizationsList] = useState([]);
-  const [languageList, setLanguageList] = useState([{ title: "English", value: "en" }, { title: "Norwegian", value: "no" }]);
+  const [languageList, setLanguageList] = useState([
+    { title: "English", value: "en" },
+    { title: "Norwegian", value: "no" },
+  ]);
   const [isLoading, setIsLoading] = useState(true);
-  const info = JSON.parse(localStorage.getItem("fp_user"))
+  const info = JSON.parse(localStorage.getItem("fp_user"));
+  const [createUser] = useCreateUserMutation();
 
   const schema =
     type === FP_ADMIN
       ? validateSchemaCreateCompanyAdmin
       : type === BUSINESS_ADMIN
-        ? validateSchemaCreateBusinessAdmin
-        : validateSchemaGeneralAdmin;
+      ? validateSchemaCreateBusinessAdmin
+      : validateSchemaGeneralAdmin;
 
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
   };
 
-  const { control, formState, handleSubmit, reset, getValues, watch } = useForm({
-    mode: "onChange",
-    defaultValues,
-    resolver: yupResolver(schema),
-  });
+  const { control, formState, handleSubmit, reset, getValues, watch } = useForm(
+    {
+      mode: "onChange",
+      defaultValues,
+      resolver: yupResolver(schema),
+    }
+  );
 
   const { isValid, dirtyFields, errors } = formState;
 
   useEffect(() => {
-    defaultValues.organization = info?.user_data?.organization?.uuid ? info?.user_data?.organization?.uuid : ""
-    reset({ ...defaultValues })
+    defaultValues.organization = info?.user_data?.organization?.uuid
+      ? info?.user_data?.organization?.uuid
+      : "";
+    reset({ ...defaultValues });
 
     UserService.userRoleList()
       .then((response) => {
@@ -101,34 +112,56 @@ export default function CreateUsers() {
   }, [isLoading]);
 
   function onSubmit(values) {
-    setLoading(true)
-    UserService.createUserByRole(values, type)
-      .then((response) => {
-        if (response?.status_code === 201) {
-          enqueueSnackbar("User Created Successfully", {
-            variant: "success",
-            autoHideDuration: 5000,
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: "right",
-            },
-          });
-          setLoading(false)
-          reset(defaultValues);
-          navigate(-1)
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, {
-          variant: "error",
+    setLoading(true);
+    const preparedPayload = UserService.prepareCreateUserByRolePayload(
+      values,
+      type
+    );
+    createUser(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 201) {
+        enqueueSnackbar("User Created Successfully", {
+          variant: "success",
           autoHideDuration: 5000,
           anchorOrigin: {
             vertical: "bottom",
             horizontal: "right",
           },
         });
-        setLoading(false)
-      });
+        setLoading(false);
+        reset(defaultValues);
+        navigate(-1);
+      } else {
+        setLoading(false);
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      }
+    });
+    // UserService.createUserByRole(values, type)
+    //   .then((response) => {
+    //     if (response?.status_code === 201) {
+    //       enqueueSnackbar("User Created Successfully", {
+    //         variant: "success",
+    //         autoHideDuration: 5000,
+    //         anchorOrigin: {
+    //           vertical: "bottom",
+    //           horizontal: "right",
+    //         },
+    //       });
+    //       setLoading(false)
+    //       reset(defaultValues);
+    //       navigate(-1)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, {
+    //       variant: "error",
+    //       autoHideDuration: 5000,
+    //       anchorOrigin: {
+    //         vertical: "bottom",
+    //         horizontal: "right",
+    //       },
+    //     });
+    //     setLoading(false)
+    //   });
   }
 
   const handleClickShowPassword = () => {
@@ -146,14 +179,18 @@ export default function CreateUsers() {
           <div className="flex-auto p-20 sm:p-0 w-full max-w-screen-md bg-white">
             <div className="rounded-sm bg-white p-20">
               <div className=" header-click-to-action">
-                <div className="header-text header6">{t("label:createUser")}</div>
+                <div className="header-text header6">
+                  {t("label:createUser")}
+                </div>
                 <div className="flex gap-x-10 w-full sm:w-auto">
                   <Button
                     color="secondary"
                     type="reset"
                     variant="outlined"
                     className="button-outline-product"
-                    disabled={Object.keys(dirtyFields).length <= 0 ? true : false}
+                    disabled={
+                      Object.keys(dirtyFields).length <= 0 ? true : false
+                    }
                     onClick={() => setOpen(true)}
                   >
                     {t("label:discard")}
@@ -177,7 +214,9 @@ export default function CreateUsers() {
                   {t("label:userDetails")}
                 </div>
                 <div className="p-10">
-                  <div className="create-user-roles caption2">{t("label:userRole")}</div>
+                  <div className="create-user-roles caption2">
+                    {t("label:userRole")}
+                  </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-7 mt-10">
                     {roleList
                       .filter((role) => {
@@ -284,9 +323,12 @@ export default function CreateUsers() {
                               <Select
                                 {...field}
                                 labelId="demo-simple-select-label-role-org"
-                                //id="demo-simple-select" 
+                                //id="demo-simple-select"
                                 required
-                                disabled={user.role[0] === BUSINESS_ADMIN || user.role[0] === GENERAL_USER}
+                                disabled={
+                                  user.role[0] === BUSINESS_ADMIN ||
+                                  user.role[0] === GENERAL_USER
+                                }
                               >
                                 {/*{*/}
                                 {/*  user.role[0] === BUSINESS_ADMIN  && (*/}
@@ -300,10 +342,7 @@ export default function CreateUsers() {
                                 {/*}*/}
                                 {organizationsList.map((item, index) => {
                                   return (
-                                    <MenuItem
-                                      key={index}
-                                      value={item.uuid}
-                                    >
+                                    <MenuItem key={index} value={item.uuid}>
                                       {item.name}
                                     </MenuItem>
                                   );
@@ -352,10 +391,7 @@ export default function CreateUsers() {
                             >
                               {languageList.map((item, index) => {
                                 return (
-                                  <MenuItem
-                                    key={index}
-                                    value={item.value}
-                                  >
+                                  <MenuItem key={index} value={item.value}>
                                     {item.title}
                                   </MenuItem>
                                 );

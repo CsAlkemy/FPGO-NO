@@ -1,5 +1,5 @@
 import React, { lazy } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "app/store/userSlice";
 import {
@@ -12,13 +12,14 @@ import {
 import { Button } from "@mui/material";
 import UserService from "../../../data-access/services/userService/UserService";
 import { useSnackbar } from "notistack";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useUpdateUserStatusMutation } from "app/store/api/apiSlice";
 
 const ProfileForm = lazy(() => import("./profileForm"));
 const UpdatePassword = lazy(() => import("./updatePassword"));
 
 const index = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const submitRef = React.useRef();
 
   const [role, setRole] = React.useState(0);
@@ -27,6 +28,8 @@ const index = () => {
   const Location = window.location.href;
   const { enqueueSnackbar } = useSnackbar();
   const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+  const [updateUserStatus] = useUpdateUserStatusMutation();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (Location.includes("/my-profile")) {
@@ -46,15 +49,23 @@ const index = () => {
   }, [Location]);
 
   const changeUserStatus = () => {
-    UserService.changeStatusByUUID(userProfile.uuid)
-      .then((response) => {
-        if (response?.status_code === 202) {
-          enqueueSnackbar(response?.message, { variant: "success" });
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-      });
+    updateUserStatus(userProfile.uuid).then((response) => {
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        navigate(-1);
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      }
+    });
+    // UserService.changeStatusByUUID(userProfile.uuid)
+    //   .then((response) => {
+    //     if (response?.status_code === 202) {
+    //       enqueueSnackbar(response?.message, { variant: "success" });
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //   });
   };
 
   return (
@@ -81,7 +92,9 @@ const index = () => {
                   </div>
                 ) : (
                   <div className="flex justify-center items-center gap-10">
-                    <div className="header-text header6">{t("label:myProfile")}</div>
+                    <div className="header-text header6">
+                      {t("label:myProfile")}
+                    </div>
                   </div>
                 )}
                 <div className="flex gap-10 w-full justify-between sm:w-auto">
@@ -101,7 +114,9 @@ const index = () => {
                     color="secondary"
                     type="submit"
                     variant="contained"
-                    className={`font-semibold rounded-4 px-40 ${role === 0? 'w-auto':'w-full'}`}
+                    className={`font-semibold rounded-4 px-40 ${
+                      role === 0 ? "w-auto" : "w-full"
+                    }`}
                     onClick={() => submitRef.current.click()}
                   >
                     {t("label:saveUpdate")}
@@ -109,13 +124,11 @@ const index = () => {
                 </div>
               </div>
               <div className="p-0 sm:p-20">
-              {
-                role === 0 &&(
+                {role === 0 && (
                   <div className="create-user-form-header subtitle3 bg-m-grey-25">
                     {t("label:profileDetails")}
                   </div>
-                )
-              }
+                )}
                 {role === 0 && <ProfileForm submitRef={submitRef} role={0} />}
                 {role === 1 && <ProfileForm submitRef={submitRef} role={1} />}
                 {role === 2 && <ProfileForm submitRef={submitRef} role={2} />}
