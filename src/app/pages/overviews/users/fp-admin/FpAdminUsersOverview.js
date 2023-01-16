@@ -11,12 +11,17 @@ import {
   setOverviewMainTableDataSlice,
 } from "app/store/overview-table/overviewTableSlice";
 import { useSnackbar } from "notistack";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useGetFPAdminUsersListQuery } from "app/store/api/apiSlice";
 
 export default function FpAdminUsersOverview() {
-  const {t} = useTranslation()
-  const [isLoading, setIsLoading] = useState(true);
-  const tabPanelsLabel = [t("label:all"), t("label:active"), t("label:inactive")];
+  const { t } = useTranslation();
+  // const [isLoading, setIsLoading] = useState(true);
+  const tabPanelsLabel = [
+    t("label:all"),
+    t("label:active"),
+    t("label:inactive"),
+  ];
   const tabs = [0, 1, 2];
   // const headerSubtitle = t("label:usersAllFpAdmis");
   const headerSubtitle = t("navigation:fpAdminUsers");
@@ -24,61 +29,67 @@ export default function FpAdminUsersOverview() {
   const dispatch = useDispatch();
   const fpAdminUsers = useSelector(selectOverviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
+  const { data, isFetching, isLoading, isSuccess, isError, error } =
+    useGetFPAdminUsersListQuery();
   const fpAdminUsersListOverviewHeaderRows = [
     {
-      id: 'name',
-      align: 'left',
+      id: "name",
+      align: "left",
       disablePadding: false,
       label: t("label:clientName"),
       sort: true,
     },
     {
-      id: 'email',
-      align: 'left',
+      id: "email",
+      align: "left",
       disablePadding: false,
       label: t("label:email"),
       sort: true,
     },
     {
-      id: 'phone',
-      align: 'left',
+      id: "phone",
+      align: "left",
       disablePadding: false,
       label: t("label:phoneNo"),
       sort: true,
     },
     {
-      id: 'designation',
-      align: 'left',
+      id: "designation",
+      align: "left",
       disablePadding: false,
       label: t("label:designation"),
       sort: true,
     },
     {
-      id: 'status',
-      align: 'right',
+      id: "status",
+      align: "right",
       disablePadding: false,
       label: t("label:status"),
       sort: true,
     },
   ];
 
-  useEffect(() => {
-    UserService.fpAdminUsersList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          dispatch(setOverviewMainTableDataSlice(res));
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          dispatch(setOverviewMainTableDataSlice([]));
-        }
-      })
-      .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
-        setIsLoading(false);
-        dispatch(setOverviewMainTableDataSlice([]));
-      });
-  }, [isLoading]);
+  // useEffect(() => {
+  //   UserService.fpAdminUsersList()
+  //     .then((res) => {
+  //       if (res?.status_code === 200 && res?.is_data) {
+  //         dispatch(setOverviewMainTableDataSlice(res));
+  //         setIsLoading(false);
+  //       } else {
+  //         setIsLoading(false);
+  //         dispatch(setOverviewMainTableDataSlice([]));
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       enqueueSnackbar(e, { variant: "error" });
+  //       setIsLoading(false);
+  //       dispatch(setOverviewMainTableDataSlice([]));
+  //     });
+  // }, [isLoading]);
+
+  const preparedData = data?.is_data
+    ? UserService.mapFPAdminUsersList(data.data)
+    : [];
 
   return (
     <OverviewMainTable
@@ -86,11 +97,13 @@ export default function FpAdminUsersOverview() {
       headerButtonLabel={headerButtonLabel}
       tableName={fpAdminUsersOverview}
       headerRows={fpAdminUsersListOverviewHeaderRows}
-      tableData={fpAdminUsers}
+      // tableData={fpAdminUsers}
+      tableData={data?.is_data ? preparedData : []}
       rowDataFields={fpAdminUsersRowDataFields}
       tabPanelsLabel={tabPanelsLabel}
       tabs={tabs}
-      isLoading={isLoading}
+      // isLoading={isLoading}
+      isLoading={isFetching}
     />
   );
 }

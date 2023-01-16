@@ -81,7 +81,11 @@ export const apiSlice = createApi({
   // The cache reducer expects to be added at `state.api` (already default - this is optional)
   reducerPath: "api",
   baseQuery: baseQueryWithReAuth,
-  tagTypes: ["OrdersList, CustomersList, ProductsList, CategoriesList"],
+  tagTypes: [
+    "OrdersList, CustomersList, ProductsList, CategoriesList,UsersList",
+    "FPAdminUsersList",
+    "ClientOrganizationsSummaryList",
+  ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
       query: () => "/orders/list",
@@ -255,6 +259,41 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["CreditChecksList"],
     }),
+    getUsersList: builder.query({
+      query: (uuid) => `/users/list/${uuid}`,
+      providesTags: ["UsersList"],
+    }),
+    createUser: builder.mutation({
+      query: (payload) => ({
+        url: `/users/create/${payload.role}`,
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["UsersList"],
+    }),
+    updateUser: builder.mutation({
+      query: (payload) => ({
+        url: `/users/update/${payload.uuid}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["UsersList"],
+    }),
+    updateUserStatus: builder.mutation({
+      query: (uuid) => ({
+        url: `/users/change/status/${uuid}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["UsersList"],
+    }),
+    getFPAdminUsersList: builder.query({
+      query: () => "/users/list/all/fp-admin",
+      providesTags: ["FPAdminUsersList"],
+    }),
+    getClientOrganizationsSummaryList: builder.query({
+      query: () => "/users/list/organizations/summary",
+      providesTags: ["ClientOrganizationsSummaryList"],
+    }),
   }),
 });
 
@@ -282,4 +321,10 @@ export const {
   useCorporateCreditCheckMutation,
   usePrivateCreditCheckMutation,
   usePaymentScreenCreditCheckMutation,
+  useGetUsersListQuery,
+  useCreateUserMutation,
+  useUpdateUserMutation,
+  useUpdateUserStatusMutation,
+  useGetFPAdminUsersListQuery,
+  useGetClientOrganizationsSummaryListQuery,
 } = apiSlice;
