@@ -25,12 +25,17 @@ const baseQueryWithSaltToken = fetchBaseQuery({
     return headers;
   },
 });
+const baseQueryWithoutToken = fetchBaseQuery({
+  baseUrl: `${EnvVariable.BASEURL}`,
+});
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
   let result =
     args?.url === `/credit/check/checkout/private` ||
     args?.url === `/credit/check/checkout/corporate`
       ? await baseQueryWithSaltToken(args, api, extraOptions)
+      : args?.url === `/auth/registration`
+      ? await baseQueryWithoutToken(args, api, extraOptions)
       : await baseQuery(args, api, extraOptions);
   if (
     window.location.hostname === "dev.frontpayment.no" ||
@@ -85,6 +90,8 @@ export const apiSlice = createApi({
     "OrdersList, CustomersList, ProductsList, CategoriesList,UsersList",
     "FPAdminUsersList",
     "ClientOrganizationsSummaryList",
+    "ApprovedClientsList",
+    "ApprovalClientsList",
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -294,6 +301,60 @@ export const apiSlice = createApi({
       query: () => "/users/list/organizations/summary",
       providesTags: ["ClientOrganizationsSummaryList"],
     }),
+    getApprovalClientsList: builder.query({
+      query: () => "/clients/list/pending",
+      providesTags: ["ApprovalClientsList"],
+    }),
+    getApprovedClientsList: builder.query({
+      query: () => "/clients/list/approved",
+      providesTags: ["ApprovedClientsList"],
+    }),
+    createClient: builder.mutation({
+      query: (payload) => ({
+        url: "/clients/add",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["ApprovedClientsList"],
+    }),
+    onboardClient: builder.mutation({
+      query: (payload) => ({
+        url: `/clients/approve/${payload.uuid}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["ApprovedClientsList"],
+    }),
+    updateClient: builder.mutation({
+      query: (payload) => ({
+        url: `/clients/update/${payload.uuid}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["ApprovedClientsList"],
+    }),
+    updateClientStatus: builder.mutation({
+      query: (uuid) => ({
+        url: `/clients/change/status/${uuid}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["ApprovedClientsList"],
+    }),
+    deleteClient: builder.mutation({
+      query: (uuid) => ({
+        url: `/clients/delete/${uuid}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["ApprovalClientsList"],
+    }),
+    createRegistrationRequest: builder.mutation({
+      query: (payload) => ({
+        url: "/auth/registration",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["ApprovalClientsList"],
+    }),
   }),
 });
 
@@ -327,4 +388,12 @@ export const {
   useUpdateUserStatusMutation,
   useGetFPAdminUsersListQuery,
   useGetClientOrganizationsSummaryListQuery,
+  useGetApprovalClientsListQuery,
+  useGetApprovedClientsListQuery,
+  useCreateClientMutation,
+  useOnboardClientMutation,
+  useUpdateClientMutation,
+  useUpdateClientStatusMutation,
+  useDeleteClientMutation,
+  useCreateRegistrationRequestMutation,
 } = apiSlice;

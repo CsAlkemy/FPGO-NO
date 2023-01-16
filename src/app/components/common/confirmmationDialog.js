@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import CategoryService from "../../data-access/services/categoryService/CategoryService";
 import ClientService from "../../data-access/services/clientsService/ClientService";
 import { useTranslation } from "react-i18next";
-import { useDeleteCategoryMutation } from "app/store/api/apiSlice";
+import { useDeleteCategoryMutation, useDeleteClientMutation } from 'app/store/api/apiSlice';
 
 export default function ConfirmModal({
   open,
@@ -26,6 +26,7 @@ export default function ConfirmModal({
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [deleteCategory] = useDeleteCategoryMutation();
+  const [ deleteClient ] = useDeleteClientMutation()
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,7 +36,7 @@ export default function ConfirmModal({
     setOpen(false);
   };
 
-  const deleteClient = () => {
+  const deleteAction = () => {
     if (refKey === "category") {
       deleteCategory(uuid).then((response) => {
         if (!response.data) {
@@ -73,20 +74,37 @@ export default function ConfirmModal({
       //     console.log("E : ", e);
       //   });
     } else if (refKey === "deleteClient") {
-      ClientService.deleteClient(uuid)
-        .then((res) => {
+      deleteClient(uuid)
+        .then((response) => {
           // if (res?.status_code === 204){
-          if (res?.status === 204) {
+          if (!response.data) {
+          // if (res?.status === 204) {
             enqueueSnackbar("Request Deleted", {
               variant: "success",
               autoHideDuration: 3000,
             });
             navigate("/clients/approval-list");
+          } else {
+            enqueueSnackbar(response?.error?.data?.message, {
+              variant: "error",
+              autoHideDuration: 3000,
+            });
           }
         })
-        .catch((error) => {
-          enqueueSnackbar(error, { variant: "error" });
-        });
+      // ClientService.deleteClient(uuid)
+      //   .then((res) => {
+      //     // if (res?.status_code === 204){
+      //     if (res?.status === 204) {
+      //       enqueueSnackbar("Request Deleted", {
+      //         variant: "success",
+      //         autoHideDuration: 3000,
+      //       });
+      //       navigate("/clients/approval-list");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     enqueueSnackbar(error, { variant: "error" });
+      //   });
     }
     setOpen(false);
   };
@@ -124,7 +142,7 @@ export default function ConfirmModal({
               variant="contained"
               color="secondary"
               className="rounded-4 font-semibold"
-              onClick={deleteClient}
+              onClick={deleteAction}
             >
               {t("label:confirmDelete")}
             </Button>

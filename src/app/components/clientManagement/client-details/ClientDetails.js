@@ -35,6 +35,10 @@ import ConfirmModal from "../../common/confirmmationDialog";
 import { defaultValue, validateSchema } from "../utils/helper";
 import Orders from "./Orders";
 import Timeline from "./Timeline";
+import {
+  useUpdateClientMutation,
+  useUpdateClientStatusMutation,
+} from "app/store/api/apiSlice";
 
 const ClientDetails = () => {
   const { t } = useTranslation();
@@ -58,9 +62,10 @@ const ClientDetails = () => {
   const sameAddressRef = useRef(null);
   const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [tabValue, setTabValue] = React.useState("1");
-
   const [addVatIndex, setAddVatIndex] = React.useState([0, 1, 2, 3, 4]);
   const [ownerRef, setOwnerRef] = React.useState(true);
+  const [updateClient] = useUpdateClientMutation();
+  const [updateClientStatus] = useUpdateClientStatusMutation();
 
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
@@ -352,23 +357,36 @@ const ClientDetails = () => {
   };
 
   const changeClientStatus = () => {
-    ClientService.changeClientStatus(params.uuid)
-      .then((res) => {
-        if (res?.status_code === 202) {
-          enqueueSnackbar(`${params.uuid} Status Changed Successfully`, {
-            variant: "success",
-            autoHideDuration: 3000,
-          });
-          navigate("/clients/clients-list");
-        } else
-          enqueueSnackbar(`Something went wrong`, {
-            variant: "error",
-            autoHideDuration: 3000,
-          });
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-      });
+    updateClientStatus(params.uuid).then((response) => {
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(`${params.uuid} Status Changed Successfully`, {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+        navigate("/clients/clients-list");
+      } else
+        enqueueSnackbar(response?.error?.data?.message, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
+    });
+    // ClientService.changeClientStatus(params.uuid)
+    //   .then((res) => {
+    //     if (res?.status_code === 202) {
+    //       enqueueSnackbar(`${params.uuid} Status Changed Successfully`, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/clients/clients-list");
+    //     } else
+    //       enqueueSnackbar(`Something went wrong`, {
+    //         variant: "error",
+    //         autoHideDuration: 3000,
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //   });
   };
 
   const handleFileUpload = (event) => {
@@ -446,6 +464,7 @@ const ClientDetails = () => {
       : null;
 
     const clientUpdatedData = {
+      uuid: params.uuid,
       organizationDetails: {
         name: values.clientName,
         id: values.id,
@@ -566,21 +585,36 @@ const ClientDetails = () => {
       clientUpdatedData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
     setLoading(true);
-    ClientService.updateClient(clientUpdatedData, params.uuid)
-      .then((res) => {
-        if (res?.status_code === 202) {
-          enqueueSnackbar(`${params.uuid} Updated Successfully`, {
-            variant: "success",
-            autoHideDuration: 3000,
-          });
-          navigate("/clients/clients-list");
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
+    updateClient(clientUpdatedData).then((response) => {
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(`${params.uuid} Updated Successfully`, {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+        navigate("/clients/clients-list");
         setLoading(false);
-      });
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
+      }
+    });
+    // ClientService.updateClient(clientUpdatedData, params.uuid)
+    //   .then((res) => {
+    //     if (res?.status_code === 202) {
+    //       enqueueSnackbar(`${params.uuid} Updated Successfully`, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/clients/clients-list");
+    //       setLoading(false);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //     setLoading(false);
+    //   });
     // console.log(uploadDocuments);
   };
   // end form
@@ -630,9 +664,7 @@ const ClientDetails = () => {
               </div>
             </div>
             <div className="my-20 custom-tab-order-details">
-              <TabContext
-                value={tabValue}
-              >
+              <TabContext value={tabValue}>
                 <Box sx={{ background: "#F7F7F7" }}>
                   <TabList
                     onChange={handleChange}

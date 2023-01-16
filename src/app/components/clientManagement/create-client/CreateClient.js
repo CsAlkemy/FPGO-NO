@@ -3,7 +3,7 @@ import {
   RemoveCircleOutline,
   Search,
   Visibility,
-  VisibilityOff
+  VisibilityOff,
 } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { DesktopDatePicker, LoadingButton } from "@mui/lab";
@@ -18,12 +18,12 @@ import {
   MenuItem,
   Select,
   Switch,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
@@ -31,11 +31,12 @@ import ClientService from "../../../data-access/services/clientsService/ClientSe
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import {
   defaultValueCreateClient,
-  validateSchemaCreateClient
+  validateSchemaCreateClient,
 } from "../utils/helper";
+import { useCreateClientMutation } from "app/store/api/apiSlice";
 
 const CreateClient = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const [dialCode, setDialCode] = useState();
   const [hide, setHide] = useState(true);
@@ -48,6 +49,7 @@ const CreateClient = () => {
   const [plan, setPlan] = useState(1);
   const [loading, setLoading] = React.useState(false);
   const [ownerRef, setOwnerRef] = React.useState(true);
+  const [createClient] = useCreateClientMutation();
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
     code: "NOK",
@@ -63,8 +65,9 @@ const CreateClient = () => {
     resolver: yupResolver(validateSchemaCreateClient),
   });
 
-  const watchContactEndDate = watch(`contactEndDate`) ? watch(`contactEndDate`) : setValue("contactEndDate", new Date());
-
+  const watchContactEndDate = watch(`contactEndDate`)
+    ? watch(`contactEndDate`)
+    : setValue("contactEndDate", new Date());
 
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
@@ -109,7 +112,6 @@ const CreateClient = () => {
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = (values) => {
-
     const info = JSON.parse(localStorage.getItem("tableRowDetails"));
 
     const primaryPhoneNumber = values?.primaryPhoneNumber
@@ -143,16 +145,16 @@ const CreateClient = () => {
 
     const vatRates = values.vat.length
       ? values.vat.map((vat) => {
-        return {
-          uuid: null,
-          name: vat.vatName,
-          value: parseFloat(vat.vatValue),
-          isActive : true,
-          bookKeepingReference: vat?.bookKeepingReference
-            ? vat.bookKeepingReference
-            : null,
-        };
-      })
+          return {
+            uuid: null,
+            name: vat.vatName,
+            value: parseFloat(vat.vatValue),
+            isActive: true,
+            bookKeepingReference: vat?.bookKeepingReference
+              ? vat.bookKeepingReference
+              : null,
+          };
+        })
       : null;
 
     const createClientData = {
@@ -220,7 +222,7 @@ const CreateClient = () => {
         backOfficePassword: values.APTIEnginePassword,
         b2bInvoiceFee: parseFloat(values.fakturaB2B),
         b2cInvoiceFee: parseFloat(values.fakturaB2C),
-        isCustomerOwnerReference: ownerRef
+        isCustomerOwnerReference: ownerRef,
       },
       settings: {
         currencies: [
@@ -266,22 +268,38 @@ const CreateClient = () => {
       createClientData.contractDetails.planTag = "Plan 3";
       createClientData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
-    setLoading(true)
-    ClientService.createClient(createClientData)
-      .then((res) => {
-        if (res?.status_code === 201) {
-          enqueueSnackbar(`Client Created Successfully`, {
-            variant: "success",
-            autoHideDuration: 3000,
-          });
-          navigate("/clients/clients-list");
-          setLoading(false)
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-        setLoading(false)
-      });
+    setLoading(true);
+    createClient(createClientData).then((response) => {
+      if (response?.data?.status_code === 201) {
+        enqueueSnackbar(`Client Created Successfully`, {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+        navigate("/clients/clients-list");
+        setLoading(false);
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
+        setLoading(false);
+      }
+    });
+    // ClientService.createClient(createClientData)
+    //   .then((res) => {
+    //     if (res?.status_code === 201) {
+    //       enqueueSnackbar(`Client Created Successfully`, {
+    //         variant: "success",
+    //         autoHideDuration: 3000,
+    //       });
+    //       navigate("/clients/clients-list");
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     enqueueSnackbar(error, { variant: "error" });
+    //     setLoading(false)
+    //   });
     // console.log(uploadDocuments);
   };
   // end form
@@ -294,7 +312,7 @@ const CreateClient = () => {
           setIsLoading(false);
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   }, [isLoading]);
 
   return (
@@ -336,8 +354,8 @@ const CreateClient = () => {
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:clientDetails")}
                   {dirtyFields.organizationID &&
-                    dirtyFields.clientName &&
-                    dirtyFields.organizationType ? (
+                  dirtyFields.clientName &&
+                  dirtyFields.organizationType ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -437,8 +455,8 @@ const CreateClient = () => {
                   <div className="flex gap-10 items-center">
                     {t("label:primaryContactDetails")}
                     {dirtyFields.fullName &&
-                      dirtyFields.primaryPhoneNumber &&
-                      dirtyFields.email ? (
+                    dirtyFields.primaryPhoneNumber &&
+                    dirtyFields.email ? (
                       <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                     ) : (
                       <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -533,18 +551,20 @@ const CreateClient = () => {
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:contractDetails")}
                   {dirtyFields.contactEndDate &&
-                    dirtyFields.commision &&
-                    dirtyFields.smsCost &&
-                    dirtyFields.emailCost &&
-                    dirtyFields.creditCheckCost &&
-                    dirtyFields.ehfCost ? (
+                  dirtyFields.commision &&
+                  dirtyFields.smsCost &&
+                  dirtyFields.emailCost &&
+                  dirtyFields.creditCheckCost &&
+                  dirtyFields.ehfCost ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
                   )}
                 </div>
                 <div className="px-16">
-                  <div className="create-user-roles caption2">{t("label:choosePlan")}</div>
+                  <div className="create-user-roles caption2">
+                    {t("label:choosePlan")}
+                  </div>
                   <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
                     <button
                       type="button"
@@ -766,11 +786,11 @@ const CreateClient = () => {
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:billingAndShippingInfo")}
                   {dirtyFields.billingPhoneNumber &&
-                    dirtyFields.billingEmail &&
-                    dirtyFields.billingAddress &&
-                    dirtyFields.zip &&
-                    dirtyFields.city &&
-                    dirtyFields.country ? (
+                  dirtyFields.billingEmail &&
+                  dirtyFields.billingAddress &&
+                  dirtyFields.zip &&
+                  dirtyFields.city &&
+                  dirtyFields.country ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -780,11 +800,11 @@ const CreateClient = () => {
                   <div className="billing-address-head mt-10">
                     {t("label:billingAddress")}
                     {dirtyFields.billingPhoneNumber &&
-                      dirtyFields.billingEmail &&
-                      dirtyFields.billingAddress &&
-                      dirtyFields.zip &&
-                      dirtyFields.city &&
-                      dirtyFields.country ? (
+                    dirtyFields.billingEmail &&
+                    dirtyFields.billingAddress &&
+                    dirtyFields.zip &&
+                    dirtyFields.city &&
+                    dirtyFields.country ? (
                       <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                     ) : (
                       <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -942,7 +962,7 @@ const CreateClient = () => {
                         dirtyFields.shippingZip &&
                         dirtyFields.shippingCity &&
                         dirtyFields.shippingCountry) ||
-                        sameAddress ? (
+                      sameAddress ? (
                         <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                       ) : (
                         <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -1138,9 +1158,9 @@ const CreateClient = () => {
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:bankInfo")}
                   {dirtyFields.bankName &&
-                    dirtyFields.accountNumber &&
-                    dirtyFields.IBAN &&
-                    dirtyFields.SWIFTCode ? (
+                  dirtyFields.accountNumber &&
+                  dirtyFields.IBAN &&
+                  dirtyFields.SWIFTCode ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -1234,9 +1254,9 @@ const CreateClient = () => {
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:apticInformation")}
                   {dirtyFields.APTICuserName &&
-                    dirtyFields.name &&
-                    dirtyFields.fpReference &&
-                    dirtyFields.creditLimitCustomer ? (
+                  dirtyFields.name &&
+                  dirtyFields.fpReference &&
+                  dirtyFields.creditLimitCustomer ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -1561,7 +1581,7 @@ const CreateClient = () => {
                           currency.code === "NOK"
                             ? "border-2 border-main"
                             : "border-1 border-MonochromeGray-50"
-                          }`}
+                        }`}
                         onClick={() =>
                           setCurrency({
                             code: "NOK",
@@ -1582,7 +1602,7 @@ const CreateClient = () => {
                           currency.code === "SEK"
                             ? "border-2 border-main"
                             : "border-1 border-MonochromeGray-50"
-                          }`}
+                        }`}
                         onClick={() =>
                           setCurrency({
                             code: "SEK",
@@ -1603,7 +1623,7 @@ const CreateClient = () => {
                           currency.code === "DKK"
                             ? "border-2 border-main"
                             : "border-1 border-MonochromeGray-50"
-                          }`}
+                        }`}
                         onClick={() =>
                           setCurrency({
                             code: "DKK",
@@ -1624,7 +1644,7 @@ const CreateClient = () => {
                           currency.code === "EUR"
                             ? "border-2 border-main"
                             : "border-1 border-MonochromeGray-50"
-                          }`}
+                        }`}
                         onClick={() =>
                           setCurrency({
                             code: "EUR",
@@ -1728,7 +1748,9 @@ const CreateClient = () => {
                                   error={
                                     !!errors?.vat?.[index]?.bookKeepingReference
                                   }
-                                  helperText={errors?.bookKeepingReference?.message}
+                                  helperText={
+                                    errors?.bookKeepingReference?.message
+                                  }
                                   variant="outlined"
                                   required
                                   fullWidth
