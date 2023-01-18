@@ -3,7 +3,7 @@ name: Frontpayment Frontend Staging CI/CD
 on:
   push:
     branches:
-      - dev
+      - demo
 
 jobs:
   # test:
@@ -49,9 +49,9 @@ jobs:
     - name: Copy file via scp
       uses: appleboy/scp-action@master
       with:
-        host: ${{ secrets.FP_DEV_FRONTEND_HOST }}
-        username: ${{ secrets.FP_DEV_FRONTEND_USER }}
-        port: ${{ secrets.FP_DEV_FRONTEND_PORT }}
-        password: ${{ secrets.FP_DEV_FRONTEND_PASS }}
+        host: ${{ secrets.FP_STG_FRONTEND_HOST }}
+        username: ${{ secrets.FP_STG_FRONTEND_USER }}
+        port: ${{ secrets.FP_STG_FRONTEND_PORT }}
+        password: ${{ secrets.FP_STG_FRONTEND_PASS }}
         source: "./build/*"
-        target: "/var/www/html/build"
+        target: "/var/www/html/demo.frontpayment.no/build"
