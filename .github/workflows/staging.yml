@@ -54,4 +54,4 @@ jobs:
         port: ${{ secrets.FP_STG_FRONTEND_PORT }}
         password: ${{ secrets.FP_STG_FRONTEND_PASS }}
         source: "./build/*"
-        target: "/var/www/html/stg.frontpayment.no/build"
+        target: "/var/www/html/stg.frontpayment.no"

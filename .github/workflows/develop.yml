@@ -54,4 +54,4 @@ jobs:
         port: ${{ secrets.FP_DEV_FRONTEND_PORT }}
         password: ${{ secrets.FP_DEV_FRONTEND_PASS }}
         source: "./build/*"
-        target: "/var/www/html/build"
+        target: "/var/www/html"
