@@ -71,14 +71,14 @@ export const setUser = createAsyncThunk(
                 },
               ],
             },
-            {
-              id: "refundRequests",
-              title: "Refund Requests",
-              translate: 'refundRequests',
-              type: "item",
-              icon: "material-outline:u_turn_left",
-              url: "/refund-requests",
-            },
+            // {
+            //   id: "refundRequests",
+            //   title: "Refund Requests",
+            //   translate: 'refundRequests',
+            //   type: "item",
+            //   icon: "material-outline:u_turn_left",
+            //   url: "/refund-requests",
+            // },
             {
               id: "customers",
               title: "Customers",

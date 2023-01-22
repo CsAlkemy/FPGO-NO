@@ -142,12 +142,12 @@ export const apiSlice = createApi({
       invalidatesTags: ["OrdersList"],
     }),
     getCustomersList: builder.query({
-      query: () => "/customer/list",
+      query: () => "/customers/list",
       providesTags: ["CustomersList"],
     }),
     createPrivateCustomer: builder.mutation({
       query: (payload) => ({
-        url: `/customer/create/private`,
+        url: `/customers/create/private`,
         method: "POST",
         body: payload,
       }),
@@ -155,7 +155,7 @@ export const apiSlice = createApi({
     }),
     createCorporateCustomer: builder.mutation({
       query: (payload) => ({
-        url: `/customer/create/corporate`,
+        url: `/customers/create/corporate`,
         method: "POST",
         body: payload,
       }),
@@ -163,7 +163,7 @@ export const apiSlice = createApi({
     }),
     updatePrivateCustomer: builder.mutation({
       query: (payload) => ({
-        url: `/customer/update/private/${payload.customerID}`,
+        url: `/customers/update/private/${payload.customerID}`,
         method: "PUT",
         body: payload,
       }),
@@ -171,7 +171,7 @@ export const apiSlice = createApi({
     }),
     updateCorporateCustomer: builder.mutation({
       query: (payload) => ({
-        url: `/customer/update/corporate/${payload.customerID}`,
+        url: `/customers/update/corporate/${payload.customerID}`,
         method: "PUT",
         body: payload,
       }),
@@ -179,7 +179,7 @@ export const apiSlice = createApi({
     }),
     updateCustomerStatus: builder.mutation({
       query: (uuid) => ({
-        url: `/customer/change/status/${uuid}`,
+        url: `/customers/change/status/${uuid}`,
         method: "PUT",
       }),
       invalidatesTags: ["CustomersList"],
