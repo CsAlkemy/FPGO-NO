@@ -3,7 +3,7 @@ name: Frontpayment Frontend Staging CI/CD
 on:
   push:
     branches:
-      - dev
+      - develop
 
 jobs:
   # test:
