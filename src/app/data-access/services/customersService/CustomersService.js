@@ -39,7 +39,7 @@ class CustomersService {
       ? "+" + shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
       : null;
 
-    const URL = `${EnvVariable.BASEURL}/customer/create/private`;
+    const URL = `${EnvVariable.BASEURL}/customers/create/private`;
 
     const addresses0 =
       !bl_msisdn &&
@@ -158,7 +158,7 @@ class CustomersService {
                 shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
 
-            const URL = `${EnvVariable.BASEURL}/customer/create/private`;
+            const URL = `${EnvVariable.BASEURL}/customers/create/private`;
 
             const addresses0 =
               !bl_msisdn &&
@@ -289,7 +289,7 @@ class CustomersService {
       ? "+" + shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
       : null;
 
-    const URL = `${EnvVariable.BASEURL}/customer/create/corporate`;
+    const URL = `${EnvVariable.BASEURL}/customers/create/corporate`;
 
     const addresses0 =
       !bl_msisdn &&
@@ -449,7 +449,7 @@ class CustomersService {
                 shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
 
-            const URL = `${EnvVariable.BASEURL}/customer/create/corporate`;
+            const URL = `${EnvVariable.BASEURL}/customers/create/corporate`;
 
             const addresses0 =
               !bl_msisdn &&
@@ -636,7 +636,7 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customer/list`;
+            const URL = `${EnvVariable.BASEURL}/customers/list`;
             return axios
               .get(URL)
               .then((response) => {
@@ -725,7 +725,7 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customer/details/${id}`;
+            const URL = `${EnvVariable.BASEURL}/customers/details/${id}`;
             return axios
               .get(URL)
               .then((response) => {
@@ -752,7 +752,7 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customer/change/status/${id}`;
+            const URL = `${EnvVariable.BASEURL}/customers/change/status/${id}`;
             return axios
               .put(URL)
               .then((response) => {
@@ -841,7 +841,7 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customer/update/private/${params.customerID}`;
+            const URL = `${EnvVariable.BASEURL}/customers/update/private/${params.customerID}`;
 
             const primaryPhoneNumber = params?.primaryPhoneNumber
               ? params.primaryPhoneNumber.split("+")
@@ -1238,7 +1238,7 @@ class CustomersService {
                 country: params.shippingCountry,
               };
             }
-            const URL = `${EnvVariable.BASEURL}/customer/update/corporate/${params.customerID}`;
+            const URL = `${EnvVariable.BASEURL}/customers/update/corporate/${params.customerID}`;
             return axios
               .put(URL, data)
               .then((response) => {
@@ -1262,7 +1262,7 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customer/journal/${id}/${startTime}`;
+            const URL = `${EnvVariable.BASEURL}/customers/journal/${id}/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {
@@ -1292,7 +1292,7 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customer/journal/${id}`;
+            const URL = `${EnvVariable.BASEURL}/customers/journal/${id}`;
             return axios
               .post(URL, { text: note })
               .then((response) => {
@@ -1316,7 +1316,7 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customer/${id}/orders`;
+            const URL = `${EnvVariable.BASEURL}/customers/${id}/orders`;
             return axios
               .get(URL)
               .then((response) => {
