@@ -7,16 +7,27 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
-import { Skeleton } from "@mui/material";
+import { Skeleton, TextField } from "@mui/material";
 import CustomersService from "../../../../data-access/services/customersService/CustomersService";
+import { DesktopDatePicker } from "@mui/lab";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
   const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
+
+  const [selectedDate, setSelectedDate] = React.useState(
+    new Date(
+      `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
+    )
+  );
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
   useEffect(() => {
     const prepareSelectedDate = `${
@@ -39,7 +50,16 @@ const TimelineLog = () => {
   }, [loading]);
 
   return (
-    <div className="mb-32 md:mb-0">
+    <div className="mb-32 md:mb-0 w-full sm:w-4/5">
+      <div className="mb-20 mt-10 flex justify-end">
+        <DesktopDatePicker
+          inputFormat="MM.yyyy"
+          views={["year", "month"]}
+          value={selectedDate}
+          onChange={handleDateChange}
+          renderInput={(params) => <TextField {...params} type="date" />}
+        />
+      </div>
       {logs?.length > 0 ? (
         <Timeline
           sx={{
@@ -81,28 +101,26 @@ const TimelineLog = () => {
                     <div className="subtitle3 text-MonochromeGray-700">
                       {log.title}
                     </div>
-                    {
-                      log.datetime && (
-                        <div className="flex gap-5">
-                          <div className="text-MonochromeGray-300 body4">Date:</div>
-                          <div className="body4 text-MonochromeGray-700">
-                            {log.datetime}
-                          </div>
+                    {log.datetime && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          Date:
                         </div>
-                      )
-                    }
-                    {
-                      log.orderUuid && (
-                        <div className="flex gap-5">
-                          <div className="text-MonochromeGray-300 body4">
-                            Order ID:
-                          </div>
-                          <div className="body4 text-MonochromeGray-700">
-                            {log.orderUuid}
-                          </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.datetime}
                         </div>
-                      )
-                    }
+                      </div>
+                    )}
+                    {log.orderUuid && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          Order ID:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.orderUuid}
+                        </div>
+                      </div>
+                    )}
                     {log.sentTo && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
