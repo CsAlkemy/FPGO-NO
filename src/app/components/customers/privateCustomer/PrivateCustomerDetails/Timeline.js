@@ -16,8 +16,9 @@ import { DesktopDatePicker } from "@mui/lab";
 const TimelineLog = () => {
   const { t } = useTranslation();
   const info = JSON.parse(localStorage.getItem("tableRowDetails"));
-  const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
+  const [isFetching, setIsFetching] = useState(true);
+  const [defaultTimeline, setDefaultTimeline] = useState(true);
   const [selectedDate, setSelectedDate] = React.useState(
     new Date(
       `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
@@ -25,27 +26,42 @@ const TimelineLog = () => {
   );
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-  useEffect(() => {
-    // OrdersService.getOrdersLogByUUID(info.orderUuid)
-    const prepareSelectedDate = `${
-      new Date().getMonth() + 1
-    }.01.${new Date().getFullYear()} 00:00:00`;
-    // setSelectedDate(date);
+    setIsFetching(true);
+    setDefaultTimeline(false);
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.01.${new Date(
+      date
+    ).getFullYear()} 00:00:00`;
     const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-    // console.log("timeStamp : ", timeStamp);
+    setSelectedDate(prepareSelectedDate);
     CustomersService.getCustomerTimelineByUUID(info.uuid, timeStamp)
       .then((res) => {
         setLogs(res?.data);
-        setLoading(false);
+        setIsFetching(false);
       })
       .catch((e) => {
-        console.log("E : ", e);
         setLogs([]);
-        setLoading(false);
+        setIsFetching(false);
       });
-  }, [loading]);
+  };
+
+  useEffect(() => {
+    if (defaultTimeline) {
+      const prepareSelectedDate = `${
+        new Date().getMonth() + 1
+      }.01.${new Date().getFullYear()} 00:00:00`;
+      const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+      CustomersService.getCustomerTimelineByUUID(info.uuid, timeStamp)
+        .then((res) => {
+          setLogs(res?.data);
+          setIsFetching(false);
+        })
+        .catch((e) => {
+          console.log("E : ", e);
+          setLogs([]);
+          setIsFetching(false);
+        });
+    }
+  }, [isFetching]);
 
   return (
     <div className="mb-32 md:mb-0 w-full sm:w-4/5">
