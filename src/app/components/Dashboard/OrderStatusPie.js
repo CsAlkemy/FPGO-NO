@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 function OrderStatus(props) {
   // const widgets = useSelector(selectWidgets);
   // const { series, labels, uniqueVisitors } = widgets?.newVsReturning;
-  console.log("PROPS : ",props);
   const { t } = useTranslation();
   const { dayCount, orderStatus } = props.datas;
   const [awaitRender, setAwaitRender] = useState(true);
