@@ -66,10 +66,8 @@ const TimelineLog = () => {
         timeStamp
       )
         .then((res) => {
-          const summary = res?.data.filter((d) => d?.summary);
-          setSummary(summary[0].summary);
-          const filteredLogs = res?.data.filter((d) => !d?.summary);
-          setLogs(filteredLogs);
+          setSummary(res?.data?.summary ? res?.data?.summary : []);
+          setLogs(res?.data?.timeline ? res?.data?.timeline : []);
           setIsFetching(false);
         })
         .catch((e) => {

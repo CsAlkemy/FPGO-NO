@@ -375,169 +375,33 @@ class ClientService {
   };
 
   getClientTimelineByUUID = async (uuid, startTime) => {
-    // return new Promise((resolve, reject) => {
-    //   return AuthService.axiosRequestHelper()
-    //     .then((status) => {
-    //       if (status) {
-    //         const URL = `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
-    //         return axios
-    //           .get(URL)
-    //           .then((response) => {
-    //             if (
-    //               response?.data?.status_code === 200 &&
-    //               response?.data?.is_data
-    //             ) {
-    //               resolve(response.data);
-    //             } else reject("Something went wrong");
-    //           })
-    //           .catch((e) => {
-    //             // reject(e.response.data.errors)
-    //             if (e?.response?.data?.status_code === 404)
-    //               resolve(e.response.data);
-    //             reject(e.response.data.message);
-    //           });
-    //       } else reject("Something went wrong");
-    //     })
-    //     .catch((e) => {
-    //       reject("Something went wrong");
-    //     });
-    // });
-    return {
-      status_code: 200,
-      status_message: "OK",
-      message: "Order Log Retrieved Successfully",
-      is_data: true,
-      data: [
-        {
-          title: "Client Information Updated",
-          slug: "client-information-updated",
-          datetime: "04.08.2022 12:34",
-          orderUuid: null,
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: "Nafees Faraz",
-          organizationBusinessId: null,
-          type: "Order Cancellation",
-          personalOrBusinessNumber: null,
-        },
-        {
-          title: "SMS Sent",
-          slug: "sms-sent",
-          datetime: "04.08.2022 12:34",
-          orderUuid: "ODR123456789",
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: null,
-          organizationBusinessId: null,
-          type: "Order Cancellation",
-          personalOrBusinessNumber: null,
-        },
-        {
-          title: "SMS Sent",
-          slug: "sms-sent",
-          datetime: "04.08.2022 12:34",
-          orderUuid: "ODR123456789",
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: null,
-          organizationBusinessId: null,
-          type: "Payment Link",
-          personalOrBusinessNumber: null,
-        },
-        {
-          title: "Email Sent",
-          slug: "email-sent",
-          datetime: "04.08.2022 12:34",
-          orderUuid: "ODR123456789",
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: null,
-          organizationBusinessId: null,
-          type: "Payment Link",
-          personalOrBusinessNumber: null,
-        },
-        {
-          title: "Order Sent by EHF",
-          slug: "order-sent-by-ehf",
-          datetime: "04.08.2022 12:34",
-          orderUuid: "ODR123456789",
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: null,
-          organizationBusinessId: null,
-          type: null,
-          personalOrBusinessNumber: null,
-        },
-        {
-          title: "Credit Check Performed",
-          slug: "credit-check-performed",
-          datetime: "04.08.2022 12:34",
-          orderUuid: null,
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: null,
-          organizationBusinessId: null,
-          type: null,
-          personalOrBusinessNumber: "15935748624",
-        },
-        {
-          title: "Credit Check Performed",
-          slug: "credit-check-performed",
-          datetime: "04.08.2022 12:34",
-          orderUuid: null,
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: null,
-          organizationBusinessId: null,
-          type: null,
-          personalOrBusinessNumber: "789654123",
-        },
-        {
-          title: "Order Sent by Invoice",
-          slug: "order-sent-by-ehf",
-          datetime: "04.08.2022 12:34",
-          orderUuid: "ODR123456789",
-          refundAmount: null,
-          note: null,
-          orderAmount: null,
-          paymentMethod: null,
-          sentTo: null,
-          actionBy: null,
-          organizationBusinessId: null,
-          type: null,
-          personalOrBusinessNumber: null,
-        },
-        {
-          summary: {
-            orderCount: 201,
-            smsCount: 189,
-            creditCheckCount: 7,
-            ehfCount: 15,
-          },
-        },
-      ],
-    };
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  resolve(response.data);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                // reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.message);
+              });
+          } else reject("Something went wrong");
+        })
+        .catch((e) => {
+          reject("Something went wrong");
+        });
+    });
   };
 }
 
