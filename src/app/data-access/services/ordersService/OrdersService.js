@@ -857,9 +857,11 @@ class OrdersService {
                       customerName: row.customerName,
                       orderAmount: row.orderAmount,
                       refundAmount: row.refundAmount,
+                      // stage: row?.status ? row?.status : null,
+                      // approveAction : row?.status ? row?.status.toLowerCase() : null,
+                      // isCancel: row?.status === "pending",
                       stage: row?.status ? row?.status : "pending",
-                      refundResend : "pending",
-                      // cancel: row?.status?.toLowerCase() === "pending",
+                      approveAction : row?.status ? row?.status.toLowerCase() : "pending",
                       isCancel: true,
                     };
                   });
@@ -1142,6 +1144,78 @@ class OrdersService {
         });
     });
   };
+
+  requestRefundApproval = async (uuid)=> {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}orders/request/refund/approval/${uuid}`;
+            return axios
+              .post(URL, body)
+              .then((response) => {
+                if (response?.data?.status_code === 201) {
+                  resolve(response.data);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                reject(e.response.data.errors);
+              });
+          } else reject("Something went wrong");
+        })
+        .catch((e) => {
+          reject("Something went wrong");
+        });
+    });
+  }
+
+  approveRefundRequest = async (uuid)=> {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}orders/request/refund/approval/${uuid}`;
+            return axios
+              .post(URL, body)
+              .then((response) => {
+                if (response?.data?.status_code === 201) {
+                  resolve(response.data);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                reject(e.response.data.errors);
+              });
+          } else reject("Something went wrong");
+        })
+        .catch((e) => {
+          reject("Something went wrong");
+        });
+    });
+  }
+
+  rejectRefundRequest = async (uuid)=> {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}orders/request/refund/approval/${uuid}`;
+            return axios
+              .post(URL, body)
+              .then((response) => {
+                if (response?.data?.status_code === 201) {
+                  resolve(response.data);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                reject(e.response.data.errors);
+              });
+          } else reject("Something went wrong");
+        })
+        .catch((e) => {
+          reject("Something went wrong");
+        });
+    });
+  }
 }
 
 const instance = new OrdersService();

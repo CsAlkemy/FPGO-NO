@@ -7,8 +7,17 @@ const confirmDiscard = (props) => {
     const navigate = useNavigate();
   const {t} = useTranslation()
     
-    const {title, open, setOpen, reset, subTitle, defaultValue, route} = props;
+    const {title, open, setOpen, reset, subTitle, defaultValue, route, modalRef} = props;
     const handleClose = () => {
+      if (modalRef === "confirmRefundRequestApprove") {
+        console.log("confirmed");
+        //TODO: acceptRefundRequest API Imp and Int
+      }
+      setTimeout(()=>{
+        //commented the reset as Nafees Vaiya only want to back previous screen by clicking discard(15-12-2022)
+        // reset({...defaultValue})
+        !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
+      }, 500);
         setOpen(false);
     };
 
@@ -45,14 +54,7 @@ const confirmDiscard = (props) => {
               variant="contained"
               color="secondary"
               className="rounded-4 font-semibold"
-              onClick={()=> {
-                handleClose();
-                setTimeout(()=>{
-                  //commented the reset as Nafees Vaiya only want to back previous screen by clicking discard(15-12-2022)
-                  // reset({...defaultValue})
-                    navigate(route)
-                }, 500);
-                }}
+              onClick={()=> handleClose()}
             >
               {t("label:confirm")}
             </Button>

@@ -76,7 +76,7 @@ export default function RefundRequestsOverview() {
       sort: true,
     },
     {
-      id: "refundResend",
+      id: "approveAction",
       align: "right",
       disablePadding: false,
       label: "",
