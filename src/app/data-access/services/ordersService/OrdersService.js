@@ -840,316 +840,300 @@ class OrdersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/orders/list`;
-            // return axios
-            //   .get(URL)
-            //   .then((response) => {
-            //     if (
-            //       response?.data?.status_code === 200 &&
-            //       response?.data?.is_data
-            //     ) {
-            //       let d;
-            //       d = response.data.data.map((row) => {
-            //         const preparePhone =
-            //           row.countryCode && row.msisdn
-            //             ? row.countryCode + row.msisdn
-            //             : null;
-            //         const phone = preparePhone ? preparePhone.split("+") : null;
-            //         return {
-            //           uuid: row.orderUuid,
-            //           date: row.dateCreated,
-            //           id: row.orderUuid,
-            //           name: row.name,
-            //           dueDate: row.paymentLinkDueDate,
-            //           phone: phone ? "+" + phone[phone.length - 1] : null,
-            //           email: row?.email ? row?.email : null,
-            //           amount: row.amount,
-            //           stage: row?.status ? row?.status.toLowerCase() : null,
-            //           // stage: "Partial Refunded",
-            //           refundResend:
-            //             row.status.toLowerCase() === "sent"
-            //               ? "Resend"
-            //               : row.status.toLowerCase() === "paid" ||
-            //               row.status.toLowerCase() === "partial refunded" ||
-            //               row.status.toLowerCase() === "invoiced"
-            //                 ? "Refund"
-            //                 : null,
-            //           isCancel: row.status.toLowerCase() === "sent",
-            //           // refundResend: "Resend",
-            //           // isCancel: true,
-            //         };
-            //       });
-            //       d.status_code = 200;
-            //       d.is_data = true;
-            //       resolve(d);
-            //     } else if (
-            //       response.data.status_code === 200 &&
-            //       !response.data.is_data
-            //     ) {
-            //       resolve([]);
-            //     } else reject("Something went wrong");
-            //   })
-            //   .catch((e) => {
-            //     // reject(e.response.data.errors)
-            //     if (e?.response?.data?.status_code === 404)
-            //       resolve(e.response.data);
-            //     reject(e.response.data.message);
-            //   });
-            let dummyResponse = {
-              status_code: 200,
-              status_message: "OK",
-              message: "Refund Request(s) Retrieved Successfully",
-              is_data: true,
-              data: [
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "ACCEPTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "REJECTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "REJECTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "ACCEPTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-              ],
-            };
-            let d;
-            d = dummyResponse.data.map((row) => {
-              // const preparePhone =
-              //   row.countryCode && row.msisdn
-              //     ? row.countryCode + row.msisdn
-              //     : null;
-              // const phone = preparePhone ? preparePhone.split("+") : null;
-              return {
-                uuid: row.orderUuid,
-                date: row.dateCreated,
-                id: row.orderUuid,
-                clientName: row.clientName,
-                customerName: row.customerName,
-                // phone: phone ? "+" + phone[phone.length - 1] : null,
-                // email: row?.email ? row?.email : null,
-                orderAmount: row.orderAmount,
-                refundAmount: row.refundAmount,
-                stage: row?.status ? row?.status.toLowerCase() : null,
-                // stage: "Partial Refunded",
-                refundResend:
-                  row.status.toLowerCase() === "pending"
-                    ? "pending"
-                    : row.status.toLowerCase(),
-                isCancel: row.status.toLowerCase() === "pending",
-                // refundResend: "Resend",
-                // isCancel: true,
-              };
-            });
-            d.status_code = 200;
-            d.is_data = true;
-            resolve(d);
+            const URL = `${EnvVariable.BASEURL}/orders/refund/all`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  let d;
+                  d = response.data.data.map((row) => {
+                    return {
+                      date: row.dateRequested,
+                      id: row.orderId,
+                      clientName: row.clientName,
+                      customerName: row.customerName,
+                      orderAmount: row.orderAmount,
+                      refundAmount: row.refundAmount,
+                      stage: row?.status ? row?.status : "pending",
+                      refundResend : "pending",
+                      // cancel: row?.status?.toLowerCase() === "pending",
+                      isCancel: true,
+                    };
+                  });
+                  d.status_code = 200;
+                  d.is_data = true;
+                  resolve(d);
+                } else if (
+                  response.data.status_code === 200 &&
+                  !response.data.is_data
+                ) {
+                  resolve([]);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                // reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.message);
+              });
+            // let dummyResponse = {
+            //   status_code: 200,
+            //   status_message: "OK",
+            //   message: "Refund Request(s) Retrieved Successfully",
+            //   is_data: true,
+            //   data: [
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "ACCEPTED",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "REJECTED",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "REJECTED",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "ACCEPTED",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //     {
+            //       dateCreated: "08.12.2022",
+            //       orderUuid: "ODR1431405691",
+            //       clientName: "Kongkrio De Masia",
+            //       customerName: "JK Sutradhor",
+            //       orderAmount: 30000,
+            //       refundAmount: 3000,
+            //       status: "PENDING",
+            //     },
+            //   ],
+            // };
+            // let d;
+            // d = resp.data.map((row) => {
+            //   // const preparePhone =
+            //   //   row.countryCode && row.msisdn
+            //   //     ? row.countryCode + row.msisdn
+            //   //     : null;
+            //   // const phone = preparePhone ? preparePhone.split("+") : null;
+            //   return {
+            //     uuid: row.orderUuid,
+            //     date: row.dateCreated,
+            //     id: row.orderUuid,
+            //     clientName: row.clientName,
+            //     customerName: row.customerName,
+            //     // phone: phone ? "+" + phone[phone.length - 1] : null,
+            //     // email: row?.email ? row?.email : null,
+            //     orderAmount: row.orderAmount,
+            //     refundAmount: row.refundAmount,
+            //     stage: row?.status ? row?.status.toLowerCase() : null,
+            //     // stage: "Partial Refunded",
+            //     refundResend:
+            //       row.status.toLowerCase() === "pending"
+            //         ? "pending"
+            //         : row.status.toLowerCase(),
+            //     isCancel: row.status.toLowerCase() === "pending",
+            //     // refundResend: "Resend",
+            //     // isCancel: true,
+            //   };
+            // });
+            // d.status_code = 200;
+            // d.is_data = true;
+            // resolve(d);
           } else reject("Something went wrong");
         })
         .catch((e) => {
