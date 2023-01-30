@@ -3,7 +3,7 @@ import CryptoJS from "crypto-js";
 import { SecretKey } from "./EnvVariables";
 
 class UtilsServices {
-  SecretSalt = "FrontPaymentGO-CodeCoffeeComputer-JS";
+  SecretSalt = "CodeCoffeeCo";
   SecretKey = "U2FsdGVkX19uyZQQesYR2y+VGUkSkIf3YxJ6Nfg9r4U=";
   encryptData = (data) => {
     const ecptData = CryptoJS.AES.encrypt(
