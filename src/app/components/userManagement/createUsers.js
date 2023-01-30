@@ -34,6 +34,7 @@ import {
   validateSchemaGeneralAdmin,
 } from "./utils/helper";
 import { useCreateUserMutation } from "app/store/api/apiSlice";
+import UtilsServices from '../../data-access/utils/UtilsServices';
 
 export default function CreateUsers() {
   const { t } = useTranslation();
@@ -54,7 +55,7 @@ export default function CreateUsers() {
     { title: "Norwegian", value: "no" },
   ]);
   const [isLoading, setIsLoading] = useState(true);
-  const info = JSON.parse(localStorage.getItem("fp_user"));
+  const info = UtilsServices.getFPUserData();
   const [createUser] = useCreateUserMutation();
 
   const schema =

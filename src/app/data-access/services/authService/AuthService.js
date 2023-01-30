@@ -2,8 +2,9 @@ import FuseUtils from "@fuse/utils/FuseUtils";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 // import jwtServiceConfig from "./jwtServiceConfig";
-import { EnvVariable } from "../../utils/EnvVariables";
+import { EnvVariable, SecretKey } from "../../utils/EnvVariables";
 import MultiLanguageService from "../multiLanguageService/MultiLanguageService";
+import UtilsServices from "../../utils/UtilsServices";
 
 /* eslint-disable camelcase */
 
@@ -311,22 +312,25 @@ class AuthService extends FuseUtils.EventEmitter {
 
   setUserInfo = (userInfo) => {
     if (userInfo) {
-      localStorage.removeItem("fp_user");
-      localStorage.setItem("fp_user", JSON.stringify(userInfo));
+      localStorage.removeItem(SecretKey);
+      //Set enc data to the local - 30-01-23
+      // localStorage.setItem("fp_user", JSON.stringify(userInfo));
+      localStorage.setItem(SecretKey, UtilsServices.encryptData(userInfo));
     } else {
-      localStorage.removeItem("fp_user");
+      localStorage.removeItem(SecretKey);
     }
   };
 
   getUserInfo = () => {
-    return JSON.parse(localStorage.getItem("fp_user"));
+    //SCK
+    // return UtilsServices.getFPUserData();
+    return UtilsServices.decryptData(localStorage.getItem(SecretKey));
   };
 
   logout = () => {
     return this.axiosRequestHelper().then((status) => {
       if (status) {
-        const userId = JSON.parse(localStorage.getItem("fp_user"))["user_data"]
-          .uuid;
+        const userId = UtilsServices.getFPUserData().user_data.uuid;
         const URL = `${EnvVariable.BASEURL}/auth/logout/${userId}`;
         axios
           .put(URL)
@@ -504,12 +508,10 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   getAccessTokenExpiresAt = () => {
-    return JSON.parse(localStorage.getItem("fp_user"))["token_data"]
-      .access_token_expires_at;
+    return UtilsServices.getFPUserData().token_data.access_token_expires_at;
   };
   getRefreshTokenExpiresAt = () => {
-    return JSON.parse(localStorage.getItem("fp_user"))["token_data"]
-      .refresh_token_expires_at;
+    return UtilsServices.getFPUserData().token_data.refresh_token_expires_at;
     // return window.localStorage.getItem("fp_refresh_token_expires_at");
   };
 }
