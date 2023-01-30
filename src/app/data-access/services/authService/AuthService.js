@@ -104,7 +104,7 @@ class AuthService extends FuseUtils.EventEmitter {
             if (res?.data?.status_code === 202 && res?.data?.data) {
               this.setSession(res.data.data.access_token);
               const userInfo = this.getUserInfo();
-              userInfo["token_data"] = res.data.data;
+              userInfo.token_data = res.data.data;
               this.setUserInfo(userInfo);
               resolve(true);
             }
@@ -164,7 +164,7 @@ class AuthService extends FuseUtils.EventEmitter {
         return this.refreshAccessToken()
           .then((res) => {
             if (res) {
-              const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo["user_data"].uuid}`;
+              const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo.user_data.uuid}`;
               return axios
                 .get(URL)
                 .then((res) => {
@@ -181,7 +181,7 @@ class AuthService extends FuseUtils.EventEmitter {
             this.emit("onAutoLogout");
           });
       } else {
-        const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo["user_data"].uuid}`;
+        const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo.user_data.uuid}`;
         return axios
           .get(URL)
           .then((res) => {
@@ -276,19 +276,19 @@ class AuthService extends FuseUtils.EventEmitter {
     const userInfo = this.getUserInfo();
     if (userInfo) {
       return new Promise((resolve, reject) => {
-        this.setSession(userInfo["token_data"].access_token);
+        this.setSession(userInfo.token_data.access_token);
         // this.setAutoLoginInfo(cred);
         this.setUserInfo(userInfo);
-        userData.role.push(userInfo["user_data"]["user_role"].slug);
+        userData.role.push(userInfo?.user_data?.user_role?.slug);
         userData = {
           ...userData,
-          role: [userInfo["user_data"]["user_role"].slug],
+          role: [userInfo?.user_data?.user_role?.slug],
           data: {
-            displayName: userInfo["user_data"].name.split(" ")[0],
-            uuid: userInfo["user_data"].uuid,
+            displayName: userInfo?.user_data?.name.split(" ")[0],
+            uuid: userInfo?.user_data?.uuid,
           },
-          token_data: userInfo["token_data"],
-          user_data: userInfo["user_data"],
+          token_data: userInfo?.token_data,
+          user_data: userInfo?.user_data,
         };
         resolve(userData);
         this.emit("onLogin", userData);
