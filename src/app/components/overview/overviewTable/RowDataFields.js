@@ -135,6 +135,6 @@ export const refundRequestsOverviewRowDataFields = [
   "orderAmount",
   "refundAmount",
   "stage",
-  "refundResend",
+  "approveAction",
   "cancel",
 ];

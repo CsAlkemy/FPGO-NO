@@ -1052,8 +1052,8 @@ export default function OverViewMainTableBody(props) {
               {props.row ? props.row[rdt] : <Skeleton variant="text" />}
             </TableCell>
           );
-        } else if (rdt === "refundResend") {
-          return props.row.refundResend === "pending" ? (
+        } else if (rdt === "approveAction") {
+          return props.row.approveAction === "pending" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
               <CustomTooltip
                 disableFocusListener
@@ -1090,6 +1090,8 @@ export default function OverViewMainTableBody(props) {
                 // defaultValue={defaultValueCreateClient}
                 setOpen={setOpenApprove}
                 // reset={reset}
+                modalRef="confirmRefundRequestApprove"
+                values={{amount: props.row.refundAmount, orderUuid: props.row.id}}
                 title={t("label:areYouSureYouWantToApproveThisRefund")}
                 subTitle={t("label:onceConfirmedThisActionCannotBeReverted")}
                 route={0}
