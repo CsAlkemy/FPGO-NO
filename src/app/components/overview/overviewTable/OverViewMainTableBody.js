@@ -1091,6 +1091,7 @@ export default function OverViewMainTableBody(props) {
                 setOpen={setOpenApprove}
                 // reset={reset}
                 modalRef="confirmRefundRequestApprove"
+                values={{amount: props.row.refundAmount, orderUuid: props.row.id}}
                 title={t("label:areYouSureYouWantToApproveThisRefund")}
                 subTitle={t("label:onceConfirmedThisActionCannotBeReverted")}
                 route={0}
