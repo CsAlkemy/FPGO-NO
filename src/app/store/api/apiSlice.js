@@ -115,7 +115,8 @@ export const apiSlice = createApi({
           amount: parseFloat(payload.refundAmount),
         },
       }),
-      invalidatesTags: ["OrdersList"],
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["OrdersList"] : [""],
     }),
     resendOrder: builder.mutation({
       query: (payload) => ({

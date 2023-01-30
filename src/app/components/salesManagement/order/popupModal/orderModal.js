@@ -51,6 +51,7 @@ const OrderModal = (props) => {
   const [checkEmail, setCheckEmail] = React.useState(false);
   const [checkPhone, setCheckPhone] = React.useState(false);
   const [flag, setFlag] = React.useState(false);
+  const [flagMessage, setFlagMessage] = useState("");
   const [refundOrder] = useRefundOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
   const [resendOrder] = useResendOrderMutation();
@@ -63,6 +64,7 @@ const OrderModal = (props) => {
   const handleClose = () => {
     setOpen(false);
     if (flag) setFlag(false);
+    setFlagMessage("");
   };
   const { control, formState, handleSubmit, reset, setValue } = useForm({
     mode: "onChange",
@@ -86,8 +88,6 @@ const OrderModal = (props) => {
   }, []);
 
   const onSubmit = (values) => {
-    // console.log('gg')
-    // console.log(values)
     const data = {
       ...values,
       uuid: orderId,
@@ -95,60 +95,23 @@ const OrderModal = (props) => {
       checkEmail,
     };
     if (flag) {
-      console.log("More Than Five Thousand Request Approved");
-      // OrdersService.rejectRefundRequest(data)
-      // .then((res)=> {
-      //   if (res?.status_code === 202){
-      //     enqueueSnackbar(res.message, { variant: "success" });
-      //     setTimeout(()=>{
-      //       setOpen(false)
-      //     },1000)
-      //     OrdersService.ordersList()
-      //       .then((res) => {
-      //         if (res?.status_code === 200 && res?.is_data) {
-      //           dispatch(setOverviewMainTableDataSlice(res));
-      //         } else {
-      //           dispatch(setOverviewMainTableDataSlice([]));
-      //         }
-      //         // navigate(`/sales/orders-list`)
-      //         if (window.location.pathname === '/create-order/details') navigate(`/sales/orders-list`)
-      //         else window.location.reload();
-      //       })
-      //       .catch((e) => {
-      //         enqueueSnackbar(e, { variant: "error" });
-      //         dispatch(setOverviewMainTableDataSlice([]));
-      //         setTimeout(()=>{
-      //           setOpen(false)
-      //         },1000)
-      //       })
-      //   }
-      // })
-      // .catch((e)=> {
-      //   enqueueSnackbar(e, { variant: "error" });
-      //   setTimeout(()=>{
-      //     setOpen(false)
-      //   },1000)
-      // })
+      const payload = {
+        ...data,
+        isPartial: refundType === "partial",
+        message: flagMessage,
+      };
+      OrdersService.requestRefundApproval(payload)
+        .then((response) => {
+          if (response?.status_code === 201) {
+            enqueueSnackbar(response?.message, { variant: "success" });
+          }
+        })
+        .catch((e) => {
+          enqueueSnackbar(e, { variant: "error" });
+        });
       setOpen(false);
     } else if (headerTitle === "Resend Order") {
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
-      // OrdersService.resendOrder(data)
-      //   .then((res)=> {
-      //     if (res?.status_code === 202){
-      //       enqueueSnackbar(res.message, { variant: "success" });
-      //       setTimeout(()=>{
-      //         setOpen(false)
-      //       },1000)
-      //     }
-      //     if (window.location.pathname === '/create-order/details') navigate(`/sales/orders-list`)
-      //     else window.location.reload();
-      //   })
-      //   .catch((e)=> {
-      //     enqueueSnackbar(e, { variant: "error" });
-      //     setTimeout(()=>{
-      //       setOpen(false)
-      //     },1000)
-      //   })
       resendOrder(preparedPayload).then((res) => {
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
@@ -161,40 +124,6 @@ const OrderModal = (props) => {
         }, 1000);
       });
     } else if (headerTitle === "Cancel Order") {
-      // OrdersService.cancelOrder(data)
-      //   .then((res) => {
-      //     if (res?.status_code === 202) {
-      //       enqueueSnackbar(res.message, { variant: "success" });
-      //       setTimeout(() => {
-      //         setOpen(false);
-      //       }, 1000);
-      //       OrdersService.ordersList()
-      //         .then((res) => {
-      //           if (res?.status_code === 200 && res?.is_data) {
-      //             dispatch(setOverviewMainTableDataSlice(res));
-      //           } else {
-      //             dispatch(setOverviewMainTableDataSlice([]));
-      //           }
-      //           // navigate(`/sales/orders-list`)
-      //           if (window.location.pathname === "/create-order/details")
-      //             navigate(`/sales/orders-list`);
-      //           else window.location.reload();
-      //         })
-      //         .catch((e) => {
-      //           enqueueSnackbar(e, { variant: "error" });
-      //           dispatch(setOverviewMainTableDataSlice([]));
-      //           setTimeout(() => {
-      //             setOpen(false);
-      //           }, 1000);
-      //         });
-      //     }
-      //   })
-      //   .catch((e) => {
-      //     enqueueSnackbar(e, { variant: "error" });
-      //     setTimeout(() => {
-      //       setOpen(false);
-      //     }, 1000);
-      //   });
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
@@ -207,124 +136,37 @@ const OrderModal = (props) => {
         }, 1000);
       });
     } else if (headerTitle === "Send Refund") {
-      if (refundType === "partial" && values.refundAmount > 5000) {
-        return setFlag(true);
-
-        // return console.log("Values : ", values)
-      }
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
-        (r) => {
-          setTimeout(() => {
-            setOpen(false);
-          }, 1000);
+        (response) => {
+          if (response?.data?.status_code === 202) {
+            enqueueSnackbar(response?.data?.message, { variant: "success" });
+          } else if (response?.error) {
+            if (response?.error?.data?.status_code === 400) {
+              setFlagMessage(response?.error?.data?.message);
+              setFlag(true);
+              enqueueSnackbar(response?.error?.data?.message, {
+                variant: "error",
+              });
+            }
+          }
         }
       );
-      // OrdersService.refundOrder({ ...data, isPartial: refundType === "partial" })
-      //   .then((res)=> {
-      //     if (res?.status_code === 202){
-      //       enqueueSnackbar(res.message, { variant: "success" });
-      //       setTimeout(()=>{
-      //         setOpen(false)
-      //       },1000)
-      //       OrdersService.ordersList()
-      //         .then((res) => {
-      //           const refundRequestsCount = localStorage.getItem("refundRequestCount")
-      //           console.log("refundRequestsCount before : ", localStorage.getItem("refundRequestCount"));
-      //           localStorage.setItem("refundRequestCount", !(isNaN(refundRequestsCount)) ? parseInt(localStorage.getItem("refundRequestCount"))+1 : 1)
-      //           console.log("refundRequestsCount current : ",localStorage.getItem("refundRequestCount"));
-      //           if (res?.status_code === 200 && res?.is_data) {
-      //             dispatch(setOverviewMainTableDataSlice(res));
-      //           } else {
-      //             dispatch(setOverviewMainTableDataSlice([]));
-      //           }
-      //           // navigate(`/sales/orders-list`)
-      //           if (window.location.pathname === '/create-order/details') navigate(`/sales/orders-list`)
-      //           else window.location.reload();
-      //         })
-      //         .catch((e) => {
-      //           enqueueSnackbar(e, { variant: "error" });
-      //           dispatch(setOverviewMainTableDataSlice([]));
-      //           setTimeout(()=>{
-      //             setOpen(false)
-      //           },1000)
-      //         })
-      //     }
-      //   })
-      //   .catch((e)=> {
-      //     enqueueSnackbar(e, { variant: "error" });
-      //     setTimeout(()=>{
-      //       setOpen(false)
-      //     },1000)
-      //   })
     } else if (headerTitle === "Reject Request") {
-      // OrdersService.rejectRefundRequest(data)
-      // .then((res)=> {
-      //   if (res?.status_code === 202){
-      //     enqueueSnackbar(res.message, { variant: "success" });
-      //     setTimeout(()=>{
-      //       setOpen(false)
-      //     },1000)
-      //     OrdersService.ordersList()
-      //       .then((res) => {
-      //         if (res?.status_code === 200 && res?.is_data) {
-      //           dispatch(setOverviewMainTableDataSlice(res));
-      //         } else {
-      //           dispatch(setOverviewMainTableDataSlice([]));
-      //         }
-      //         // navigate(`/sales/orders-list`)
-      //         if (window.location.pathname === '/create-order/details') navigate(`/sales/orders-list`)
-      //         else window.location.reload();
-      //       })
-      //       .catch((e) => {
-      //         enqueueSnackbar(e, { variant: "error" });
-      //         dispatch(setOverviewMainTableDataSlice([]));
-      //         setTimeout(()=>{
-      //           setOpen(false)
-      //         },1000)
-      //       })
-      //   }
-      // })
-      // .catch((e)=> {
-      //   enqueueSnackbar(e, { variant: "error" });
-      //   setTimeout(()=>{
-      //     setOpen(false)
-      //   },1000)
-      // })
-      setOpen(false);
-    } else if (headerTitle === "moreThanThreeRefundAttempts") {
-      // OrdersService.rejectRefundRequest(data)
-      // .then((res)=> {
-      //   if (res?.status_code === 202){
-      //     enqueueSnackbar(res.message, { variant: "success" });
-      //     setTimeout(()=>{
-      //       setOpen(false)
-      //     },1000)
-      //     OrdersService.ordersList()
-      //       .then((res) => {
-      //         if (res?.status_code === 200 && res?.is_data) {
-      //           dispatch(setOverviewMainTableDataSlice(res));
-      //         } else {
-      //           dispatch(setOverviewMainTableDataSlice([]));
-      //         }
-      //         // navigate(`/sales/orders-list`)
-      //         if (window.location.pathname === '/create-order/details') navigate(`/sales/orders-list`)
-      //         else window.location.reload();
-      //       })
-      //       .catch((e) => {
-      //         enqueueSnackbar(e, { variant: "error" });
-      //         dispatch(setOverviewMainTableDataSlice([]));
-      //         setTimeout(()=>{
-      //           setOpen(false)
-      //         },1000)
-      //       })
-      //   }
-      // })
-      // .catch((e)=> {
-      //   enqueueSnackbar(e, { variant: "error" });
-      //   setTimeout(()=>{
-      //     setOpen(false)
-      //   },1000)
-      // })
+      const params = {
+        orderUuid: orderId,
+        amount: orderAmount,
+        isApproved: false,
+        note: values?.cancellationNote,
+      };
+      OrdersService.refundRequestDecision(params)
+        .then((response) => {
+          if (response?.status_code === 202) {
+            enqueueSnackbar(response?.message, { variant: "success" });
+          }
+        })
+        .catch((e) => {
+          enqueueSnackbar(e, { variant: "error" });
+        });
       setOpen(false);
     }
   };
@@ -516,13 +358,7 @@ const OrderModal = (props) => {
                     Further refunds have to be approved by the FP Admin.
                   </div>
                 )}
-                {(headerTitle === "moreThanFiveThousand" || flag) && (
-                  <div>
-                    Order refunds greater than NOK 5,000 have to be approved by
-                    the FP Admin. Refund requests usually take upto 2 working
-                    days to be addressed by the Admin.
-                  </div>
-                )}
+                {flag && <div>{flagMessage}</div>}
                 <div className="flex justify-end items-center mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
                   <Button
                     onClick={handleClose}

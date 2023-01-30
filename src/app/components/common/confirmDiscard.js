@@ -1,20 +1,63 @@
-import React from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import React from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import OrdersService from "../../data-access/services/ordersService/OrdersService";
+import { useSnackbar } from "notistack";
 
 const confirmDiscard = (props) => {
-    const navigate = useNavigate();
-  const {t} = useTranslation()
-    
-    const {title, open, setOpen, reset, subTitle, defaultValue, route} = props;
-    const handleClose = () => {
-        setOpen(false);
-    };
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const {
+    title,
+    open,
+    setOpen,
+    reset,
+    subTitle,
+    defaultValue,
+    route,
+    modalRef,
+    values,
+  } = props;
+  const handleClose = () => {
+    if (modalRef === "confirmRefundRequestApprove") {
+      const { orderUuid, amount } = values;
+      const params = {
+        orderUuid,
+        amount,
+        isApproved: true,
+        note: null,
+      };
+      OrdersService.refundRequestDecision(params)
+        .then((response) => {
+          if (response?.status_code === 202) {
+            enqueueSnackbar(response?.message, { variant: "success" });
+          }
+        })
+        .catch((e) => {
+          enqueueSnackbar(e, { variant: "error" });
+        });
+    }
+    setTimeout(() => {
+      //commented the reset as Nafees Vaiya only want to back previous screen by clicking discard(15-12-2022)
+      // reset({...defaultValue})
+      !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
+    }, 500);
+    setOpen(false);
+  };
 
   return (
     <div>
-        <Dialog
+      <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -45,14 +88,7 @@ const confirmDiscard = (props) => {
               variant="contained"
               color="secondary"
               className="rounded-4 font-semibold"
-              onClick={()=> {
-                handleClose();
-                setTimeout(()=>{
-                  //commented the reset as Nafees Vaiya only want to back previous screen by clicking discard(15-12-2022)
-                  // reset({...defaultValue})
-                    navigate(route)
-                }, 500);
-                }}
+              onClick={() => handleClose()}
             >
               {t("label:confirm")}
             </Button>
@@ -60,7 +96,7 @@ const confirmDiscard = (props) => {
         </div>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default confirmDiscard
+export default confirmDiscard;

@@ -78,9 +78,7 @@ class OrdersService {
     let d;
     d = data.map((row) => {
       const preparePhone =
-        row.countryCode && row.msisdn
-          ? row.countryCode + row.msisdn
-          : null;
+        row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
       const phone = preparePhone ? preparePhone.split("+") : null;
       return {
         uuid: row.orderUuid,
@@ -97,19 +95,19 @@ class OrdersService {
           row.status.toLowerCase() === "sent"
             ? "Resend"
             : row.status.toLowerCase() === "paid" ||
-            row.status.toLowerCase() === "partial refunded" ||
-            row.status.toLowerCase() === "invoiced"
-              ? "Refund"
-              : null,
+              row.status.toLowerCase() === "partial refunded" ||
+              row.status.toLowerCase() === "invoiced"
+            ? "Refund"
+            : null,
         isCancel: row.status.toLowerCase() === "sent",
         // refundResend: "Resend",
         // isCancel: true,
       };
-    })
+    });
     return d;
-  }
+  };
 
-  prepareCreateOrderPayload = (params)=> {
+  prepareCreateOrderPayload = (params) => {
     const products =
       params.order.length &&
       params.order
@@ -139,7 +137,7 @@ class OrdersService {
             amount:
               order.quantity && order.rate
                 ? parseInt(order.quantity) * parseFloat(order.rate) -
-                parseFloat(order?.discount ? order.discount : 0)
+                  parseFloat(order?.discount ? order.discount : 0)
                 : null,
           };
         });
@@ -150,11 +148,11 @@ class OrdersService {
       params.billingCity ||
       params.billingCountry
         ? {
-          street: params.billingAddress ? params.billingAddress : null,
-          zip: params.billingZip ? params.billingZip : null,
-          city: params.billingCity ? params.billingCity : null,
-          country: params.billingCountry ? params.billingCountry : null,
-        }
+            street: params.billingAddress ? params.billingAddress : null,
+            zip: params.billingZip ? params.billingZip : null,
+            city: params.billingCity ? params.billingCity : null,
+            country: params.billingCountry ? params.billingCountry : null,
+          }
         : null;
     const invoiceReferences =
       params.referenceNumber ||
@@ -164,17 +162,17 @@ class OrdersService {
       params.termsConditions ||
       params.receiptNo
         ? {
-          referenceNo: params.referenceNumber ? params.referenceNumber : null,
-          internalReference: params.internalReference
-            ? params.internalReference
-            : null,
-          customerReference: params.customerReference
-            ? params.customerReference
-            : null,
-          customerNotes: params.customerNotes ? params.customerNotes : null,
-          receiptNo: params.receiptNo ? params.receiptNo : null,
-          tnc: params.termsConditions ? params.termsConditions : null,
-        }
+            referenceNo: params.referenceNumber ? params.referenceNumber : null,
+            internalReference: params.internalReference
+              ? params.internalReference
+              : null,
+            customerReference: params.customerReference
+              ? params.customerReference
+              : null,
+            customerNotes: params.customerNotes ? params.customerNotes : null,
+            receiptNo: params.receiptNo ? params.receiptNo : null,
+            tnc: params.termsConditions ? params.termsConditions : null,
+          }
         : null;
     const internalReferences =
       params.referenceNumber ||
@@ -184,9 +182,9 @@ class OrdersService {
       params.termsConditions ||
       params.receiptNo
         ? {
-          referenceNo: params.referenceNumber ? params.referenceNumber : null,
-          notes: params.customerNotes ? params.customerNotes : null,
-        }
+            referenceNo: params.referenceNumber ? params.referenceNumber : null,
+            notes: params.customerNotes ? params.customerNotes : null,
+          }
         : null;
     const primaryPhoneNumber = params.primaryPhoneNumber.split("+");
     return {
@@ -235,22 +233,22 @@ class OrdersService {
       invoiceReferences,
       internalReferences,
     };
-  }
+  };
 
-  prepareResendOrderPayload = (params)=> {
+  prepareResendOrderPayload = (params) => {
     const phone = params?.phone ? params.phone.split("+") : null;
     const msisdn = phone ? phone[phone.length - 1].slice(2) : null;
     const countryCode = phone
       ? "+" + phone[phone.length - 1].slice(0, 2)
       : null;
 
-    return  {
-      uuid:params.uuid,
+    return {
+      uuid: params.uuid,
       countryCode: params?.checkPhone && countryCode ? countryCode : null,
       msisdn: params?.checkPhone && msisdn ? msisdn : null,
       email: params?.checkEmail ? params?.email : null,
-    }
-  }
+    };
+  };
 
   //Not using - Shifted RTK-Query
   createOrder = async (params) => {
@@ -450,15 +448,6 @@ class OrdersService {
       },
     };
     return new Promise((resolve, reject) => {
-      // return AuthService.axiosRequestHelper()
-      //   .then((status) => {
-      //     if (status) {
-      //
-      //     } else reject([]);
-      //   })
-      //   .catch((e) => {
-      //     reject("Something went wrong");
-      //   });
       const URL = `${EnvVariable.BASEURL}/orders/update/${params.orderUuid}`;
       return axios
         .post(URL, data, config)
@@ -529,15 +518,6 @@ class OrdersService {
 
   getOrdersDetailsByUUIDPayment = (uuid) => {
     return new Promise((resolve, reject) => {
-      // return AuthService.axiosRequestHelper()
-      // .then((status) => {
-      //   if (status) {
-      //
-      //   } else reject("Something went wrong");
-      // })
-      // .catch((e) => {
-      //   reject("Something went wrong");
-      // });
       const URL = `${EnvVariable.BASEURL}/orders/details/${uuid}`;
       const config = {
         headers: {
@@ -566,15 +546,6 @@ class OrdersService {
 
   getPaymentLinkOpenStatus = (uuid) => {
     return new Promise((resolve, reject) => {
-      // return AuthService.axiosRequestHelper()
-      // .then((status) => {
-      //   if (status) {
-      //
-      //   } else reject("Something went wrong");
-      // })
-      // .catch((e) => {
-      //   reject("Something went wrong");
-      // });
       const URL = `${EnvVariable.BASEURL}/orders/viewed/${uuid}`;
       const config = {
         headers: {
@@ -667,36 +638,6 @@ class OrdersService {
     });
   };
 
-  rejectRefundRequest = (params) => {
-    const body = {
-      cancellationNote: params?.cancellationNote
-        ? params.cancellationNote
-        : null,
-    };
-    return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            //TODO : Change the URL
-            const URL = `${EnvVariable.BASEURL}/orders/cancel/${params.uuid}`;
-            return axios
-              .post(URL, body)
-              .then((response) => {
-                if (response?.data?.status_code === 202) {
-                  resolve(response.data);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                reject(e.response.data.errors);
-              });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
-    });
-  };
-
   //Not using - Shifted RTK-Query
   refundOrder = (params) => {
     const body = {
@@ -767,17 +708,6 @@ class OrdersService {
                       Total: row?.amount ? row?.amount : "-",
                       Status: row?.status ? row?.status : "-",
                     };
-                    // {Ordrenr: row.orderNumber,
-                    //   Client: row.clientName,
-                    //   InvoiceNumber: row.invoiceNumber,
-                    //   Kunde: row.customerName,
-                    //   KundeType: row.customerType,
-                    //   Betalingsmetode: row.paymentMethod,
-                    //   ImportedDate: row.orderDate,
-                    //   SMSDate: row.smsDate,
-                    //   Bestillingstid: row.paymentDate,
-                    //   Total: row.amount,
-                    // };
                   });
                   // d.status_code = 200;
                   // d.is_data = true;
@@ -840,320 +770,103 @@ class OrdersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/orders/list`;
-            // return axios
-            //   .get(URL)
-            //   .then((response) => {
-            //     if (
-            //       response?.data?.status_code === 200 &&
-            //       response?.data?.is_data
-            //     ) {
-            //       let d;
-            //       d = response.data.data.map((row) => {
-            //         const preparePhone =
-            //           row.countryCode && row.msisdn
-            //             ? row.countryCode + row.msisdn
-            //             : null;
-            //         const phone = preparePhone ? preparePhone.split("+") : null;
-            //         return {
-            //           uuid: row.orderUuid,
-            //           date: row.dateCreated,
-            //           id: row.orderUuid,
-            //           name: row.name,
-            //           dueDate: row.paymentLinkDueDate,
-            //           phone: phone ? "+" + phone[phone.length - 1] : null,
-            //           email: row?.email ? row?.email : null,
-            //           amount: row.amount,
-            //           stage: row?.status ? row?.status.toLowerCase() : null,
-            //           // stage: "Partial Refunded",
-            //           refundResend:
-            //             row.status.toLowerCase() === "sent"
-            //               ? "Resend"
-            //               : row.status.toLowerCase() === "paid" ||
-            //               row.status.toLowerCase() === "partial refunded" ||
-            //               row.status.toLowerCase() === "invoiced"
-            //                 ? "Refund"
-            //                 : null,
-            //           isCancel: row.status.toLowerCase() === "sent",
-            //           // refundResend: "Resend",
-            //           // isCancel: true,
-            //         };
-            //       });
-            //       d.status_code = 200;
-            //       d.is_data = true;
-            //       resolve(d);
-            //     } else if (
-            //       response.data.status_code === 200 &&
-            //       !response.data.is_data
-            //     ) {
-            //       resolve([]);
-            //     } else reject("Something went wrong");
-            //   })
-            //   .catch((e) => {
-            //     // reject(e.response.data.errors)
-            //     if (e?.response?.data?.status_code === 404)
-            //       resolve(e.response.data);
-            //     reject(e.response.data.message);
-            //   });
-            let dummyResponse = {
-              status_code: 200,
-              status_message: "OK",
-              message: "Refund Request(s) Retrieved Successfully",
-              is_data: true,
-              data: [
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "ACCEPTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "REJECTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "REJECTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "ACCEPTED",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-                {
-                  dateCreated: "08.12.2022",
-                  orderUuid: "ODR1431405691",
-                  clientName: "Kongkrio De Masia",
-                  customerName: "JK Sutradhor",
-                  orderAmount: 30000,
-                  refundAmount: 3000,
-                  status: "PENDING",
-                },
-              ],
-            };
-            let d;
-            d = dummyResponse.data.map((row) => {
-              // const preparePhone =
-              //   row.countryCode && row.msisdn
-              //     ? row.countryCode + row.msisdn
-              //     : null;
-              // const phone = preparePhone ? preparePhone.split("+") : null;
-              return {
-                uuid: row.orderUuid,
-                date: row.dateCreated,
-                id: row.orderUuid,
-                clientName: row.clientName,
-                customerName: row.customerName,
-                // phone: phone ? "+" + phone[phone.length - 1] : null,
-                // email: row?.email ? row?.email : null,
-                orderAmount: row.orderAmount,
-                refundAmount: row.refundAmount,
-                stage: row?.status ? row?.status.toLowerCase() : null,
-                // stage: "Partial Refunded",
-                refundResend:
-                  row.status.toLowerCase() === "pending"
-                    ? "pending"
-                    : row.status.toLowerCase(),
-                isCancel: row.status.toLowerCase() === "pending",
-                // refundResend: "Resend",
-                // isCancel: true,
-              };
-            });
-            d.status_code = 200;
-            d.is_data = true;
-            resolve(d);
+            const URL = `${EnvVariable.BASEURL}/orders/refund/list/all`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  let d;
+                  d = response.data.data.map((row) => {
+                    return {
+                      date: row.dateRequested,
+                      id: row.orderId,
+                      clientName: row.clientName,
+                      customerName: row.customerName,
+                      orderAmount: row.orderAmount,
+                      refundAmount: row.refundAmount,
+                      stage: row?.status ? row?.status.toLowerCase() : null,
+                      approveAction: row?.status
+                        ? row?.status.toLowerCase()
+                        : null,
+                      isCancel: row?.status.toLowerCase() === "pending",
+                    };
+                  });
+                  d.status_code = 200;
+                  d.is_data = true;
+                  resolve(d);
+                } else if (
+                  response.data.status_code === 200 &&
+                  !response.data.is_data
+                ) {
+                  resolve([]);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                // reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e.response.data.message);
+              });
           } else reject("Something went wrong");
         })
         .catch((e) => {
           console.log("E : ", e);
+          reject("Something went wrong");
+        });
+    });
+  };
+
+  refundRequestDecision = async (params) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/orders/refund/decision/${params.orderUuid}`;
+            return axios
+              .post(URL, params)
+              .then((response) => {
+                if (response?.data?.status_code === 202) {
+                  resolve(response.data);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                reject(e.response.data.errors);
+              });
+          } else reject("Something went wrong");
+        })
+        .catch((e) => {
+          reject("Something went wrong");
+        });
+    });
+  };
+
+  requestRefundApproval = async (params) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const payload = {
+              isPartial: params?.isPartial,
+              amount: params?.refundAmount,
+              message: params?.message,
+            };
+            const URL = `${EnvVariable.BASEURL}/orders/refund/request/approval/${params.uuid}`;
+            return axios
+              .post(URL, payload)
+              .then((response) => {
+                if (response?.data?.status_code === 201) {
+                  resolve(response.data);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
+                reject(e?.response?.data?.message);
+              });
+          } else reject("Something went wrong");
+        })
+        .catch((e) => {
           reject("Something went wrong");
         });
     });
