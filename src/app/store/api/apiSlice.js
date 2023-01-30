@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { EnvVariable } from "../../data-access/utils/EnvVariables";
 import AuthService from "../../data-access/services/authService";
+import UtilsServices from "../../data-access/utils/UtilsServices";
 
 const userInfo = AuthService.getUserInfo();
 const baseQuery = fetchBaseQuery({
@@ -8,9 +9,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     headers.set(
       "authorization",
-      `Bearer ${
-        JSON.parse(localStorage.getItem("fp_user")).token_data.access_token
-      }`
+      `Bearer ${UtilsServices.getFPUserData().token_data.access_token}`
     );
     return headers;
   },
