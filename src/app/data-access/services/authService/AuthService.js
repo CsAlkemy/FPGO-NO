@@ -322,15 +322,14 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   getUserInfo = () => {
-    //SCK
-    // return UtilsServices.getFPUserData();
-    return UtilsServices.decryptData(localStorage.getItem(SecretKey));
+    return UtilsServices.getFPUserData();
   };
 
   logout = () => {
     return this.axiosRequestHelper().then((status) => {
       if (status) {
-        const userId = UtilsServices.getFPUserData().user_data.uuid;
+        const userData = UtilsServices.getFPUserData();
+        const userId = userData?.user_data?.uuid;
         const URL = `${EnvVariable.BASEURL}/auth/logout/${userId}`;
         axios
           .put(URL)
@@ -508,10 +507,12 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   getAccessTokenExpiresAt = () => {
-    return UtilsServices.getFPUserData().token_data.access_token_expires_at;
+    const userInfo = UtilsServices.getFPUserData();
+    return userInfo?.token_data?.access_token_expires_at;
   };
   getRefreshTokenExpiresAt = () => {
-    return UtilsServices.getFPUserData().token_data.refresh_token_expires_at;
+    const userInfo = UtilsServices.getFPUserData();
+    return userInfo?.token_data?.refresh_token_expires_at;
     // return window.localStorage.getItem("fp_refresh_token_expires_at");
   };
 }

@@ -22,7 +22,8 @@ class UtilsServices {
   };
 
   getFPUserData = () => {
-    return this.decryptData(localStorage.getItem(SecretKey));
+    const isLocalData = localStorage.getItem(SecretKey);
+    return isLocalData ? this.decryptData(localStorage.getItem(SecretKey)) : null;
   };
 }
 
