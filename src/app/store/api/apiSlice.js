@@ -3,13 +3,13 @@ import { EnvVariable } from "../../data-access/utils/EnvVariables";
 import AuthService from "../../data-access/services/authService";
 import UtilsServices from "../../data-access/utils/UtilsServices";
 
-const userInfo = AuthService.getUserInfo();
+const userInfo = UtilsServices.getFPUserData();
 const baseQuery = fetchBaseQuery({
   baseUrl: `${EnvVariable.BASEURL}`,
   prepareHeaders: (headers, { getState }) => {
     headers.set(
       "authorization",
-      `Bearer ${UtilsServices.getFPUserData().token_data.access_token}`
+      `Bearer ${userInfo?.token_data?.access_token}`
     );
     return headers;
   },
