@@ -117,7 +117,7 @@ const TimelineLog = () => {
                     {log.datetime && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Date:
+                          {t("label:date")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.datetime}
@@ -127,7 +127,7 @@ const TimelineLog = () => {
                     {log.orderUuid && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Order ID:
+                          {t("label:orderId")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.orderUuid}
@@ -137,7 +137,7 @@ const TimelineLog = () => {
                     {log.sentTo && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Sent to:
+                          {t("label:sentTo")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.sentTo}
@@ -147,7 +147,7 @@ const TimelineLog = () => {
                     {log.refundAmount && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Refund amount:
+                          {t("label:refundAmount")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.refundAmount}
@@ -157,7 +157,7 @@ const TimelineLog = () => {
                     {log.actionBy && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Action by:
+                          {t("label:actionBy")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.actionBy}
@@ -167,7 +167,7 @@ const TimelineLog = () => {
                     {log.paymentMethod && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Payment method:
+                          {t("label:paymentMethod")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.paymentMethod}
@@ -177,7 +177,7 @@ const TimelineLog = () => {
                     {log.note && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Note:
+                          {t("label:note")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.note}
@@ -188,7 +188,7 @@ const TimelineLog = () => {
                     log?.organizationBusinessId.length === 9 ? (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Org-Id:
+                          {t("label:orgId")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log?.organizationBusinessId}
@@ -198,7 +198,7 @@ const TimelineLog = () => {
                       log?.organizationBusinessId.length === 11 ? (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          P-Number:
+                          {t("label:pNumber")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log?.organizationBusinessId}
