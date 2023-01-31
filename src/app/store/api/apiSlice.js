@@ -3,7 +3,7 @@ import { EnvVariable } from "../../data-access/utils/EnvVariables";
 import AuthService from "../../data-access/services/authService";
 import UtilsServices from "../../data-access/utils/UtilsServices";
 
-const userInfo = UtilsServices.getFPUserData();
+let userInfo = UtilsServices.getFPUserData();
 const baseQuery = fetchBaseQuery({
   baseUrl: `${EnvVariable.BASEURL}`,
   prepareHeaders: (headers, { getState }) => {
@@ -29,6 +29,7 @@ const baseQueryWithoutToken = fetchBaseQuery({
 });
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
+  userInfo = UtilsServices.getFPUserData()
   let result =
     args?.url === `/credit/check/checkout/private` ||
     args?.url === `/credit/check/checkout/corporate`
