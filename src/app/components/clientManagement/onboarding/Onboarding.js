@@ -183,10 +183,10 @@ const Onboarding = () => {
       : null;
 
     const vatRates = values.vat.length
-      ? values.vat.map((vat) => {
+      ? values.vat.filter((v)=> v.vatValue).map((vat) => {
           return {
             uuid: null,
-            name: vat.vatName,
+            name: vat.vatName ? vat.vatName : null,
             value: parseFloat(vat.vatValue),
             isActive: true,
             bookKeepingReference: vat?.bookKeepingReference

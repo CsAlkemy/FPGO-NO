@@ -447,13 +447,13 @@ const ClientDetails = () => {
       : null;
 
     const vatRates = values.vat.length
-      ? values.vat.map((vat, index) => {
+      ? values.vat.filter((v)=> v.vatValue).map((vat, index) => {
           return {
             uuid:
               info?.settings?.vatRates && info?.settings?.vatRates[index]?.uuid
                 ? info?.settings?.vatRates[index]?.uuid
                 : null,
-            name: vat.vatName,
+            name: vat.vatName ? vat?.vatName : null,
             value: parseFloat(vat.vatValue),
             isActive: vat?.vatActive ? vat.vatActive : false,
             bookKeepingReference: vat?.bookKeepingReference
