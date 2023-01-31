@@ -9,6 +9,7 @@ import { setOverviewMainTableDataSlice } from "app/store/overview-table/overview
 import { useSnackbar } from "notistack";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import { useTranslation } from "react-i18next";
+import { useGetRefundRequestsListQuery } from 'app/store/api/apiSlice';
 
 export default function RefundRequestsOverview() {
   const { t } = useTranslation();
@@ -21,10 +22,11 @@ export default function RefundRequestsOverview() {
   const tabs = [0, 1, 2, 3];
   const headerSubtitle = t("label:refundRequests");
   // const headerButtonLabel = t("label:createOrder");
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const ordersList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
+  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetRefundRequestsListQuery()
   const refundRequestsOverviewHeaderRows = [
     {
       id: "date",
@@ -91,23 +93,7 @@ export default function RefundRequestsOverview() {
     },
   ];
 
-  useEffect(() => {
-    OrdersService.refundRequests()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          dispatch(setOverviewMainTableDataSlice(res));
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          dispatch(setOverviewMainTableDataSlice([]));
-        }
-      })
-      .catch((e) => {
-        if (isLoading) enqueueSnackbar(e, { variant: "error" });
-        setIsLoading(false);
-        dispatch(setOverviewMainTableDataSlice([]));
-      });
-  }, [isLoading]);
+  const preparedData = data?.is_data ?  OrdersService.mapRefundRequestsList(data.data) : []
 
   return (
     <OverviewMainTable
@@ -115,11 +101,11 @@ export default function RefundRequestsOverview() {
       // headerButtonLabel={headerButtonLabel}
       tableName={refundRequestsOverview}
       headerRows={refundRequestsOverviewHeaderRows}
-      tableData={ordersList.tableData}
+      tableData={data?.is_data ? preparedData : []}
       rowDataFields={refundRequestsOverviewRowDataFields}
       tabPanelsLabel={tabPanelsLabel}
       tabs={tabs}
-      isLoading={isLoading}
+      isLoading={isFetching}
     />
   );
 }
