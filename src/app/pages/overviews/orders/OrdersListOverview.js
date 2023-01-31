@@ -8,12 +8,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { setOverviewMainTableDataSlice } from "app/store/overview-table/overviewTableSlice";
 import { useSnackbar } from "notistack";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import { useTranslation } from 'react-i18next';
-import { useGetOrdersListQuery } from 'app/store/api/apiSlice';
+import { useTranslation } from "react-i18next";
+import { useGetOrdersListQuery } from "app/store/api/apiSlice";
+import UtilsServices from "../../../data-access/utils/UtilsServices";
 
 export default function OrdersListOverview() {
-  const {t} = useTranslation()
-  const tabPanelsLabel = [t("label:all"), t("label:sent"), t("label:paid"), t("label:invoiced"), t("label:expired")];
+  const { t } = useTranslation();
+  const tabPanelsLabel = [
+    t("label:all"),
+    t("label:sent"),
+    t("label:paid"),
+    t("label:invoiced"),
+    t("label:expired"),
+  ];
   const tabs = [0, 1, 2, 3, 4];
   const headerSubtitle = t("label:allOrders");
   const headerButtonLabel = t("label:createOrder");
@@ -21,69 +28,70 @@ export default function OrdersListOverview() {
   const dispatch = useDispatch();
   const ordersList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetOrdersListQuery()
+  const { data, isFetching, isLoading, isSuccess, isError, error } =
+    useGetOrdersListQuery();
   const orderListOverviewHeaderRows = [
     {
-      id: 'date',
-      align: 'left',
+      id: "date",
+      align: "left",
       disablePadding: false,
       label: t("label:dateCreated"),
       sort: true,
     },
     {
-      id: 'id',
-      align: 'left',
+      id: "id",
+      align: "left",
       disablePadding: false,
       label: t("label:orderId"),
       sort: true,
     },
     {
-      id: 'name',
-      align: 'left',
+      id: "name",
+      align: "left",
       disablePadding: false,
       label: t("label:customerName"),
       sort: true,
     },
     {
-      id: 'dueDate',
-      align: 'left',
+      id: "dueDate",
+      align: "left",
       disablePadding: false,
       label: t("label:paymentLinkDueDate"),
       sort: true,
     },
     {
-      id: 'phone',
-      align: 'left',
+      id: "phone",
+      align: "left",
       disablePadding: false,
       label: t("label:phoneNo"),
       sort: true,
     },
     {
-      id: 'amount',
-      align: 'right',
+      id: "amount",
+      align: "right",
       disablePadding: false,
       label: t("label:amount"),
       sort: true,
     },
     {
-      id: 'stage',
-      align: 'right',
+      id: "stage",
+      align: "right",
       disablePadding: false,
       label: t("label:status"),
       sort: true,
     },
     {
-      id: 'refundResend',
-      align: 'right',
+      id: "refundResend",
+      align: "right",
       disablePadding: false,
-      label: '',
+      label: "",
       sort: false,
     },
     {
-      id: 'cancel',
-      align: 'right',
+      id: "cancel",
+      align: "right",
       disablePadding: false,
-      label: '',
+      label: "",
       sort: false,
     },
   ];
@@ -106,7 +114,9 @@ export default function OrdersListOverview() {
   //     });
   // }, [isLoading]);
 
-  const preparedData = data?.is_data ?  OrdersService.mapOrderList(data.data) : []
+  const preparedData = data?.is_data
+    ? OrdersService.mapOrderList(data.data)
+    : [];
 
   return (
     <OverviewMainTable
@@ -122,5 +132,5 @@ export default function OrdersListOverview() {
       // isLoading={isLoading}
       isLoading={isFetching}
     />
-  )
+  );
 }

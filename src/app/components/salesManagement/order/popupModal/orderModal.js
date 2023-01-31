@@ -31,9 +31,9 @@ import {
 import { useTranslation } from "react-i18next";
 import {
   useCancelOrderMutation,
-  useRefundOrderMutation,
+  useRefundOrderMutation, useRefundRequestDecisionMutation, useRequestRefundApprovalMutation,
   useResendOrderMutation,
-} from "app/store/api/apiSlice";
+} from 'app/store/api/apiSlice';
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -55,6 +55,8 @@ const OrderModal = (props) => {
   const [refundOrder] = useRefundOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
   const [resendOrder] = useResendOrderMutation();
+  const [requestRefundApproval] = useRequestRefundApprovalMutation();
+  const [refundRequestDecision] = useRefundRequestDecisionMutation();
 
   const label = { inputProps: { "aria-label": "Checkbox" } };
   const { enqueueSnackbar } = useSnackbar();
@@ -96,20 +98,23 @@ const OrderModal = (props) => {
     };
     if (flag) {
       const payload = {
-        ...data,
         isPartial: refundType === "partial",
+        amount: values?.refundAmount,
         message: flagMessage,
+        uuid: orderId
       };
-      OrdersService.requestRefundApproval(payload)
+      requestRefundApproval(payload)
         .then((response) => {
-          if (response?.status_code === 201) {
-            enqueueSnackbar(response?.message, { variant: "success" });
+          if (response?.data?.status_code === 201) {
+            enqueueSnackbar(response?.data?.message, { variant: "success" });
+          } else if (response?.error) {
+            enqueueSnackbar(response?.error?.data?.message, {
+              variant: "error",
+            });
           }
-        })
-        .catch((e) => {
-          enqueueSnackbar(e, { variant: "error" });
+          setOpen(false);
+          setFlag(false);
         });
-      setOpen(false);
     } else if (headerTitle === "Resend Order") {
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
@@ -158,16 +163,18 @@ const OrderModal = (props) => {
         isApproved: false,
         note: values?.cancellationNote,
       };
-      OrdersService.refundRequestDecision(params)
+      refundRequestDecision(params)
         .then((response) => {
-          if (response?.status_code === 202) {
-            enqueueSnackbar(response?.message, { variant: "success" });
+          if (response?.data?.status_code === 202) {
+            enqueueSnackbar(response?.data?.message, { variant: "success" });
+          } else if (response?.error) {
+            enqueueSnackbar(response?.error?.data?.message, {
+              variant: "error",
+            });
           }
-        })
-        .catch((e) => {
-          enqueueSnackbar(e, { variant: "error" });
+          setOpen(false);
+          setFlag(false);
         });
-      setOpen(false);
     }
   };
 
@@ -198,7 +205,7 @@ const OrderModal = (props) => {
                         {orderName ? orderName : "-"}
                       </div>
                       <div className="text-MonochromeGray-300">
-                        Order ID: {orderId ? orderId : "-"}
+                        {t("label:orderId")}: {orderId ? orderId : "-"}
                       </div>
                     </div>
                     <div className="header6 text-MonochromeGray-700">
@@ -352,12 +359,12 @@ const OrderModal = (props) => {
                     />
                   </div>
                 )}
-                {headerTitle === "moreThanThreeRefundAttempts" && (
-                  <div>
-                    You have exceeded your monthly allowance of 3 refunds.
-                    Further refunds have to be approved by the FP Admin.
-                  </div>
-                )}
+                {/*{headerTitle === "moreThanThreeRefundAttempts" && (*/}
+                {/*  <div>*/}
+                {/*    You have exceeded your monthly allowance of 3 refunds.*/}
+                {/*    Further refunds have to be approved by the FP Admin.*/}
+                {/*  </div>*/}
+                {/*)}*/}
                 {flag && <div>{flagMessage}</div>}
                 <div className="flex justify-end items-center mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
                   <Button

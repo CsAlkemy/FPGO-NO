@@ -765,6 +765,28 @@ class OrdersService {
     });
   };
 
+  mapRefundRequestsList = (data)=> {
+    let d;
+    d = data.map((row) => {
+      return {
+        date: row.dateRequested,
+        id: row.orderId,
+        clientName: row.clientName,
+        customerName: row.customerName,
+        orderAmount: row.orderAmount,
+        refundAmount: row.refundAmount,
+        stage: row?.status ? row?.status.toLowerCase() : null,
+        approveAction: row?.status
+          ? row?.status.toLowerCase()
+          : null,
+        isCancel: row?.status.toLowerCase() === "pending",
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
+  }
+
   refundRequests = async () => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()

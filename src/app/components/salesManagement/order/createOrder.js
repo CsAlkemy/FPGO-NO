@@ -50,10 +50,11 @@ import {
 } from '../utils/helper';
 import ClientService from '../../../data-access/services/clientsService/ClientService';
 import { useCreateOrderMutation } from 'app/store/api/apiSlice';
+import UtilsServices from '../../../data-access/utils/UtilsServices';
 
 const createOrder = () => {
   const { t } = useTranslation();
-  const userInfo = JSON.parse(localStorage.getItem("fp_user"))
+  const userInfo = UtilsServices.getFPUserData()
   const [open, setOpen] = React.useState(false);
   const [expanded1, setExpanded1] = React.useState(false);
   const [expanded0, setExpanded0] = React.useState(false);

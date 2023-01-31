@@ -13,12 +13,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { BsQuestionCircle } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import CategoryService from "../../../data-access/services/categoryService/CategoryService";
@@ -26,22 +26,24 @@ import ProductService from "../../../data-access/services/productsService/Produc
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import FAQs from "../../common/faqs";
 import {
-  defaultValueCreateProduct, validateSchemaProductCreate
+  defaultValueCreateProduct,
+  validateSchemaProductCreate,
 } from "../utils/helper";
-import ClientService from '../../../data-access/services/clientsService/ClientService';
-import { useCreateProductMutation } from 'app/store/api/apiSlice';
+import ClientService from "../../../data-access/services/clientsService/ClientService";
+import { useCreateProductMutation } from "app/store/api/apiSlice";
+import UtilsServices from "../../../data-access/utils/UtilsServices";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const createProducts = (onSubmit = () => { }) => {
-  const info = JSON.parse(localStorage.getItem("fp_user"))
-  const { t } = useTranslation()
+const createProducts = (onSubmit = () => {}) => {
+  const info = UtilsServices.getFPUserData();
+  const { t } = useTranslation();
   // const [productType, setProductType] = React.useState(1);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [taxes, setTaxes] = React.useState([])
+  const [taxes, setTaxes] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [createProduct] = useCreateProductMutation();
@@ -55,18 +57,17 @@ const createProducts = (onSubmit = () => { }) => {
   });
   const { isValid, dirtyFields, errors } = formState;
   const onRawSubmit = (values) => {
-    setLoading(true)
-    const preparedPaload = ProductService.prepareCreateProductPayload(values)
-    createProduct(preparedPaload)
-      .then((response)=> {
-        if (response?.data?.status_code === 201) {
-          enqueueSnackbar(response?.data?.message, { variant: "success" });
-          navigate("/products/products-list");
-          setLoading(false)
-        } else {
-          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
-        }
-      })
+    setLoading(true);
+    const preparedPaload = ProductService.prepareCreateProductPayload(values);
+    createProduct(preparedPaload).then((response) => {
+      if (response?.data?.status_code === 201) {
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        navigate("/products/products-list");
+        setLoading(false);
+      } else {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      }
+    });
     // ProductService.createProduct(values)
     //   .then((res) => {
     //     if (res?.status_code === 201) {
@@ -99,17 +100,17 @@ const createProducts = (onSubmit = () => { }) => {
   }, []);
 
   useEffect(() => {
-    if (info?.user_data?.organization?.uuid){
+    if (info?.user_data?.organization?.uuid) {
       ClientService.vateRatesList(info?.user_data?.organization?.uuid)
         .then((res) => {
           if (res?.status_code === 200) {
             setTaxes(res?.data);
-          }else{
-            setTaxes([])
+          } else {
+            setTaxes([]);
           }
         })
         .catch((e) => {
-          setTaxes([])
+          setTaxes([]);
         });
     }
   }, []);
@@ -124,7 +125,9 @@ const createProducts = (onSubmit = () => { }) => {
             onSubmit={handleSubmit(onRawSubmit)}
           >
             <div className=" header-click-to-action">
-              <div className="header-text header6">{t("label:createProduct")}</div>
+              <div className="header-text header6">
+                {t("label:createProduct")}
+              </div>
               <div className="button-container-product">
                 <Button
                   color="secondary"
@@ -146,15 +149,14 @@ const createProducts = (onSubmit = () => { }) => {
                 >
                   {t("label:createProduct")}
                 </LoadingButton>
-
               </div>
             </div>
             <div className="main-layout-product">
               <div className="col-span-1 md:col-span-4 bg-white">
                 {/*<div>*/}
-                  <div className="create-user-form-header subtitle3 bg-m-grey-25">
-                    {t("label:productDetails")}
-                  </div>
+                <div className="create-user-form-header subtitle3 bg-m-grey-25">
+                  {t("label:productDetails")}
+                </div>
                 {/*  <div className="p-10">*/}
                 {/*    <div className="create-user-roles caption2 mb-0-i">*/}
                 {/*      {t("label:productType")}**/}
@@ -250,7 +252,9 @@ const createProducts = (onSubmit = () => { }) => {
                         required
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">{t("label:kr")}</InputAdornment>
+                            <InputAdornment position="end">
+                              {t("label:kr")}
+                            </InputAdornment>
                           ),
                         }}
                       />
@@ -342,7 +346,9 @@ const createProducts = (onSubmit = () => { }) => {
                               {...params}
                               {...field}
                               inputRef={ref}
-                              placeholder={t("label:searchCategoryToAssignThisProduct")}
+                              placeholder={t(
+                                "label:searchCategoryToAssignThisProduct"
+                              )}
                             />
                           )}
                         />
@@ -378,32 +384,25 @@ const createProducts = (onSubmit = () => { }) => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 px-10 my-32 gap-20">
                     <Controller
-                      name='tax'
+                      name="tax"
                       control={control}
                       render={({ field }) => (
-                        <FormControl
-                          error={!!errors.tax}
-                          required
-                          fullWidth
-                        >
-                          <InputLabel id='tax'>{t("label:taxRate")}</InputLabel>
+                        <FormControl error={!!errors.tax} required fullWidth>
+                          <InputLabel id="tax">{t("label:taxRate")}</InputLabel>
                           <Select
                             {...field}
                             labelId="tax"
                             id="tax"
-                            label='Tax Rate'
-                          //defaultValue={0}
+                            label="Tax Rate"
+                            //defaultValue={0}
                           >
-                            {taxes && taxes.length ? taxes.map((tax, index) => (
+                            {taxes && taxes.length ? (
+                              taxes.map((tax, index) =>
                                 tax.status === "Active" ? (
-                                <MenuItem
-                                  key={index}
-                                  value={tax.value}
-                                >
-                                  {tax.value}
-                                </MenuItem>
-                              )
-                                : (
+                                  <MenuItem key={index} value={tax.value}>
+                                    {tax.value}
+                                  </MenuItem>
+                                ) : (
                                   <MenuItem
                                     key={index}
                                     value={tax.value}
@@ -412,13 +411,12 @@ const createProducts = (onSubmit = () => { }) => {
                                     {tax.value}
                                   </MenuItem>
                                 )
-                            ))
-                            :<MenuItem
-                                key={0}
-                                value={0}
-                              >
+                              )
+                            ) : (
+                              <MenuItem key={0} value={0}>
                                 0
-                              </MenuItem>}
+                              </MenuItem>
+                            )}
                           </Select>
                           <FormHelperText>
                             {errors?.tax?.message}
@@ -442,7 +440,9 @@ const createProducts = (onSubmit = () => { }) => {
                           fullWidth
                           InputProps={{
                             endAdornment: (
-                              <InputAdornment position="end">{t("label:kr")}</InputAdornment>
+                              <InputAdornment position="end">
+                                {t("label:kr")}
+                              </InputAdornment>
                             ),
                           }}
                         />
