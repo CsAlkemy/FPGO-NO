@@ -92,7 +92,7 @@ const TimelineLog = () => {
         <div className="bg-white grid grid-cols-2 sm:grid-cols-4 gap-5 rounded-4">
           <div className="border-r-1 border-MonochromeGray-50 p-10">
             <div className="subtitle3 text-MonochromeGray-300">
-              No. of Orders
+              {t("label:noOfOrders")}
             </div>
             <div className="body1 text-MonochromeGray-700 mt-5">
               {summary?.orderCount}
@@ -100,7 +100,7 @@ const TimelineLog = () => {
           </div>
           <div className="border-r-1 border-MonochromeGray-50 p-10">
             <div className="subtitle3 text-MonochromeGray-300">
-              No. of SMS sent
+              {t("label:noOfSMSSent")}
             </div>
             <div className="body1 text-MonochromeGray-700 mt-5">
               {summary?.smsCount}
@@ -108,14 +108,14 @@ const TimelineLog = () => {
           </div>
           <div className="border-r-1 border-MonochromeGray-50 p-10">
             <div className="subtitle3 text-MonochromeGray-300">
-              No. of Credit Checks
+              {t("label:noOfCreditChecks")}
             </div>
             <div className="body1 text-MonochromeGray-700 mt-5">
               {summary?.creditCheckCount}
             </div>
           </div>
           <div className="p-10">
-            <div className="subtitle3 text-MonochromeGray-300">No. of EHFs</div>
+            <div className="subtitle3 text-MonochromeGray-300">{t("label:noOfEHFs")}</div>
             <div className="body1 text-MonochromeGray-700 mt-5">
               {summary?.ehfCount}
             </div>
@@ -165,7 +165,7 @@ const TimelineLog = () => {
                     {log.datetime && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Date:
+                          {t("label:date")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.datetime}
@@ -175,7 +175,7 @@ const TimelineLog = () => {
                     {log.orderUuid && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Order ID:
+                          {t("label:orderId")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.orderUuid}
@@ -185,7 +185,7 @@ const TimelineLog = () => {
                     {log.sentTo && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Sent to:
+                          {t("label:sentTo")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.sentTo}
@@ -195,7 +195,7 @@ const TimelineLog = () => {
                     {log.refundAmount && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Refund amount:
+                          {t("label:refundAmount")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.refundAmount}
@@ -205,7 +205,7 @@ const TimelineLog = () => {
                     {log.actionBy && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Action by:
+                          {t("label:actionBy")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.actionBy}
@@ -215,7 +215,7 @@ const TimelineLog = () => {
                     {log.paymentMethod && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Payment method:
+                          {t("label:paymentMethod")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.paymentMethod}
@@ -225,7 +225,7 @@ const TimelineLog = () => {
                     {log.note && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Note:
+                          {t("label:note")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.note}
@@ -235,7 +235,7 @@ const TimelineLog = () => {
                     {log.type && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Type:
+                          {t("label:types")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.type}
@@ -246,7 +246,7 @@ const TimelineLog = () => {
                     log?.personalOrBusinessNumber.length === 9 ? (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          Org-Id:
+                          {t("label:orgId")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log?.personalOrBusinessNumber}
@@ -256,7 +256,7 @@ const TimelineLog = () => {
                       log?.personalOrBusinessNumber.length === 11 ? (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
-                          P-Number:
+                          {t("label:pNumber")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log?.personalOrBusinessNumber}

@@ -68,7 +68,7 @@ const orderLog = () => {
                       {
                           log?.datetime && (
                           <div className="flex gap-5">
-                              <div className="text-MonochromeGray-300 body4">Date:</div>
+                              <div className="text-MonochromeGray-300 body4">{t("label:date")}:</div>
                               <div className="body4 text-MonochromeGray-700">
                                   {log.datetime}
                               </div>
@@ -78,7 +78,7 @@ const orderLog = () => {
                       {
                           log?.sentTo && (
                           <div className="flex gap-5">
-                              <div className="text-MonochromeGray-300 body4">Sent to:</div>
+                              <div className="text-MonochromeGray-300 body4">{t("label:sentTo")}:</div>
                               <div className="body4 text-MonochromeGray-700">
                                   {log.sentTo}
                               </div>
@@ -88,7 +88,7 @@ const orderLog = () => {
                       {
                           log?.refundAmount && (
                           <div className="flex gap-5">
-                              <div className="text-MonochromeGray-300 body4">Refund amount:</div>
+                              <div className="text-MonochromeGray-300 body4">{t("label:refundAmount")}:</div>
                               <div className="body4 text-MonochromeGray-700">
                                   {log.refundAmount}
                               </div>
@@ -98,7 +98,7 @@ const orderLog = () => {
                       {
                           log?.actionBy && (
                           <div className="flex gap-5">
-                              <div className="text-MonochromeGray-300 body4">Action by:</div>
+                              <div className="text-MonochromeGray-300 body4">{t("label:actionBy")}:</div>
                               <div className="body4 text-MonochromeGray-700">
                                   {log.actionBy}
                               </div>
@@ -108,7 +108,7 @@ const orderLog = () => {
                       {
                         log?.paymentMethod && (
                           <div className="flex gap-5">
-                              <div className="text-MonochromeGray-300 body4">Payment method:</div>
+                              <div className="text-MonochromeGray-300 body4">{t("label:paymentMethod")}:</div>
                               <div className="body4 text-MonochromeGray-700">
                                   {log.paymentMethod}
                               </div>
@@ -118,7 +118,7 @@ const orderLog = () => {
                       {
                           log?.note && (
                           <div className="flex gap-5">
-                              <div className="text-MonochromeGray-300 body4">Note:</div>
+                              <div className="text-MonochromeGray-300 body4">{t("label:note")}:</div>
                               <div className="body4 text-MonochromeGray-700">
                                   {log.note}
                               </div>
