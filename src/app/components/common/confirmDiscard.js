@@ -11,11 +11,13 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import OrdersService from "../../data-access/services/ordersService/OrdersService";
 import { useSnackbar } from "notistack";
+import { useRefundRequestDecisionMutation } from 'app/store/api/apiSlice';
 
 const confirmDiscard = (props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
+  const [refundRequestDecision] = useRefundRequestDecisionMutation();
 
   const {
     title,
@@ -29,6 +31,15 @@ const confirmDiscard = (props) => {
     values,
   } = props;
   const handleClose = () => {
+    setTimeout(() => {
+      //commented the reset as Nafees Vaiya only want to back previous screen by clicking discard(15-12-2022)
+      // reset({...defaultValue})
+      !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
+    }, 500);
+    setOpen(false);
+  };
+
+  const handleConfirmRefundRequest = () => {
     if (modalRef === "confirmRefundRequestApprove") {
       const { orderUuid, amount } = values;
       const params = {
@@ -37,14 +48,15 @@ const confirmDiscard = (props) => {
         isApproved: true,
         note: null,
       };
-      OrdersService.refundRequestDecision(params)
+      refundRequestDecision(params)
         .then((response) => {
-          if (response?.status_code === 202) {
-            enqueueSnackbar(response?.message, { variant: "success" });
+          if (response?.data?.status_code === 202) {
+            enqueueSnackbar(response?.data?.message, { variant: "success" });
+          } else if (response?.error) {
+            enqueueSnackbar(response?.error?.data?.message, {
+              variant: "error",
+            });
           }
-        })
-        .catch((e) => {
-          enqueueSnackbar(e, { variant: "error" });
         });
     }
     setTimeout(() => {
@@ -54,6 +66,7 @@ const confirmDiscard = (props) => {
     }, 500);
     setOpen(false);
   };
+
 
   return (
     <div>
@@ -88,7 +101,7 @@ const confirmDiscard = (props) => {
               variant="contained"
               color="secondary"
               className="rounded-4 font-semibold"
-              onClick={() => handleClose()}
+              onClick={() => modalRef === "confirmRefundRequestApprove" ? handleConfirmRefundRequest() : handleClose()}
             >
               {t("label:confirm")}
             </Button>

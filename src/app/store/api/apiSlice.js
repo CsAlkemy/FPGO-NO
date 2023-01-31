@@ -92,6 +92,7 @@ export const apiSlice = createApi({
     "ClientOrganizationsSummaryList",
     "ApprovedClientsList",
     "ApprovalClientsList",
+    "RefundRequestsList"
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -356,6 +357,26 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["ApprovalClientsList"],
     }),
+    getRefundRequestsList: builder.query({
+      query: () => "/orders/refund/list/all",
+      providesTags: ["RefundRequestsList"],
+    }),
+    refundRequestDecision: builder.mutation({
+      query: (params) => ({
+        url: `/orders/refund/decision/${params.orderUuid}`,
+        method: "POST",
+        body: params,
+      }),
+      invalidatesTags: ["RefundRequestsList"],
+    }),
+    requestRefundApproval: builder.mutation({
+      query: (params) => ({
+        url: `/orders/refund/request/approval/${params.uuid}`,
+        method: "POST",
+        body: params,
+      }),
+      invalidatesTags: ["RefundRequestsList"],
+    }),
   }),
 });
 
@@ -397,4 +418,8 @@ export const {
   useUpdateClientStatusMutation,
   useDeleteClientMutation,
   useCreateRegistrationRequestMutation,
+  useGetRefundRequestsListQuery,
+  useRefundRequestDecisionMutation,
+  useRequestRefundApprovalMutation,
+
 } = apiSlice;
