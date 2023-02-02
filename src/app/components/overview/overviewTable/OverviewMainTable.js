@@ -1,15 +1,6 @@
 import FuseUtils from "@fuse/utils";
 import _ from "@lodash";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import {
-  Button,
-  Hidden,
-  IconButton,
-  MenuItem,
-  Select,
-  SvgIcon,
-  TablePagination,
-} from "@mui/material";
+import {Hidden, MenuItem, Select, TablePagination,} from "@mui/material";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Table from "@mui/material/Table";
@@ -20,20 +11,16 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import { selectSearchText } from "app/store/overview-table/overviewTableDataSearchTextSlice";
-import { selectUser } from "app/store/userSlice";
-import { useSnackbar } from "notistack";
+import {selectSearchText} from "app/store/overview-table/overviewTableDataSearchTextSlice";
+import {selectUser} from "app/store/userSlice";
+import {useSnackbar} from "notistack";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 import "../../../../styles/colors.css";
-import CategoryService from "../../../data-access/services/categoryService/CategoryService";
-import ClientService from "../../../data-access/services/clientsService/ClientService";
-import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import ProductService from "../../../data-access/services/productsService/ProductService";
 import UserService from "../../../data-access/services/userService/UserService";
 import OverviewHeader from "../overviewHeader/overviewHeader";
 import OverViewMainTableBody from "./OverViewMainTableBody";
@@ -480,8 +467,8 @@ export default function OverviewMainTable(props) {
         // let name = info.primaryContact.split("(")[0];
         // let designation = info.primaryContact.split("(")[1].split(")")[0];
         // let phone = info.phone.slice(4);
-        ClientService.clientDetails(info.uuid)
-          .then((res) => {
+        // ClientService.clientDetails(info.uuid)
+        //   .then((res) => {
             // const tableRowDetails = {
             //   orgId: res.data.organizationDetails.id,
             //   clientName: res.data.organizationDetails.name,
@@ -497,22 +484,22 @@ export default function OverviewMainTable(props) {
             //   "tableRowDetails",
             //   JSON.stringify(tableRowDetails)
             // );
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
+            // localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
             navigate(`/client-management/onbroading/${info.organizationUuid}`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+          // })
+          // .catch((error) => {
+          //   enqueueSnackbar(error, { variant: "error" });
+          // });
         break;
       case clientsListOverview:
-        ClientService.clientDetails(info.uuid)
-          .then((res) => {
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
+        // ClientService.clientDetails(info.uuid)
+        //   .then((res) => {
+        //     localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
             navigate(`/client-management/details/${info.uuid}`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        //   })
+        //   .catch((error) => {
+        //     enqueueSnackbar(error, { variant: "error" });
+        //   });
         break;
       case userListOverview:
         UserService.getProfileByUUID(info.uuid)
