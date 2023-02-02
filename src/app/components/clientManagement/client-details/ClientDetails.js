@@ -111,11 +111,6 @@ const ClientDetails = () => {
         setIsLoading(false);
       });
 
-    // console.log("info?.settings?.vateRates.length", info?.settings?.vatRates.length);
-
-    // return () => {
-    //   localStorage.removeItem("tableRowDetails");
-    // };
     ClientService.organizationTypeList()
       .then((res) => {
         if (res?.status_code === 200 && res?.is_data) {
@@ -129,8 +124,7 @@ const ClientDetails = () => {
         }
       })
       .catch((e) => {});
-  }, []);
-  console.log(orgTypeList);
+  }, [isLoading]);
 
   useEffect(() => {
     if (!!info) {
@@ -1006,7 +1000,7 @@ const ClientDetails = () => {
                                 }) => (
                                   <DesktopDatePicker
                                     label={t("label:contractEndDate")}
-                                    inputFormat="dd.mm.yyyy"
+                                    inputFormat="dd.MM.yyyy"
                                     value={value}
                                     onChange={onChange}
                                     renderInput={(params) => (
@@ -1015,7 +1009,6 @@ const ClientDetails = () => {
                                         onBlur={onBlur}
                                         type="date"
                                         required
-                                        //value={field.value || ''}
                                         error={!!errors.contactEndDate}
                                         helperText={
                                           errors?.contactEndDate?.message

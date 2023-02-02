@@ -719,7 +719,7 @@ const Onboarding = () => {
                           render={({ field: { onChange, value, onBlur } }) => (
                             <DesktopDatePicker
                               label={t("label:contractEndDate")}
-                              inputFormat="dd.mm.yyyy"
+                              inputFormat="dd.MM.yyyy"
                               value={value}
                               onChange={onChange}
                               renderInput={(params) => (
