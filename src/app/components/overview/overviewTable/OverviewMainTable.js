@@ -615,14 +615,14 @@ export default function OverviewMainTable(props) {
           });
         break;
       case ordersListOverview:
-        OrdersService.getOrdersDetailsByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/create-order/details`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        // OrdersService.getOrdersDetailsByUUID(info.uuid)
+        //   .then((res) => {
+        //     localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
+            navigate(`/create-order/details/${info.uuid}`);
+        //   })
+        //   .catch((error) => {
+        //     enqueueSnackbar(error, { variant: "error" });
+        //   });
         break;
     }
   };

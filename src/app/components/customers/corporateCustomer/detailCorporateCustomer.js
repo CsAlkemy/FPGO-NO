@@ -229,6 +229,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         setIsLoading(false);
       })
       .catch((e)=> {
+        navigate("/customers/customers-list")
         enqueueSnackbar(e, {variant: "error"})
       })
   }, [isLoading]);

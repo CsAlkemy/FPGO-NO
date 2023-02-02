@@ -10,9 +10,8 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
 
-const orderLog = () => {
+const orderLog = ({info}) => {
   const { t } = useTranslation();
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
 
@@ -23,7 +22,6 @@ const orderLog = () => {
         setLoading(false);
       })
       .catch((e) => {
-        console.log("E : ", e);
         setLogs([]);
         setLoading(false);
       });
