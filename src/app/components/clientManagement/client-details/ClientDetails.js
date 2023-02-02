@@ -123,7 +123,10 @@ const ClientDetails = () => {
           enqueueSnackbar("No Org Type found", { variant: "warning" });
         }
       })
-      .catch((e) => {});
+      .catch((e) => {
+        navigate("/clients/clients-list")
+        enqueueSnackbar(e, {variant:"error"})
+      });
   }, [isLoading]);
 
   useEffect(() => {

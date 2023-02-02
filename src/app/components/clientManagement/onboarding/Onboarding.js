@@ -80,6 +80,7 @@ const Onboarding = () => {
         setIsLoading(false);
       })
       .catch((error) => {
+        navigate("/clients/approval-list")
         enqueueSnackbar(error, { variant: "error" });
         setIsLoading(false);
       });
