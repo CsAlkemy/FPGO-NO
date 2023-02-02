@@ -75,7 +75,7 @@ class ClientService {
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -186,7 +186,7 @@ class ClientService {
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -207,7 +207,7 @@ class ClientService {
           } else reject("Something went wrong");
         })
         .catch((e) => {
-          reject(e.response.data.errors);
+          reject(e?.response?.data?.message);
         });
     });
   };
@@ -225,7 +225,7 @@ class ClientService {
         .catch((e) => {
           console.log("Err : ", e);
           if (e?.response?.data?.status_code === 404) resolve(e.response.data);
-          reject(e.response.data.errors);
+          reject(e?.response?.data?.message);
         });
     });
   };
@@ -244,7 +244,7 @@ class ClientService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -268,7 +268,7 @@ class ClientService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -292,7 +292,7 @@ class ClientService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -316,7 +316,7 @@ class ClientService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -340,7 +340,7 @@ class ClientService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -364,7 +364,7 @@ class ClientService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -391,10 +391,10 @@ class ClientService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                // reject(e.response.data.errors)
+                // reject(e?.response?.data?.message)
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })

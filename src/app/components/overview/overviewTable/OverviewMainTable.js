@@ -525,13 +525,17 @@ export default function OverviewMainTable(props) {
           });
         break;
       case customersListOverview:
-        CustomersService.getCustomerDetailsByUUID(info.uuid).then((res) => {
-          localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-          res.data.type === "Corporate"
+        // CustomersService.getCustomerDetailsByUUID(info.uuid).then((res) => {
+        //   localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
+        //   res.data.type === "Corporate"
+        //     ? navigate(`/customers/corporate/details/${info.uuid}`)
+        //     : navigate(`/customers/private/details/${info.uuid}`);
+        //   // navigate(`/customers/private/details/${info.uuid}`);
+        // });
+        //New imp
+        info.type === "Corporate"
             ? navigate(`/customers/corporate/details/${info.uuid}`)
             : navigate(`/customers/private/details/${info.uuid}`);
-          // navigate(`/customers/private/details/${info.uuid}`);
-        });
         break;
       case customerOrdersListOverview:
         OrdersService.getOrdersDetailsByUUID(info.uuid)
@@ -544,48 +548,48 @@ export default function OverviewMainTable(props) {
           });
         break;
       case categoriesListOverview:
-        CategoryService.categoryDetailsByUUID(info.uuid)
-          .then((response) => {
-            if (response.data.productList) {
-              let pL = [];
-              response.data.productList.map((row) => {
-                return pL.push({
-                  uuid: row.uuid,
-                  name: row.name,
-                  id: row.productId,
-                });
-              });
-              localStorage.setItem("defaultPdList", JSON.stringify(pL));
-            } else localStorage.setItem("defaultPdList", "");
-            localStorage.setItem(
-              "tableRowDetails",
-              JSON.stringify(response.data)
-            );
+        // CategoryService.categoryDetailsByUUID(info.uuid)
+        //   .then((response) => {
+        //     if (response.data.productList) {
+        //       let pL = [];
+        //       response.data.productList.map((row) => {
+        //         return pL.push({
+        //           uuid: row.uuid,
+        //           name: row.name,
+        //           id: row.productId,
+        //         });
+        //       });
+        //       localStorage.setItem("defaultPdList", JSON.stringify(pL));
+        //     } else localStorage.setItem("defaultPdList", "");
+        //     localStorage.setItem(
+        //       "tableRowDetails",
+        //       JSON.stringify(response.data)
+        //     );
             navigate(`/category/details/${info.uuid}`);
-          })
-          .catch((error) => {
-            console.log("E : ", error);
-          });
+        //   })
+        //   .catch((error) => {
+        //     console.log("E : ", error);
+        //   });
         break;
       case productsListOverview:
-        ProductService.productDetailsByUUID(info.uuid)
-          .then((response) => {
-            if (response.data.categories) {
-              let pL = [];
-              response.data.categories.map((row) => {
-                return pL.push({ uuid: row.uuid, name: row.name });
-              });
-              localStorage.setItem("defaultCategories", JSON.stringify(pL));
-            } else localStorage.setItem("defaultCategories", "");
-            localStorage.setItem(
-              "tableRowDetails",
-              JSON.stringify(response.data)
-            );
+        // ProductService.productDetailsByUUID(info.uuid)
+        //   .then((response) => {
+        //     if (response.data.categories) {
+        //       let pL = [];
+        //       response.data.categories.map((row) => {
+        //         return pL.push({ uuid: row.uuid, name: row.name });
+        //       });
+        //       localStorage.setItem("defaultCategories", JSON.stringify(pL));
+        //     } else localStorage.setItem("defaultCategories", "");
+        //     localStorage.setItem(
+        //       "tableRowDetails",
+        //       JSON.stringify(response.data)
+        //     );
             navigate(`/products/details/${info.uuid}`);
-          })
-          .catch((error) => {
-            console.log("E : ", error);
-          });
+        //   })
+        //   .catch((error) => {
+        //     console.log("E : ", error);
+        //   });
         break;
       case fpAdminUsersOverview:
         UserService.getProfileByUUID(info.uuid)
