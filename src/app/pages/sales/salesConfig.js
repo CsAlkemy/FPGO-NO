@@ -65,7 +65,7 @@ export const SalesConfigRBAC = {
       element: <OrderModals />,
     },
     {
-      path: '/create-order/details',
+      path: '/create-order/details/:uuid',
       element: <OrderDetails />,
     },
     {

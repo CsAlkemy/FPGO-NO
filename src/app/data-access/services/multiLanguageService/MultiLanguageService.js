@@ -22,7 +22,7 @@ class MultiLanguageService {
           } else reject("Something went wrong");
         })
         .catch((e) => {
-          reject(e.response.data.errors)
+          reject(e?.response?.data?.message)
         });
     });
   };

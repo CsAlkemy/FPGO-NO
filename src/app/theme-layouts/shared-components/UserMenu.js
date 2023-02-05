@@ -1,12 +1,18 @@
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import PersonIcon from '@mui/icons-material/Person';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import { Drawer, Hidden, IconButton, ListItem, ListItemButton } from "@mui/material";
-import Box from '@mui/material/Box';
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import PersonIcon from "@mui/icons-material/Person";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import {
+  Drawer,
+  Hidden,
+  IconButton,
+  ListItem,
+  ListItemButton,
+} from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,11 +21,11 @@ import Typography from "@mui/material/Typography";
 import { selectUser } from "app/store/userSlice";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../data-access/services/authService";
 import UserService from "../../data-access/services/userService/UserService";
-import { changeLanguage, selectCurrentLanguageId } from 'app/store/i18nSlice';
+import { changeLanguage, selectCurrentLanguageId } from "app/store/i18nSlice";
 
 function UserMenu(props) {
   const user = useSelector(selectUser);
@@ -28,8 +34,8 @@ function UserMenu(props) {
   const [userMenu, setUserMenu] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  const currentLanguage = useSelector(selectCurrentLanguageId)
-  const dispatch = useDispatch()
+  const currentLanguage = useSelector(selectCurrentLanguageId);
+  const dispatch = useDispatch();
 
   const userMenuClick = (event) => {
     setUserMenu(event.currentTarget);
@@ -45,47 +51,42 @@ function UserMenu(props) {
     // navigate("/dashboard")
   };
   const myProfile = () => {
-    UserService.getProfileByUUID(user.data.uuid)
-      .then((res) => {
-        if (res?.status_code === 200) {
-          localStorage.setItem("userProfile", JSON.stringify(res.data));
-          navigate('/my-profile');
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-      });
-    // navigate(`my-profile?uuid=${}`);
+    navigate("/my-profile", {
+      state: {
+        userId: user.data.uuid,
+      },
+    });
     userMenuClose();
   };
 
   const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
       return;
     }
-    setIsDrawerOpen(open)
+    setIsDrawerOpen(open);
   };
 
   const languages = [
     {
       value: "en",
       label: "English",
-      src: 'assets/images/flags/english.png',
-      isActive: currentLanguage === "en"
+      src: "assets/images/flags/english.png",
+      isActive: currentLanguage === "en",
     },
     {
       value: "no",
       label: "Norwegian",
-      src: 'assets/images/flags/Norway.png',
-      isActive: currentLanguage === "no"
+      src: "assets/images/flags/Norway.png",
+      isActive: currentLanguage === "no",
     },
   ];
 
-  const handleLanguageChange = (lng)=> {
+  const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
-  }
-
-
+  };
 
   const list = (anchor) => (
     <Box
@@ -96,38 +97,45 @@ function UserMenu(props) {
     >
       <List>
         <ListItem disablePadding>
-          <ListItemButton className="hover:bg-primary-50" onClick={() => {
-            myProfile();
-          }}>
-            <ListItemIcon>
-              {<PersonOutlineOutlinedIcon />}
-            </ListItemIcon>
-            <ListItemText className="body2" primary={'My Profile'} />
+          <ListItemButton
+            className="hover:bg-primary-50"
+            onClick={() => {
+              myProfile();
+            }}
+          >
+            <ListItemIcon>{<PersonOutlineOutlinedIcon />}</ListItemIcon>
+            <ListItemText className="body2" primary={"My Profile"} />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding className="hover:bg-primary-50" onClick={() => {
-          signOut();
-        }}>
-          <ListItemButton >
-            <ListItemIcon>
-              {<LogoutOutlinedIcon />}
-            </ListItemIcon>
-            <ListItemText className="body2" primary={'Logout'} />
+        <ListItem
+          disablePadding
+          className="hover:bg-primary-50"
+          onClick={() => {
+            signOut();
+          }}
+        >
+          <ListItemButton>
+            <ListItemIcon>{<LogoutOutlinedIcon />}</ListItemIcon>
+            <ListItemText className="body2" primary={"Logout"} />
           </ListItemButton>
         </ListItem>
       </List>
       <Divider className="hidden" />
-      <div className="subtitle2 mb-10 mt-40 text-MonochromeGray-300 px-16">Language</div>
+      <div className="subtitle2 mb-10 mt-40 text-MonochromeGray-300 px-16">
+        Language
+      </div>
       <List>
         {languages.map((Language, index) => (
-          <ListItem key={index} disablePadding className={`${Language.isActive === true ? 'bg-primary-50' : ''} mx-16 mt-5`}
-                    onClick={()=> handleLanguageChange(Language.value)}
+          <ListItem
+            key={index}
+            disablePadding
+            className={`${
+              Language.isActive === true ? "bg-primary-50" : ""
+            } mx-16 mt-5`}
+            onClick={() => handleLanguageChange(Language.value)}
           >
             <ListItemButton>
-              <ListItemIcon>
-                {<img src={Language.src}>
-                </img>}
-              </ListItemIcon>
+              <ListItemIcon>{<img src={Language.src}></img>}</ListItemIcon>
               <ListItemText primary={Language.label} />
             </ListItemButton>
           </ListItem>
@@ -135,7 +143,6 @@ function UserMenu(props) {
       </List>
     </Box>
   );
-
 
   return (
     <>
@@ -146,7 +153,10 @@ function UserMenu(props) {
           color="inherit"
         >
           <div className="md:flex flex-col mx-4 items-end">
-            <Typography component="span" className="text-left font-semibold flex subtitle3">
+            <Typography
+              component="span"
+              className="text-left font-semibold flex subtitle3"
+            >
               {user.data.displayName}
             </Typography>
             <Typography
@@ -163,7 +173,12 @@ function UserMenu(props) {
         </Button>
       </Hidden>
       <Hidden smUp>
-        <IconButton aria-label="fingerprint" className='bg-primary-50 mx-5' color="secondary" onClick={() => setIsDrawerOpen(true)}>
+        <IconButton
+          aria-label="fingerprint"
+          className="bg-primary-50 mx-5"
+          color="secondary"
+          onClick={() => setIsDrawerOpen(true)}
+        >
           <PersonIcon className="icon-size-20" />
         </IconButton>
       </Hidden>
@@ -178,10 +193,9 @@ function UserMenu(props) {
             sx: { width: "70%" },
           }}
         >
-          {list('right')}
+          {list("right")}
         </Drawer>
       </Hidden>
-
 
       <Hidden smDown>
         <Popover
@@ -231,7 +245,6 @@ function UserMenu(props) {
           }
         </Popover>
       </Hidden>
-
     </>
   );
 }

@@ -80,7 +80,7 @@ class CreditCheckService {
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -112,8 +112,8 @@ class CreditCheckService {
               })
               .catch((e) => {
                 e?.response?.data?.error
-                  ? reject(e.response.data.error)
-                  : reject(e.response.data.message);
+                  ? reject(e?.response?.data?.error)
+                  : reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -158,8 +158,8 @@ class CreditCheckService {
               })
               .catch((e) => {
                 e?.response?.data?.error
-                  ? reject(e.response.data.error)
-                  : reject(e.response.data.message);
+                  ? reject(e?.response?.data?.error)
+                  : reject(e?.response?.data?.message);
               });
           }
           reject("Something went wrong");
@@ -227,8 +227,8 @@ class CreditCheckService {
         })
         .catch((e) => {
           e?.response?.data?.error
-            ? reject(e.response.data.error)
-            : reject(e.response.data.message);
+            ? reject(e?.response?.data?.error)
+            : reject(e?.response?.data?.message);
         });
     });
   };
