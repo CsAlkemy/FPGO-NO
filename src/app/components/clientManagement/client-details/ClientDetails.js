@@ -155,14 +155,14 @@ const ClientDetails = () => {
       if (
         info?.addresses &&
         info?.addresses["billing"]?.email ===
-          info?.addresses["shipping"]?.email &&
+        info?.addresses["shipping"]?.email &&
         info?.addresses["billing"]?.street ===
-          info?.addresses["shipping"]?.street &&
+        info?.addresses["shipping"]?.street &&
         info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
         info?.addresses["billing"]?.city ===
-          info?.addresses["shipping"]?.city &&
+        info?.addresses["shipping"]?.city &&
         info?.addresses["billing"]?.country ===
-          info?.addresses["shipping"]?.country
+        info?.addresses["shipping"]?.country
       ) {
         setSameAddress(true);
       } else setSameAddress(false);
@@ -182,7 +182,7 @@ const ClientDetails = () => {
         info?.primaryContactDetails?.countryCode &&
         info.primaryContactDetails?.msisdn
           ? info.primaryContactDetails?.countryCode +
-            info.primaryContactDetails?.msisdn
+          info.primaryContactDetails?.msisdn
           : "";
       defaultValue.designation = info?.primaryContactDetails?.designation
         ? info.primaryContactDetails?.designation
@@ -213,7 +213,7 @@ const ClientDetails = () => {
           info?.addresses["billing"]?.countryCode &&
           info.addresses["billing"].msisdn
             ? info.addresses["billing"].countryCode +
-              info.addresses["billing"].msisdn
+            info.addresses["billing"].msisdn
             : "";
         defaultValue.billingEmail = info?.addresses["billing"]?.email
           ? info.addresses["billing"].email
@@ -236,7 +236,7 @@ const ClientDetails = () => {
           info?.addresses["shipping"]?.countryCode &&
           info?.addresses["shipping"]?.msisdn
             ? info.addresses["shipping"].countryCode +
-              info.addresses["shipping"].msisdn
+            info.addresses["shipping"].msisdn
             : "";
         defaultValue.shippingEmail = info?.addresses["shipping"]?.email
           ? info.addresses["shipping"].email
@@ -332,10 +332,10 @@ const ClientDetails = () => {
             info?.settings?.currency[0].code === "NOK"
               ? "Norwegian Krone"
               : info?.settings?.currency[0].code === "SEK"
-              ? "Swedish Krona"
-              : info?.settings?.currency[0].code === "DKK"
-              ? "Danish Krone"
-              : "European Euro",
+                ? "Swedish Krona"
+                : info?.settings?.currency[0].code === "DKK"
+                  ? "Danish Krone"
+                  : "European Euro",
         });
       }
 
@@ -460,22 +460,22 @@ const ClientDetails = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-          .filter((v) => v.vatValue)
-          .map((vat, index) => {
-            return {
-              uuid:
-                info?.settings?.vatRates &&
-                info?.settings?.vatRates[index]?.uuid
-                  ? info?.settings?.vatRates[index]?.uuid
-                  : null,
-              name: vat.vatName ? vat?.vatName : null,
-              value: parseFloat(vat.vatValue),
-              isActive: vat?.vatActive ? vat.vatActive : false,
-              bookKeepingReference: vat?.bookKeepingReference
-                ? vat.bookKeepingReference
+        .filter((v) => v.vatValue)
+        .map((vat, index) => {
+          return {
+            uuid:
+              info?.settings?.vatRates &&
+              info?.settings?.vatRates[index]?.uuid
+                ? info?.settings?.vatRates[index]?.uuid
                 : null,
-            };
-          })
+            name: vat.vatName ? vat?.vatName : null,
+            value: parseFloat(vat.vatValue),
+            isActive: vat?.vatActive ? vat.vatActive : false,
+            bookKeepingReference: vat?.bookKeepingReference
+              ? vat.bookKeepingReference
+              : null,
+          };
+        })
       : null;
 
     const clientUpdatedData = {
@@ -999,8 +999,8 @@ const ClientDetails = () => {
                                 name="contactEndDate"
                                 control={control}
                                 render={({
-                                  field: { onChange, value, onBlur },
-                                }) => (
+                                           field: { onChange, value, onBlur },
+                                         }) => (
                                   <DesktopDatePicker
                                     label={t("label:contractEndDate")}
                                     inputFormat="dd.MM.yyyy"
@@ -1417,11 +1417,11 @@ const ClientDetails = () => {
                             </div>
                             {!sameAddress &&
                               ((billingPhoneNumber &&
-                                billingEmail &&
-                                billingAddress &&
-                                zip &&
-                                city &&
-                                country) ||
+                                  billingEmail &&
+                                  billingAddress &&
+                                  zip &&
+                                  city &&
+                                  country) ||
                                 shippingPhoneNumber ||
                                 shippingEmail ||
                                 shippingAddress ||
@@ -1574,7 +1574,7 @@ const ClientDetails = () => {
                                               info?.addresses["shipping"]
                                                 ?.country
                                                 ? info.addresses["shipping"]
-                                                    .country
+                                                  .country
                                                 : ""
                                             }
                                           >
@@ -2263,13 +2263,13 @@ const ClientDetails = () => {
                                         type="checkbox"
                                         control={control}
                                         render={({
-                                          field: {
-                                            onChange,
-                                            value,
-                                            ref,
-                                            onBlur,
-                                          },
-                                        }) => (
+                                                   field: {
+                                                     onChange,
+                                                     value,
+                                                     ref,
+                                                     onBlur,
+                                                   },
+                                                 }) => (
                                           <FormControl
                                             required
                                             error={!!errors.Switch}
