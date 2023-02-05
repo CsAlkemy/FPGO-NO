@@ -43,7 +43,7 @@ const defaultValues = {
   preferredLanguage: "",
 };
 
-const fpAdminProfileForm = ({ submitRef, role }) => {
+const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
   const { t } = useTranslation();
   const [roleList, setRoleList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -54,7 +54,6 @@ const fpAdminProfileForm = ({ submitRef, role }) => {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const Location = window.location.href;
-  const userProfile = JSON.parse(localStorage.getItem("userProfile"));
   const [languageList, setLanguageList] = useState([
     { title: "English", value: "en" },
     { title: "Norwegian", value: "no" },
@@ -106,16 +105,6 @@ const fpAdminProfileForm = ({ submitRef, role }) => {
         enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
       }
     });
-    // UserService.updateUserByUUID(userProfile?.uuid, userData)
-    //   .then((response) => {
-    //     if (response?.status_code === 202) {
-    //       enqueueSnackbar(response?.message, { variant: "success" });
-    //     }
-    //     navigate(-1)
-    //   })
-    //   .catch((error) => {
-    //     enqueueSnackbar(error, { variant: "error" });
-    //   });
   }
 
   React.useEffect(() => {

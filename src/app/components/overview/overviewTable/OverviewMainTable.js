@@ -1,6 +1,6 @@
 import FuseUtils from "@fuse/utils";
 import _ from "@lodash";
-import {Hidden, MenuItem, Select, TablePagination,} from "@mui/material";
+import { Hidden, MenuItem, Select, TablePagination } from "@mui/material";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Table from "@mui/material/Table";
@@ -11,14 +11,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import {selectSearchText} from "app/store/overview-table/overviewTableDataSearchTextSlice";
-import {selectUser} from "app/store/userSlice";
-import {useSnackbar} from "notistack";
+import { selectSearchText } from "app/store/overview-table/overviewTableDataSearchTextSlice";
+import { selectUser } from "app/store/userSlice";
+import { useSnackbar } from "notistack";
 import PropTypes from "prop-types";
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "../../../../styles/colors.css";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import UserService from "../../../data-access/services/userService/UserService";
@@ -49,7 +49,13 @@ import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloating
 export default function OverviewMainTable(props) {
   const { t } = useTranslation();
   const [value, setValue] = React.useState(0);
-  const [page, setPage] = useState(localStorage.getItem("pageNo") && localStorage.getItem("tableName") && (localStorage.getItem("tableName") === props.tableName) ? parseInt(localStorage.getItem("pageNo")) : 0);
+  const [page, setPage] = useState(
+    localStorage.getItem("pageNo") &&
+      localStorage.getItem("tableName") &&
+      localStorage.getItem("tableName") === props.tableName
+      ? parseInt(localStorage.getItem("pageNo"))
+      : 0
+  );
   // const pageNumCount = (tableName)=> {
   //   console.log("tableName :",tableName);
   //   return 2;
@@ -62,7 +68,9 @@ export default function OverviewMainTable(props) {
   const user = useSelector(selectUser);
   const { enqueueSnackbar } = useSnackbar();
   const searchText = useSelector(selectSearchText);
-  const [refundRequestCount, setRefundRequestCount] = useState(localStorage.getItem("refundRequestCount"))
+  const [refundRequestCount, setRefundRequestCount] = useState(
+    localStorage.getItem("refundRequestCount")
+  );
 
   // useEffect(() => {
   //     setData(props.tableData);
@@ -437,7 +445,7 @@ export default function OverviewMainTable(props) {
 
   const handleChangePage = (event, value) => {
     setPage(value);
-    localStorage.setItem("pageNo", `${value}`)
+    localStorage.setItem("pageNo", `${value}`);
   };
 
   const handleRequestSort = (event, property) => {
@@ -459,7 +467,7 @@ export default function OverviewMainTable(props) {
   };
 
   const handleTableRowClick = (info) => {
-    localStorage.setItem("tableName", `${props.tableName}`)
+    localStorage.setItem("tableName", `${props.tableName}`);
     switch (props.tableName) {
       case approvalListOverviewFPAdmin:
         // let companyName = info.nameOrgId.split("(")[0];
@@ -469,60 +477,49 @@ export default function OverviewMainTable(props) {
         // let phone = info.phone.slice(4);
         // ClientService.clientDetails(info.uuid)
         //   .then((res) => {
-            // const tableRowDetails = {
-            //   orgId: res.data.organizationDetails.id,
-            //   clientName: res.data.organizationDetails.name,
-            //   orgType: res.data.organizationDetails?.type,
-            //   fullName: res.data.,
-            //   phone: info.phone,
-            //   designation: designation,
-            //   email: info.email,
-            //   uuid: res.data["primaryContactDetails"].uuid,
-            //   tableRef: approvalListOverviewFPAdmin,
-            // };
-            // localStorage.setItem(
-            //   "tableRowDetails",
-            //   JSON.stringify(tableRowDetails)
-            // );
-            // localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/client-management/onbroading/${info.organizationUuid}`);
-          // })
-          // .catch((error) => {
-          //   enqueueSnackbar(error, { variant: "error" });
-          // });
+        // const tableRowDetails = {
+        //   orgId: res.data.organizationDetails.id,
+        //   clientName: res.data.organizationDetails.name,
+        //   orgType: res.data.organizationDetails?.type,
+        //   fullName: res.data.,
+        //   phone: info.phone,
+        //   designation: designation,
+        //   email: info.email,
+        //   uuid: res.data["primaryContactDetails"].uuid,
+        //   tableRef: approvalListOverviewFPAdmin,
+        // };
+        // localStorage.setItem(
+        //   "tableRowDetails",
+        //   JSON.stringify(tableRowDetails)
+        // );
+        // localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
+        navigate(`/client-management/onbroading/${info.organizationUuid}`);
+        // })
+        // .catch((error) => {
+        //   enqueueSnackbar(error, { variant: "error" });
+        // });
         break;
       case clientsListOverview:
         // ClientService.clientDetails(info.uuid)
         //   .then((res) => {
         //     localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/client-management/details/${info.uuid}`);
+        navigate(`/client-management/details/${info.uuid}`);
         //   })
         //   .catch((error) => {
         //     enqueueSnackbar(error, { variant: "error" });
         //   });
         break;
       case userListOverview:
-        UserService.getProfileByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
-            navigate(`/user-management/user-profile`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/user-management/user-profile`, {
+          state: {
+            userId: info.uuid,
+          },
+        });
         break;
       case customersListOverview:
-        // CustomersService.getCustomerDetailsByUUID(info.uuid).then((res) => {
-        //   localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-        //   res.data.type === "Corporate"
-        //     ? navigate(`/customers/corporate/details/${info.uuid}`)
-        //     : navigate(`/customers/private/details/${info.uuid}`);
-        //   // navigate(`/customers/private/details/${info.uuid}`);
-        // });
-        //New imp
         info.type === "Corporate"
-            ? navigate(`/customers/corporate/details/${info.uuid}`)
-            : navigate(`/customers/private/details/${info.uuid}`);
+          ? navigate(`/customers/corporate/details/${info.uuid}`)
+          : navigate(`/customers/private/details/${info.uuid}`);
         break;
       case customerOrdersListOverview:
         OrdersService.getOrdersDetailsByUUID(info.uuid)
@@ -535,81 +532,30 @@ export default function OverviewMainTable(props) {
           });
         break;
       case categoriesListOverview:
-        // CategoryService.categoryDetailsByUUID(info.uuid)
-        //   .then((response) => {
-        //     if (response.data.productList) {
-        //       let pL = [];
-        //       response.data.productList.map((row) => {
-        //         return pL.push({
-        //           uuid: row.uuid,
-        //           name: row.name,
-        //           id: row.productId,
-        //         });
-        //       });
-        //       localStorage.setItem("defaultPdList", JSON.stringify(pL));
-        //     } else localStorage.setItem("defaultPdList", "");
-        //     localStorage.setItem(
-        //       "tableRowDetails",
-        //       JSON.stringify(response.data)
-        //     );
-            navigate(`/category/details/${info.uuid}`);
-        //   })
-        //   .catch((error) => {
-        //     console.log("E : ", error);
-        //   });
+        navigate(`/category/details/${info.uuid}`);
         break;
       case productsListOverview:
-        // ProductService.productDetailsByUUID(info.uuid)
-        //   .then((response) => {
-        //     if (response.data.categories) {
-        //       let pL = [];
-        //       response.data.categories.map((row) => {
-        //         return pL.push({ uuid: row.uuid, name: row.name });
-        //       });
-        //       localStorage.setItem("defaultCategories", JSON.stringify(pL));
-        //     } else localStorage.setItem("defaultCategories", "");
-        //     localStorage.setItem(
-        //       "tableRowDetails",
-        //       JSON.stringify(response.data)
-        //     );
-            navigate(`/products/details/${info.uuid}`);
-        //   })
-        //   .catch((error) => {
-        //     console.log("E : ", error);
-        //   });
+        navigate(`/products/details/${info.uuid}`);
         break;
       case fpAdminUsersOverview:
-        UserService.getProfileByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
-            navigate(`/user-management/user-profile`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/user-management/user-profile`, {
+          state: {
+            userId: info.uuid,
+          },
+        });
         break;
       case businessAdminUsersOverview:
         navigate(`/users/organization-wise-user-list/${info.uuid}`);
         break;
       case organizationWiseUsersOverview:
-        UserService.getProfileByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
-            navigate(`/user-management/user-profile`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/user-management/user-profile`, {
+          state: {
+            userId: info.uuid,
+          },
+        });
         break;
       case ordersListOverview:
-        // OrdersService.getOrdersDetailsByUUID(info.uuid)
-        //   .then((res) => {
-        //     localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/create-order/details/${info.uuid}`);
-        //   })
-        //   .catch((error) => {
-        //     enqueueSnackbar(error, { variant: "error" });
-        //   });
+        navigate(`/create-order/details/${info.uuid}`);
         break;
     }
   };
