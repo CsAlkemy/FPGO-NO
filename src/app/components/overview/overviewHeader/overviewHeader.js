@@ -48,21 +48,23 @@ export default function OverviewHeader(props) {
   const [exportTableData, setExportTableData] = useState([]);
 
   useEffect(() => {
-    OrdersService.exportOrderList(
-      user.role[0] === FP_ADMIN
-        ? FP_ADMIN
-        : user?.user_data?.organization?.uuid
-        ? user?.user_data?.organization?.uuid
-        : false
-    )
-      .then((response) => {
-        setExportTableData(response);
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.log("E : ", e);
-        setLoading(false);
-      });
+    if (props.tableRef === ordersListOverview && loading) {
+      OrdersService.exportOrderList(
+        user.role[0] === FP_ADMIN
+          ? FP_ADMIN
+          : user?.user_data?.organization?.uuid
+            ? user?.user_data?.organization?.uuid
+            : false
+      )
+        .then((response) => {
+          setExportTableData(response);
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.log("E : ", e);
+          setLoading(false);
+        });
+    }
   }, [loading]);
 
   useEffect(() => {
