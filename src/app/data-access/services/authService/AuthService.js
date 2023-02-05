@@ -51,37 +51,22 @@ class AuthService extends FuseUtils.EventEmitter {
     const userInfo = this.getUserInfo();
     return new Promise((resolve, reject) => {
       if (userInfo) {
-        if (this.isRefreshTokenValid()) {
-          if (this.isAccessTokenValid()) {
-            if (userInfo) {
-              this.isAuthenticated(userInfo?.user_data?.uuid)
-                .then((res) => {
-                  resolve(res);
-                })
-                .catch((e) => {
-                  this.emit("onAutoLogout");
-                  reject(false);
-                });
-            }
-          } else if (!this.isAccessTokenValid()) {
-            this.refreshAccessToken().then((res) => {
+        if (this.isAccessTokenValid()) {
+          resolve(true);
+        } else if (this.isRefreshTokenValid()) {
+          this.refreshAccessToken()
+            .then((res) => {
               if (res) {
-                if (userInfo) {
-                  this.isAuthenticated(userInfo.uuid)
-                    .then((res) => {
-                      resolve(res);
-                    })
-                    .catch((e) => {
-                      this.emit("onAutoLogout");
-                      reject(false);
-                    });
-                }
+                resolve(true);
               } else reject(false);
+            })
+            .catch((e) => {
+              reject(false);
+              this.emit("onAutoLogout");
             });
-          }
         } else {
-          this.emit("onAutoLogout");
           reject(false);
+          this.emit("onAutoLogout");
         }
       } else {
         this.emit("onAutoLogout");
@@ -102,11 +87,17 @@ class AuthService extends FuseUtils.EventEmitter {
           })
           .then((res) => {
             if (res?.data?.status_code === 202 && res?.data?.data) {
-              this.setSession(res.data.data.access_token);
-              const userInfo = this.getUserInfo();
-              userInfo.token_data = res.data.data;
-              this.setUserInfo(userInfo);
-              resolve(true);
+              const isValid = this.isAccessTokenValid(
+                res?.data?.data?.access_token_expires_at
+              );
+              if (isValid) {
+                this.setSession(res.data.data.access_token);
+                // const userInfo = this.getUserInfo();
+                // console.log("userInfo : ", userInfo);
+                userInfo.token_data = res.data.data;
+                this.setUserInfo(userInfo);
+                resolve(true);
+              } else reject(false);
             }
             reject(false);
           })
@@ -491,9 +482,9 @@ class AuthService extends FuseUtils.EventEmitter {
     });
   };
 
-  isAccessTokenValid = () => {
+  isAccessTokenValid = (ttl) => {
     const currentTime = Date.now() / 1000;
-    const expiresAt = this.getAccessTokenExpiresAt();
+    const expiresAt = ttl ? ttl : this.getAccessTokenExpiresAt();
     if (expiresAt < currentTime) {
       return false;
     }

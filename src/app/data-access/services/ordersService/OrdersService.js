@@ -835,7 +835,6 @@ class OrdersService {
           } else reject("Something went wrong");
         })
         .catch((e) => {
-          console.log("E : ", e);
           reject("Something went wrong");
         });
     });
