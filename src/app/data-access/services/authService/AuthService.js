@@ -37,22 +37,25 @@ class AuthService extends FuseUtils.EventEmitter {
   //     }
   //   );
   // };
-  setTranslation = () => {
-    MultiLanguageService.translations()
-      .then((response) => {
-        localStorage.setItem("translation", JSON.stringify(response.data));
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
 
   axiosRequestHelper = () => {
     const userInfo = this.getUserInfo();
     return new Promise((resolve, reject) => {
       if (userInfo) {
         if (this.isAccessTokenValid()) {
-          resolve(true);
+          this.isAuthenticated(userInfo?.user_data?.uuid)
+            .then((loggedInStatus) => {
+              if (loggedInStatus) {
+                resolve(true);
+              } else {
+                reject(false);
+                this.emit("onAutoLogout");
+              }
+            })
+            .catch((e) => {
+              reject(false);
+              this.emit("onAutoLogout");
+            });
         } else if (this.isRefreshTokenValid()) {
           this.refreshAccessToken()
             .then((res) => {
@@ -86,18 +89,31 @@ class AuthService extends FuseUtils.EventEmitter {
             refreshToken: userInfo.token_data.refresh_token,
           })
           .then((res) => {
-            if (res?.data?.status_code === 202 && res?.data?.data) {
-              const isValid = this.isAccessTokenValid(
-                res?.data?.data?.access_token_expires_at
-              );
-              if (isValid) {
-                this.setSession(res.data.data.access_token);
-                // const userInfo = this.getUserInfo();
-                // console.log("userInfo : ", userInfo);
-                userInfo.token_data = res.data.data;
-                this.setUserInfo(userInfo);
-                resolve(true);
-              } else reject(false);
+            if (
+              res?.data?.status_code === 202 &&
+              res?.data?.data
+            ) {
+              this.isAuthenticated(userInfo?.user_data?.uuid)
+                .then((loggedInStatus) => {
+                  if (loggedInStatus) {
+                    const isValid = this.isAccessTokenValid(
+                      res?.data?.data?.access_token_expires_at
+                    );
+                    if (isValid) {
+                      this.setSession(res.data.data.access_token);
+                      userInfo.token_data = res.data.data;
+                      this.setUserInfo(userInfo);
+                      resolve(true);
+                    } else reject(false);
+                  } else {
+                    reject(false);
+                    this.emit("onAutoLogout");
+                  }
+                })
+                .catch((e) => {
+                  reject(false);
+                  this.emit("onAutoLogout");
+                });
             }
             reject(false);
           })
