@@ -914,7 +914,6 @@ class CustomersService {
   };
 
   prepareUpdateCorporateCustomerPayload = (params, sameAddress, detailsInfo)=> {
-    console.log("Params :",params);
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
       : null;
@@ -974,7 +973,6 @@ class CustomersService {
             note: params.notes,
           },
         };
-    console.log("additionalCDs1 : ",additionalCDs);
     const paramsContact = params.contact;
     if (params.contact.length) {
       for (let i = 0; i < params.contact.length; i++) {
@@ -988,7 +986,6 @@ class CustomersService {
           paramsContact.splice(i, 1);
       }
     }
-    console.log("paramsContact 1: ",paramsContact);
     const additionalData = paramsContact
       ? paramsContact.map((row) => {
         const phone = row?.phone ? row.phone.split("+") : null;
@@ -1009,7 +1006,6 @@ class CustomersService {
         };
       })
       : null;
-    console.log("additionalData1 : ",additionalData);
 
     if (additionalData.length) {
       for (let i = 1; i <= additionalData.length; i++) {
@@ -1021,7 +1017,6 @@ class CustomersService {
         additionalCDs[i] = additionalData[i - 1];
       }
     }
-    console.log("additionalCDs 2: ",additionalCDs);
 
     const data = {
       customerID: params.customerID,

@@ -145,17 +145,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             info?.additionalContactDetails &&
             info?.additionalContactDetails.length >= 2
           ) {
-            console.log("addContactIndex 1 :",addContactIndex)
             // for (let i=0; i<info?.additionalContactDetails.length -1; i++){
             //   addNewContact()
             // }
-            console.log("addContactIndex 2 :",addContactIndex)
-            //ADC
-            // setAddContactIndex(
-            //   addContactIndex.filter(
-            //     (item, index) => item < info?.additionalContactDetails.length - 1
-            //   )
-            // );
+            // ADC
+            setAddContactIndex(
+              addContactIndex.filter(
+                (item, index) => item < info?.additionalContactDetails.length - 1
+              )
+            );
 
           }
           CreateCorporateDefaultValue.fullName = info?.additionalContactDetails[0]
@@ -184,36 +182,34 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         reset({ ...CreateCorporateDefaultValue });
         // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
 
-        //ADC
-        // if (
-        //   info?.additionalContactDetails &&
-        //   info?.additionalContactDetails.length
-        // ) {
-        //   for (let i = 0; i < info.additionalContactDetails.length - 1; i++) {
-        //     console.log("addContactIndex:",addContactIndex)
-        //     setValue(
-        //       `contact[${i}].fullName`,
-        //       info.additionalContactDetails[`${i + 1}`].name
-        //     );
-        //     setValue(
-        //       `contact[${i}].designation`,
-        //       info.additionalContactDetails[`${i + 1}`].designation
-        //     );
-        //     setValue(
-        //       `contact[${i}].phone`,
-        //       info.additionalContactDetails[`${i + 1}`].countryCode +
-        //       info.additionalContactDetails[`${i}`].msisdn
-        //     );
-        //     setValue(
-        //       `contact[${i}].notes`,
-        //       info.additionalContactDetails[`${i + 1}`].notes
-        //     );
-        //     setValue(
-        //       `contact[${i}].email`,
-        //       info.additionalContactDetails[`${i + 1}`].email
-        //     );
-        //   }
-        // }
+        if (
+          info?.additionalContactDetails &&
+          info?.additionalContactDetails.length
+        ) {
+          for (let i = 0; i < info.additionalContactDetails.length - 1; i++) {
+            setValue(
+              `contact[${i}].fullName`,
+              info.additionalContactDetails[`${i + 1}`].name
+            );
+            setValue(
+              `contact[${i}].designation`,
+              info.additionalContactDetails[`${i + 1}`].designation
+            );
+            setValue(
+              `contact[${i}].phone`,
+              info.additionalContactDetails[`${i + 1}`].countryCode +
+              info.additionalContactDetails[`${i}`].msisdn
+            );
+            setValue(
+              `contact[${i}].notes`,
+              info.additionalContactDetails[`${i + 1}`].notes
+            );
+            setValue(
+              `contact[${i}].email`,
+              info.additionalContactDetails[`${i + 1}`].email
+            );
+          }
+        }
 
         if (
           info?.addresses &&
@@ -233,8 +229,6 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         enqueueSnackbar(e, {variant: "error"})
       })
   }, [isLoading]);
-
-  console.log("addContactIndex o :",addContactIndex)
 
   const onRawSubmit = (values) => {
     // onSubmit({
@@ -264,22 +258,21 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         sameAddress,
         info
       );
-    // updateCorporateCustomer(preparedPayload).then((response) => {
-    //   if (response?.data?.status_code === 202) {
-    //     enqueueSnackbar(response?.data?.message, { variant: "success" });
-    //     navigate("/customers/customers-list");
-    //     setLoading(false);
-    //   } else if (response?.error?.data?.status_code === 417) {
-    //     enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
-    //     setLoading(false);
-    //   }
-    // });
+    updateCorporateCustomer(preparedPayload).then((response) => {
+      if (response?.data?.status_code === 202) {
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        navigate("/customers/customers-list");
+        setLoading(false);
+      } else if (response?.error?.data?.status_code === 417) {
+        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        setLoading(false);
+      }
+    });
   };
   // form end
 
   // dynamic input form
   const addNewContact = () => {
-    console.log("addNewContact clicked");
     setAddContactIndex([...addContactIndex, addContactIndex.length]);
   };
   const onDelete = (index) => {

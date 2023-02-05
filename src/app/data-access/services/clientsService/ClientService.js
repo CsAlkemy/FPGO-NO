@@ -223,7 +223,6 @@ class ClientService {
           } else reject("Something went wrong");
         })
         .catch((e) => {
-          console.log("Err : ", e);
           if (e?.response?.data?.status_code === 404) resolve(e.response.data);
           reject(e?.response?.data?.message);
         });

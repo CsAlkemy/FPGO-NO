@@ -522,14 +522,7 @@ export default function OverviewMainTable(props) {
           : navigate(`/customers/private/details/${info.uuid}`);
         break;
       case customerOrdersListOverview:
-        OrdersService.getOrdersDetailsByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/create-order/details`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/create-order/details/${info.uuid}`);
         break;
       case categoriesListOverview:
         navigate(`/category/details/${info.uuid}`);

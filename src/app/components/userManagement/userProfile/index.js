@@ -38,12 +38,10 @@ const index = () => {
   React.useEffect(() => {
     UserService.getProfileByUUID(userId)
       .then((res) => {
-        console.log("RES.DATA : ", res?.data);
         setUserProfile(res?.data);
         setIsLoading(false);
       })
       .catch((e) => {
-        console.log("EEEE : ", e);
       });
 
     if (Location.includes("/my-profile")) {
