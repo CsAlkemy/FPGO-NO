@@ -12,9 +12,11 @@ import OrdersService from "../../../../data-access/services/ordersService/Orders
 import { Skeleton, TextField } from "@mui/material";
 import CustomersService from "../../../../data-access/services/customersService/CustomersService";
 import { DesktopDatePicker } from "@mui/lab";
+import { useParams } from 'react-router-dom';
 
 const TimelineLog = () => {
   const { t } = useTranslation();
+  const queryParams = useParams();
   const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [logs, setLogs] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
@@ -33,7 +35,7 @@ const TimelineLog = () => {
     ).getFullYear()} 00:00:00`;
     const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
     setSelectedDate(prepareSelectedDate);
-    CustomersService.getCustomerTimelineByUUID(info.uuid, timeStamp)
+    CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp)
       .then((res) => {
         setLogs(res?.data);
         setIsFetching(false);
@@ -50,7 +52,7 @@ const TimelineLog = () => {
         new Date().getMonth() + 1
       }.01.${new Date().getFullYear()} 00:00:00`;
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-      CustomersService.getCustomerTimelineByUUID(info.uuid, timeStamp)
+      CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp)
         .then((res) => {
           setLogs(res?.data);
           setIsFetching(false);

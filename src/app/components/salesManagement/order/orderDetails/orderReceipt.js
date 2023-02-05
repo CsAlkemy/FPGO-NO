@@ -14,7 +14,7 @@ import { selectUser } from "app/store/userSlice";
 import { useTranslation } from "react-i18next";
 import Pdf from "react-to-pdf";
 
-const orderReceipt = () => {
+const orderReceipt = ({info}) => {
   const { t } = useTranslation();
   const ref = createRef();
 
@@ -41,7 +41,6 @@ const orderReceipt = () => {
       amount: 5000,
     },
   ];
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const user = useSelector(selectUser);
 
   return (

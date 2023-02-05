@@ -53,7 +53,7 @@ class CategoryService {
               })
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message)
               });
           }
           reject("Something went wrong");
@@ -102,7 +102,7 @@ class CategoryService {
                 else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message)
               });
           } else reject("Something went wrong");
         })
@@ -129,7 +129,7 @@ class CategoryService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message)
               });
           } else reject("Something went wrong");
         })
@@ -180,7 +180,7 @@ class CategoryService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message)
               });
           } else reject("Something went wrong");
         })
@@ -205,7 +205,7 @@ class CategoryService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message)
               });
           } else reject("Something went wrong");
         })

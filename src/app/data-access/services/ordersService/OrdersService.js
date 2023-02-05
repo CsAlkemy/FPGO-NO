@@ -61,10 +61,10 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                // reject(e.response.data.errors)
+                // reject(e?.response?.data?.message)
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -391,7 +391,7 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject([]);
         })
@@ -458,8 +458,8 @@ class OrdersService {
           } else reject("Something went wrong");
         })
         .catch((e) => {
-          // reject(e.response.data.errors)
-          reject(e.response.data.errors);
+          // reject(e?.response?.data?.message)
+          reject(e?.response?.data?.message);
         });
     });
   };
@@ -506,7 +506,7 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -538,7 +538,7 @@ class OrdersService {
             } else reject("Something went wrong");
           })
           .catch((e) => {
-            reject(e.response.data.errors);
+            reject(e?.response?.data?.message);
           })
       );
     });
@@ -565,7 +565,7 @@ class OrdersService {
           .catch((e) => {
             if (e?.response?.data?.status_code === 111)
               resolve(e.response.data);
-            reject(e.response.data.errors);
+            reject(e?.response?.data?.message);
           })
       );
     });
@@ -598,7 +598,7 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -628,7 +628,7 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -658,7 +658,7 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -720,7 +720,7 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -752,10 +752,10 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                // reject(e.response.data.errors)
+                // reject(e?.response?.data?.message)
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -827,10 +827,10 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                // reject(e.response.data.errors)
+                // reject(e?.response?.data?.message)
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -855,7 +855,7 @@ class OrdersService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
