@@ -140,7 +140,7 @@ const OrderModal = (props) => {
           setOpen(false);
         }, 1000);
       });
-    } else if (headerTitle === "Send Refund") {
+    } else if (headerTitle === "Send Refund" || headerTitle === "Refund Order") {
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
           if (response?.data?.status_code === 202) {
@@ -154,6 +154,7 @@ const OrderModal = (props) => {
               });
             }
           }
+          setOpen(false);
         }
       );
     } else if (headerTitle === "Reject Request") {
@@ -298,7 +299,7 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
-                {headerTitle === "Send Refund" && !flag && (
+                {(headerTitle === "Send Refund" || headerTitle === "Refund Order") && !flag && (
                   <div>
                     <div className="caption2">{t("label:refundType")}</div>
                     <div className="grid grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
