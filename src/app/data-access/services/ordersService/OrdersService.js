@@ -95,8 +95,8 @@ class OrdersService {
           row.status.toLowerCase() === "sent"
             ? "Resend"
             : row.status.toLowerCase() === "paid" ||
-              row.status.toLowerCase() === "partial refunded" ||
-              row.status.toLowerCase() === "invoiced"
+              row.status.toLowerCase() === "partial refunded"
+            // || row.status.toLowerCase() === "invoiced"
             ? "Refund"
             : null,
         isCancel: row.status.toLowerCase() === "sent",
