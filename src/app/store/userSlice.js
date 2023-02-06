@@ -1,20 +1,13 @@
 /* eslint import/no-extraneous-dependencies: off */
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import history from "@history";
 import _ from "@lodash";
-import { setInitialSettings } from "app/store/fuse/settingsSlice";
-import { showMessage } from "app/store/fuse/messageSlice";
+import {setInitialSettings} from "app/store/fuse/settingsSlice";
+import {showMessage} from "app/store/fuse/messageSlice";
 import settingsConfig from "app/configs/settingsConfig";
 import AuthService from "../data-access/services/authService";
-import authRoles from "../data-access/utils/AuthRoles";
-import { setNavigation } from "app/store/fuse/navigationSlice";
-import {
-  BRAND_MANAGER,
-  BUSINESS_ADMIN,
-  FP_ADMIN,
-  GENERAL_USER,
-  GROUP_MANAGER,
-} from "../utils/user-roles/UserRoles";
+import {setNavigation} from "app/store/fuse/navigationSlice";
+import {BUSINESS_ADMIN, FP_ADMIN, GENERAL_USER,} from "../utils/user-roles/UserRoles";
 
 export const setUser = createAsyncThunk(
   "user/setUser",
@@ -76,7 +69,7 @@ export const setUser = createAsyncThunk(
               title: "Refund Requests",
               translate: 'refundRequests',
               type: "item",
-              icon: "material-outline:u_turn_left",
+              icon: "material-outline:unarchive",
               url: "/refund-requests",
             },
             {

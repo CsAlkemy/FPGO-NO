@@ -237,6 +237,14 @@ h6,
 ::-ms-reveal {
   display: none;
 }
+.custom-alignment > a {
+  display: flex !important;
+  align-items: center !important;
+}
+.custom-alignment > a > ul > li {
+  display: flex !important;
+  align-items: center !important;
+}
 
 
 .overline1 {
