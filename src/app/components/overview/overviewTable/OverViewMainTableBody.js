@@ -63,21 +63,10 @@ export default function OverViewMainTableBody(props) {
   };
 
   const handleModalOpen = (decision) => {
-    if (!localStorage.getItem("refundRequestCount"))
-      localStorage.setItem("refundRequestCount", "0");
     setOpen(true);
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
-    if (
-      decision === "refund" &&
-      !(localStorage.getItem("refundRequestCount") >= 3)
-    )
-      setHeaderTitle("Send Refund");
-    if (
-      decision === "refund" &&
-      localStorage.getItem("refundRequestCount") >= 3
-    )
-      setHeaderTitle("moreThanThreeRefundAttempts");
+    if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Request");
   };
   const CustomTooltip = withStyles({

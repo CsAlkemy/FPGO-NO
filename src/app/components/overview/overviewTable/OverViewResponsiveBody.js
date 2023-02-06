@@ -11,8 +11,10 @@ import {
   fpAdminUsersOverview,
   businessAdminUsersOverview,
   organizationWiseUsersOverview,
-  ordersListOverview, customerOrdersListOverview,
-} from './TablesName';
+  ordersListOverview,
+  customerOrdersListOverview,
+  refundRequestsOverview,
+} from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
 import Skeleton from "@mui/material/Skeleton";
@@ -34,17 +36,19 @@ import { useSelector } from "react-redux";
 import { selectUser } from "app/store/userSlice";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import { Button } from "@mui/material";
-import { ConvertToContString } from '../../../utils/ConvertToContString'
-import { useTranslation } from 'react-i18next';
+import { ConvertToContString } from "../../../utils/ConvertToContString";
+import { useTranslation } from "react-i18next";
+import DiscardConfirmModal from "../../common/confirmDiscard";
 
 export default function OverViewResponsiveBody(props) {
   const [openHigh, setOpenHigh] = useState(false);
   const [openModerate, setOpenModerate] = useState(false);
   const [openLow, setOpenLow] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openApprove, setOpenApprove] = useState(false);
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const handleTooltipClose = () => {
     setOpenHigh(false);
@@ -63,6 +67,7 @@ export default function OverViewResponsiveBody(props) {
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
+    if (decision === "reject") setHeaderTitle("Reject Request");
   };
 
   const CustomTooltip = withStyles({
@@ -151,7 +156,7 @@ export default function OverViewResponsiveBody(props) {
                 {ConvertToContString(props.row[rdt.id], 20)}
               </div>
             </div>
-          )
+          );
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
@@ -179,7 +184,7 @@ export default function OverViewResponsiveBody(props) {
                 {ConvertToContString(props.row[rdt.id], 20)}
               </div>
             </div>
-          )
+          );
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
@@ -328,7 +333,7 @@ export default function OverViewResponsiveBody(props) {
                   {ConvertToContString(props.row[rdt.id], 20)}
                 </div>
               </div>
-            )
+            );
           default:
             return (
               <div className="grid grid-cols-2 justify-between items-center">
@@ -598,7 +603,7 @@ export default function OverViewResponsiveBody(props) {
           );
         } else if (rdt.id === "refundResend") {
           return props.row.refundResend === "Resend" &&
-          user.role[0] !== FP_ADMIN ? (
+            user.role[0] !== FP_ADMIN ? (
             <>
               <CustomTooltip
                 disableFocusListener
@@ -613,7 +618,9 @@ export default function OverViewResponsiveBody(props) {
                   startIcon={<RedoIcon />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100"
                   onClick={() => handleModalOpen("resend")}
-                >{t("label:resendOrder")}</Button>
+                >
+                  {t("label:resendOrder")}
+                </Button>
               </CustomTooltip>
               <OrderModal
                 open={open}
@@ -627,7 +634,7 @@ export default function OverViewResponsiveBody(props) {
               />
             </>
           ) : props.row.refundResend === "Refund" &&
-          user.role[0] !== FP_ADMIN ? (
+            user.role[0] !== FP_ADMIN ? (
             <>
               <CustomTooltip
                 disableFocusListener
@@ -642,7 +649,9 @@ export default function OverViewResponsiveBody(props) {
                   startIcon={<UndoIcon />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100"
                   onClick={() => handleModalOpen("refund")}
-                >{t("label:refundOrder")}</Button>
+                >
+                  {t("label:refundOrder")}
+                </Button>
               </CustomTooltip>
               <OrderModal
                 open={open}
@@ -655,7 +664,9 @@ export default function OverViewResponsiveBody(props) {
                 customerEmail={props.row.email}
               />
             </>
-          ) : "";
+          ) : (
+            ""
+          );
         } else if (rdt.id === "cancel") {
           return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
             <>
@@ -673,7 +684,9 @@ export default function OverViewResponsiveBody(props) {
                   startIcon={<CancelIcon className="text-red-500" />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100 text-MonochromeGray-900"
                   onClick={() => handleModalOpen("cancel")}
-                >{t("label:cancelOrder")}</Button>
+                >
+                  {t("label:cancelOrder")}
+                </Button>
               </CustomTooltip>
               <OrderModal
                 open={open}
@@ -686,7 +699,9 @@ export default function OverViewResponsiveBody(props) {
                 customerEmail={props.row.email}
               />
             </>
-          ) : "";
+          ) : (
+            ""
+          );
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
@@ -860,7 +875,7 @@ export default function OverViewResponsiveBody(props) {
               </div>
             </div>
           );
-        } else if (rdt.id === 'email') {
+        } else if (rdt.id === "email") {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
               <div className="subtitle3 text-primary-900">
@@ -871,8 +886,7 @@ export default function OverViewResponsiveBody(props) {
                 {ConvertToContString(props.row[rdt.id], 20)}
               </div>
             </div>
-          )
-
+          );
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
@@ -912,7 +926,7 @@ export default function OverViewResponsiveBody(props) {
               </div>
             </div>
           );
-        } else if (rdt.id === 'email') {
+        } else if (rdt.id === "email") {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
               <div className="subtitle3 text-primary-900">
@@ -923,8 +937,7 @@ export default function OverViewResponsiveBody(props) {
                 {ConvertToContString(props.row[rdt.id], 20)}
               </div>
             </div>
-          )
-
+          );
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
@@ -964,7 +977,7 @@ export default function OverViewResponsiveBody(props) {
               </div>
             </div>
           );
-        } else if (rdt.id === 'email') {
+        } else if (rdt.id === "email") {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
               <div className="subtitle3 text-primary-900">
@@ -975,8 +988,7 @@ export default function OverViewResponsiveBody(props) {
                 {ConvertToContString(props.row[rdt.id], 20)}
               </div>
             </div>
-          )
-
+          );
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
@@ -1261,7 +1273,9 @@ export default function OverViewResponsiveBody(props) {
                   startIcon={<RedoIcon />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100"
                   onClick={() => handleModalOpen("resend")}
-                >{t("label:resendOrder")}</Button>
+                >
+                  {t("label:resendOrder")}
+                </Button>
               </CustomTooltip>
               <OrderModal
                 open={open}
@@ -1290,7 +1304,9 @@ export default function OverViewResponsiveBody(props) {
                   startIcon={<UndoIcon />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100"
                   onClick={() => handleModalOpen("refund")}
-                >{t("label:refundOrder")}</Button>
+                >
+                  {t("label:refundOrder")}
+                </Button>
               </CustomTooltip>
               <OrderModal
                 open={open}
@@ -1303,7 +1319,9 @@ export default function OverViewResponsiveBody(props) {
                 customerEmail={props.row.email}
               />
             </>
-          ) : "";
+          ) : (
+            ""
+          );
         } else if (rdt.id === "cancel") {
           return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
             <>
@@ -1321,7 +1339,9 @@ export default function OverViewResponsiveBody(props) {
                   startIcon={<CancelIcon className="text-red-500" />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100 text-MonochromeGray-900"
                   onClick={() => handleModalOpen("cancel")}
-                >{t("label:cancelOrder")}</Button>
+                >
+                  {t("label:cancelOrder")}
+                </Button>
               </CustomTooltip>
               <OrderModal
                 open={open}
@@ -1334,7 +1354,192 @@ export default function OverViewResponsiveBody(props) {
                 customerEmail={props.row.email}
               />
             </>
-          ) : "";
+          ) : (
+            ""
+          );
+        } else {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        }
+        // return rdt.includes("amount") || rdt.includes("stage") ? (
+        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+        //   </TableCell>
+        // )
+        // :
+        // (
+        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+        //   </TableCell>
+        // )
+      });
+    case refundRequestsOverview:
+      return props.headerRows.map((rdt) => {
+        if (rdt.id === "stage") {
+          switch (props.row.stage) {
+            case "pending":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Pending" />
+                  </div>
+                </div>
+              );
+            case "accepted":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Accepted" />
+                  </div>
+                </div>
+              );
+            case "rejected":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Rejected" />
+                  </div>
+                </div>
+              );
+          }
+        } else if (rdt.id === "amount") {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div
+                className="body3 text-MonochromeGray-700"
+                onClick={() => {
+                  props.rowClickAction(props.row);
+                }}
+              >
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        } else if (rdt.id === "approveAction") {
+          return props.row.approveAction === "pending" ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title="Approve Request"
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<RedoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => setOpenApprove(true)}
+                >
+                  {t("label:accept")}
+                </Button>
+              </CustomTooltip>
+              <DiscardConfirmModal
+                open={openApprove}
+                // defaultValue={defaultValueCreateClient}
+                setOpen={setOpenApprove}
+                // reset={reset}
+                modalRef="confirmRefundRequestApprove"
+                values={{
+                  amount: props.row.refundAmount,
+                  orderUuid: props.row.id,
+                }}
+                title={t("label:areYouSureYouWantToApproveThisRefund")}
+                subTitle={t("label:onceConfirmedThisActionCannotBeReverted")}
+                route={0}
+              />
+            </>
+          ) : (
+            ""
+          );
+        } else if (rdt.id === "cancel") {
+          return props.row.isCancel ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title="Cancel Order"
+                TransitionComponent={Zoom}
+                placement="bottom-start"
+                enterDelay={300}
+              >
+                <Button
+                  Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<CancelIcon className="text-red-500" />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100 text-MonochromeGray-900"
+                  onClick={() => handleModalOpen("reject")}
+                >
+                  {t("label:reject")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.customerName}
+                orderAmount={props.row.refundAmount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : (
+            ""
+          );
+        } else if (rdt === "orderAmount" || rdt === "refundAmount") {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
