@@ -35,7 +35,8 @@ const createOrder = () => {
 
   const handleResendRefundOrder = () => {
     setOpen(true);
-    setSetHeaderTitle(value === "3" ? "Refund Order" : "Resend Order");
+    // setSetHeaderTitle(value === "3" ? "Refund Order" : "Resend Order");
+    setSetHeaderTitle(info.status.toLowerCase() === "paid" ? "Refund Order" : "Resend Order");
   };
 
   const handleCancelOrder = () => {
