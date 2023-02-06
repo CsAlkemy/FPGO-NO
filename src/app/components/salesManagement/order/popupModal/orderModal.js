@@ -145,16 +145,18 @@ const OrderModal = (props) => {
         (response) => {
           if (response?.data?.status_code === 202) {
             enqueueSnackbar(response?.data?.message, { variant: "success" });
+            setOpen(false);
+            window.location.pathname.includes("/create-order/details/") ? navigate(-1) : ""
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
               setFlagMessage(response?.error?.data?.message);
               setFlag(true);
-              enqueueSnackbar(response?.error?.data?.message, {
-                variant: "error",
-              });
-            }
+              // enqueueSnackbar(response?.error?.data?.message, {
+              //   variant: "error",
+              // });
+            } else setOpen(false);
           }
-          setOpen(false);
+          // setOpen(false);
         }
       );
     } else if (headerTitle === "Reject Request") {
