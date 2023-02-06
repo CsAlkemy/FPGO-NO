@@ -326,8 +326,6 @@ export const logoutUser = () => async (dispatch, getState) => {
 
   dispatch(setInitialSettings());
 
-  localStorage.clear()
-
   return dispatch(userLoggedOut());
 };
 
