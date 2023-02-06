@@ -47,7 +47,7 @@ function FuseNavVerticalLayout1(props) {
   return (
     <StyledList
       className={clsx(
-        'navigation whitespace-nowrap px-12 py-0 mt-20',
+        'navigation whitespace-nowrap px-12 py-0 mt-20 custom-alignment',
         `active-${active}-list`,
         dense && 'dense',
         className

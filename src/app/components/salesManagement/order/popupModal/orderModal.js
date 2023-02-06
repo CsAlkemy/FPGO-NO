@@ -1,39 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, {useEffect, useState} from "react";
+import {yupResolver} from "@hookform/resolvers/yup";
 import {
   Button,
   Checkbox,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   InputAdornment,
   TextField,
 } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
-import { useSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setOverviewMainTableDataSlice } from "app/store/overview-table/overviewTableSlice";
+import {useSnackbar} from "notistack";
+import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
 import {
   OrderModalDefaultValue,
-  validateSchemaOrderResendModal,
+  validateSchemaMoreThanFiveThousand,
   validateSchemaOrderCancelModal,
   validateSchemaOrderRefundModal,
-  validateSchemaMoreThanFiveThousand,
+  validateSchemaOrderResendModal,
 } from "../../utils/helper";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 import {
   useCancelOrderMutation,
-  useRefundOrderMutation, useRefundRequestDecisionMutation, useRequestRefundApprovalMutation,
+  useRefundOrderMutation,
+  useRefundRequestDecisionMutation,
+  useRequestRefundApprovalMutation,
   useResendOrderMutation,
 } from 'app/store/api/apiSlice';
+import CharCount from '../../../common/charCount'
+import {value} from "lodash/seq";
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -68,13 +67,13 @@ const OrderModal = (props) => {
     if (flag) setFlag(false);
     setFlagMessage("");
   };
-  const { control, formState, handleSubmit, reset, setValue } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, watch, getValues } = useForm({
     mode: "onChange",
     OrderModalDefaultValue,
     resolver: yupResolver(
       headerTitle === "Resend Order"
         ? validateSchemaOrderResendModal
-        : headerTitle === "Cancel Order" || headerTitle === "Reject Request"
+        : headerTitle === "Cancel Order" || headerTitle === "Reject Refund Request"
         ? validateSchemaOrderCancelModal
         : flag
         ? validateSchemaMoreThanFiveThousand
@@ -82,6 +81,7 @@ const OrderModal = (props) => {
     ),
   });
   const { isValid, dirtyFields, errors } = formState;
+
 
   useEffect(() => {
     OrderModalDefaultValue.phone = customerPhone ? customerPhone : "";
@@ -221,25 +221,29 @@ const OrderModal = (props) => {
               >
                 {(headerTitle === "Cancel Order" ||
                   headerTitle === "Reject Request") && (
-                  <Controller
-                    name="cancellationNote"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        multiline
-                        rows={5}
-                        label={t("label:cancellationNote")}
-                        type="text"
-                        autoComplete="off"
-                        variant="outlined"
-                        error={!!errors.cancellationNote}
-                        helperText={errors?.cancellationNote?.message}
-                        fullWidth
-                        required
-                      />
-                    )}
-                  />
+                      <div>
+                        <Controller
+                            name="cancellationNote"
+                            control={control}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    multiline
+                                    rows={5}
+                                    label={t("label:cancellationNote")}
+                                    type="text"
+                                    autoComplete="off"
+                                    variant="outlined"
+                                    error={!!errors.cancellationNote}
+                                    helperText={errors?.cancellationNote?.message}
+                                    fullWidth
+                                    required
+                                />
+                            )}
+                        />
+                        <CharCount current={watch('cancellationNote').length} total={200} />
+                      </div>
+
                 )}
                 {headerTitle === "Resend Order" && (
                   <div className="flex flex-col gap-32">
@@ -366,7 +370,7 @@ const OrderModal = (props) => {
                 {/*  </div>*/}
                 {/*)}*/}
                 {flag && <div>{flagMessage}</div>}
-                <div className="flex justify-end items-center mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
+                <div className="flex justify-end items-center gap-32 mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
                   <Button
                     onClick={handleClose}
                     variant="text"
@@ -377,7 +381,7 @@ const OrderModal = (props) => {
                   <Button
                     variant="contained"
                     color="secondary"
-                    className="rounded-4 font-semibold"
+                    className="rounded-4 font-semibold min-w-[153px]"
                     type="submit"
                     //onClick={()=> {}}
                     disabled={

@@ -125,7 +125,7 @@ const createOrder = () => {
                         onClick={() => handleResendRefundOrder()}
                       >
                         {info.status.toLowerCase() === "paid"
-                          ? t("label:refuncOrder")
+                          ? t("label:refundOrder")
                           : t("label:resendOrder")}
                       </Button>
                     )}
