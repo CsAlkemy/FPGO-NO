@@ -315,7 +315,7 @@ export const validateSchemaOrderResendModal = yup.object().shape({
   phone: yup.string().required('You must enter the phone')
 });
 export const validateSchemaOrderCancelModal = yup.object().shape({
-  cancellationNote: yup.string().required('You must enter the Cancellation Note')
+  cancellationNote: yup.string().max(200, "Must be 200 characters or less").required('You must enter the Cancellation Note')
 });
 export const validateSchemaOrderRefundModal = yup.object().shape({
   refundAmount: yup.string().required('You must enter the Refund amount')
