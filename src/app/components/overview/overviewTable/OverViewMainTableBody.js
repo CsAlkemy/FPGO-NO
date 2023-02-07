@@ -13,8 +13,8 @@ import {
   organizationWiseUsersOverview,
   ordersListOverview,
   customerOrdersListOverview,
-  refundRequestsOverview,
-} from "./TablesName";
+  refundRequestsOverview, clientOrdersListOverview,
+} from './TablesName';
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
 import Skeleton from "@mui/material/Skeleton";
@@ -1151,6 +1151,157 @@ export default function OverViewMainTableBody(props) {
         //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
         //   </TableCell>
         // )
+      });
+    case clientOrdersListOverview:
+      return props.rowDataFields.map((rdt) => {
+        if (rdt === "status") {
+          switch (props.row.status) {
+            case "paid":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Paid" />
+                </TableCell>
+              );
+            case "sent":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Sent" />
+                </TableCell>
+              );
+            case "expired":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Expired" />
+                </TableCell>
+              );
+            case "invoiced":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Invoiced" />
+                </TableCell>
+              );
+            case "cancelled":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Cancelled" />
+                </TableCell>
+              );
+            case "refunded":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Refunded" />
+                </TableCell>
+              );
+            case "partial refunded":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Partial Refunded" />
+                </TableCell>
+              );
+            case "completed":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Completed" />
+                </TableCell>
+              );
+            case "reminder sent":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Reminder Sent" />
+                </TableCell>
+              );
+            case "sent to debt collection":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Debt Collection" />
+                </TableCell>
+              );
+          }
+        } else if (rdt === "amount") {
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        } else {
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="left"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
       });
   }
 }

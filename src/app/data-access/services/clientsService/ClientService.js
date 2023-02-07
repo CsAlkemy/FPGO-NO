@@ -28,6 +28,7 @@ class ClientService {
     d.is_data = true;
     return d;
   };
+
   approvalList = async () => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
@@ -391,6 +392,60 @@ class ClientService {
               })
               .catch((e) => {
                 // reject(e?.response?.data?.message)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e?.response?.data?.message);
+              });
+          } else reject("Something went wrong");
+        })
+        .catch((e) => {
+          reject("Something went wrong");
+        });
+    });
+  };
+
+  getOrdersList = async (uuid, timeStamp) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/clients/${uuid}/orders/${timeStamp}`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  let d;
+                  d = response.data.data.map((row) => {
+                    const preparePhone =
+                      row.countryCode && row.msisdn
+                        ? row.countryCode + row.msisdn
+                        : null;
+                    const phone = preparePhone ? preparePhone.split("+") : null;
+                    return {
+                      uuid: row.orderUuid,
+                      dateCreated: row.dateCreated,
+                      orderId: row.orderUuid,
+                      customerName: row.customerName,
+                      paymentLinkDueDate: row.paymentLinkDueDate,
+                      phoneNo: phone ? "+" + phone[phone.length - 1] : null,
+                      amount: row.amount,
+                      status: row?.status ? row?.status.toLowerCase() : null,
+                    };
+                  });
+                  d.status_code = 200;
+                  d.is_data = true;
+                  resolve(d);
+                } else if (
+                  response.data.status_code === 200 &&
+                  !response.data.is_data
+                ) {
+                  resolve([]);
+                } else reject("Something went wrong");
+              })
+              .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);

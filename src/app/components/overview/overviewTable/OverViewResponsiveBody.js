@@ -13,8 +13,8 @@ import {
   organizationWiseUsersOverview,
   ordersListOverview,
   customerOrdersListOverview,
-  refundRequestsOverview,
-} from "./TablesName";
+  refundRequestsOverview, clientOrdersListOverview,
+} from './TablesName';
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
 import Skeleton from "@mui/material/Skeleton";
@@ -1109,7 +1109,7 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                 </div>
               );
-            case "Partial Refunded":
+            case "partial refunded":
               return (
                 <div className="grid grid-cols-2 justify-between items-center">
                   <div className="subtitle3 text-primary-900">
@@ -1536,6 +1536,223 @@ export default function OverViewResponsiveBody(props) {
                 {rdt.label}
               </div>
               <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        }
+        // return rdt.includes("amount") || rdt.includes("stage") ? (
+        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+        //   </TableCell>
+        // )
+        // :
+        // (
+        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+        //   </TableCell>
+        // )
+      });
+    case clientOrdersListOverview:
+      return props.headerRows.map((rdt) => {
+        if (rdt.id === "status") {
+          switch (props.row.status) {
+            case "paid":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Paid" />
+                  </div>
+                </div>
+              );
+            case "sent":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Sent" />
+                  </div>
+                </div>
+              );
+            case "expired":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Expired" />
+                  </div>
+                </div>
+              );
+            case "invoiced":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Invoiced" />
+                  </div>
+                </div>
+              );
+            case "cancelled":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Cancelled" />
+                  </div>
+                </div>
+              );
+            case "refunded":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Refunded" />
+                  </div>
+                </div>
+              );
+            case "partial refunded":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Partial Refunded" />
+                  </div>
+                </div>
+              );
+            case "completed":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Completed" />
+                  </div>
+                </div>
+              );
+            case "reminder sent":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Reminder Sent" />
+                  </div>
+                </div>
+              );
+            case "sent to debt collection":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Debt Collection" />
+                  </div>
+                </div>
+              );
+          }
+        } else if (rdt.id === "amount") {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div
+                className="body3 text-MonochromeGray-700"
+                onClick={() => {
+                  props.rowClickAction(props.row);
+                }}
+              >
                 {props.row[rdt.id]}
               </div>
             </div>
