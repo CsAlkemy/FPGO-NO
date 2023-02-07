@@ -555,7 +555,7 @@ export default function OverviewMainTable(props) {
 
   return (
     <>
-      <Hidden mdUp>
+      <Hidden smUp>
         <div className="px-28">
           <OverviewHeader
             headerSubtitle={props.headerSubtitle}
@@ -676,7 +676,7 @@ export default function OverviewMainTable(props) {
           />
         </Hidden>
       </Hidden>
-      <Hidden mdDown>
+      <Hidden smDown>
         <Box sx={{ width: "100%" }}>
           <OverviewHeader
             headerSubtitle={props.headerSubtitle}
