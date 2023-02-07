@@ -178,13 +178,13 @@ export default function OverviewHeader(props) {
         </div>
       </Hidden>
       <Hidden smDown>
-        <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-20">
-          <Typography className="flex header6 col-span-3 my-14 md:my-0">
+        <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-0 sm:px-20">
+          <Typography className="flex header6 col-span-2 my-14 md:my-0">
             {props.tableRef === customerOrdersListOverview
               ? ""
               : props.headerSubtitle}
           </Typography>
-          <div className="flex flex-1 items-center justify-between md:justify-end w-full  col-span-3 gap-10">
+          <div className="flex flex-1 items-center justify-between md:justify-end w-full  col-span-4 gap-10">
             <Paper
               className="flex items-center px-16 space-x-8  rounded-md border-1 shadow-0"
               sx={{ width: 300 }}
