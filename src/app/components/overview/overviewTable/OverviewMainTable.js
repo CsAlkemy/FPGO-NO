@@ -682,6 +682,9 @@ export default function OverviewMainTable(props) {
             headerSubtitle={props.headerSubtitle}
             headerButtonLabel={props.headerButtonLabel}
             tableRef={props.tableName}
+            changeDate={props.changeDate ? props.changeDate : null}
+            selectedDate={props.selectedDate ? props.selectedDate : null}
+            setSelectedDate={props.setSelectedDate ? props.setSelectedDate : null}
           />
           <Box
             sx={{

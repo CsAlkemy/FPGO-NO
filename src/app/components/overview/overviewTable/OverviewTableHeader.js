@@ -7,7 +7,12 @@ import { lighten } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { Button, Divider } from "@mui/material";
 import { useState } from "react";
-import { ordersListOverview, refundRequestsOverview } from "./TablesName";
+import {
+  clientOrdersListOverview,
+  customerOrdersListOverview,
+  ordersListOverview,
+  refundRequestsOverview,
+} from './TablesName';
 
 function OverviewTableHeader(props) {
   const createSortHandler = (property) => (event) => {
@@ -18,10 +23,12 @@ function OverviewTableHeader(props) {
     <TableRow>
       {props.headerRows.map((row) => {
         return (props.tableRef === ordersListOverview ||
-          props.tableRef === refundRequestsOverview) &&
-          row.id === "stage" ? (
+          props.tableRef === refundRequestsOverview ||
+        props.tableRef === clientOrdersListOverview ||
+          props.tableRef === customerOrdersListOverview) &&
+          (row.id === "stage" || row.id === "status") ? (
           <TableCell
-            className="pr-36"
+            className="pl-36"
             key={row.id}
             align={row.align}
             sortDirection={

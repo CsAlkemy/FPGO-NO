@@ -59,7 +59,7 @@ export default function CustomerOrdersOverview() {
     },
     {
       id: "stage",
-      align: "right",
+      align: "center",
       disablePadding: false,
       label: t("label:status"),
       sort: true,

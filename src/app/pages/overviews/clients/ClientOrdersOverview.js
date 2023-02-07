@@ -32,6 +32,7 @@ export default function ClientOrdersOverview() {
   const headerButtonLabel = t("label:createCustomer");
   // const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [defaultTimeline, setDefaultTimeline] = React.useState(true);
   const dispatch = useDispatch();
   const clientOrdersList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
@@ -87,11 +88,47 @@ export default function ClientOrdersOverview() {
     },
   ];
   const { uuid } = useParams();
+  const [selectedDate, setSelectedDate] = React.useState(
+    new Date(
+      `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
+    )
+  );
+
+  const handleDateChange = (date) => {
+    setIsLoading(true);
+    setDefaultTimeline(false);
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.01.${new Date(
+      date
+    ).getFullYear()} 00:00:00`;
+    // setSelectedDate(date);
+    const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+    setSelectedDate(prepareSelectedDate);
+    ClientService.getOrdersList(uuid, timeStamp)
+      .then((res) => {
+        if (res?.status_code === 200 && res?.is_data) {
+          dispatch(setOverviewMainTableDataSlice(res));
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          dispatch(setOverviewMainTableDataSlice([]));
+        }
+      })
+      .catch((e) => {
+        if (isLoading) enqueueSnackbar(e, { variant: "error" });
+        setIsLoading(false);
+        dispatch(setOverviewMainTableDataSlice([]));
+      });
+  };
 
   useEffect(() => {
-    if (isLoading) {
-      // ClientService.getOrdersList(uuid, 1675209600)
-      ClientService.getOrdersList("ORG3913394892", "1667890908")
+    if (isLoading && defaultTimeline) {
+      const prepareSelectedDate = `${
+        new Date().getMonth() + 1
+      }.01.${new Date().getFullYear()} 00:00:00`;
+      // setSelectedDate(date);
+      const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+      ClientService.getOrdersList(uuid, timeStamp)
+      // ClientService.getOrdersList("ORG3913394892", "1667890908")
         .then((res) => {
           if (res?.status_code === 200 && res?.is_data) {
             dispatch(setOverviewMainTableDataSlice(res));
@@ -120,6 +157,9 @@ export default function ClientOrdersOverview() {
       tabPanelsLabel={tabPanelsLabel}
       tabs={tabs}
       isLoading={isLoading}
+      changeDate={handleDateChange}
+      selectedDate={selectedDate}
+      setSelectedDate={setSelectedDate}
     />
   );
 }
