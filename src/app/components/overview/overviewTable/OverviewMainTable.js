@@ -31,7 +31,7 @@ import {
   approvalListOverviewFPAdmin,
   businessAdminUsersOverview,
   categoriesListOverview,
-  clientAdminOverview,
+  clientAdminOverview, clientOrdersListOverview,
   clientsListOverview,
   creditChecksListOverview,
   customerOrdersListOverview,
@@ -43,7 +43,7 @@ import {
   refundRequestsOverview,
   subClientAdminOverview,
   userListOverview,
-} from "./TablesName";
+} from './TablesName';
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 
 export default function OverviewMainTable(props) {
@@ -196,6 +196,26 @@ export default function OverviewMainTable(props) {
       // case 4:
       //   setData(props.tableData.filter((row) => row.status === "Inactive"));
       //   break;
+    }
+  };
+
+  const clientOrdersListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        break;
+      case 1:
+        setData(props.tableData.filter((row) => row.status.toLowerCase() === "sent"));
+        break;
+      case 2:
+        setData(props.tableData.filter((row) => row.status.toLowerCase() === "paid"));
+        break;
+      case 3:
+        setData(props.tableData.filter((row) => row.status.toLowerCase() === "invoiced"));
+        break;
+      case 4:
+        setData(props.tableData.filter((row) => row.status.toLowerCase() === "expired"));
+        break;
     }
   };
 
@@ -383,6 +403,9 @@ export default function OverviewMainTable(props) {
       case clientsListOverview:
         clientsListTableTabPanelsData(event, newValue);
         break;
+      case clientOrdersListOverview:
+        clientOrdersListTableTabPanelsData(event, newValue);
+        break;
       case productsListOverview:
         productsListTableTabPanelsData(event, newValue);
         break;
@@ -508,6 +531,9 @@ export default function OverviewMainTable(props) {
         //   .catch((error) => {
         //     enqueueSnackbar(error, { variant: "error" });
         //   });
+        break;
+      case clientOrdersListOverview:
+        navigate(`/create-order/details/${info.uuid}`);
         break;
       case userListOverview:
         navigate(`/user-management/user-profile`, {

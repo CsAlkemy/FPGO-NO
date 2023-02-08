@@ -97,7 +97,7 @@ export default function ClientOrdersOverview() {
   const handleDateChange = (date) => {
     setIsLoading(true);
     setDefaultTimeline(false);
-    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.01.${new Date(
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.09.${new Date(
       date
     ).getFullYear()} 00:00:00`;
     // setSelectedDate(date);
@@ -124,7 +124,7 @@ export default function ClientOrdersOverview() {
     if (isLoading && defaultTimeline) {
       const prepareSelectedDate = `${
         new Date().getMonth() + 1
-      }.01.${new Date().getFullYear()} 00:00:00`;
+      }.09.${new Date().getFullYear()} 00:00:00`;
       // setSelectedDate(date);
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
       ClientService.getOrdersList(uuid, timeStamp)
