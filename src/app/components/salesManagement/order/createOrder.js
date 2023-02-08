@@ -1827,7 +1827,8 @@ const createOrder = () => {
                                     {...field}
                                     //className='custom-input-height-div'
                                     inputRef={ref}
-                                    placeholder="Search by name, org ID, phone no. & email"
+                                    // placeholder="Search by Name or Phone Number"
+                                    placeholder= {t("label:searchByNameOrPhoneNo")}
                                   />
                                 )}
                               />
