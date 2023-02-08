@@ -974,7 +974,7 @@ export default function OverViewMainTableBody(props) {
       return props.rowDataFields.map((rdt) => {
         if (rdt === "stage") {
           switch (props.row.stage) {
-            case "pending":
+            case "refund pending":
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
@@ -983,7 +983,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Pending" />
+                  <OverviewStatus name="Refund Pending" />
                 </TableCell>
               );
             case "accepted":
@@ -1024,7 +1024,7 @@ export default function OverViewMainTableBody(props) {
             </TableCell>
           );
         } else if (rdt === "approveAction") {
-          return props.row.approveAction === "pending" ? (
+          return props.row.approveAction === "refund pending" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
               <CustomTooltip
                 disableFocusListener

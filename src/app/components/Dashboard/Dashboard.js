@@ -56,7 +56,6 @@ export default function Dashboard() {
           setIsLoading(false);
         })
         .catch((e) => {
-          console.log('E : ', e);
           setIsLoading(false);
         });
     }
@@ -78,7 +77,6 @@ export default function Dashboard() {
         setIsLoading(false);
       })
       .catch((e) => {
-        console.log('E : ', e);
         setIsLoading(false);
       });
   };

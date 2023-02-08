@@ -58,7 +58,6 @@ const TimelineLog = () => {
           setIsFetching(false);
         })
         .catch((e) => {
-          console.log("E : ", e);
           setLogs([]);
           setIsFetching(false);
         });
