@@ -68,7 +68,7 @@ export default function OverViewMainTableBody(props) {
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
-    if (decision === "reject") setHeaderTitle("Reject Request");
+    if (decision === "reject") setHeaderTitle("Reject Refund Request");
   };
   const CustomTooltip = withStyles({
     tooltip: {
@@ -1082,7 +1082,7 @@ export default function OverViewMainTableBody(props) {
               <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
                 <CustomTooltip
                   disableFocusListener
-                  title="Reject Request"
+                  title="Reject Refund Request"
                   TransitionComponent={Zoom}
                   placement="bottom-start"
                   enterDelay={300}
