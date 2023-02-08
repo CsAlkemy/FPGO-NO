@@ -779,7 +779,7 @@ class OrdersService {
         approveAction: row?.status
           ? row?.status.toLowerCase()
           : null,
-        isCancel: row?.status.toLowerCase() === "pending",
+        isCancel: row?.status.toLowerCase() === "refund pending",
       };
     });
     d.status_code = 200;
