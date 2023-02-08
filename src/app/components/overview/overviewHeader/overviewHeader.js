@@ -3,7 +3,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { Box, Button, Hidden, Menu, MenuItem } from "@mui/material";
+import { Box, Button, Hidden, Menu, MenuItem, TextField } from '@mui/material';
 import "../../../../styles/colors.css";
 import InputBase from "@mui/material/InputBase";
 import {
@@ -18,7 +18,7 @@ import {
   fpAdminUsersOverview,
   businessAdminUsersOverview,
   organizationWiseUsersOverview,
-  customerOrdersListOverview, refundRequestsOverview,
+  customerOrdersListOverview, refundRequestsOverview, clientOrdersListOverview,
 } from '../overviewTable/TablesName';
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -47,7 +47,6 @@ export default function OverviewHeader(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const user = useSelector(selectUser);
-  const [exportTableData, setExportTableData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -140,11 +139,15 @@ export default function OverviewHeader(props) {
     },
   ];
 
+  const handleDateChange = (date) => {
+    props.changeDate(date)
+  };
+
   return (
     <>
       <Hidden smUp>
         <div className="py-4">
-          {props.tableRef === customerOrdersListOverview ? (
+          {(props.tableRef === customerOrdersListOverview || props.tableRef === clientOrdersListOverview) ? (
             ""
           ) : (
             <div className="subtitle1 text-MonochromeGray-900 my-14">
@@ -166,11 +169,23 @@ export default function OverviewHeader(props) {
       </Hidden>
       <Hidden smDown>
         <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-0 sm:px-20">
-          <Typography className="flex header6 col-span-2 my-14 md:my-0">
-            {props.tableRef === customerOrdersListOverview
+          {props.tableRef !== clientOrdersListOverview && (<Typography className="flex header6 col-span-2 my-14 md:my-0">
+            {(props.tableRef === customerOrdersListOverview)
               ? ""
               : props.headerSubtitle}
-          </Typography>
+          </Typography>)}
+          {props.tableRef === clientOrdersListOverview && (
+            <div className="flex header6 col-span-2 my-14 md:my-0">
+              <DesktopDatePicker
+                size="small"
+                inputFormat="MM.yyyy"
+                views={["year", "month"]}
+                value={props.selectedDate}
+                onChange={handleDateChange}
+                renderInput={(params) => <TextField size="small" {...params} type="date" />}
+              />
+            </div>
+          )}
           <div className="flex flex-1 items-center justify-between md:justify-end w-full  col-span-4 gap-10">
             <Paper
               className="flex items-center px-16 space-x-8  rounded-md border-1 shadow-0"
@@ -233,7 +248,7 @@ export default function OverviewHeader(props) {
                     </MenuItem>
                   </Menu>
                 </div>
-              ) : props.tableRef === customerOrdersListOverview ? (
+              ) : (props.tableRef === customerOrdersListOverview  || props.tableRef === clientOrdersListOverview) ? (
                 ""
               ) : props.tableRef === creditChecksListOverview ? (
                 <div>
