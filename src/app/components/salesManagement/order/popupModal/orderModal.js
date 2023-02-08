@@ -163,7 +163,7 @@ const OrderModal = (props) => {
           // setOpen(false);
         }
       );
-    } else if (headerTitle === "Reject Request") {
+    } else if (headerTitle === "Reject Refund Request") {
       const params = {
         orderUuid: orderId,
         amount: orderAmount,
@@ -226,7 +226,7 @@ const OrderModal = (props) => {
                 className="pt-32"
               >
                 {(headerTitle === "Cancel Order" ||
-                  headerTitle === "Reject Request") && (
+                  headerTitle === "Reject Refund Request") && (
                       <div>
                         <Controller
                             name="cancellationNote"

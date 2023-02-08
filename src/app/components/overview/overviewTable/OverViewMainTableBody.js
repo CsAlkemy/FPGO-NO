@@ -1081,7 +1081,7 @@ export default function OverViewMainTableBody(props) {
               <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
                 <CustomTooltip
                   disableFocusListener
-                  title="Reject Request"
+                  title="Reject Refund Request"
                   TransitionComponent={Zoom}
                   placement="bottom-start"
                   enterDelay={300}
