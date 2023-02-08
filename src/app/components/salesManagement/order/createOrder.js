@@ -409,6 +409,7 @@ const createOrder = () => {
                 city: row?.city,
                 zip: row?.zip,
                 country: row?.country,
+                searchString : row?.name+" ( "+row?.phone+" )"
               });
             });
         }
@@ -1770,10 +1771,11 @@ const createOrder = () => {
                                 freeSolo
                                 options={customersList}
                                 forcePopupIcon={<Search />}
-                                getOptionLabel={(option) => option.name}
+                                getOptionLabel={(option) => option.searchString}
                                 className="custom-input-height"
                                 fullWidth
                                 onChange={(_, data) => {
+                                  console.log("DATA : ",data);
                                   if (data) {
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
@@ -1811,7 +1813,13 @@ const createOrder = () => {
                                 renderOption={(props, option, { selected }) => (
                                   <MenuItem
                                     {...props}
-                                  >{`${option.name}`}</MenuItem>
+                                  >
+                                    {/*{`${option.name}`}*/}
+                                    <div>
+                                      <div>{`${option.name}`}</div>
+                                      <div>{`${option.phone}`}</div>
+                                    </div>
+                                  </MenuItem>
                                 )}
                                 renderInput={(params) => (
                                   <TextField
@@ -1819,7 +1827,8 @@ const createOrder = () => {
                                     {...field}
                                     //className='custom-input-height-div'
                                     inputRef={ref}
-                                    placeholder="Search by name, org ID, phone no. & email"
+                                    // placeholder="Search by Name or Phone Number"
+                                    placeholder= {t("label:searchByNameOrPhoneNo")}
                                   />
                                 )}
                               />
