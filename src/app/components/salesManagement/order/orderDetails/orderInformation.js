@@ -248,7 +248,6 @@ const OrderInformation = ({info, loading} ) => {
         setProductsList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
   }, []);
 
@@ -275,7 +274,6 @@ const OrderInformation = ({info, loading} ) => {
         setCustomersList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
   }, []);
 

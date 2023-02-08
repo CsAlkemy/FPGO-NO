@@ -3,7 +3,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { Box, Button, Hidden, Menu, MenuItem } from "@mui/material";
+import { Box, Button, Hidden, Menu, MenuItem, TextField } from '@mui/material';
 import "../../../../styles/colors.css";
 import InputBase from "@mui/material/InputBase";
 import {
@@ -18,7 +18,7 @@ import {
   fpAdminUsersOverview,
   businessAdminUsersOverview,
   organizationWiseUsersOverview,
-  customerOrdersListOverview, refundRequestsOverview,
+  customerOrdersListOverview, refundRequestsOverview, clientOrdersListOverview,
 } from '../overviewTable/TablesName';
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -37,6 +37,9 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { t } from "i18next";
 import Select from "@mui/material/Select";
 import { writeFile, utils } from "xlsx";
+import { DesktopDatePicker } from '@mui/lab';
+import ClientService from '../../../data-access/services/clientsService/ClientService';
+import { useSnackbar } from 'notistack';
 
 export default function OverviewHeader(props) {
   const dispatch = useDispatch();
@@ -44,28 +47,7 @@ export default function OverviewHeader(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const user = useSelector(selectUser);
-  const [loading, setLoading] = useState(true);
-  const [exportTableData, setExportTableData] = useState([]);
-
-  useEffect(() => {
-    if (props.tableRef === ordersListOverview && loading) {
-      OrdersService.exportOrderList(
-        user.role[0] === FP_ADMIN
-          ? FP_ADMIN
-          : user?.user_data?.organization?.uuid
-            ? user?.user_data?.organization?.uuid
-            : false
-      )
-        .then((response) => {
-          setExportTableData(response);
-          setLoading(false);
-        })
-        .catch((e) => {
-          console.log("E : ", e);
-          setLoading(false);
-        });
-    }
-  }, [loading]);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     dispatch(setSearchText(""));
@@ -125,20 +107,24 @@ export default function OverviewHeader(props) {
     "Total",
   ];
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (props.tableRef === ordersListOverview) {
-      // downloadExcel({
-      //   fileName: user.user_data.organization.name + "_Order List",
-      //   sheet: "order list",
-      //   tablePayload: {
-      //     header,
-      //     body: exportTableData,
-      //   },
-      // });
-      let wb = utils.book_new(),
-        ws = utils.json_to_sheet(exportTableData);
-      utils.book_append_sheet(wb, ws, "order list");
-      writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
+      OrdersService.exportOrderList(
+        user.role[0] === FP_ADMIN
+          ? FP_ADMIN
+          : user?.user_data?.organization?.uuid
+            ? user?.user_data?.organization?.uuid
+            : false
+      )
+        .then((response) => {
+          let wb = utils.book_new(),
+            ws = utils.json_to_sheet(response);
+          utils.book_append_sheet(wb, ws, "order list");
+          writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
+        })
+        .catch((e) => {
+          enqueueSnackbar(e, {variant : "error"})
+        });
     }
   };
 
@@ -153,11 +139,15 @@ export default function OverviewHeader(props) {
     },
   ];
 
+  const handleDateChange = (date) => {
+    props.changeDate(date)
+  };
+
   return (
     <>
       <Hidden smUp>
         <div className="py-4">
-          {props.tableRef === customerOrdersListOverview ? (
+          {(props.tableRef === customerOrdersListOverview || props.tableRef === clientOrdersListOverview) ? (
             ""
           ) : (
             <div className="subtitle1 text-MonochromeGray-900 my-14">
@@ -179,11 +169,23 @@ export default function OverviewHeader(props) {
       </Hidden>
       <Hidden smDown>
         <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-0 sm:px-20">
-          <Typography className="flex header6 col-span-2 my-14 md:my-0">
-            {props.tableRef === customerOrdersListOverview
+          {props.tableRef !== clientOrdersListOverview && (<Typography className="flex header6 col-span-2 my-14 md:my-0">
+            {(props.tableRef === customerOrdersListOverview)
               ? ""
               : props.headerSubtitle}
-          </Typography>
+          </Typography>)}
+          {props.tableRef === clientOrdersListOverview && (
+            <div className="flex header6 col-span-2 my-14 md:my-0">
+              <DesktopDatePicker
+                size="small"
+                inputFormat="MM.yyyy"
+                views={["year", "month"]}
+                value={props.selectedDate}
+                onChange={handleDateChange}
+                renderInput={(params) => <TextField size="small" {...params} type="date" />}
+              />
+            </div>
+          )}
           <div className="flex flex-1 items-center justify-between md:justify-end w-full  col-span-4 gap-10">
             <Paper
               className="flex items-center px-16 space-x-8  rounded-md border-1 shadow-0"
@@ -206,8 +208,6 @@ export default function OverviewHeader(props) {
                     aria-haspopup="true"
                     onClick={() => handleExport()}
                     className="rounded-md button2 flex-nowrap"
-                    // disabled={user.role[0] === FP_ADMIN}
-                    disabled={!exportTableData}
                   >
                     {t("label:export")}
                   </Button>
@@ -248,7 +248,7 @@ export default function OverviewHeader(props) {
                     </MenuItem>
                   </Menu>
                 </div>
-              ) : props.tableRef === customerOrdersListOverview ? (
+              ) : (props.tableRef === customerOrdersListOverview  || props.tableRef === clientOrdersListOverview) ? (
                 ""
               ) : props.tableRef === creditChecksListOverview ? (
                 <div>
