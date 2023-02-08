@@ -102,7 +102,6 @@ const createProducts = () => {
         setCategoriesList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
 
     ProductService.productDetailsByUUID(queryParams.id)

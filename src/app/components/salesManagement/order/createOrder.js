@@ -365,7 +365,6 @@ const createOrder = () => {
         setProductsList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
   }, []);
 
@@ -416,7 +415,6 @@ const createOrder = () => {
         setCustomersList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
   }, []);
   // useEffect(() => {

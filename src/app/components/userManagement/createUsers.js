@@ -95,7 +95,6 @@ export default function CreateUsers() {
         }
       })
       .catch((error) => {
-        console.log("E : ", error);
       });
   }, [isLoading]);
 
@@ -108,7 +107,6 @@ export default function CreateUsers() {
         }
       })
       .catch((error) => {
-        console.log("E : ", error);
       });
   }, [isLoading]);
 

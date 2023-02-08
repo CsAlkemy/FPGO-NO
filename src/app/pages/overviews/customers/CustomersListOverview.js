@@ -23,7 +23,7 @@ export default function CustomersListOverview() {
   const dispatch = useDispatch();
   const customersList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetCustomersListQuery();
+  const {data, isFetching, isLoading, isSuccess, isError, error, refetch} = useGetCustomersListQuery();
   const customersListHeaderRows = [
     {
       id: 'name',
@@ -69,23 +69,9 @@ export default function CustomersListOverview() {
     }
   ];
 
-  // useEffect(() => {
-  //   CustomersService.customersList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       if (isLoading) enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(()=> {
+    refetch()
+  },[])
 
   const preparedData = data?.is_data ?  CustomersService.mapCustomersList(data.data) : []
   return (

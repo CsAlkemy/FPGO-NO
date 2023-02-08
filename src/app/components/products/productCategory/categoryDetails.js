@@ -115,7 +115,6 @@ const createCategory = (onSubmit = () => {}) => {
         // setIsLoading(false);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
 
     CategoryService.categoryDetailsByUUID(params.id)

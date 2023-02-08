@@ -151,7 +151,6 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
         }
       })
       .catch((error) => {
-        console.log("E : ", error);
       });
     // return ()=> {
     //   localStorage.removeItem("userProfile")

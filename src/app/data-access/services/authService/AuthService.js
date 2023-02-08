@@ -43,7 +43,7 @@ class AuthService extends FuseUtils.EventEmitter {
     return new Promise((resolve, reject) => {
       if (userInfo) {
         if (this.isAccessTokenValid()) {
-          this.isAuthenticated(userInfo?.user_data?.uuid)
+          return this.isAuthenticated(userInfo?.user_data?.uuid)
             .then((loggedInStatus) => {
               if (loggedInStatus) {
                 resolve(true);
@@ -57,7 +57,7 @@ class AuthService extends FuseUtils.EventEmitter {
               this.emit("onAutoLogout");
             });
         } else if (this.isRefreshTokenValid()) {
-          this.refreshAccessToken()
+          return this.refreshAccessToken()
             .then((res) => {
               if (res) {
                 resolve(true);
@@ -93,7 +93,7 @@ class AuthService extends FuseUtils.EventEmitter {
               res?.data?.status_code === 202 &&
               res?.data?.data
             ) {
-              this.isAuthenticated(userInfo?.user_data?.uuid)
+              return this.isAuthenticated(userInfo?.user_data?.uuid)
                 .then((loggedInStatus) => {
                   if (loggedInStatus) {
                     const isValid = this.isAccessTokenValid(
@@ -114,8 +114,10 @@ class AuthService extends FuseUtils.EventEmitter {
                   reject(false);
                   this.emit("onAutoLogout");
                 });
+            } else {
+              reject(false);
+              this.emit("onAutoLogout");
             }
-            reject(false);
           })
           .catch((e) => {
             console.warn((e) => "isRefreshTokenValid E: ", e);
@@ -130,75 +132,17 @@ class AuthService extends FuseUtils.EventEmitter {
 
   handleAuthentication = () => {
     const userInfo = this.getUserInfo();
-    // const userId = userInfo["user_data"].uuid;
-    // const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userId}`;
-    // axios
-    //   .get(URL)
-    //   .then((res) => {
-    //     if (res.data.status_code === 200) {
-    //       if (this.isAccessTokenValid()) {
-    //         this.emit("onAutoLogin", true);
-    //       } else if (this.isRefreshTokenValid()) {
-    //         this.refreshAccessToken();
-    //         this.emit("onAutoLogin", true);
-    //       } else {
-    //         this.setSession(null);
-    //         this.emit("onAutoLogout");
-    //       }
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     if (this.isRefreshTokenValid()) {
-    //       this.refreshAccessToken()
-    //         .then((res) => {
-    //           this.emit("onAutoLogin");
-    //         })
-    //         .catch((e) => {
-    //           this.emit("onAutoLogout");
-    //         });
-    //     } else this.emit("onAutoLogout");
-    //   });
     if (window.location.pathname.includes("/reset-password/")) {
       this.emit("onAutoLogout");
       localStorage.clear();
     } else if (
       userInfo &&
-      userInfo.token_data &&
-      userInfo.user_data &&
-      this.isRefreshTokenValid()
+      userInfo?.token_data &&
+      userInfo?.user_data
     ) {
-      if (!this.isAccessTokenValid()) {
-        return this.refreshAccessToken()
-          .then((res) => {
-            if (res) {
-              const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo.user_data.uuid}`;
-              return axios
-                .get(URL)
-                .then((res) => {
-                  if (res.data.status_code === 200) {
-                    this.emit("onAutoLogin", true);
-                  } else this.emit("onAutoLogout");
-                })
-                .catch((error) => {
-                  this.emit("onAutoLogout");
-                });
-            } else this.emit("onAutoLogout");
-          })
-          .catch((e) => {
-            this.emit("onAutoLogout");
-          });
-      } else {
-        const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo.user_data.uuid}`;
-        return axios
-          .get(URL)
-          .then((res) => {
-            if (res.data.status_code === 200) {
-              this.emit("onAutoLogin", true);
-            }
-          })
-          .catch((error) => {
-            this.emit("onAutoLogout");
-          });
+      const isAuthenticated = this.isAuthenticated(userInfo?.user_data?.uuid)
+      if (isAuthenticated) {
+        this.emit("onAutoLogin", true);
       }
     } else {
       this.emit("onAutoLogout");

@@ -63,7 +63,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
       // =======================
       // store the new token
       AuthService.setSession(refreshResult.data.data.access_token);
-      const userInfo = AuthService.getUserInfo();
+      // const userInfo = AuthService.getUserInfo();
       userInfo.token_data = refreshResult.data.data;
       AuthService.setUserInfo(userInfo);
       // =======================

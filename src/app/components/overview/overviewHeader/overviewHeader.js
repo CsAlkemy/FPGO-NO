@@ -37,6 +37,9 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { t } from "i18next";
 import Select from "@mui/material/Select";
 import { writeFile, utils } from "xlsx";
+import { DesktopDatePicker } from '@mui/lab';
+import ClientService from '../../../data-access/services/clientsService/ClientService';
+import { useSnackbar } from 'notistack';
 
 export default function OverviewHeader(props) {
   const dispatch = useDispatch();
@@ -44,28 +47,8 @@ export default function OverviewHeader(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const user = useSelector(selectUser);
-  const [loading, setLoading] = useState(true);
   const [exportTableData, setExportTableData] = useState([]);
-
-  useEffect(() => {
-    if (props.tableRef === ordersListOverview && loading) {
-      OrdersService.exportOrderList(
-        user.role[0] === FP_ADMIN
-          ? FP_ADMIN
-          : user?.user_data?.organization?.uuid
-            ? user?.user_data?.organization?.uuid
-            : false
-      )
-        .then((response) => {
-          setExportTableData(response);
-          setLoading(false);
-        })
-        .catch((e) => {
-          console.log("E : ", e);
-          setLoading(false);
-        });
-    }
-  }, [loading]);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     dispatch(setSearchText(""));
@@ -125,20 +108,24 @@ export default function OverviewHeader(props) {
     "Total",
   ];
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (props.tableRef === ordersListOverview) {
-      // downloadExcel({
-      //   fileName: user.user_data.organization.name + "_Order List",
-      //   sheet: "order list",
-      //   tablePayload: {
-      //     header,
-      //     body: exportTableData,
-      //   },
-      // });
-      let wb = utils.book_new(),
-        ws = utils.json_to_sheet(exportTableData);
-      utils.book_append_sheet(wb, ws, "order list");
-      writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
+      OrdersService.exportOrderList(
+        user.role[0] === FP_ADMIN
+          ? FP_ADMIN
+          : user?.user_data?.organization?.uuid
+            ? user?.user_data?.organization?.uuid
+            : false
+      )
+        .then((response) => {
+          let wb = utils.book_new(),
+            ws = utils.json_to_sheet(response);
+          utils.book_append_sheet(wb, ws, "order list");
+          writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
+        })
+        .catch((e) => {
+          enqueueSnackbar(e, {variant : "error"})
+        });
     }
   };
 
@@ -206,8 +193,6 @@ export default function OverviewHeader(props) {
                     aria-haspopup="true"
                     onClick={() => handleExport()}
                     className="rounded-md button2 flex-nowrap"
-                    // disabled={user.role[0] === FP_ADMIN}
-                    disabled={!exportTableData}
                   >
                     {t("label:export")}
                   </Button>
