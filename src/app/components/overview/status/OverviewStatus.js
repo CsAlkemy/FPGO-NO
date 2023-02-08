@@ -78,9 +78,14 @@ export const overviewStatuses = [
     color: "bg-sent text-m-grey-700",
   },
   {
-    id: 1,
+    id: 14,
     name: "Accepted",
     color: "bg-active text-m-grey-700",
+  },
+  {
+    id: 15,
+    name: "Refund Pending",
+    color: "bg-pending text-m-grey-700",
   },
 ];
 
@@ -114,6 +119,8 @@ function OverviewStatus(props) {
     ? (classes = "inline text-12 py-4 px-8 rounded-sm min-w-3xl")
     : props.name === "Accepted"
     ? (classes = "inline text-12 py-4 px-6 rounded-sm min-w-3xl")
+    : props.name === "Refund Pending"
+    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : (classes = "inline text-12 py-4 px-10 rounded-sm min-w-3xl");
 
   return (

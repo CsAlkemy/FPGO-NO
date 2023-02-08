@@ -1399,7 +1399,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Pending" />
+                    <OverviewStatus name="Refund Pending" />
                   </div>
                 </div>
               );
@@ -1456,7 +1456,7 @@ export default function OverViewResponsiveBody(props) {
             </div>
           );
         } else if (rdt.id === "approveAction") {
-          return props.row.approveAction === "pending" ? (
+          return props.row.approveAction === "refund pending" ? (
             <>
               <CustomTooltip
                 disableFocusListener
