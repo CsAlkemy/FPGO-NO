@@ -95,7 +95,6 @@ const createProducts = (onSubmit = () => {}) => {
         setCategoriesList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
   }, []);
 

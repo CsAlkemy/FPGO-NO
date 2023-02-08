@@ -61,7 +61,6 @@ export default function OverviewFloatingButtons(props) {
         setLoading(false);
       })
       .catch((e) => {
-        console.log("E : ", e);
         setLoading(false);
       });
   }, [loading]);

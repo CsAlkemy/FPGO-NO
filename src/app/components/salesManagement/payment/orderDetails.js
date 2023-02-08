@@ -45,7 +45,6 @@ const orderDetails = () => {
         // setIsLoading(false);
       })
       .catch((e) => {
-        console.log("E : ",e);
       });
   }, [isLoading]);
 

@@ -48,7 +48,6 @@ const Journal = () => {
         setIsFetching(false);
       })
       .catch((e) => {
-        console.log("E :", e);
         setJournals([]);
         setIsFetching(false);
       });
@@ -75,7 +74,6 @@ const Journal = () => {
           setIsFetching(false);
         })
         .catch((e) => {
-          console.log("E :", e);
           setJournals([]);
           setIsFetching(false);
         });
@@ -91,7 +89,6 @@ const Journal = () => {
         setJournals([...journals, {date : null, text: notes, time : `${new Date().getHours()}:${new Date().getMinutes()}`}])
       })
       .catch((e)=> {
-        console.log("E :: ",e);
         setLoading(false)
       })
   }

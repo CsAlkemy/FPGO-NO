@@ -53,7 +53,6 @@ const createCategory = () => {
         setProductsList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
   }, []);
 
