@@ -95,8 +95,8 @@ const createOrder = () => {
   ]);
  
 
-  // const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([ 0 ]);
+  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  // const [addOrderIndex, setAddOrderIndex] = React.useState([ 0 ]);
 
   const [taxes, setTaxes] = React.useState([])
 
@@ -550,6 +550,17 @@ const createOrder = () => {
                   </div>
                 </AccordionSummary>
                 <AccordionDetails className="bg-white px-0">
+                  <div className="sticky top-28 z-9999">
+                    <Button
+                      className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
+                      startIcon={<AddIcon className="text-main" />}
+                      variant="contained"
+                      onClick={() => addNewOrder()}
+                      disabled={addOrderIndex.length >= 20 ? true : false}
+                    >
+                      Add Item
+                    </Button>
+                  </div>
                   {addOrderIndex.map((index) => (
                     <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
                       <Controller
@@ -857,15 +868,6 @@ const createOrder = () => {
                   ))}
                 </AccordionDetails>
               </Accordion>
-              <Button
-                className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
-                startIcon={<AddIcon className="text-main" />}
-                variant="contained"
-                onClick={() => addNewOrder()}
-                disabled={addOrderIndex.length >= 20 ? true : false}
-              >
-                Add Item
-              </Button>
             </Hidden>
 
             <Hidden smDown>
