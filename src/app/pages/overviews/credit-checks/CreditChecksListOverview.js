@@ -26,7 +26,7 @@ export default function CreditChecksListOverview() {
   const dispatch = useDispatch();
   const creditCheckList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading, isFetching, isSuccess, isError, error } =
+  const { data, isLoading, isFetching, isSuccess, isError, error, refetch } =
     useGetCreditChecksListQuery();
   const creditChecksListHeaderRows = [
     {
@@ -73,23 +73,9 @@ export default function CreditChecksListOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   CreditCheckService.creditCheckList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data
     ? CreditCheckService.mapCreditCheckList(data.data)
