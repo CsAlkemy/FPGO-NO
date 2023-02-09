@@ -22,7 +22,7 @@ const Journal = () => {
   const handleDateChange = (date) => {
     setIsFetching(true);
     setDefaultJournal(false);
-    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.01.${new Date(
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.09.${new Date(
       date
     ).getFullYear()} 00:00:00`;
     // setSelectedDate(date);
