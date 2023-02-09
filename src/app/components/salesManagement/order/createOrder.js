@@ -51,6 +51,7 @@ import {
 import ClientService from '../../../data-access/services/clientsService/ClientService';
 import { useCreateOrderMutation } from 'app/store/api/apiSlice';
 import UtilsServices from '../../../data-access/utils/UtilsServices';
+import AuthService from '../../../data-access/services/authService';
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -349,26 +350,83 @@ const createOrder = () => {
   }, [watch(`orderDate`)]);
 
   useEffect(() => {
-    ProductService.productsList()
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200 && res.length) {
-          res
-            .filter((r) => r.status === "Active")
-            .map((row) => {
-              return data.push({
-                uuid: row.uuid,
-                name: row.name,
-                id: row.id,
-                price: row.pricePerUnit,
-                tax: row.taxRate,
-              });
-            });
-        }
-        setProductsList(data);
+    AuthService.axiosRequestHelper()
+      .then((isAuthenticated)=> {
+        console.log("aaa isAuth : ", isAuthenticated);
+        ProductService.productsList(true)
+          .then((res) => {
+            console.log("aaa pl t");
+            let data = [];
+            if (res?.status_code === 200 && res.length) {
+              res
+                .filter((r) => r.status === "Active")
+                .map((row) => {
+                  return data.push({
+                    uuid: row.uuid,
+                    name: row.name,
+                    id: row.id,
+                    price: row.pricePerUnit,
+                    tax: row.taxRate,
+                  });
+                });
+            }
+            setProductsList(data);
+          })
+          .catch((e) => {
+          });
+        console.log("aaa end pl");
+        CustomersService.customersList(true)
+          .then((res) => {
+            console.log("aaa cl t");
+            let data = [];
+            if (res?.status_code === 200 && res.length) {
+              res
+                .filter((item) => {
+                  return item.status === "Active";
+                })
+                .map((row) => {
+                  return data.push({
+                    uuid: row.uuid,
+                    name: row?.name ? row?.name : null,
+                    orgOrPNumber: row?.orgIdOrPNumber ? row?.orgIdOrPNumber : null,
+                    email: row?.email ? row?.email : null,
+                    phone: row?.phone ? row?.phone : null,
+                    type: row.type,
+                    street: row?.street,
+                    city: row?.city,
+                    zip: row?.zip,
+                    country: row?.country,
+                    searchString : row?.name+" ( "+row?.phone+" )"
+                  });
+                });
+            }
+            setCustomersList(data);
+          })
+          .catch((e) => {
+          });
+        console.log("aaa end cl");
       })
-      .catch((e) => {
-      });
+    // ProductService.productsList()
+    //   .then((res) => {
+    //     console.log("aaa pl t");
+    //     let data = [];
+    //     if (res?.status_code === 200 && res.length) {
+    //       res
+    //         .filter((r) => r.status === "Active")
+    //         .map((row) => {
+    //           return data.push({
+    //             uuid: row.uuid,
+    //             name: row.name,
+    //             id: row.id,
+    //             price: row.pricePerUnit,
+    //             tax: row.taxRate,
+    //           });
+    //         });
+    //     }
+    //     setProductsList(data);
+    //   })
+    //   .catch((e) => {
+    //   });
   }, []);
 
   useEffect(() => {
@@ -391,36 +449,39 @@ const createOrder = () => {
   //   console.log("addOrderIndex : ", addOrderIndex);
   // }, [addOrderIndex]);
 
-  useEffect(() => {
-    CustomersService.customersList()
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200 && res.length) {
-          res
-            .filter((item) => {
-              return item.status === "Active";
-            })
-            .map((row) => {
-              return data.push({
-                uuid: row.uuid,
-                name: row?.name ? row?.name : null,
-                orgOrPNumber: row?.orgIdOrPNumber ? row?.orgIdOrPNumber : null,
-                email: row?.email ? row?.email : null,
-                phone: row?.phone ? row?.phone : null,
-                type: row.type,
-                street: row?.street,
-                city: row?.city,
-                zip: row?.zip,
-                country: row?.country,
-                searchString : row?.name+" ( "+row?.phone+" )"
-              });
-            });
-        }
-        setCustomersList(data);
-      })
-      .catch((e) => {
-      });
-  }, []);
+  //EXperiment
+  // useEffect(() => {
+  //   CustomersService.customersList()
+  //     .then((res) => {
+  //       let data = [];
+  //       if (res?.status_code === 200 && res.length) {
+  //         res
+  //           .filter((item) => {
+  //             return item.status === "Active";
+  //           })
+  //           .map((row) => {
+  //             return data.push({
+  //               uuid: row.uuid,
+  //               name: row?.name ? row?.name : null,
+  //               orgOrPNumber: row?.orgIdOrPNumber ? row?.orgIdOrPNumber : null,
+  //               email: row?.email ? row?.email : null,
+  //               phone: row?.phone ? row?.phone : null,
+  //               type: row.type,
+  //               street: row?.street,
+  //               city: row?.city,
+  //               zip: row?.zip,
+  //               country: row?.country,
+  //               searchString : row?.name+" ( "+row?.phone+" )"
+  //             });
+  //           });
+  //       }
+  //       setCustomersList(data);
+  //     })
+  //     .catch((e) => {
+  //     });
+  // }, []);
+
+
   // useEffect(() => {
   //   let selectedProduct;
   //   if (watchProductName) {

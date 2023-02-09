@@ -631,65 +631,121 @@ class CustomersService {
     return d;
   };
 
-  customersList = async () => {
+  customersList = async (isSkipIsAuthenticated) => {
+    console.log("aaa cs isSkipIsAuthenticated", isSkipIsAuthenticated);
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/customers/list`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  let d;
-                  d = response.data.data.map((row) => {
-                    const preparePhone =
-                      row.countryCode && row.msisdn
-                        ? row.countryCode + row.msisdn
-                        : null;
-                    const phone = preparePhone ? preparePhone.split("+") : null;
-                    return {
-                      uuid: row.uuid,
-                      type: row.type,
-                      name: row.name,
-                      orgIdOrPNumber: row.organizationId
-                        ? row.organizationId
-                        : row.personalNumber,
-                      phone: phone ? "+" + phone[phone.length - 1] : null,
-                      email: row.email,
-                      lastInvoicedOn: row.lastOrderOn,
-                      lastOrderAmount: row.lastOrderAmount,
-                      status: row.status,
-                      street: row?.billingAddress?.street,
-                      city: row?.billingAddress?.city,
-                      zip: row?.billingAddress?.zip,
-                      country: row?.billingAddress?.country,
-                    };
-                  });
-                  d.status_code = 200;
-                  d.is_data = true;
-                  resolve(d);
-                } else if (
-                  response.data.status_code === 200 &&
-                  !response.data.is_data
-                ) {
-                  resolve([]);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                // reject(e?.response?.data?.message)
-                if (e?.response?.data?.status_code === 404)
-                  resolve(e.response.data);
-                reject(e?.response?.data?.message);
+      if (isSkipIsAuthenticated){
+        console.log("aaa cs isSkipIsAuthenticated block");
+        const URL = `${EnvVariable.BASEURL}/customers/list`;
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              let d;
+              d = response.data.data.map((row) => {
+                const preparePhone =
+                  row.countryCode && row.msisdn
+                    ? row.countryCode + row.msisdn
+                    : null;
+                const phone = preparePhone ? preparePhone.split("+") : null;
+                return {
+                  uuid: row.uuid,
+                  type: row.type,
+                  name: row.name,
+                  orgIdOrPNumber: row.organizationId
+                    ? row.organizationId
+                    : row.personalNumber,
+                  phone: phone ? "+" + phone[phone.length - 1] : null,
+                  email: row.email,
+                  lastInvoicedOn: row.lastOrderOn,
+                  lastOrderAmount: row.lastOrderAmount,
+                  status: row.status,
+                  street: row?.billingAddress?.street,
+                  city: row?.billingAddress?.city,
+                  zip: row?.billingAddress?.zip,
+                  country: row?.billingAddress?.country,
+                };
               });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+              d.status_code = 200;
+              d.is_data = true;
+              resolve(d);
+            } else if (
+              response.data.status_code === 200 &&
+              !response.data.is_data
+            ) {
+              resolve([]);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            // reject(e?.response?.data?.message)
+            if (e?.response?.data?.status_code === 404)
+              resolve(e.response.data);
+            reject(e?.response?.data?.message);
+          });
+      }else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              const URL = `${EnvVariable.BASEURL}/customers/list`;
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    let d;
+                    d = response.data.data.map((row) => {
+                      const preparePhone =
+                        row.countryCode && row.msisdn
+                          ? row.countryCode + row.msisdn
+                          : null;
+                      const phone = preparePhone
+                        ? preparePhone.split("+")
+                        : null;
+                      return {
+                        uuid: row.uuid,
+                        type: row.type,
+                        name: row.name,
+                        orgIdOrPNumber: row.organizationId
+                          ? row.organizationId
+                          : row.personalNumber,
+                        phone: phone ? "+" + phone[phone.length - 1] : null,
+                        email: row.email,
+                        lastInvoicedOn: row.lastOrderOn,
+                        lastOrderAmount: row.lastOrderAmount,
+                        status: row.status,
+                        street: row?.billingAddress?.street,
+                        city: row?.billingAddress?.city,
+                        zip: row?.billingAddress?.zip,
+                        country: row?.billingAddress?.country,
+                      };
+                    });
+                    d.status_code = 200;
+                    d.is_data = true;
+                    resolve(d);
+                  } else if (
+                    response.data.status_code === 200 &&
+                    !response.data.is_data
+                  ) {
+                    resolve([]);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  // reject(e?.response?.data?.message)
+                  if (e?.response?.data?.status_code === 404)
+                    resolve(e.response.data);
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
     });
   };
 

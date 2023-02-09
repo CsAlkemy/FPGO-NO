@@ -4,60 +4,111 @@ import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 
 class ProductService {
-  productsList = async () => {
+  productsList = async (isSkipIsAuthenticated) => {
+    console.log("aaa ps isSkipIsAuthenticated", isSkipIsAuthenticated);
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/products/list`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  let d;
-                  d = response.data.data.map((row) => {
-                    return {
-                      uuid: row.uuid,
-                      id: row.productId,
-                      name: row.name,
-                      type: row.type,
-                      category: row.categories
-                        ? row.categories.length === 1
-                          ? row.categories
-                          : row.categories.map((row, index) => {
-                              return row.length - 1 === index
-                                ? row
-                                : row + ", ";
-                            })
-                        : null,
-                      unit: row.unit,
-                      pricePerUnit: row.price,
-                      taxRate: row.tax,
-                      status: row.status,
-                    };
-                  });
-                  d.status_code = 200;
-                  d.is_data = true;
-                  resolve(d);
-                } else if (
-                  response.data.status_code === 200 &&
-                  !response.data.is_data
-                ) {
-                  resolve([]);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e?.response?.data?.message)
+      if (!isSkipIsAuthenticated){
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              const URL = `${EnvVariable.BASEURL}/products/list`;
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    let d;
+                    d = response.data.data.map((row) => {
+                      return {
+                        uuid: row.uuid,
+                        id: row.productId,
+                        name: row.name,
+                        type: row.type,
+                        category: row.categories
+                          ? row.categories.length === 1
+                            ? row.categories
+                            : row.categories.map((row, index) => {
+                                return row.length - 1 === index
+                                  ? row
+                                  : row + ", ";
+                              })
+                          : null,
+                        unit: row.unit,
+                        pricePerUnit: row.price,
+                        taxRate: row.tax,
+                        status: row.status,
+                      };
+                    });
+                    d.status_code = 200;
+                    d.is_data = true;
+                    resolve(d);
+                  } else if (
+                    response.data.status_code === 200 &&
+                    !response.data.is_data
+                  ) {
+                    resolve([]);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  if (e?.response?.data?.status_code === 404)
+                    resolve(e.response.data);
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
+      else {
+        console.log("aaa ps isSkipIsAuthenticated block");
+        const URL = `${EnvVariable.BASEURL}/products/list`;
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              let d;
+              d = response.data.data.map((row) => {
+                return {
+                  uuid: row.uuid,
+                  id: row.productId,
+                  name: row.name,
+                  type: row.type,
+                  category: row.categories
+                    ? row.categories.length === 1
+                      ? row.categories
+                      : row.categories.map((row, index) => {
+                        return row.length - 1 === index
+                          ? row
+                          : row + ", ";
+                      })
+                    : null,
+                  unit: row.unit,
+                  pricePerUnit: row.price,
+                  taxRate: row.tax,
+                  status: row.status,
+                };
               });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+              d.status_code = 200;
+              d.is_data = true;
+              resolve(d);
+            } else if (
+              response.data.status_code === 200 &&
+              !response.data.is_data
+            ) {
+              resolve([]);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            if (e?.response?.data?.status_code === 404) resolve(e.response.data)
+            reject(e?.response?.data?.message)
+          });
+      }
     });
   };
 
