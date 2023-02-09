@@ -10,7 +10,7 @@ import EventIcon from '@mui/icons-material/Event';
 import RedoIcon from '@mui/icons-material/Redo';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import SendIcon from '@mui/icons-material/Send';
-import { DesktopDatePicker, DesktopDateTimePicker } from '@mui/lab';
+import { DesktopDatePicker, DesktopDateTimePicker, LoadingButton } from '@mui/lab';
 import {
   Accordion,
   AccordionDetails,
@@ -66,6 +66,7 @@ const createOrder = () => {
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [createOrder, response] = useCreateOrderMutation();
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
@@ -201,6 +202,7 @@ const createOrder = () => {
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
   const onSubmit = (values) => {
+    setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
     totalDiscount = (totalDiscount / 2).toFixed(2);
@@ -217,6 +219,7 @@ const createOrder = () => {
     })
     createOrder(data)
       .then((response)=> {
+        setLoading(false)
         if (response?.data?.status_code === 201) {
               enqueueSnackbar(response?.data?.message, { variant: "success" });
               navigate(`/sales/orders-list`);
@@ -492,7 +495,18 @@ const createOrder = () => {
                   >
                     {t("label:discard")}
                   </Button>
-                  <Button
+                  {/*<Button*/}
+                  {/*  color="secondary"*/}
+                  {/*  variant="contained"*/}
+                  {/*  className="font-semibold rounded-4 w-full sm:w-auto"*/}
+                  {/*  type="submit"*/}
+                  {/*  // disabled={!(isValid && customData.paymentMethod.length)}*/}
+                  {/*  disabled={!isValid}*/}
+                  {/*  startIcon={<SendIcon />}*/}
+                  {/*>*/}
+                  {/*  {t("label:sendOrder")}*/}
+                  {/*</Button>*/}
+                  <LoadingButton
                     color="secondary"
                     variant="contained"
                     className="font-semibold rounded-4 w-full sm:w-auto"
@@ -500,9 +514,11 @@ const createOrder = () => {
                     // disabled={!(isValid && customData.paymentMethod.length)}
                     disabled={!isValid}
                     startIcon={<SendIcon />}
+                    loading={loading}
+                    loadingPosition="center"
                   >
-                    {t("label:sendOrder")}
-                  </Button>
+                    {t("label:createOrder")}
+                  </LoadingButton>
                 </div>
               </Hidden>
             </div>
@@ -2365,16 +2381,29 @@ const createOrder = () => {
                   </div>
                   <Hidden smDown>
                     <div className="flex justify-end items-end mt-32">
-                      <Button
+                      {/*<Button*/}
+                      {/*  color="secondary"*/}
+                      {/*  variant="contained"*/}
+                      {/*  className="font-semibold rounded-4 w-full sm:w-auto"*/}
+                      {/*  type="submit"*/}
+                      {/*  startIcon={<SendIcon />}*/}
+                      {/*  disabled={!(isValid)}*/}
+                      {/*>*/}
+                      {/*  {t("label:sendOrder")}*/}
+                      {/*</Button>*/}
+                      <LoadingButton
                         color="secondary"
                         variant="contained"
                         className="font-semibold rounded-4 w-full sm:w-auto"
                         type="submit"
+                        // disabled={!(isValid && customData.paymentMethod.length)}
+                        disabled={!isValid}
                         startIcon={<SendIcon />}
-                        disabled={!(isValid)}
+                        loading={loading}
+                        loadingPosition="center"
                       >
-                        {t("label:sendOrder")}
-                      </Button>
+                        {t("label:createOrder")}
+                      </LoadingButton>
                     </div>
                   </Hidden>
                 </div>
@@ -2427,17 +2456,30 @@ const createOrder = () => {
               </div>
               <Hidden smUp>
                 <div className="flex justify-end items-end mt-32 mb-44 mx-10 sm:mx-0">
-                  <Button
+                  {/*<Button*/}
+                  {/*  color="secondary"*/}
+                  {/*  variant="contained"*/}
+                  {/*  className="font-semibold rounded-4 w-full sm:w-auto"*/}
+                  {/*  type="submit"*/}
+                  {/*  startIcon={<SendIcon />}*/}
+                  {/*  // disabled={!(isValid && customData.paymentMethod.length)}*/}
+                  {/*  disabled={!isValid}*/}
+                  {/*>*/}
+                  {/*  {t("label:sendOrder")}*/}
+                  {/*</Button>*/}
+                  <LoadingButton
                     color="secondary"
                     variant="contained"
                     className="font-semibold rounded-4 w-full sm:w-auto"
                     type="submit"
-                    startIcon={<SendIcon />}
                     // disabled={!(isValid && customData.paymentMethod.length)}
                     disabled={!isValid}
+                    startIcon={<SendIcon />}
+                    loading={loading}
+                    loadingPosition="center"
                   >
-                    {t("label:sendOrder")}
-                  </Button>
+                    {t("label:createOrder")}
+                  </LoadingButton>
                 </div>
               </Hidden>
             </div>
@@ -2452,7 +2494,23 @@ const createOrder = () => {
                 >
                   {t("label:discard")}
                 </Button>
-                <Button
+                {/*<Button*/}
+                {/*  color="secondary"*/}
+                {/*  variant="contained"*/}
+                {/*  type="submit"*/}
+                {/*  className="rounded-full bg-primary-500 button2 py-5"*/}
+                {/*  disabled={!isValid}*/}
+                {/*  sx={{*/}
+                {/*    "&.Mui-disabled": {*/}
+                {/*      background: "#eaeaea",*/}
+                {/*      color: "#c0c0c0"*/}
+                {/*    }*/}
+                {/*  }}*/}
+                {/*  startIcon={<RedoIcon />}*/}
+                {/*>*/}
+                {/*  {t("label:sendOrder")}*/}
+                {/*</Button>*/}
+                <LoadingButton
                   color="secondary"
                   variant="contained"
                   type="submit"
@@ -2465,9 +2523,11 @@ const createOrder = () => {
                     }
                   }}
                   startIcon={<RedoIcon />}
+                  loading={loading}
+                  loadingPosition="center"
                 >
-                  {t("label:sendOrder")}
-                </Button>
+                  {t("label:createOrder")}
+                </LoadingButton>
               </div>
             </Hidden>
           </form>
