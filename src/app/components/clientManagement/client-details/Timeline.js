@@ -8,11 +8,9 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import { Skeleton, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
-import CustomersService from "../../../data-access/services/customersService/CustomersService";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
@@ -76,7 +74,6 @@ const TimelineLog = () => {
         });
     }
   }, [isFetching]);
-  console.log(logs.length);
 
   return (
     <div className="mb-32 md:mb-0 w-full sm:w-4/5">
