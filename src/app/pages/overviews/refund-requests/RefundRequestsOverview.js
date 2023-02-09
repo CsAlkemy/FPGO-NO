@@ -26,7 +26,7 @@ export default function RefundRequestsOverview() {
   const dispatch = useDispatch();
   const ordersList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetRefundRequestsListQuery()
+  const {data, isFetching, isLoading, isSuccess, isError, error, refetch} = useGetRefundRequestsListQuery()
   const refundRequestsOverviewHeaderRows = [
     {
       id: "date",
@@ -92,6 +92,10 @@ export default function RefundRequestsOverview() {
       sort: false,
     },
   ];
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data ?  OrdersService.mapRefundRequestsList(data.data) : []
 

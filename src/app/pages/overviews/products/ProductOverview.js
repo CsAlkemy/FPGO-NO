@@ -21,7 +21,7 @@ export default function ProductOverview() {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetProductsListQuery()
+  const {data, isFetching, isLoading, isSuccess, isError, error, refetch} = useGetProductsListQuery()
   const producstListHeaderRows = [
     {
       id: 'id',
@@ -74,23 +74,9 @@ export default function ProductOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   ProductService.productsList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data ?  ProductService.mapProductsList(data.data) : []
 

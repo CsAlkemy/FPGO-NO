@@ -27,7 +27,7 @@ export default function ApprovalListOverview() {
   const dispatch = useDispatch();
   const approvalList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading, isFetching, isSuccess, isError, error } =
+  const { data, isLoading, isFetching, isSuccess, isError, error, refetch } =
     useGetApprovalClientsListQuery();
   const approvalListForFPAdminHeaderRows = [
     {
@@ -74,31 +74,9 @@ export default function ApprovalListOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   ClientService.approvalList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
-
-  // if (approvedClientList.tableData.length === 0) {
-  //   return (
-  //     <Typography color="text.secondary" variant="h5">
-  //       No Row found for this Table!
-  //     </Typography>
-  //   );
-  // }
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data
     ? ClientService.mapApprovalList(data.data)
