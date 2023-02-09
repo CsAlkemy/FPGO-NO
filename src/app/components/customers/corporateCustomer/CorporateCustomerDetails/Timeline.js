@@ -12,7 +12,7 @@ import OrdersService from "../../../../data-access/services/ordersService/Orders
 import { Skeleton, TextField } from "@mui/material";
 import CustomersService from "../../../../data-access/services/customersService/CustomersService";
 import { DesktopDatePicker } from "@mui/lab";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
@@ -84,7 +84,7 @@ const TimelineLog = () => {
             },
           }}
         >
-          {logs.map((log) => {
+          {logs.map((log, index) => {
             return (
               <TimelineItem>
                 <TimelineSeparator>
@@ -109,10 +109,10 @@ const TimelineLog = () => {
                       <PriorityHighIcon className="icon-size-14 text-white" />
                     </TimelineDot>
                   )}
-                  <TimelineConnector />
+                  {index + 1 < logs.length && <TimelineConnector />}
                 </TimelineSeparator>
                 <TimelineContent>
-                  <div className="ml-10">
+                  <div className="ml-5 mt-10 mb-10">
                     <div className="subtitle3 text-MonochromeGray-700">
                       {log.title}
                     </div>
@@ -126,16 +126,7 @@ const TimelineLog = () => {
                         </div>
                       </div>
                     )}
-                    {log.orderUuid && (
-                      <div className="flex gap-5">
-                        <div className="text-MonochromeGray-300 body4">
-                          {t("label:orderId")}:
-                        </div>
-                        <div className="body4 text-MonochromeGray-700">
-                          {log.orderUuid}
-                        </div>
-                      </div>
-                    )}
+
                     {log.sentTo && (
                       <div className="flex gap-5">
                         <div className="text-MonochromeGray-300 body4">
@@ -163,6 +154,26 @@ const TimelineLog = () => {
                         </div>
                         <div className="body4 text-MonochromeGray-700">
                           {log.actionBy}
+                        </div>
+                      </div>
+                    )}
+                    {log.orderAmount && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:orderAmount")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.orderAmount}
+                        </div>
+                      </div>
+                    )}
+                    {log.orderUuid && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:orderId")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.orderUuid}
                         </div>
                       </div>
                     )}
