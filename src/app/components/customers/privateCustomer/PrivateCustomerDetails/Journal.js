@@ -14,7 +14,7 @@ const Journal = () => {
   const [notes, setNotes] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(
     new Date(
-      `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
+      `${new Date().getMonth() + 1}.09.${new Date().getFullYear()} 00:00:00`
     )
   );
   const { id } = useParams();
@@ -22,7 +22,7 @@ const Journal = () => {
   const handleDateChange = (date) => {
     setIsFetching(true);
     setDefaultJournal(false);
-    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.01.${new Date(
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.09.${new Date(
       date
     ).getFullYear()} 00:00:00`;
     // setSelectedDate(date);
@@ -48,7 +48,6 @@ const Journal = () => {
         setIsFetching(false);
       })
       .catch((e) => {
-        console.log("E :", e);
         setJournals([]);
         setIsFetching(false);
       });
@@ -75,7 +74,6 @@ const Journal = () => {
           setIsFetching(false);
         })
         .catch((e) => {
-          console.log("E :", e);
           setJournals([]);
           setIsFetching(false);
         });
@@ -91,7 +89,6 @@ const Journal = () => {
         setJournals([...journals, {date : null, text: notes, time : `${new Date().getHours()}:${new Date().getMinutes()}`}])
       })
       .catch((e)=> {
-        console.log("E :: ",e);
         setLoading(false)
       })
   }
