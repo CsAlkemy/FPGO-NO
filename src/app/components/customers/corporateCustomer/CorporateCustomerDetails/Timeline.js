@@ -23,7 +23,7 @@ const TimelineLog = () => {
   const [defaultTimeline, setDefaultTimeline] = useState(true);
   const [selectedDate, setSelectedDate] = useState(
     new Date(
-      `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
+      `${new Date().getMonth() + 1}.09.${new Date().getFullYear()} 00:00:00`
     )
   );
 

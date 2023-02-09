@@ -90,7 +90,7 @@ export default function ClientOrdersOverview() {
   const { uuid } = useParams();
   const [selectedDate, setSelectedDate] = React.useState(
     new Date(
-      `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
+      `${new Date().getMonth() + 1}.09.${new Date().getFullYear()} 00:00:00`
     )
   );
 
