@@ -29,7 +29,7 @@ export default function FpAdminUsersOverview() {
   const dispatch = useDispatch();
   const fpAdminUsers = useSelector(selectOverviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isFetching, isLoading, isSuccess, isError, error } =
+  const { data, isFetching, isLoading, isSuccess, isError, error, refetch } =
     useGetFPAdminUsersListQuery();
   const fpAdminUsersListOverviewHeaderRows = [
     {
@@ -69,23 +69,9 @@ export default function FpAdminUsersOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   UserService.fpAdminUsersList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data
     ? UserService.mapFPAdminUsersList(data.data)
