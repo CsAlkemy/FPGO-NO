@@ -978,7 +978,7 @@ export default function OverViewMainTableBody(props) {
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
-                  align="right"
+                  align="center"
                   onClick={() => {
                     props.rowClickAction(props.row);
                   }}
@@ -990,7 +990,7 @@ export default function OverViewMainTableBody(props) {
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
-                  align="right"
+                  align="center"
                   onClick={() => {
                     props.rowClickAction(props.row);
                   }}
@@ -1002,7 +1002,7 @@ export default function OverViewMainTableBody(props) {
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
-                  align="right"
+                  align="center"
                   onClick={() => {
                     props.rowClickAction(props.row);
                   }}
