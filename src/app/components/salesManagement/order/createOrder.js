@@ -1793,7 +1793,6 @@ const createOrder = () => {
                                 className="custom-input-height"
                                 fullWidth
                                 onChange={(_, data) => {
-                                  console.log("DATA : ",data);
                                   if (data) {
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
