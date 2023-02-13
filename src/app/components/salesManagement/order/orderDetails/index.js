@@ -59,18 +59,18 @@ const createOrder = () => {
 
   return (
     <div>
-      {/*{isLoading && (*/}
-      {/*  <Backdrop*/}
-      {/*    sx={{*/}
-      {/*      zIndex: (theme) => theme.zIndex.drawer + 2,*/}
-      {/*      color: "#0088AE",*/}
-      {/*      background: "white",*/}
-      {/*    }}*/}
-      {/*    open={isLoading}*/}
-      {/*  >*/}
-      {/*    <CircularProgress color="inherit" />*/}
-      {/*  </Backdrop>*/}
-      {/*)}*/}
+      {isLoading && (
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            color: "#0088AE",
+            background: "white",
+          }}
+          open={isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
       {!isLoading && (
         <div className="create-product-container">
           <div className="inside-div-product">
