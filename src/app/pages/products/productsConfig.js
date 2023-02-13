@@ -1,14 +1,12 @@
 import { lazy } from "react";
 import authRoles from "../../data-access/utils/AuthRoles";
-const ProductOverview = lazy(() =>
-  import("../overviews/products/ProductOverview")
-);
+
+import ProductOverview from '../overviews/products/ProductOverview'
 const CreateProduct = lazy(() =>
   import("../../components/products/createProduct/createProduct")
 );
-const ProductDetails = lazy(() =>
-  import("../../components/products/createProduct/productDetails")
-);
+import ProductDetails from '../../components/products/createProduct/productDetails'
+
 
 export const ProductsConfig = {
   settings: {

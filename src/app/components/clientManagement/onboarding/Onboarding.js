@@ -369,7 +369,7 @@ const Onboarding = () => {
   // end form
 
   return (
-    <div>
+    <div className='flex flex-1 flex-col items-center justify-center p-24'>
       <Backdrop
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 2,
