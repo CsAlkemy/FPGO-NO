@@ -14,7 +14,7 @@ import { useSnackbar } from "notistack";
 const OrderInformation = lazy(() => import("../orderDetails/orderInformation"));
 const OrderLog = lazy(() => import("../orderDetails/orderLog"));
 const OrderReceipt = lazy(() => import("../orderDetails/orderReceipt"));
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -27,7 +27,7 @@ const createOrder = () => {
   const user = useSelector(selectUser);
   const { enqueueSnackbar } = useSnackbar();
   const queryParams = useParams();
-  const  navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -36,7 +36,9 @@ const createOrder = () => {
   const handleResendRefundOrder = () => {
     setOpen(true);
     // setSetHeaderTitle(value === "3" ? "Refund Order" : "Resend Order");
-    setSetHeaderTitle(info.status.toLowerCase() === "paid" ? "Refund Order" : "Resend Order");
+    setSetHeaderTitle(
+      info.status.toLowerCase() === "paid" ? "Refund Order" : "Resend Order"
+    );
   };
 
   const handleCancelOrder = () => {
@@ -51,7 +53,7 @@ const createOrder = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error) navigate("/sales/orders-list")
+        if (error) navigate("/sales/orders-list");
         enqueueSnackbar(error, { variant: "error" });
         setIsLoading(false);
       });
@@ -59,18 +61,16 @@ const createOrder = () => {
 
   return (
     <div>
-      {isLoading && (
-        <Backdrop
-          sx={{
-            zIndex: (theme) => theme.zIndex.drawer + 2,
-            color: "#0088AE",
-            background: "white",
-          }}
-          open={isLoading}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      )}
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 2,
+          color: "#0088AE",
+          background: "white",
+        }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       {!isLoading && (
         <div className="create-product-container">
           <div className="inside-div-product">

@@ -381,7 +381,7 @@ const Onboarding = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
       {!isLoading && !!info && (
-        <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
+        <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-300 max-w-screen-xl">
           <div className="flex-auto p-20 sm:p-0 w-full mx-auto bg-white">
             <div className="rounded-sm bg-white p-0 md:p-20">
               <form
@@ -393,8 +393,7 @@ const Onboarding = () => {
                   <div className="header-text header6">
                     {t("label:registrationRequest")} ({" "}
                     {
-                      JSON.parse(localStorage.getItem("tableRowDetails"))
-                        ?.organizationDetails.uuid
+                      params?.uuid
                     }{" "}
                     )
                   </div>
