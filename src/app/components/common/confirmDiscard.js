@@ -93,14 +93,14 @@ const confirmDiscard = (props) => {
             <Button
               onClick={handleClose}
               variant="text"
-              className="text-main font-semibold"
+              className="text-main font-semibold mr-16"
             >
               {t("label:cancel")}
             </Button>
             <Button
               variant="contained"
               color="secondary"
-              className="rounded-4 font-semibold"
+              className="rounded-4 font-semibold min-w-[112px]"
               onClick={() => modalRef === "confirmRefundRequestApprove" ? handleConfirmRefundRequest() : handleClose()}
             >
               {t("label:confirm")}
