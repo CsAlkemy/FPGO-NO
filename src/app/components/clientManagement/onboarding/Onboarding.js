@@ -1,7 +1,12 @@
-import {yupResolver} from "@hookform/resolvers/yup";
-import {RemoveCircleOutline, Search, Visibility, VisibilityOff,} from "@mui/icons-material";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  RemoveCircleOutline,
+  Search,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import {DesktopDatePicker} from "@mui/lab";
+import { DesktopDatePicker } from "@mui/lab";
 import {
   Backdrop,
   Button,
@@ -17,19 +22,19 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import {useSnackbar} from "notistack";
-import React, {useEffect, useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {useTranslation} from "react-i18next";
-import {BsFillCheckCircleFill} from "react-icons/bs";
-import {MdDeleteOutline} from "react-icons/md";
-import {RiCheckDoubleLine} from "react-icons/ri";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { MdDeleteOutline } from "react-icons/md";
+import { RiCheckDoubleLine } from "react-icons/ri";
 import PhoneInput from "react-phone-input-2";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import ConfirmModal from "../../common/confirmmationDialog";
-import {defaultValueOnBoard, validateSchemaOnBoard} from "../utils/helper";
-import {useOnboardClientMutation} from "app/store/api/apiSlice";
+import { defaultValueOnBoard, validateSchemaOnBoard } from "../utils/helper";
+import { useOnboardClientMutation } from "app/store/api/apiSlice";
 
 const Onboarding = () => {
   const { t } = useTranslation();
@@ -80,7 +85,7 @@ const Onboarding = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        navigate("/clients/approval-list")
+        navigate("/clients/approval-list");
         enqueueSnackbar(error, { variant: "error" });
         setIsLoading(false);
       });
@@ -126,7 +131,7 @@ const Onboarding = () => {
         info?.primaryContactDetails?.countryCode &&
         info?.primaryContactDetails?.msisdn
           ? info?.primaryContactDetails?.countryCode +
-          info?.primaryContactDetails?.msisdn
+            info?.primaryContactDetails?.msisdn
           : "";
       reset({ ...defaultValueOnBoard });
     }
@@ -198,18 +203,18 @@ const Onboarding = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-        .filter((v) => v.vatValue)
-        .map((vat) => {
-          return {
-            uuid: null,
-            name: vat.vatName ? vat.vatName : null,
-            value: parseFloat(vat.vatValue),
-            isActive: true,
-            bookKeepingReference: vat?.bookKeepingReference
-              ? vat.bookKeepingReference
-              : null,
-          };
-        })
+          .filter((v) => v.vatValue)
+          .map((vat) => {
+            return {
+              uuid: null,
+              name: vat.vatName ? vat.vatName : null,
+              value: parseFloat(vat.vatValue),
+              isActive: true,
+              bookKeepingReference: vat?.bookKeepingReference
+                ? vat.bookKeepingReference
+                : null,
+            };
+          })
       : null;
 
     const onBoardingData = {
@@ -369,17 +374,20 @@ const Onboarding = () => {
   // end form
 
   return (
-    <div className='flex flex-1 flex-col items-center justify-center p-24'>
-      <Backdrop
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 2,
-          color: "#0088AE",
-          background: "white",
-        }}
-        open={isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+    <div>
+      <div className="flex flex-1 flex-col items-center justify-center p-24">
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            color: "#0088AE",
+            background: "white",
+          }}
+          open={isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </div>
+
       {!isLoading && !!info && (
         <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
           <div className="flex-auto p-20 sm:p-0 w-full mx-auto bg-white">
@@ -391,12 +399,7 @@ const Onboarding = () => {
               >
                 <div className=" header-click-to-action">
                   <div className="header-text header6">
-                    {t("label:registrationRequest")} ({" "}
-                    {
-                      JSON.parse(localStorage.getItem("tableRowDetails"))
-                        ?.organizationDetails.uuid
-                    }{" "}
-                    )
+                    {t("label:registrationRequest")} ( {params?.uuid} )
                   </div>
                   <div className="flex gap-10 w-full justify-between sm:w-auto">
                     <Button
