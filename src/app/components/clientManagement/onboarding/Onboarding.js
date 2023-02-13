@@ -389,7 +389,7 @@ const Onboarding = () => {
       </div>
 
       {!isLoading && !!info && (
-        <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-300 max-w-screen-xl">
+        <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
           <div className="flex-auto p-20 sm:p-0 w-full mx-auto bg-white">
             <div className="rounded-sm bg-white p-0 md:p-20">
               <form
