@@ -11,17 +11,18 @@ import OrderModal from "../popupModal/orderModal";
 import { useTranslation } from "react-i18next";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
 import { useSnackbar } from "notistack";
-const OrderInformation = lazy(() => import("../orderDetails/orderInformation"));
+import { useNavigate, useParams } from "react-router-dom";
+
+import OrderInformation from "../orderDetails/orderInformation";
+
 const OrderLog = lazy(() => import("../orderDetails/orderLog"));
 const OrderReceipt = lazy(() => import("../orderDetails/orderReceipt"));
-import { useNavigate, useParams } from "react-router-dom";
 
 const createOrder = () => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("1");
   const [headerTitle, setSetHeaderTitle] = React.useState("");
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector(selectUser);
@@ -61,16 +62,18 @@ const createOrder = () => {
 
   return (
     <div>
-      <Backdrop
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 2,
-          color: "#0088AE",
-          background: "white",
-        }}
-        open={isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {!!isLoading && (
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            color: "#0088AE",
+            background: "white",
+          }}
+          open={true}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
       {!isLoading && (
         <div className="create-product-container">
           <div className="inside-div-product">
