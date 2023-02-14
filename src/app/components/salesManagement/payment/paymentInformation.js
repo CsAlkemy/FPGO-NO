@@ -351,27 +351,27 @@ const paymentInformation = () => {
                           : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
-                        {updatedData?.street
-                          ? updatedData.street + ", "
+                        {updatedData?.billingAddress
+                          ? updatedData.billingAddress + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.street
                           ? orderDetails?.customerDetails?.address?.street +
                             ", "
                           : "-, "}
-                        {updatedData?.city
-                          ? updatedData.city + ", "
+                        {updatedData?.billingCity
+                          ? updatedData.billingCity + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.city
                           ? orderDetails?.customerDetails?.address?.city + " "
                           : "-"}
-                        {updatedData?.zip
-                          ? updatedData.zip + ", "
+                        {updatedData?.billingZip
+                          ? updatedData.billingZip + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.zip
                           ? orderDetails?.customerDetails?.address?.zip + ", "
                           : "-, "}
-                        {updatedData?.country
-                          ? updatedData.country
+                        {updatedData?.billingCountry
+                          ? updatedData.billingCountry
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.country
                           ? orderDetails?.customerDetails?.address?.country
