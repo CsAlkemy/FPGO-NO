@@ -454,6 +454,23 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                 </div>
               );
+            case "refund pending":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Refund Pending" />
+                  </div>
+                </div>
+              );
             case "Partial Refunded":
               return (
                 <div className="grid grid-cols-2 justify-between items-center">
@@ -1109,6 +1126,23 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                 </div>
               );
+            case "refund pending":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Refund Pending" />
+                  </div>
+                </div>
+              );
             case "partial refunded":
               return (
                 <div className="grid grid-cols-2 justify-between items-center">
@@ -1386,7 +1420,7 @@ export default function OverViewResponsiveBody(props) {
       return props.headerRows.map((rdt) => {
         if (rdt.id === "stage") {
           switch (props.row.stage) {
-            case "pending":
+            case "refund pending":
               return (
                 <div className="grid grid-cols-2 justify-between items-center">
                   <div className="subtitle3 text-primary-900">
@@ -1668,6 +1702,23 @@ export default function OverViewResponsiveBody(props) {
                     }}
                   >
                     <OverviewStatus name="Refunded" />
+                  </div>
+                </div>
+              );
+            case "refund pending":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus name="Refund Pending" />
                   </div>
                 </div>
               );
