@@ -8,11 +8,9 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import { Skeleton, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
-import CustomersService from "../../../data-access/services/customersService/CustomersService";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
@@ -115,7 +113,9 @@ const TimelineLog = () => {
             </div>
           </div>
           <div className="p-10">
-            <div className="subtitle3 text-MonochromeGray-300">{t("label:noOfEHFs")}</div>
+            <div className="subtitle3 text-MonochromeGray-300">
+              {t("label:noOfEHFs")}
+            </div>
             <div className="body1 text-MonochromeGray-700 mt-5">
               {summary?.ehfCount}
             </div>
@@ -132,7 +132,7 @@ const TimelineLog = () => {
             },
           }}
         >
-          {logs.map((log) => {
+          {logs.map((log, index) => {
             return (
               <TimelineItem>
                 <TimelineSeparator>
@@ -155,10 +155,10 @@ const TimelineLog = () => {
                       <PriorityHighIcon className="icon-size-14 text-white" />
                     </TimelineDot>
                   )}
-                  <TimelineConnector />
+                  {index + 1 < logs.length && <TimelineConnector />}
                 </TimelineSeparator>
                 <TimelineContent>
-                  <div className="ml-10">
+                  <div className="ml-5 mt-10 mb-10">
                     <div className="subtitle3 text-MonochromeGray-700">
                       {log.title}
                     </div>
