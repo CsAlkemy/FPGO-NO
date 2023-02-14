@@ -67,6 +67,8 @@ const createOrder = () => {
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [customerSearchBoxLength,setCustomerSearchBoxLength] = useState(0)
+  const [customerSearchBy,setCustomerSearchBy] = useState(undefined)
   const [createOrder, response] = useCreateOrderMutation();
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
@@ -200,6 +202,14 @@ const createOrder = () => {
   const watchAllFields = watch();
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
+
+  const searchCustomerOnFocus = (e)=> {
+    const searchByPhone = customersList.filter((customer)=> customer.phone.startsWith(e.target.value)) || [];
+    const searchByName = customersList.filter((customer)=> customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())) || [];
+    setCustomerSearchBy(searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined)
+    setCustomerSearchBoxLength(e.target.value.length)
+  }
+
 
   const onSubmit = (values) => {
     setLoading(true);
@@ -1794,6 +1804,8 @@ const createOrder = () => {
                                 fullWidth
                                 onChange={(_, data) => {
                                   if (data) {
+                                    setCustomerSearchBy(undefined);
+                                    setCustomerSearchBoxLength(0)
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
                                     setValue("customerName", data.name);
@@ -1832,18 +1844,46 @@ const createOrder = () => {
                                     {...props}
                                   >
                                     {/*{`${option.name}`}*/}
-                                    <div>
-                                      <div>{`${option.name}`}</div>
-                                      <div>{`${option.phone}`}</div>
-                                    </div>
+                                    {
+                                      customerSearchBy ?
+                                        (
+                                          <div>
+                                            {
+                                              customerSearchBy === "name" && customerSearchBoxLength > 0 ?
+                                                <div>
+                                                  <span style={{color: "#0088AE"}}>{`${option.name.slice(0,customerSearchBoxLength)}`}</span>
+                                                  <span>{`${option.name.slice(customerSearchBoxLength)}`}</span>
+                                                </div>
+                                                : <div>{`${option.name}`}</div>
+                                            }
+                                            {
+                                              customerSearchBy === "phone" && customerSearchBoxLength > 0 ?
+                                                <div>
+                                                  <span style={{color: "#0088AE"}}>{`${option.phone.slice(0,customerSearchBoxLength)}`}</span>
+                                                  <span>{`${option.phone.slice(customerSearchBoxLength)}`}</span>
+                                                </div>
+                                                : <div>{`${option.phone}`}</div>
+                                            }
+                                          </div>
+                                        )
+                                        :
+                                        (
+                                          <div>
+                                            <div>{`${option.name}`}</div>
+                                            <div>{`${option.phone}`}</div>
+                                          </div>
+                                        )
+                                    }
                                   </MenuItem>
                                 )}
                                 renderInput={(params) => (
                                   <TextField
+                                    id="searchBox"
                                     {...params}
                                     {...field}
                                     //className='custom-input-height-div'
                                     inputRef={ref}
+                                    onChange={searchCustomerOnFocus}
                                     // placeholder="Search by Name or Phone Number"
                                     placeholder= {t("label:searchByNameOrPhoneNo")}
                                   />
