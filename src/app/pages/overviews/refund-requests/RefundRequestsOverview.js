@@ -14,10 +14,10 @@ import { useGetRefundRequestsListQuery } from 'app/store/api/apiSlice';
 export default function RefundRequestsOverview() {
   const { t } = useTranslation();
   const tabPanelsLabel = [
-    t("label:all"),
     t("label:pending"),
     t("label:accepted"),
     t("label:rejected"),
+    t("label:all"),
   ];
   const tabs = [0, 1, 2, 3];
   const headerSubtitle = t("label:refundRequests");
@@ -26,7 +26,7 @@ export default function RefundRequestsOverview() {
   const dispatch = useDispatch();
   const ordersList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetRefundRequestsListQuery()
+  const {data, isFetching, isLoading, isSuccess, isError, error, refetch} = useGetRefundRequestsListQuery()
   const refundRequestsOverviewHeaderRows = [
     {
       id: "date",
@@ -72,7 +72,7 @@ export default function RefundRequestsOverview() {
     },
     {
       id: "stage",
-      align: "right",
+      align: "center",
       disablePadding: false,
       label: t("label:status"),
       sort: true,
@@ -92,6 +92,10 @@ export default function RefundRequestsOverview() {
       sort: false,
     },
   ];
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data ?  OrdersService.mapRefundRequestsList(data.data) : []
 

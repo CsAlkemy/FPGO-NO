@@ -295,6 +295,18 @@ export default function OverViewMainTableBody(props) {
                   <OverviewStatus name="Refunded" />
                 </TableCell>
               );
+            case "refund pending":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Refund Pending" />
+                </TableCell>
+              );
             case "partial refunded":
               return (
                 <TableCell
@@ -710,6 +722,18 @@ export default function OverViewMainTableBody(props) {
                   <OverviewStatus name="Refunded" />
                 </TableCell>
               );
+            case "refund pending":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Refund Pending" />
+                </TableCell>
+              );
             case "partial refunded":
               return (
                 <TableCell
@@ -978,7 +1002,7 @@ export default function OverViewMainTableBody(props) {
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
-                  align="right"
+                  align="center"
                   onClick={() => {
                     props.rowClickAction(props.row);
                   }}
@@ -990,7 +1014,7 @@ export default function OverViewMainTableBody(props) {
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
-                  align="right"
+                  align="center"
                   onClick={() => {
                     props.rowClickAction(props.row);
                   }}
@@ -1002,7 +1026,7 @@ export default function OverViewMainTableBody(props) {
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
-                  align="right"
+                  align="center"
                   onClick={() => {
                     props.rowClickAction(props.row);
                   }}
@@ -1227,6 +1251,18 @@ export default function OverViewMainTableBody(props) {
                   }}
                 >
                   <OverviewStatus name="Refunded" />
+                </TableCell>
+              );
+            case "refund pending":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus name="Refund Pending" />
                 </TableCell>
               );
             case "partial refunded":
