@@ -74,6 +74,7 @@ const TimelineLog = () => {
         });
     }
   }, [isFetching]);
+  console.log(logs);
 
   return (
     <div className="mb-32 md:mb-0 w-full sm:w-4/5">
@@ -142,17 +143,17 @@ const TimelineLog = () => {
                   log.slug === "email-sent" ||
                   (log.slug === "sms-sent" && log.type === "Payment Link") ||
                   log.slug === "client-information-updated" ? (
-                    <TimelineDot className="bg-orderLog-success">
-                      <CheckIcon className="icon-size-14 text-white" />
+                    <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
+                      <CheckIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   ) : log.slug === "sms-sent" &&
                     log.type === "Order Cancellation" ? (
-                    <TimelineDot className="bg-orderLog-warning">
-                      <PriorityHighIcon className="icon-size-14 text-white" />
+                    <TimelineDot className="border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]">
+                      <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   ) : (
-                    <TimelineDot color="warning">
-                      <PriorityHighIcon className="icon-size-14 text-white" />
+                    <TimelineDot className="bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0">
+                      <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   )}
                   {index + 1 < logs.length && <TimelineConnector />}
