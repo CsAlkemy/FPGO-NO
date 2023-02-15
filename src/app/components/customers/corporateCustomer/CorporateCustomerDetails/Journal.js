@@ -86,7 +86,29 @@ const Journal = () => {
       .then((response)=> {
         setNotes("")
         setLoading(false)
-        setJournals([...journals, {date : null, text: notes, time : `${new Date().getHours()}:${new Date().getMinutes()}`}])
+        setIsFetching(true)
+        const stDate = new Date(selectedDate).getTime() / 1000;
+        CustomersService.getCutomerJournals(id, stDate)
+          .then((response) => {
+            const sameDates = [];
+            const mappedData = response?.data.map((d) => {
+              return {
+                date: sameDates.includes(d.datetime.split(" ")[0])
+                  ? null
+                  : sameDates.push(d.datetime.split(" ")[0]) &&
+                  d.datetime.split(" ")[0],
+                time: d.datetime.split(" ")[1],
+                text: d.text,
+              };
+            });
+            // setJournals(response?.data);
+            setJournals(mappedData);
+            setIsFetching(false);
+          })
+          .catch((e) => {
+            setJournals([]);
+            setIsFetching(false);
+          });
       })
       .catch((e)=> {
         setLoading(false)
@@ -153,21 +175,6 @@ const Journal = () => {
               );
             })
           : ""}
-        {/*<div className="mb-10 text-MonochromeGray-500 subtitle2 ">25.10.22</div>*/}
-        {/*<div className="p-20 bg-MonochromeGray-25 text-MonochromeGray-900 body2 rounded-16">*/}
-        {/*  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum*/}
-        {/*  delectus recusandae quisquam vel inventore, in aspernatur sapiente id*/}
-        {/*  sequi obcaecati animi. Reprehenderit dicta magni totam labore in*/}
-        {/*  maxime praesentium laudantium ipsam! Minima id amet odit laudantium*/}
-        {/*  quam, veritatis dolore doloribus numquam ipsam veniam in animi*/}
-        {/*  voluptas voluptatum nihil accusantium sint!*/}
-        {/*</div>*/}
-        {/*<div className="mt-7 body3 text-MonochromeGray-300">15:17</div>*/}
-        {/*<br />*/}
-        {/*<div className='p-20 bg-MonochromeGray-50 text-MonochromeGray-900 body2 rounded-16'>*/}
-        {/*    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum */}
-        {/*</div>*/}
-        {/*<div className='mt-7 body3 text-MonochromeGray-300'>15:17</div>*/}
       </div>
     </div>
   );

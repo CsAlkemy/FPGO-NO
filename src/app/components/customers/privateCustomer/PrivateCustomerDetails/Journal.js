@@ -86,7 +86,29 @@ const Journal = () => {
       .then((response)=> {
         setNotes("")
         setLoading(false)
-        setJournals([...journals, {date : null, text: notes, time : `${new Date().getHours()}:${new Date().getMinutes()}`}])
+        setIsFetching(true)
+        const stDate = new Date(selectedDate).getTime() / 1000;
+        CustomersService.getCutomerJournals(id, stDate)
+          .then((response) => {
+            const sameDates = [];
+            const mappedData = response?.data.map((d) => {
+              return {
+                date: sameDates.includes(d.datetime.split(" ")[0])
+                  ? null
+                  : sameDates.push(d.datetime.split(" ")[0]) &&
+                  d.datetime.split(" ")[0],
+                time: d.datetime.split(" ")[1],
+                text: d.text,
+              };
+            });
+            // setJournals(response?.data);
+            setJournals(mappedData);
+            setIsFetching(false);
+          })
+          .catch((e) => {
+            setJournals([]);
+            setIsFetching(false);
+          });
       })
       .catch((e)=> {
         setLoading(false)

@@ -1,7 +1,7 @@
 // import { Dashboard } from '@mui/icons-material';
 import { lazy } from 'react';
 import authRoles from '../../data-access/utils/AuthRoles';
-const Dashboard = lazy(() => import('../../components/Dashboard/Dashboard'));
+import Dashboard from '../../components/Dashboard/Dashboard';
 
 const DashboardConfig = {
   settings: {

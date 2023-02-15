@@ -6,12 +6,9 @@ const CorporateCustomer = lazy(() =>
 const PrivateCustomer = lazy(() =>
   import("../../components/customers/privateCustomer/createPrivateCustomer")
 );
-const DetailCorporateCustomer = lazy(() =>
-  import("../../components/customers/corporateCustomer/detailCorporateCustomer")
-);
-const DetailPrivateCustomer = lazy(() =>
-  import("../../components/customers/privateCustomer/detailPrivateCustomer")
-);
+
+import DetailCorporateCustomer from '../../components/customers/corporateCustomer/detailCorporateCustomer'
+import DetailPrivateCustomer from '../../components/customers/privateCustomer/detailPrivateCustomer'
 import CustomersListOverview from "../overviews/customers/CustomersListOverview";
 
 export const CustomersConfig = {

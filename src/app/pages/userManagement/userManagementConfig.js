@@ -1,8 +1,7 @@
 import { lazy } from 'react';
 import authRoles from '../../data-access/utils/AuthRoles';
 import CreateUsers from '../../components/userManagement/createUsers';
-
-const UserProfile = lazy(() => import('../../components/userManagement/userProfile/index'));
+import UserProfile from '../../components/userManagement/userProfile/index';
 
 
 const UserManagementConfig = {

@@ -11,23 +11,24 @@ import OrderModal from "../popupModal/orderModal";
 import { useTranslation } from "react-i18next";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
 import { useSnackbar } from "notistack";
-const OrderInformation = lazy(() => import("../orderDetails/orderInformation"));
+import { useNavigate, useParams } from "react-router-dom";
+
+import OrderInformation from "../orderDetails/orderInformation";
+
 const OrderLog = lazy(() => import("../orderDetails/orderLog"));
 const OrderReceipt = lazy(() => import("../orderDetails/orderReceipt"));
-import { useNavigate, useParams } from 'react-router-dom';
 
 const createOrder = () => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("1");
   const [headerTitle, setSetHeaderTitle] = React.useState("");
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector(selectUser);
   const { enqueueSnackbar } = useSnackbar();
   const queryParams = useParams();
-  const  navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -36,7 +37,9 @@ const createOrder = () => {
   const handleResendRefundOrder = () => {
     setOpen(true);
     // setSetHeaderTitle(value === "3" ? "Refund Order" : "Resend Order");
-    setSetHeaderTitle(info.status.toLowerCase() === "paid" ? "Refund Order" : "Resend Order");
+    setSetHeaderTitle(
+      info.status.toLowerCase() === "paid" ? "Refund Order" : "Resend Order"
+    );
   };
 
   const handleCancelOrder = () => {
@@ -51,7 +54,7 @@ const createOrder = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error) navigate("/sales/orders-list")
+        if (error) navigate("/sales/orders-list");
         enqueueSnackbar(error, { variant: "error" });
         setIsLoading(false);
       });
@@ -59,14 +62,14 @@ const createOrder = () => {
 
   return (
     <div>
-      {isLoading && (
+      {!!isLoading && (
         <Backdrop
           sx={{
             zIndex: (theme) => theme.zIndex.drawer + 2,
             color: "#0088AE",
             background: "white",
           }}
-          open={isLoading}
+          open={true}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
