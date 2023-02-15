@@ -29,6 +29,7 @@ import {
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useUpdateUserMutation } from "app/store/api/apiSlice";
+import AuthService from "../../../data-access/services/authService";
 
 const defaultValues = {
   email: "",
@@ -129,15 +130,42 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     // defaultValues.branch = userProfile['organizationDetails']?.name
     reset({ ...defaultValues });
 
-    UserService.userRoleList().then((response) => {
-      if (response?.status_code === 200 && response?.is_data === true) {
-        setRoleList(response.data);
-      } else if (response?.is_data === false) {
-        setRoleList([]);
-      } else {
-        enqueueSnackbar("No role found", { variant: "warning" });
-      }
+    AuthService.axiosRequestHelper().then((isAuthenticated) => {
+      UserService.userRoleList(true)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data === true) {
+            setRoleList(response.data);
+          } else if (response?.is_data === false) {
+            setRoleList([]);
+          } else {
+            enqueueSnackbar("No role found", { variant: "warning" });
+          }
+        })
+        .catch((error) => {});
+
+      UserService.organizationsList(true)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            setOrganizationsList(response.data);
+            setIsLoading(false);
+          } else if (response?.is_data === false) {
+            setOrganizationsList([]);
+          } else {
+            enqueueSnackbar("No Organization found", { variant: "warning" });
+          }
+        })
+        .catch((error) => {});
     });
+
+    // UserService.userRoleList().then((response) => {
+    //   if (response?.status_code === 200 && response?.is_data === true) {
+    //     setRoleList(response.data);
+    //   } else if (response?.is_data === false) {
+    //     setRoleList([]);
+    //   } else {
+    //     enqueueSnackbar("No role found", { variant: "warning" });
+    //   }
+    // });
 
     UserService.organizationsList()
       .then((response) => {
@@ -150,8 +178,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
           enqueueSnackbar("No Organization found", { variant: "warning" });
         }
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
     // return ()=> {
     //   localStorage.removeItem("userProfile")
     // }

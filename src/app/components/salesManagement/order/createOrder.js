@@ -383,10 +383,8 @@ const createOrder = () => {
   useEffect(() => {
     AuthService.axiosRequestHelper()
       .then((isAuthenticated)=> {
-        console.log("aaa isAuth : ", isAuthenticated);
         ProductService.productsList(true)
           .then((res) => {
-            console.log("aaa pl t");
             let data = [];
             if (res?.status_code === 200 && res.length) {
               res
@@ -404,11 +402,10 @@ const createOrder = () => {
             setProductsList(data);
           })
           .catch((e) => {
+            setProductsList([]);
           });
-        console.log("aaa end pl");
         CustomersService.customersList(true)
           .then((res) => {
-            console.log("aaa cl t");
             let data = [];
             if (res?.status_code === 200 && res.length) {
               res
@@ -434,8 +431,21 @@ const createOrder = () => {
             setCustomersList(data);
           })
           .catch((e) => {
+            setCustomersList([]);
           });
-        console.log("aaa end cl");
+        if (userInfo?.user_data?.organization?.uuid){
+          ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid, true)
+            .then((res) => {
+              if (res?.status_code === 200) {
+                setTaxes(res?.data);
+              }else{
+                setTaxes([])
+              }
+            })
+            .catch((e) => {
+              setTaxes([])
+            });
+        }
       })
     // ProductService.productsList()
     //   .then((res) => {
@@ -460,21 +470,22 @@ const createOrder = () => {
     //   });
   }, []);
 
-  useEffect(() => {
-    if (userInfo?.user_data?.organization?.uuid){
-      ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid)
-        .then((res) => {
-          if (res?.status_code === 200) {
-            setTaxes(res?.data);
-          }else{
-            setTaxes([])
-          }
-        })
-        .catch((e) => {
-          setTaxes([])
-        });
-    }
-  }, []);
+//EXperiment
+  // useEffect(() => {
+  //   if (userInfo?.user_data?.organization?.uuid){
+  //     ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid)
+  //       .then((res) => {
+  //         if (res?.status_code === 200) {
+  //           setTaxes(res?.data);
+  //         }else{
+  //           setTaxes([])
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         setTaxes([])
+  //       });
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   console.log("addOrderIndex : ", addOrderIndex);

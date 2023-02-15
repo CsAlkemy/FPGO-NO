@@ -32,6 +32,8 @@ import {
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import { useCreateProductMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
+import AuthService from '../../../data-access/services/authService';
+import CustomersService from '../../../data-access/services/customersService/CustomersService';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -84,35 +86,51 @@ const createProducts = (onSubmit = () => {}) => {
   // form end
 
   useEffect(() => {
-    CategoryService.categoryList()
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200) {
-          res.map((row) => {
-            return data.push({ uuid: row.uuid, name: row.name });
+    AuthService.axiosRequestHelper()
+      .then((isAuthenticated)=> {
+        CategoryService.categoryList(true)
+          .then((res) => {
+            let data = [];
+            if (res?.status_code === 200) {
+              res.map((row) => {
+                return data.push({ uuid: row.uuid, name: row.name });
+              });
+            }
+            setCategoriesList(data);
+          })
+          .catch((e) => {
           });
+        if (info?.user_data?.organization?.uuid) {
+          ClientService.vateRatesList(info?.user_data?.organization?.uuid, true)
+            .then((res) => {
+              if (res?.status_code === 200) {
+                setTaxes(res?.data);
+              } else {
+                setTaxes([]);
+              }
+            })
+            .catch((e) => {
+              setTaxes([]);
+            });
         }
-        setCategoriesList(data);
       })
-      .catch((e) => {
-      });
   }, []);
 
-  useEffect(() => {
-    if (info?.user_data?.organization?.uuid) {
-      ClientService.vateRatesList(info?.user_data?.organization?.uuid)
-        .then((res) => {
-          if (res?.status_code === 200) {
-            setTaxes(res?.data);
-          } else {
-            setTaxes([]);
-          }
-        })
-        .catch((e) => {
-          setTaxes([]);
-        });
-    }
-  }, []);
+  {/*useEffect(() => {*/}
+  //   if (info?.user_data?.organization?.uuid) {
+  //     ClientService.vateRatesList(info?.user_data?.organization?.uuid)
+  //       .then((res) => {
+  {/*        if (res?.status_code === 200) {*/}
+  //           setTaxes(res?.data);
+  //         } else {
+  //           setTaxes([]);
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         setTaxes([]);
+  //       });
+  //   }
+  // }, []);
 
   return (
     <div className="create-product-container">

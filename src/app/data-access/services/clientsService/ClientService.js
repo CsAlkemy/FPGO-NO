@@ -213,20 +213,44 @@ class ClientService {
     });
   };
 
-  vateRatesList = async (orgUuid) => {
+  vateRatesList = async (orgUuid, isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
       const URL = `${EnvVariable.BASEURL}/clients/vat/list/${orgUuid}`;
-      return axios
-        .get(URL)
-        .then((response) => {
-          if (response?.data?.status_code === 200) {
-            resolve(response.data);
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          if (e?.response?.data?.status_code === 404) resolve(e.response.data);
-          reject(e?.response?.data?.message);
+      if (isSkipIsAuthenticated) {
+        return new Promise((resolve, reject) => {
+          return axios
+            .get(URL)
+            .then((response) => {
+              if (response?.data?.status_code === 200) {
+                resolve(response.data);
+              } else reject("Something went wrong");
+            })
+            .catch((e) => {
+              if (e?.response?.data?.status_code === 404) resolve(e.response.data);
+              reject(e?.response?.data?.message);
+            });
         });
+      } else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (response?.data?.status_code === 200) {
+                    resolve(response.data);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  if (e?.response?.data?.status_code === 404) resolve(e.response.data);
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
     });
   };
 

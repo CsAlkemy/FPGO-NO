@@ -79,32 +79,34 @@ const Onboarding = () => {
   };
 
   useEffect(() => {
-    ClientService.clientDetails(params.uuid)
-      .then((res) => {
-        setInfo(res.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        navigate("/clients/approval-list");
-        enqueueSnackbar(error, { variant: "error" });
-        setIsLoading(false);
-      });
-    ClientService.organizationTypeList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          setOrgTypeList(res.data);
+    if (isLoading) {
+      ClientService.clientDetails(params.uuid)
+        .then((res) => {
+          setInfo(res.data);
           setIsLoading(false);
-        } else if (res?.is_data === false) {
-          setOrgTypeList([]);
+        })
+        .catch((error) => {
+          navigate("/clients/approval-list");
+          enqueueSnackbar(error, { variant: "error" });
           setIsLoading(false);
-        } else {
+        });
+      ClientService.organizationTypeList()
+        .then((res) => {
+          if (res?.status_code === 200 && res?.is_data) {
+            setOrgTypeList(res.data);
+            setIsLoading(false);
+          } else if (res?.is_data === false) {
+            setOrgTypeList([]);
+            setIsLoading(false);
+          } else {
+            enqueueSnackbar("No Org Type found", { variant: "warning" });
+          }
+        })
+        .catch((e) => {
           enqueueSnackbar("No Org Type found", { variant: "warning" });
-        }
-      })
-      .catch((e) => {
-        enqueueSnackbar("No Org Type found", { variant: "warning" });
-        setIsLoading(false);
-      });
+          setIsLoading(false);
+        });
+    }
   }, []);
 
   useEffect(() => {
