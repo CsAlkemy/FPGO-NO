@@ -313,12 +313,12 @@ const createOrder = () => {
   const addNewOrder = () => {
     // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
     setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
-    setValue(`order[${addOrderIndex}].productName`, "");
-    setValue(`order[${addOrderIndex}].productID`, "");
-    setValue(`order[${addOrderIndex}].quantity`, "");
-    setValue(`order[${addOrderIndex}].rate`, "");
-    setValue(`order[${addOrderIndex}].discount`, "");
-    setValue(`order[${addOrderIndex}].tax`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].quantity`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
   };
   const onDelete = (index) => {
     //resetField(``)
@@ -332,6 +332,27 @@ const createOrder = () => {
     addOrderIndex.length > 1
       ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
       : setAddOrderIndex([...addOrderIndex]);
+  };
+  const onSameRowAction = (index) => {
+    setValue(`order[${index}].productName`, "")
+    resetField(`order[${index}].productName`)
+    resetField(`order[${index}].productID`)
+    resetField(`order[${index}].quantity`)
+    resetField(`order[${index}].rate`)
+    resetField(`order[${index}].discount`)
+    resetField(`order[${index}].tax`)
+
+    setValue(`order[${index}].productName`, "");
+    setValue(`order[${index}].productID`, "");
+    setValue(`order[${index}].quantity`, "");
+    setValue(`order[${index}].rate`, "");
+    setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].tax`, "");
+    enableCurrentProductRow(index);
+    // addNewOrder()
+    // addOrderIndex.length > 1
+    //   ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
+    //   : setAddOrderIndex([...addOrderIndex]);
   };
 
   const watchOrderDate = watch(`orderDate`)
@@ -435,6 +456,12 @@ const createOrder = () => {
   //   setValue("dueDatePaymentLink", watchDueDatePaymentLink);
   //   setDatePickerOpen(false);
   // };
+
+  const pnameOnBlur = (e)=> {
+    if (!e.target.value.length) {
+      resetField(`${e.target.name}`)
+    }
+  }
 
   const prepareDate = (dayCount, dateRef) => {
     const date = new Date(
@@ -574,16 +601,20 @@ const createOrder = () => {
                                 index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                  `order[${index -
-                                  (index -
-                                    addOrderIndex[
-                                    addOrderIndex.indexOf(index - 1)
-                                    ])
-                                  }].productName`
+                                  `order[${index - (addOrderIndex[addOrderIndex.indexOf(index)] - addOrderIndex[addOrderIndex.indexOf(index - 1)] )}].productName`
                                 )
+                                // !watch(
+                                //   `order[${index -
+                                //   (index -
+                                //     addOrderIndex[
+                                //     addOrderIndex.indexOf(index - 1)
+                                //     ])
+                                //   }].productName`
+                                // )
                             }
                             freeSolo
                             autoSelect
+                            onBlur={pnameOnBlur}
                             options={productsList}
                             forcePopupIcon={<Search />}
                             getOptionLabel={(option) =>
@@ -646,7 +677,8 @@ const createOrder = () => {
                                         `order[${i}].quantity`,
                                         quantityNum + 1
                                       );
-                                      onDelete(index);
+                                      // onDelete(index);
+                                      onSameRowAction(index);
                                       enqueueSnackbar(
                                         `Same product found in Row ${i + 1
                                         } and ${index + 1}, merged together!`,
@@ -913,17 +945,13 @@ const createOrder = () => {
                                 index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                  `order[${index -
-                                  (index -
-                                    addOrderIndex[
-                                    addOrderIndex.indexOf(index - 1)
-                                    ])
-                                  }].productName`
+                                  `order[${index - (addOrderIndex[addOrderIndex.indexOf(index)] - addOrderIndex[addOrderIndex.indexOf(index - 1)] )}].productName`
                                 )
                             }
                             freeSolo
                             autoSelect
                             options={productsList}
+                            onBlur={pnameOnBlur}
                             forcePopupIcon={<Search />}
                             getOptionLabel={(option) =>
                               option?.name ? option.name : option ? option : ""
@@ -985,7 +1013,7 @@ const createOrder = () => {
                                         `order[${i}].quantity`,
                                         quantityNum + 1
                                       );
-                                      onDelete(index);
+                                      onSameRowAction(index);
                                       enqueueSnackbar(
                                         `Same product found in Row ${i + 1
                                         } and ${index + 1}, merged together!`,
@@ -993,7 +1021,7 @@ const createOrder = () => {
                                       );
                                     }
                                   }
-                                } else
+                                }else
                                   setValue(
                                     `order[${index}].productName`,
                                     data ? data : ""
