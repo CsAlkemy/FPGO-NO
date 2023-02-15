@@ -48,16 +48,18 @@ const createOrder = () => {
   };
 
   useEffect(() => {
-    OrdersService.getOrdersDetailsByUUID(queryParams.uuid)
-      .then((res) => {
-        setInfo(res?.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        if (error) navigate("/sales/orders-list");
-        enqueueSnackbar(error, { variant: "error" });
-        setIsLoading(false);
-      });
+    if (isLoading) {
+      OrdersService.getOrdersDetailsByUUID(queryParams.uuid)
+        .then((res) => {
+          setInfo(res?.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          if (error) navigate("/sales/orders-list");
+          enqueueSnackbar(error, { variant: "error" });
+          setIsLoading(false);
+        });
+    }
   }, [isLoading]);
 
   return (
