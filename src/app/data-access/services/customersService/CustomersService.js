@@ -632,10 +632,8 @@ class CustomersService {
   };
 
   customersList = async (isSkipIsAuthenticated) => {
-    console.log("aaa cs isSkipIsAuthenticated", isSkipIsAuthenticated);
     return new Promise((resolve, reject) => {
       if (isSkipIsAuthenticated){
-        console.log("aaa cs isSkipIsAuthenticated block");
         const URL = `${EnvVariable.BASEURL}/customers/list`;
         return axios
           .get(URL)
