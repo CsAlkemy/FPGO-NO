@@ -95,17 +95,17 @@ const TimelineLog = () => {
                   log.slug === "payment-link-opened" ||
                   log.slug === "refund-sent" ||
                   log.slug === "payment-successful" ? (
-                    <TimelineDot className="bg-orderLog-success">
-                      <CheckIcon className="icon-size-14 text-white" />
+                    <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
+                      <CheckIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   ) : log.slug === "payment-failed" ||
                     log.slug === "order-converted-to-invoice" ? (
-                    <TimelineDot color="warning">
-                      <PriorityHighIcon className="icon-size-14 text-white" />
+                    <TimelineDot className='border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]'>
+                      <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   ) : (
-                    <TimelineDot className="bg-orderLog-warning">
-                      <PriorityHighIcon className="icon-size-14 text-white" />
+                    <TimelineDot className="bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0">
+                      <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   )}
                   {index + 1 < logs.length && <TimelineConnector />}
