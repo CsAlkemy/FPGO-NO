@@ -23,10 +23,14 @@ import CategoryService from "../../../data-access/services/categoryService/Categ
 import ProductService from "../../../data-access/services/productsService/ProductService";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import ConfirmModal from "../../common/confirmmationDialog";
-import { defaultValue, defaultValueCreateProduct, validateSchema } from '../utils/helper';
+import {
+  defaultValue,
+  defaultValueCreateProduct,
+  validateSchema,
+} from "../utils/helper";
 import { useUpdateCategoryMutation } from "app/store/api/apiSlice";
-import AuthService from '../../../data-access/services/authService';
-import ClientService from '../../../data-access/services/clientsService/ClientService';
+import AuthService from "../../../data-access/services/authService";
+import ClientService from "../../../data-access/services/clientsService/ClientService";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -98,57 +102,55 @@ const createCategory = (onSubmit = () => {}) => {
   };
 
   useEffect(() => {
-    AuthService.axiosRequestHelper()
-      .then((isAuthenticated)=> {
-        ProductService.productsList(true)
-          .then((res) => {
-            let data = [];
-            if (res?.status_code === 200) {
-              res
-                .filter((r) => r.status === "Active")
-                .map((row) => {
-                  return data.push({
-                    uuid: row.uuid,
-                    name: row.name,
-                    id: row.id,
-                    status: row.status,
-                  });
-                });
-            }
-            setProductsList(data);
-            // setIsLoading(false);
-          })
-          .catch((e) => {
-          });
-        CategoryService.categoryDetailsByUUID(params.id, true)
-          .then((response) => {
-            if (response.data.productList) {
-              let pL = [];
-              response.data.productList.map((row) => {
-                return pL.push({
+    AuthService.axiosRequestHelper().then((isAuthenticated) => {
+      ProductService.productsList(true)
+        .then((res) => {
+          let data = [];
+          if (res?.status_code === 200) {
+            res
+              .filter((r) => r.status === "Active")
+              .map((row) => {
+                return data.push({
                   uuid: row.uuid,
                   name: row.name,
-                  id: row.productId,
+                  id: row.id,
+                  status: row.status,
                 });
               });
-              setDefaultProducts(pL);
-            } else setDefaultProducts([]);
-            setInfo(response?.data);
+          }
+          setProductsList(data);
+          // setIsLoading(false);
+        })
+        .catch((e) => {});
+      CategoryService.categoryDetailsByUUID(params.id, true)
+        .then((response) => {
+          if (response.data.productList) {
+            let pL = [];
+            response.data.productList.map((row) => {
+              return pL.push({
+                uuid: row.uuid,
+                name: row.name,
+                id: row.productId,
+              });
+            });
+            setDefaultProducts(pL);
+          } else setDefaultProducts([]);
+          setInfo(response?.data);
 
-            defaultValue.name = info?.name ? info?.name : "";
-            defaultValue.description = info?.description ? info?.description : "";
-            defaultValue.assignToProducts = info?.productList
-              ? info?.productList
-              : "";
-            reset({ ...defaultValue });
-            setIsLoading(false);
-          })
-          .catch((error) => {
-            navigate("/categories/categories-list")
-            enqueueSnackbar(error, { variant: "error" });
-            setIsLoading(false);
-          });
-      })
+          defaultValue.name = info?.name ? info?.name : "";
+          defaultValue.description = info?.description ? info?.description : "";
+          defaultValue.assignToProducts = info?.productList
+            ? info?.productList
+            : "";
+          reset({ ...defaultValue });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          navigate("/categories/categories-list");
+          enqueueSnackbar(error, { variant: "error" });
+          setIsLoading(false);
+        });
+    });
   }, [isLoading]);
 
   return (

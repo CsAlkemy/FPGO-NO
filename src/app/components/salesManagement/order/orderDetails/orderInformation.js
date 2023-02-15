@@ -41,8 +41,8 @@ import { ClickAwayListener } from "@mui/base";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
-import AuthService from '../../../../data-access/services/authService';
-import ClientService from '../../../../data-access/services/clientsService/ClientService';
+import AuthService from "../../../../data-access/services/authService";
+import ClientService from "../../../../data-access/services/clientsService/ClientService";
 
 const OrderInformation = ({ info }) => {
   const { t } = useTranslation();
@@ -234,48 +234,49 @@ const OrderInformation = ({ info }) => {
 
     reset({ ...CreateOrderDefaultValue });
 
-    AuthService.axiosRequestHelper()
-      .then((isAuthenticated)=> {
-        ProductService.productsList(true)
-          .then((res) => {
-            let data = [];
-            if (res?.status_code === 200 && res.length) {
-              res.map((row) => {
+    AuthService.axiosRequestHelper().then((isAuthenticated) => {
+      ProductService.productsList(true)
+        .then((res) => {
+          let data = [];
+          if (res?.status_code === 200 && res.length) {
+            res.map((row) => {
+              return data.push({
+                uuid: row.uuid,
+                name: row.name,
+                id: row.id,
+                price: row.pricePerUnit,
+                tax: row.taxRate,
+              });
+            });
+          }
+          setProductsList(data);
+        })
+        .catch((e) => setProductsList([]));
+      CustomersService.customersList(true)
+        .then((res) => {
+          let data = [];
+          if (res?.status_code === 200 && res.length) {
+            res
+              .filter((item) => {
+                return item.status === "Active";
+              })
+              .map((row) => {
                 return data.push({
                   uuid: row.uuid,
-                  name: row.name,
-                  id: row.id,
-                  price: row.pricePerUnit,
-                  tax: row.taxRate,
+                  name: row?.name ? row?.name : null,
+                  orgOrPNumber: row?.orgIdOrPNumber
+                    ? row?.orgIdOrPNumber
+                    : null,
+                  email: row?.email ? row?.email : null,
+                  phone: row?.phone ? row?.phone : null,
+                  type: row.type,
                 });
               });
-            }
-            setProductsList(data);
-          })
-          .catch((e) => setProductsList([]));
-        CustomersService.customersList(true)
-          .then((res) => {
-            let data = [];
-            if (res?.status_code === 200 && res.length) {
-              res
-                .filter((item) => {
-                  return item.status === "Active";
-                })
-                .map((row) => {
-                  return data.push({
-                    uuid: row.uuid,
-                    name: row?.name ? row?.name : null,
-                    orgOrPNumber: row?.orgIdOrPNumber ? row?.orgIdOrPNumber : null,
-                    email: row?.email ? row?.email : null,
-                    phone: row?.phone ? row?.phone : null,
-                    type: row.type,
-                  });
-                });
-            }
-            setCustomersList(data);
-          })
-          .catch((e) => setCustomersList([]))
-      })
+          }
+          setCustomersList(data);
+        })
+        .catch((e) => setCustomersList([]));
+    });
   }, []);
 
   const handleDueDatePickerClose = () => {
