@@ -28,6 +28,8 @@ export default function Dashboard() {
     currentDate.getMonth() + 1
   }, ${currentDate.getDate()}, ${currentDate.getFullYear()}, ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
   const startDate = new Date(prepareStartDate).getTime() / 1000;
+  const [fromDate, setFromDate] = useState(new Date(defaultStartDate).getTime()/1000)
+  const [toDate, setToDate] = useState(new Date(defaultEndDate).getTime()/1000)
   // const startDate = new Date(1667278800).getTime()
 
   const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
@@ -81,6 +83,16 @@ export default function Dashboard() {
       });
   };
 
+  const disableBeforeOfStartDate = (date)=> {
+    const paramDate = date.getTime()/1000
+    return fromDate > paramDate;
+  }
+
+  const disableAfterOfEndDate = (date)=> {
+    const paramDate = date.getTime()/1000
+    return toDate < paramDate;
+  }
+
   return (
     <div>
       <Backdrop
@@ -108,7 +120,12 @@ export default function Dashboard() {
                       // label='Check In'
                       inputFormat="dd.MM.yyyy"
                       value={value || new Date(defaultStartDate)}
-                      onChange={onChange}
+                      onChange={(date)=> {
+                        setFromDate(date.getTime()/1000)
+                        return onChange(date);
+                      }}
+                      disableFuture
+                      shouldDisableDate={disableAfterOfEndDate}
                       renderInput={(params) => (
                         <TextField {...params} onBlur={onBlur} type="date" />
                       )}
@@ -124,8 +141,13 @@ export default function Dashboard() {
                       // label='Check Out'
                       inputFormat="dd.MM.yyyy"
                       value={value || new Date(defaultEndDate)}
-                      onChange={onChange}
+                      // onChange={onChange}
+                      onChange={(date)=> {
+                        setToDate(date.getTime()/1000)
+                        return onChange(date);
+                      }}
                       disableFuture
+                      shouldDisableDate={disableBeforeOfStartDate}
                       renderInput={(params) => (
                         <TextField {...params} onBlur={onBlur} type="date" />
                       )}
