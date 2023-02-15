@@ -100,11 +100,11 @@ const TimelineLog = () => {
                     </TimelineDot>
                   ) : log.slug === "payment-failed" ||
                     log.slug === "order-converted-to-invoice" ? (
-                    <TimelineDot className='border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]'>
+                    <TimelineDot className=' bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0'>
                       <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   ) : (
-                    <TimelineDot className="bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0 ">
+                    <TimelineDot className="border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]">
                       <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
                   )}
