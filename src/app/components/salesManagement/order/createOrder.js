@@ -68,6 +68,8 @@ const createOrder = () => {
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [customerSearchBoxLength,setCustomerSearchBoxLength] = useState(0)
+  const [customerSearchBy,setCustomerSearchBy] = useState(undefined)
   const [createOrder, response] = useCreateOrderMutation();
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
@@ -202,6 +204,14 @@ const createOrder = () => {
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
+  const searchCustomerOnFocus = (e)=> {
+    const searchByPhone = customersList.filter((customer)=> customer.phone.startsWith(e.target.value)) || [];
+    const searchByName = customersList.filter((customer)=> customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())) || [];
+    setCustomerSearchBy(searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined)
+    setCustomerSearchBoxLength(e.target.value.length)
+  }
+
+
   const onSubmit = (values) => {
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
@@ -314,12 +324,12 @@ const createOrder = () => {
   const addNewOrder = () => {
     // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
     setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
-    setValue(`order[${addOrderIndex}].productName`, "");
-    setValue(`order[${addOrderIndex}].productID`, "");
-    setValue(`order[${addOrderIndex}].quantity`, "");
-    setValue(`order[${addOrderIndex}].rate`, "");
-    setValue(`order[${addOrderIndex}].discount`, "");
-    setValue(`order[${addOrderIndex}].tax`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].quantity`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
   };
   const onDelete = (index) => {
     //resetField(``)
@@ -333,6 +343,27 @@ const createOrder = () => {
     addOrderIndex.length > 1
       ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
       : setAddOrderIndex([...addOrderIndex]);
+  };
+  const onSameRowAction = (index) => {
+    setValue(`order[${index}].productName`, "")
+    resetField(`order[${index}].productName`)
+    resetField(`order[${index}].productID`)
+    resetField(`order[${index}].quantity`)
+    resetField(`order[${index}].rate`)
+    resetField(`order[${index}].discount`)
+    resetField(`order[${index}].tax`)
+
+    setValue(`order[${index}].productName`, "");
+    setValue(`order[${index}].productID`, "");
+    setValue(`order[${index}].quantity`, "");
+    setValue(`order[${index}].rate`, "");
+    setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].tax`, "");
+    enableCurrentProductRow(index);
+    // addNewOrder()
+    // addOrderIndex.length > 1
+    //   ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
+    //   : setAddOrderIndex([...addOrderIndex]);
   };
 
   const watchOrderDate = watch(`orderDate`)
@@ -497,6 +528,12 @@ const createOrder = () => {
   //   setDatePickerOpen(false);
   // };
 
+  const pnameOnBlur = (e)=> {
+    if (!e.target.value.length) {
+      resetField(`${e.target.name}`)
+    }
+  }
+
   const prepareDate = (dayCount, dateRef) => {
     const date = new Date(
       dateRef === 1 ? (watchOrderDate && watchOrderDate.getDate() >= new Date().getDate() ? watchOrderDate : new Date()) : watchDueDatePaymentLink
@@ -635,16 +672,20 @@ const createOrder = () => {
                                 index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                  `order[${index -
-                                  (index -
-                                    addOrderIndex[
-                                    addOrderIndex.indexOf(index - 1)
-                                    ])
-                                  }].productName`
+                                  `order[${index - (addOrderIndex[addOrderIndex.indexOf(index)] - addOrderIndex[addOrderIndex.indexOf(index - 1)] )}].productName`
                                 )
+                                // !watch(
+                                //   `order[${index -
+                                //   (index -
+                                //     addOrderIndex[
+                                //     addOrderIndex.indexOf(index - 1)
+                                //     ])
+                                //   }].productName`
+                                // )
                             }
                             freeSolo
                             autoSelect
+                            onBlur={pnameOnBlur}
                             options={productsList}
                             forcePopupIcon={<Search />}
                             getOptionLabel={(option) =>
@@ -707,7 +748,8 @@ const createOrder = () => {
                                         `order[${i}].quantity`,
                                         quantityNum + 1
                                       );
-                                      onDelete(index);
+                                      // onDelete(index);
+                                      onSameRowAction(index);
                                       enqueueSnackbar(
                                         `Same product found in Row ${i + 1
                                         } and ${index + 1}, merged together!`,
@@ -974,17 +1016,13 @@ const createOrder = () => {
                                 index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                  `order[${index -
-                                  (index -
-                                    addOrderIndex[
-                                    addOrderIndex.indexOf(index - 1)
-                                    ])
-                                  }].productName`
+                                  `order[${index - (addOrderIndex[addOrderIndex.indexOf(index)] - addOrderIndex[addOrderIndex.indexOf(index - 1)] )}].productName`
                                 )
                             }
                             freeSolo
                             autoSelect
                             options={productsList}
+                            onBlur={pnameOnBlur}
                             forcePopupIcon={<Search />}
                             getOptionLabel={(option) =>
                               option?.name ? option.name : option ? option : ""
@@ -1046,7 +1084,7 @@ const createOrder = () => {
                                         `order[${i}].quantity`,
                                         quantityNum + 1
                                       );
-                                      onDelete(index);
+                                      onSameRowAction(index);
                                       enqueueSnackbar(
                                         `Same product found in Row ${i + 1
                                         } and ${index + 1}, merged together!`,
@@ -1054,7 +1092,7 @@ const createOrder = () => {
                                       );
                                     }
                                   }
-                                } else
+                                }else
                                   setValue(
                                     `order[${index}].productName`,
                                     data ? data : ""
@@ -1854,8 +1892,9 @@ const createOrder = () => {
                                 className="custom-input-height"
                                 fullWidth
                                 onChange={(_, data) => {
-                                  console.log("DATA : ",data);
                                   if (data) {
+                                    setCustomerSearchBy(undefined);
+                                    setCustomerSearchBoxLength(0)
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
                                     setValue("customerName", data.name);
@@ -1894,18 +1933,46 @@ const createOrder = () => {
                                     {...props}
                                   >
                                     {/*{`${option.name}`}*/}
-                                    <div>
-                                      <div>{`${option.name}`}</div>
-                                      <div>{`${option.phone}`}</div>
-                                    </div>
+                                    {
+                                      customerSearchBy ?
+                                        (
+                                          <div>
+                                            {
+                                              customerSearchBy === "name" && customerSearchBoxLength > 0 ?
+                                                <div>
+                                                  <span style={{color: "#0088AE"}}>{`${option.name.slice(0,customerSearchBoxLength)}`}</span>
+                                                  <span>{`${option.name.slice(customerSearchBoxLength)}`}</span>
+                                                </div>
+                                                : <div>{`${option.name}`}</div>
+                                            }
+                                            {
+                                              customerSearchBy === "phone" && customerSearchBoxLength > 0 ?
+                                                <div>
+                                                  <span style={{color: "#0088AE"}}>{`${option.phone.slice(0,customerSearchBoxLength)}`}</span>
+                                                  <span>{`${option.phone.slice(customerSearchBoxLength)}`}</span>
+                                                </div>
+                                                : <div>{`${option.phone}`}</div>
+                                            }
+                                          </div>
+                                        )
+                                        :
+                                        (
+                                          <div>
+                                            <div>{`${option.name}`}</div>
+                                            <div>{`${option.phone}`}</div>
+                                          </div>
+                                        )
+                                    }
                                   </MenuItem>
                                 )}
                                 renderInput={(params) => (
                                   <TextField
+                                    id="searchBox"
                                     {...params}
                                     {...field}
                                     //className='custom-input-height-div'
                                     inputRef={ref}
+                                    onChange={searchCustomerOnFocus}
                                     // placeholder="Search by Name or Phone Number"
                                     placeholder= {t("label:searchByNameOrPhoneNo")}
                                   />

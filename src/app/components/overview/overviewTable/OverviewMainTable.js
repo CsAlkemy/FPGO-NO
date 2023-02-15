@@ -61,8 +61,10 @@ export default function OverviewMainTable(props) {
   //   return 2;
   // }
   // const [page, setPage] = useState(pageNumCount(props.tableName));
-  const [data, setData] = useState(props.tableData);
+  const [data, setData] = useState(props.tableName === refundRequestsOverview ?
+    props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending") : props.tableData);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [filteredData, setFilteredData] = useState([]);
   const [item, setItems] = useState(0);
   const navigate = useNavigate();
   const user = useSelector(selectUser);
@@ -77,9 +79,9 @@ export default function OverviewMainTable(props) {
   // }, [props.isLoading]);
   useEffect(() => {
     if (searchText.length !== 0) {
-      setData(FuseUtils.filterArrayByString(props.tableData, searchText));
+      setData(FuseUtils.filterArrayByString(props.tableName === refundRequestsOverview ? filteredData : props.tableData, searchText));
     } else {
-      setData(props.tableData);
+      setData(props.tableName === refundRequestsOverview && !filteredData.length ? props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending") : refundRequestsOverview && !!filteredData.length ? filteredData : props.tableData);
     }
   }, [props.isLoading, searchText]);
   const [sortOrder, setSortOrder] = useState({
@@ -358,26 +360,38 @@ export default function OverviewMainTable(props) {
   const refundRequestsListTableTabPanelsData = (event, newValue) => {
     switch (newValue) {
       case 0:
-        setData(props.tableData);
+        setData(
+          props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending")
+        );
+        setFilteredData(props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending"))
         break;
       case 1:
-        setData(
-          props.tableData.filter((row) => row.stage.toLowerCase() === "pending")
-        );
-        break;
-      case 2:
         setData(
           props.tableData.filter(
             (row) => row.stage.toLowerCase() === "accepted"
           )
         );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "accepted"
+          )
+        );
         break;
-      case 3:
+      case 2:
         setData(
           props.tableData.filter(
             (row) => row.stage.toLowerCase() === "rejected"
           )
         );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "rejected"
+          )
+        );
+        break;
+      case 3:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
     }
   };
