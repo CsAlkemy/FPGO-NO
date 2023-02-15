@@ -41,8 +41,7 @@ const index = () => {
         setUserProfile(res?.data);
         setIsLoading(false);
       })
-      .catch((e) => {
-      });
+      .catch((e) => {});
 
     if (Location.includes("/my-profile")) {
       switch (user.role[0]) {

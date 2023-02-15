@@ -74,7 +74,6 @@ const TimelineLog = () => {
         });
     }
   }, [isFetching]);
-  console.log(logs);
 
   return (
     <div className="mb-32 md:mb-0 w-full sm:w-4/5">

@@ -5,59 +5,93 @@ import AuthService from "../authService/AuthService";
 import { FP_ADMIN, GENERAL_USER } from "../../../utils/user-roles/UserRoles";
 
 class UserService {
-  userRoleList = async () => {
+  userRoleList = async (isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/users/roles/list`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  resolve(response.data);
-                } else if (
-                  response.data.status_code === 200 &&
-                  !response.data.is_data
-                ) {
-                  resolve([]);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                reject(e?.response?.data?.message);
-              });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+      const URL = `${EnvVariable.BASEURL}/users/roles/list`;
+      if (isSkipIsAuthenticated) {
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              resolve(response.data);
+            } else if (
+              response.data.status_code === 200 &&
+              !response.data.is_data
+            ) {
+              resolve([]);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject(e?.response?.data?.message);
+          });
+      } else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    resolve(response.data);
+                  } else if (
+                    response.data.status_code === 200 &&
+                    !response.data.is_data
+                  ) {
+                    resolve([]);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
     });
   };
 
-  organizationsList = async () => {
+  organizationsList = async (isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/organizations`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (response?.data?.status_code === 200) {
-                  resolve(response.data);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                reject(e?.response?.data?.message);
-              });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+      const URL = `${EnvVariable.BASEURL}/organizations`;
+      if (isSkipIsAuthenticated) {
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (response?.data?.status_code === 200) {
+              resolve(response.data);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject(e?.response?.data?.message);
+          });
+      } else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (response?.data?.status_code === 200) {
+                    resolve(response.data);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
     });
   };
 

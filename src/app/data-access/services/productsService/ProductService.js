@@ -4,60 +4,107 @@ import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 
 class ProductService {
-  productsList = async () => {
+  productsList = async (isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/products/list`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  let d;
-                  d = response.data.data.map((row) => {
-                    return {
-                      uuid: row.uuid,
-                      id: row.productId,
-                      name: row.name,
-                      type: row.type,
-                      category: row.categories
-                        ? row.categories.length === 1
-                          ? row.categories
-                          : row.categories.map((row, index) => {
-                              return row.length - 1 === index
-                                ? row
-                                : row + ", ";
-                            })
-                        : null,
-                      unit: row.unit,
-                      pricePerUnit: row.price,
-                      taxRate: row.tax,
-                      status: row.status,
-                    };
-                  });
-                  d.status_code = 200;
-                  d.is_data = true;
-                  resolve(d);
-                } else if (
-                  response.data.status_code === 200 &&
-                  !response.data.is_data
-                ) {
-                  resolve([]);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e?.response?.data?.message)
+      if (!isSkipIsAuthenticated) {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              const URL = `${EnvVariable.BASEURL}/products/list`;
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    let d;
+                    d = response.data.data.map((row) => {
+                      return {
+                        uuid: row.uuid,
+                        id: row.productId,
+                        name: row.name,
+                        type: row.type,
+                        category: row.categories
+                          ? row.categories.length === 1
+                            ? row.categories
+                            : row.categories.map((row, index) => {
+                                return row.length - 1 === index
+                                  ? row
+                                  : row + ", ";
+                              })
+                          : null,
+                        unit: row.unit,
+                        pricePerUnit: row.price,
+                        taxRate: row.tax,
+                        status: row.status,
+                      };
+                    });
+                    d.status_code = 200;
+                    d.is_data = true;
+                    resolve(d);
+                  } else if (
+                    response.data.status_code === 200 &&
+                    !response.data.is_data
+                  ) {
+                    resolve([]);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  if (e?.response?.data?.status_code === 404)
+                    resolve(e.response.data);
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      } else {
+        const URL = `${EnvVariable.BASEURL}/products/list`;
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              let d;
+              d = response.data.data.map((row) => {
+                return {
+                  uuid: row.uuid,
+                  id: row.productId,
+                  name: row.name,
+                  type: row.type,
+                  category: row.categories
+                    ? row.categories.length === 1
+                      ? row.categories
+                      : row.categories.map((row, index) => {
+                          return row.length - 1 === index ? row : row + ", ";
+                        })
+                    : null,
+                  unit: row.unit,
+                  pricePerUnit: row.price,
+                  taxRate: row.tax,
+                  status: row.status,
+                };
               });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+              d.status_code = 200;
+              d.is_data = true;
+              resolve(d);
+            } else if (
+              response.data.status_code === 200 &&
+              !response.data.is_data
+            ) {
+              resolve([]);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            if (e?.response?.data?.status_code === 404)
+              resolve(e.response.data);
+            reject(e?.response?.data?.message);
+          });
+      }
     });
   };
 
@@ -73,10 +120,8 @@ class ProductService {
           ? row.categories.length === 1
             ? row.categories
             : row.categories.map((row, index) => {
-              return row.length - 1 === index
-                ? row
-                : row + ", ";
-            })
+                return row.length - 1 === index ? row : row + ", ";
+              })
           : null,
         unit: row.unit,
         pricePerUnit: row.price,
@@ -87,16 +132,16 @@ class ProductService {
     d.status_code = 200;
     d.is_data = true;
     return d;
-  }
+  };
 
-  prepareCreateProductPayload = (params)=> {
+  prepareCreateProductPayload = (params) => {
     const categoryUuids = params.assignedCategories
       ? params.assignedCategories.map((product) => {
-        return `${product.uuid}`;
-      })
+          return `${product.uuid}`;
+        })
       : null;
 
-    return  {
+    return {
       // type: type === 1 ? "Good" : "Service",
       type: "Good",
       productId: params.productID,
@@ -109,7 +154,7 @@ class ProductService {
       taxRate: params.tax,
       cost: params.cost ? params.cost : null,
     };
-  }
+  };
 
   createProduct = async (params) => {
     return new Promise((resolve, reject) => {
@@ -132,7 +177,9 @@ class ProductService {
               description: params.description,
               unit: params.unit,
               price: params.price,
-              manufacturerId: params?.manufacturer ? params?.manufacturer : null,
+              manufacturerId: params?.manufacturer
+                ? params?.manufacturer
+                : null,
               categoryUuids,
               taxRate: params.tax,
               cost: params.cost ? params.cost : null,
@@ -145,7 +192,7 @@ class ProductService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e?.response?.data?.message)
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -155,38 +202,54 @@ class ProductService {
     });
   };
 
-  productDetailsByUUID = async (uuid) => {
+  productDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/products/details/${uuid}`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  resolve(response.data);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                reject(e?.response?.data?.message)
-              });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+      const URL = `${EnvVariable.BASEURL}/products/details/${uuid}`;
+      if (isSkipIsAuthenticated) {
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              resolve(response.data);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject(e?.response?.data?.message);
+          });
+      } else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    resolve(response.data);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
     });
   };
 
-  prepareUpdateProductPayload = (uuid, type, params)=> {
+  prepareUpdateProductPayload = (uuid, type, params) => {
     const categoryUuids = params.assignedCategories
       ? params.assignedCategories.map((product) => {
-        return `${product.uuid}`;
-      })
+          return `${product.uuid}`;
+        })
       : null;
 
     return {
@@ -202,7 +265,7 @@ class ProductService {
       taxRate: params.tax,
       cost: params.cost ? params.cost : null,
     };
-  }
+  };
 
   updateProductByUUID = async (uuid, type, params) => {
     return new Promise((resolve, reject) => {
@@ -237,7 +300,7 @@ class ProductService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e?.response?.data?.message)
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
@@ -261,7 +324,7 @@ class ProductService {
                 } else reject("Something went wrong");
               })
               .catch((e) => {
-                reject(e?.response?.data?.message)
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong");
         })
