@@ -236,7 +236,7 @@ const OrderModal = (props) => {
                                     {...field}
                                     multiline
                                     rows={5}
-                                    label={t("label:cancellationNote")}
+                                    label={t(headerTitle === "Reject Refund Request"? "label:rejectionNote": "label:cancellationNote")}
                                     type="text"
                                     autoComplete="off"
                                     variant="outlined"

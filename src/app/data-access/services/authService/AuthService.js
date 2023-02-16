@@ -452,7 +452,7 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   isRefreshTokenValid = () => {
-    const currentTime = Date.now() / 1000;
+    const currentTime = (Date.now() / 1000) - 180;
     const refreshTokenExpiresAt = this.getRefreshTokenExpiresAt();
     return refreshTokenExpiresAt >= currentTime;
   };

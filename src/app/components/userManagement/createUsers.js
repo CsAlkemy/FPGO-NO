@@ -34,7 +34,11 @@ import {
   validateSchemaGeneralAdmin,
 } from "./utils/helper";
 import { useCreateUserMutation } from "app/store/api/apiSlice";
-import UtilsServices from '../../data-access/utils/UtilsServices';
+import UtilsServices from "../../data-access/utils/UtilsServices";
+import AuthService from "../../data-access/services/authService";
+import ProductService from "../../data-access/services/productsService/ProductService";
+import CategoryService from "../../data-access/services/categoryService/CategoryService";
+import { defaultValue } from "../products/utils/helper";
 
 export default function CreateUsers() {
   const { t } = useTranslation();
@@ -85,30 +89,41 @@ export default function CreateUsers() {
       : "";
     reset({ ...defaultValues });
 
-    UserService.userRoleList()
-      .then((response) => {
-        if (response?.status_code === 200 && response?.is_data) {
-          user.role[0] === BUSINESS_ADMIN
-            ? setRoleList(response.data.filter((row) => row.slug !== FP_ADMIN))
-            : setRoleList(response.data);
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
-      });
+    AuthService.axiosRequestHelper().then((isAuthenticated) => {
+      UserService.userRoleList(true)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            user.role[0] === BUSINESS_ADMIN
+              ? setRoleList(
+                  response.data.filter((row) => row.slug !== FP_ADMIN)
+                )
+              : setRoleList(response.data);
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {});
+      UserService.organizationsList(true)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            setOrganizationsList(response.data);
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {});
+    });
   }, [isLoading]);
 
-  useEffect(() => {
-    UserService.organizationsList()
-      .then((response) => {
-        if (response?.status_code === 200 && response?.is_data) {
-          setOrganizationsList(response.data);
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
-      });
-  }, [isLoading]);
+  // useEffect(() => {
+  //   UserService.organizationsList()
+  //     .then((response) => {
+  //       if (response?.status_code === 200 && response?.is_data) {
+  //         setOrganizationsList(response.data);
+  //         setIsLoading(false);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //     });
+  // }, [isLoading]);
 
   function onSubmit(values) {
     setLoading(true);

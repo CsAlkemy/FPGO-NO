@@ -35,6 +35,7 @@ import {
   useUpdateProductStatusMutation,
 } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
+import AuthService from '../../../data-access/services/authService';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -91,72 +92,87 @@ const createProducts = () => {
   // form end
 
   useEffect(() => {
-    CategoryService.categoryList()
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200) {
-          res.map((row) => {
-            return data.push({ uuid: row.uuid, name: row.name });
+    AuthService.axiosRequestHelper()
+      .then((isAuthenticated)=> {
+        CategoryService.categoryList(true)
+          .then((res) => {
+            let data = [];
+            if (res?.status_code === 200) {
+              res.map((row) => {
+                return data.push({ uuid: row.uuid, name: row.name });
+              });
+            }
+            setCategoriesList(data);
+          })
+          .catch((e) => {
           });
+        ProductService.productDetailsByUUID(queryParams.id, true)
+          .then((response) => {
+            if (response.data.categories) {
+              let pL = [];
+              response.data.categories.map((row) => {
+                return pL.push({ uuid: row.uuid, name: row.name });
+              });
+              setDefaultCategories(pL);
+            } else setDefaultCategories([]);
+            setInfo(response?.data);
+
+            defaultValueCreateProduct.productID = info?.productId
+              ? info?.productId
+              : "";
+            defaultValueCreateProduct.productName = info?.name ? info?.name : "";
+            defaultValueCreateProduct.price = info?.price ? info?.price : "";
+            defaultValueCreateProduct.unit = info?.unit ? info?.unit : "";
+            defaultValueCreateProduct.manufacturer = info?.manufacturerId
+              ? info?.manufacturerId
+              : "";
+            defaultValueCreateProduct.assignedCategories = info?.categories
+              ? info?.categories
+              : "";
+            defaultValueCreateProduct.description = info?.description
+              ? info?.description
+              : "";
+            defaultValueCreateProduct.tax = info?.taxRate ? info?.taxRate : "";
+            defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
+            reset({ ...defaultValueCreateProduct });
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            navigate("/products/products-list")
+            enqueueSnackbar(error, { variant: "error" });
+            setIsLoading(false);
+          });
+        if (info?.user_data?.organization?.uuid) {
+          ClientService.vateRatesList(info?.user_data?.organization?.uuid, true)
+            .then((res) => {
+              if (res?.status_code === 200) {
+                setTaxes(res?.data);
+              } else {
+                setTaxes([]);
+              }
+            })
+            .catch((e) => {
+              setTaxes([]);
+            });
         }
-        setCategoriesList(data);
       })
-      .catch((e) => {
-      });
-
-    ProductService.productDetailsByUUID(queryParams.id)
-      .then((response) => {
-        if (response.data.categories) {
-          let pL = [];
-          response.data.categories.map((row) => {
-            return pL.push({ uuid: row.uuid, name: row.name });
-          });
-          setDefaultCategories(pL);
-        } else setDefaultCategories([]);
-        setInfo(response?.data);
-
-        defaultValueCreateProduct.productID = info?.productId
-          ? info?.productId
-          : "";
-        defaultValueCreateProduct.productName = info?.name ? info?.name : "";
-        defaultValueCreateProduct.price = info?.price ? info?.price : "";
-        defaultValueCreateProduct.unit = info?.unit ? info?.unit : "";
-        defaultValueCreateProduct.manufacturer = info?.manufacturerId
-          ? info?.manufacturerId
-          : "";
-        defaultValueCreateProduct.assignedCategories = info?.categories
-          ? info?.categories
-          : "";
-        defaultValueCreateProduct.description = info?.description
-          ? info?.description
-          : "";
-        defaultValueCreateProduct.tax = info?.taxRate ? info?.taxRate : "";
-        defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
-        reset({ ...defaultValueCreateProduct });
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        navigate("/products/products-list")
-        enqueueSnackbar(error, { variant: "error" });
-        setIsLoading(false);
-      });
   }, [isLoading]);
 
-  useEffect(() => {
-    if (userInfo?.user_data?.organization?.uuid) {
-      ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid)
-        .then((res) => {
-          if (res?.status_code === 200) {
-            setTaxes(res?.data);
-          } else {
-            setTaxes([]);
-          }
-        })
-        .catch((e) => {
-          setTaxes([]);
-        });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userInfo?.user_data?.organization?.uuid) {
+  //     ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid)
+  //       .then((res) => {
+  //         if (res?.status_code === 200) {
+  //           setTaxes(res?.data);
+  //         } else {
+  //           setTaxes([]);
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         setTaxes([]);
+  //       });
+  //   }
+  // }, []);
 
   // inactiveProductByUUID
   const changeProductStatus = async () => {

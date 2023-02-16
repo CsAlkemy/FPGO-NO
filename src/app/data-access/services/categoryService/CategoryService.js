@@ -19,48 +19,81 @@ class CategoryService {
     return d;
   }
 
-  categoryList = async () => {
+  categoryList = async (isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/categories/list`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  let d;
-                  d = response.data.data.map((row) => {
-                    return {
-                      uuid: row.uuid,
-                      name: row.name,
-                      description: row.description,
-                      noOfProducts: row.productCount,
-                    };
-                  });
-                  d.status_code = 200;
-                  d.is_data = true;
-                  resolve(d);
-                } else if (
-                  response.data.status_code === 200 &&
-                  !response.data.is_data
-                ) {
-                  resolve([]);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e?.response?.data?.message)
+      const URL = `${EnvVariable.BASEURL}/categories/list`;
+      if (isSkipIsAuthenticated) {
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              let d;
+              d = response.data.data.map((row) => {
+                return {
+                  uuid: row.uuid,
+                  name: row.name,
+                  description: row.description,
+                  noOfProducts: row.productCount,
+                };
               });
-          }
-          reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+              d.status_code = 200;
+              d.is_data = true;
+              resolve(d);
+            } else if (
+              response.data.status_code === 200 &&
+              !response.data.is_data
+            ) {
+              resolve([]);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            if (e?.response?.data?.status_code === 404) resolve(e.response.data)
+            reject(e?.response?.data?.message)
+          });
+      } else {
+        AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    let d;
+                    d = response.data.data.map((row) => {
+                      return {
+                        uuid: row.uuid,
+                        name: row.name,
+                        description: row.description,
+                        noOfProducts: row.productCount,
+                      };
+                    });
+                    d.status_code = 200;
+                    d.is_data = true;
+                    resolve(d);
+                  } else if (
+                    response.data.status_code === 200 &&
+                    !response.data.is_data
+                  ) {
+                    resolve([]);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  if (e?.response?.data?.status_code === 404) resolve(e.response.data)
+                  reject(e?.response?.data?.message)
+                });
+            }
+            reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
     });
   };
 
@@ -112,30 +145,46 @@ class CategoryService {
     });
   };
 
-  categoryDetailsByUUID = async (uuid) => {
+  categoryDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/categories/details/${uuid}`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  resolve(response.data);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                reject(e?.response?.data?.message)
-              });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+      const URL = `${EnvVariable.BASEURL}/categories/details/${uuid}`;
+      if (isSkipIsAuthenticated) {
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              resolve(response.data);
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject(e?.response?.data?.message)
+          });
+      } else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    resolve(response.data);
+                  } else reject("Something went wrong");
+                })
+                .catch((e) => {
+                  reject(e?.response?.data?.message)
+                });
+            } else reject("Something went wrong");
+          })
+          .catch((e) => {
+            reject("Something went wrong");
+          });
+      }
     });
   };
 

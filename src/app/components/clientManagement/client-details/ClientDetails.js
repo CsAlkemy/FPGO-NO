@@ -101,32 +101,34 @@ const ClientDetails = () => {
   };
 
   useEffect(() => {
-    ClientService.clientDetails(params.uuid)
-      .then((res) => {
-        setInfo(res.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
-        setIsLoading(false);
-      });
+    if (isLoading) {
+      ClientService.clientDetails(params.uuid)
+        .then((res) => {
+          setInfo(res.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          enqueueSnackbar(error, { variant: "error" });
+          setIsLoading(false);
+        });
 
-    ClientService.organizationTypeList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          setOrgTypeList(res.data);
-          setIsLoading(false);
-        } else if (res?.is_data === false) {
-          setOrgTypeList([]);
-          setIsLoading(false);
-        } else {
-          enqueueSnackbar("No Org Type found", { variant: "warning" });
-        }
-      })
-      .catch((e) => {
-        navigate("/clients/clients-list")
-        enqueueSnackbar(e, {variant:"error"})
-      });
+      ClientService.organizationTypeList()
+        .then((res) => {
+          if (res?.status_code === 200 && res?.is_data) {
+            setOrgTypeList(res.data);
+            setIsLoading(false);
+          } else if (res?.is_data === false) {
+            setOrgTypeList([]);
+            setIsLoading(false);
+          } else {
+            enqueueSnackbar("No Org Type found", { variant: "warning" });
+          }
+        })
+        .catch((e) => {
+          navigate("/clients/clients-list")
+          enqueueSnackbar(e, {variant:"error"})
+        });
+    }
   }, [isLoading]);
 
   useEffect(() => {
