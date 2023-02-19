@@ -397,6 +397,7 @@ export default function OverviewMainTable(props) {
   };
 
   const handleTabChange = (event, newValue) => {
+    setPage(0);
     switch (props.tableName) {
       // case "test" for DEV test Purpose
       case "test":
