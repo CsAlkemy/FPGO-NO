@@ -50,7 +50,9 @@ const OrderModal = (props) => {
   const [checkEmail, setCheckEmail] = React.useState(false);
   const [checkPhone, setCheckPhone] = React.useState(false);
   const [flag, setFlag] = React.useState(false);
+  const [isDisableRefundRequest, setIsDisableRefundRequest] = React.useState(false);
   const [flagMessage, setFlagMessage] = useState("");
+  const [flagMessage2, setFlagMessage2] = useState("Order refunds greater than available amount of NOK ");
   const [refundOrder] = useRefundOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
   const [resendOrder] = useResendOrderMutation();
@@ -66,6 +68,7 @@ const OrderModal = (props) => {
     setOpen(false);
     if (flag) setFlag(false);
     setFlagMessage("");
+    setIsDisableRefundRequest(false)
   };
   const { control, formState, handleSubmit, reset, setValue, watch, getValues } = useForm({
     mode: "onChange",
@@ -153,6 +156,9 @@ const OrderModal = (props) => {
               : "";
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
+              if (response?.error?.data?.message.startsWith(flagMessage2)) {
+                setIsDisableRefundRequest(true)
+              }
               setFlagMessage(response?.error?.data?.message);
               setFlag(true);
               // enqueueSnackbar(response?.error?.data?.message, {
@@ -393,9 +399,9 @@ const OrderModal = (props) => {
                     type="submit"
                     //onClick={()=> {}}
                     disabled={
-                      headerTitle === "Resend Order" &&
+                      isDisableRefundRequest || (headerTitle === "Resend Order" &&
                       checkEmail === false &&
-                      checkPhone === false
+                      checkPhone === false)
                     }
                   >
                     {headerTitle === "Resend Order"
