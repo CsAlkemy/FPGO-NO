@@ -605,7 +605,6 @@ const createOrder = () => {
 
   const getUTCTime = (d)=> {
     let convertedDate = new Date(d)
-    console.log("VA : ",d);
     if(!!d) {
       let utc = (convertedDate.getTime() + 3600000) + (convertedDate.getTimezoneOffset() * 60000);
       let nd = new Date(utc + (3600000*(new Date().getTimezoneOffset())));
