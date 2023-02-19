@@ -36,12 +36,14 @@ const index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   React.useEffect(() => {
-    UserService.getProfileByUUID(userId)
-      .then((res) => {
-        setUserProfile(res?.data);
-        setIsLoading(false);
-      })
-      .catch((e) => {});
+    if (isLoading) {
+      UserService.getProfileByUUID(userId)
+        .then((res) => {
+          setUserProfile(res?.data);
+          setIsLoading(false);
+        })
+        .catch((e) => {});
+    }
 
     if (Location.includes("/my-profile")) {
       switch (user.role[0]) {

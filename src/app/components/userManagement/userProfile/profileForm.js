@@ -130,32 +130,34 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     // defaultValues.branch = userProfile['organizationDetails']?.name
     reset({ ...defaultValues });
 
-    AuthService.axiosRequestHelper().then((isAuthenticated) => {
-      UserService.userRoleList(true)
-        .then((response) => {
-          if (response?.status_code === 200 && response?.is_data === true) {
-            setRoleList(response.data);
-          } else if (response?.is_data === false) {
-            setRoleList([]);
-          } else {
-            enqueueSnackbar("No role found", { variant: "warning" });
-          }
-        })
-        .catch((error) => {});
+    if(isLoading) {
+      AuthService.axiosRequestHelper().then((isAuthenticated) => {
+        UserService.userRoleList(true)
+          .then((response) => {
+            if (response?.status_code === 200 && response?.is_data === true) {
+              setRoleList(response.data);
+            } else if (response?.is_data === false) {
+              setRoleList([]);
+            } else {
+              enqueueSnackbar("No role found", { variant: "warning" });
+            }
+          })
+          .catch((error) => {});
 
-      UserService.organizationsList(true)
-        .then((response) => {
-          if (response?.status_code === 200 && response?.is_data) {
-            setOrganizationsList(response.data);
-            setIsLoading(false);
-          } else if (response?.is_data === false) {
-            setOrganizationsList([]);
-          } else {
-            enqueueSnackbar("No Organization found", { variant: "warning" });
-          }
-        })
-        .catch((error) => {});
-    });
+        UserService.organizationsList(true)
+          .then((response) => {
+            if (response?.status_code === 200 && response?.is_data) {
+              setOrganizationsList(response.data);
+              setIsLoading(false);
+            } else if (response?.is_data === false) {
+              setOrganizationsList([]);
+            } else {
+              enqueueSnackbar("No Organization found", { variant: "warning" });
+            }
+          })
+          .catch((error) => {});
+      });
+    }
 
     // UserService.userRoleList().then((response) => {
     //   if (response?.status_code === 200 && response?.is_data === true) {
@@ -167,18 +169,18 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     //   }
     // });
 
-    UserService.organizationsList()
-      .then((response) => {
-        if (response?.status_code === 200 && response?.is_data) {
-          setOrganizationsList(response.data);
-          setIsLoading(false);
-        } else if (response?.is_data === false) {
-          setOrganizationsList([]);
-        } else {
-          enqueueSnackbar("No Organization found", { variant: "warning" });
-        }
-      })
-      .catch((error) => {});
+    // UserService.organizationsList()
+    //   .then((response) => {
+    //     if (response?.status_code === 200 && response?.is_data) {
+    //       setOrganizationsList(response.data);
+    //       setIsLoading(false);
+    //     } else if (response?.is_data === false) {
+    //       setOrganizationsList([]);
+    //     } else {
+    //       enqueueSnackbar("No Organization found", { variant: "warning" });
+    //     }
+    //   })
+    //   .catch((error) => {});
     // return ()=> {
     //   localStorage.removeItem("userProfile")
     // }
