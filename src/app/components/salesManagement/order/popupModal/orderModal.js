@@ -52,7 +52,6 @@ const OrderModal = (props) => {
   const [flag, setFlag] = React.useState(false);
   const [isDisableRefundRequest, setIsDisableRefundRequest] = React.useState(false);
   const [flagMessage, setFlagMessage] = useState("");
-  const [flagMessage2, setFlagMessage2] = useState("Order refunds greater than available amount of NOK ");
   const [refundOrder] = useRefundOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
   const [resendOrder] = useResendOrderMutation();
@@ -156,7 +155,7 @@ const OrderModal = (props) => {
               : "";
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
-              if (response?.error?.data?.message.startsWith(flagMessage2)) {
+              if (!response?.error?.data?.message.toLowerCase().includes("admin")) {
                 setIsDisableRefundRequest(true)
               }
               setFlagMessage(response?.error?.data?.message);
