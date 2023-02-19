@@ -1,0 +1,57 @@
+name: Frontpayment Frontend Production CI/CD
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  # test:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
+
+  #   - name: Install dependencies
+  #     run: npm ci
+
+  #   - name: Run tests
+  #     run: npm test
+
+  # static-analysis:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
+
+  #   - name: Install dependencies
+  #     run: npm ci
+
+  #   - name: Perform static analysis
+  #     run: npx eslint .
+
+  deploy:
+    # needs: [static-analysis]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: npm i
+
+    - name: Build the application
+      run: npm run build
+
+    - name: Copy file via scp
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.FP_PROD_FRONTEND_HOST }}
+        username: ${{ secrets.FP_PROD_FRONTEND_USER }}
+        port: ${{ secrets.FP_PROD_FRONTEND_PORT }}
+        key: ${{ secrets.FP_PROD_FRONTEND_KEY }}
+        source: "./build/*"
+        target: "/var/www/fpgo"
