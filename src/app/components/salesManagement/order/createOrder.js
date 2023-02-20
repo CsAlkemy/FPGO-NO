@@ -56,6 +56,9 @@ import ClientService from "../../../data-access/services/clientsService/ClientSe
 import { useCreateOrderMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from "../../../data-access/services/authService";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import {es, nn, nb} from 'date-fns/locale'
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -599,6 +602,15 @@ const createOrder = () => {
       `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     );
   };
+
+  const getUTCTime = (d)=> {
+    let convertedDate = new Date(d)
+    if(!!d) {
+      let utc = (convertedDate.getTime() + 3600000) + (convertedDate.getTimezoneOffset() * 60000);
+      let nd = new Date(utc + (3600000*(new Date().getTimezoneOffset())));
+      return nd
+    }
+  }
 
   return (
     <div className="create-product-container">
@@ -1411,67 +1423,76 @@ const createOrder = () => {
                           }
                         >
                           <div className="create-order-due-date w-full">
-                            <DesktopDateTimePicker
-                              label={t("label:dueDateForPaymentLink")}
-                              // inputFormat="dd MMM, yyyy HH:mm"
-                              inputFormat="dd.MM.yyyy HH:mm"
-                              autoFocus
-                              ampm={false}
-                              disableOpenPicker
-                              value={
-                                !value
-                                  ? new Date().setDate(new Date().getDate() + 1)
-                                  : value
-                              }
-                              required
-                              open={datePickerOpen}
-                              disabled={!watchOrderDate}
-                              minDate={
-                                watchOrderDate
-                                  ? new Date().setDate(
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={nb}>
+                              <DesktopDateTimePicker
+                                label={t("label:dueDateForPaymentLink")}
+                                // inputFormat="dd MMM, yyyy HH:mm"
+                                inputFormat="dd.MM.yyyy HH:mm"
+                                autoFocus
+                                ampm={false}
+                                disableOpenPicker
+                                value={
+                                  !value
+                                    ? new Date().setDate(new Date().getDate() + 1)
+                                    : getUTCTime(value)
+                                }
+                                required
+                                open={datePickerOpen}
+                                disabled={!watchOrderDate}
+                                minDate={
+                                  watchOrderDate
+                                    ? new Date().setDate(
                                       watchOrderDate.getDate() + 1
                                     )
-                                  : new Date().setDate(
+                                    : new Date().setDate(
                                       new Date().getDate() - 30
                                     )
-                              }
-                              disablePast={true}
-                              onChange={onChange}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  onBlur={onBlur}
-                                  type="date"
-                                  required
-                                  fullWidth
-                                  onFocus={() =>
-                                    setCustomDateDropDown(!customDateDropDown)
-                                  }
-                                  error={!!errors.dueDatePaymentLink}
-                                  helperText={
-                                    errors?.dueDatePaymentLink?.message
-                                  }
-                                  sx={{
-                                    svg: {
-                                      color: "#E7AB52",
-                                      cursor: "pointer",
-                                    },
-                                  }}
-                                  InputProps={{
-                                    endAdornment: (
-                                      <InputAdornment
-                                        position="end"
-                                        onClick={() =>
-                                          setCustomDateDropDown(true)
-                                        }
-                                      >
-                                        <EventIcon />
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                />
-                              )}
-                            />
+                                }
+                                disablePast={true}
+                                onChange={(_)=>{
+                                  console.log("On Change Fired" , _);
+                                  let utc = _.getTime() + (_.getTimezoneOffset() * 60000);
+                                  let nd = new Date(utc + (3000000*(new Date().getTimezoneOffset())));
+                                  console.log("nd :",nd);
+                                  return onChange(_)
+                                  // return onChange(nd)
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    onBlur={onBlur}
+                                    type="date"
+                                    required
+                                    fullWidth
+                                    onFocus={() =>
+                                      setCustomDateDropDown(!customDateDropDown)
+                                    }
+                                    error={!!errors.dueDatePaymentLink}
+                                    helperText={
+                                      errors?.dueDatePaymentLink?.message
+                                    }
+                                    sx={{
+                                      svg: {
+                                        color: "#E7AB52",
+                                        cursor: "pointer",
+                                      },
+                                    }}
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment
+                                          position="end"
+                                          onClick={() =>
+                                            setCustomDateDropDown(true)
+                                          }
+                                        >
+                                          <EventIcon />
+                                        </InputAdornment>
+                                      ),
+                                    }}
+                                  />
+                                )}
+                              />
+                            </LocalizationProvider>
                             {customDateDropDown && (
                               <div
                                 className="absolute bg-white max-h-min rounded-4 shadow-4 w-9/12 z-999"
