@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {yupResolver} from "@hookform/resolvers/yup";
+import React, { useEffect, useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
   Checkbox,
@@ -10,12 +10,12 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import {Controller, useForm} from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
-import {useSnackbar} from "notistack";
-import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   OrderModalDefaultValue,
   validateSchemaMoreThanFiveThousand,
@@ -23,16 +23,17 @@ import {
   validateSchemaOrderRefundModal,
   validateSchemaOrderResendModal,
 } from "../../utils/helper";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   useCancelOrderMutation,
   useRefundOrderMutation,
   useRefundRequestDecisionMutation,
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
-} from 'app/store/api/apiSlice';
-import CharCount from '../../../common/charCount'
-import {value} from "lodash/seq";
+} from "app/store/api/apiSlice";
+import CharCount from "../../../common/charCount";
+import { value } from "lodash/seq";
+import { LoadingButton } from "@mui/lab";
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -49,8 +50,10 @@ const OrderModal = (props) => {
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
   const [checkPhone, setCheckPhone] = React.useState(false);
+  const [apiLoading, setApiLoading] = React.useState(false);
   const [flag, setFlag] = React.useState(false);
-  const [isDisableRefundRequest, setIsDisableRefundRequest] = React.useState(false);
+  const [isDisableRefundRequest, setIsDisableRefundRequest] =
+    React.useState(false);
   const [flagMessage, setFlagMessage] = useState("");
   const [refundOrder] = useRefundOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
@@ -67,23 +70,31 @@ const OrderModal = (props) => {
     setOpen(false);
     if (flag) setFlag(false);
     setFlagMessage("");
-    setIsDisableRefundRequest(false)
+    setIsDisableRefundRequest(false);
   };
-  const { control, formState, handleSubmit, reset, setValue, watch, getValues } = useForm({
+  const {
+    control,
+    formState,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    getValues,
+  } = useForm({
     mode: "onChange",
     OrderModalDefaultValue,
     resolver: yupResolver(
       headerTitle === "Resend Order"
         ? validateSchemaOrderResendModal
-        : headerTitle === "Cancel Order" || headerTitle === "Reject Refund Request"
+        : headerTitle === "Cancel Order" ||
+          headerTitle === "Reject Refund Request"
         ? validateSchemaOrderCancelModal
         : flag
         ? validateSchemaMoreThanFiveThousand
         : validateSchemaOrderRefundModal
     ),
   });
-  const { isValid, dirtyFields, errors } = formState;
-
+  const { isValid, dirtyFields, errors, isSubmitting } = formState;
 
   useEffect(() => {
     OrderModalDefaultValue.phone = customerPhone ? customerPhone : "";
@@ -99,6 +110,7 @@ const OrderModal = (props) => {
       checkEmail,
     };
     if (flag) {
+      setApiLoading(true);
       const payload = {
         isPartial: refundType === "partial",
         amount: values?.refundAmount,
@@ -108,19 +120,24 @@ const OrderModal = (props) => {
       requestRefundApproval(payload).then((response) => {
         if (response?.data?.status_code === 201) {
           enqueueSnackbar(response?.data?.message, { variant: "success" });
+          // setApiLoading(false);
         } else if (response?.error) {
           enqueueSnackbar(response?.error?.data?.message, {
             variant: "error",
           });
+          // setApiLoading(false);
         }
         setOpen(false);
         setFlag(false);
+        setApiLoading(false);
       });
     } else if (headerTitle === "Resend Order") {
+      setApiLoading(true);
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
+          // setApiLoading(false);
         }
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
@@ -128,11 +145,14 @@ const OrderModal = (props) => {
         setTimeout(() => {
           setOpen(false);
         }, 1000);
+        setApiLoading(false);
       });
     } else if (headerTitle === "Cancel Order") {
+      setApiLoading(true);
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
+          // setApiLoading(false);
         }
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
@@ -140,11 +160,13 @@ const OrderModal = (props) => {
         setTimeout(() => {
           setOpen(false);
         }, 1000);
+        setApiLoading(false);
       });
     } else if (
       headerTitle === "Send Refund" ||
       headerTitle === "Refund Order"
     ) {
+      setApiLoading(true);
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
           if (response?.data?.status_code === 202) {
@@ -153,10 +175,13 @@ const OrderModal = (props) => {
             window.location.pathname.includes("/create-order/details/")
               ? navigate(-1)
               : "";
+            // setApiLoading(false);
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
-              if (!response?.error?.data?.message.toLowerCase().includes("admin")) {
-                setIsDisableRefundRequest(true)
+              if (
+                !response?.error?.data?.message.toLowerCase().includes("admin")
+              ) {
+                setIsDisableRefundRequest(true);
               }
               setFlagMessage(response?.error?.data?.message);
               setFlag(true);
@@ -164,7 +189,9 @@ const OrderModal = (props) => {
               //   variant: "error",
               // });
             } else setOpen(false);
+            // setApiLoading(false);
           }
+          setApiLoading(false);
           // setOpen(false);
         }
       );
@@ -175,6 +202,7 @@ const OrderModal = (props) => {
         isApproved: false,
         note: values?.cancellationNote,
       };
+      setApiLoading(true);
       refundRequestDecision(params).then((response) => {
         if (response?.data?.status_code === 202) {
           enqueueSnackbar(response?.data?.message, { variant: "success" });
@@ -185,6 +213,7 @@ const OrderModal = (props) => {
         }
         setOpen(false);
         setFlag(false);
+        setApiLoading(false);
       });
     }
   };
@@ -232,29 +261,35 @@ const OrderModal = (props) => {
               >
                 {(headerTitle === "Cancel Order" ||
                   headerTitle === "Reject Refund Request") && (
-                      <div>
-                        <Controller
-                            name="cancellationNote"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    multiline
-                                    rows={5}
-                                    label={t(headerTitle === "Reject Refund Request"? "label:rejectionNote": "label:cancellationNote")}
-                                    type="text"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    error={!!errors.cancellationNote}
-                                    helperText={errors?.cancellationNote?.message}
-                                    fullWidth
-                                    required
-                                />
-                            )}
+                  <div>
+                    <Controller
+                      name="cancellationNote"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          multiline
+                          rows={5}
+                          label={t(
+                            headerTitle === "Reject Refund Request"
+                              ? "label:rejectionNote"
+                              : "label:cancellationNote"
+                          )}
+                          type="text"
+                          autoComplete="off"
+                          variant="outlined"
+                          error={!!errors.cancellationNote}
+                          helperText={errors?.cancellationNote?.message}
+                          fullWidth
+                          required
                         />
-                        <CharCount current={watch('cancellationNote').length} total={200} />
-                      </div>
-
+                      )}
+                    />
+                    <CharCount
+                      current={watch("cancellationNote").length}
+                      total={200}
+                    />
+                  </div>
                 )}
                 {headerTitle === "Resend Order" && (
                   <div className="flex flex-col gap-32">
@@ -391,16 +426,20 @@ const OrderModal = (props) => {
                   >
                     {t("label:cancel")}
                   </Button>
-                  <Button
+                  <LoadingButton
                     variant="contained"
                     color="secondary"
-                    className="rounded-4 font-semibold min-w-[153px]"
+                    className="rounded-4 button2 min-w-[153px]"
+                    aria-label="Confirm"
+                    size="large"
                     type="submit"
-                    //onClick={()=> {}}
+                    loading={apiLoading}
+                    loadingPosition="center"
                     disabled={
-                      isDisableRefundRequest || (headerTitle === "Resend Order" &&
-                      checkEmail === false &&
-                      checkPhone === false)
+                      isDisableRefundRequest ||
+                      (headerTitle === "Resend Order" &&
+                        checkEmail === false &&
+                        checkPhone === false)
                     }
                   >
                     {headerTitle === "Resend Order"
@@ -408,7 +447,7 @@ const OrderModal = (props) => {
                       : headerTitle === "moreThanThreeRefundAttempts" || flag
                       ? t("label:requestRefund")
                       : t("label:confirm")}
-                  </Button>
+                  </LoadingButton>
                 </div>
               </form>
             </div>

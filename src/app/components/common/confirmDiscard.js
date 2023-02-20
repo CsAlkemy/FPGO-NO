@@ -1,23 +1,17 @@
 import React from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import OrdersService from "../../data-access/services/ordersService/OrdersService";
-import { useSnackbar } from "notistack";
-import { useRefundRequestDecisionMutation } from 'app/store/api/apiSlice';
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useSnackbar} from "notistack";
+import {useRefundRequestDecisionMutation} from "app/store/api/apiSlice";
+import {LoadingButton} from "@mui/lab";
 
 const confirmDiscard = (props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
+  const [apiLoading, setApiLoading] = React.useState(false);
 
   const {
     title,
@@ -40,6 +34,7 @@ const confirmDiscard = (props) => {
   };
 
   const handleConfirmRefundRequest = () => {
+    setApiLoading(true);
     if (modalRef === "confirmRefundRequestApprove") {
       const { orderUuid, amount } = values;
       const params = {
@@ -48,25 +43,24 @@ const confirmDiscard = (props) => {
         isApproved: true,
         note: null,
       };
-      refundRequestDecision(params)
-        .then((response) => {
-          if (response?.data?.status_code === 202) {
-            enqueueSnackbar(response?.data?.message, { variant: "success" });
-          } else if (response?.error) {
-            enqueueSnackbar(response?.error?.data?.message, {
-              variant: "error",
-            });
-          }
-        });
+
+      refundRequestDecision(params).then((response) => {
+        if (response?.data?.status_code === 202) {
+          enqueueSnackbar(response?.data?.message, { variant: "success" });
+          setApiLoading(false);
+        } else if (response?.error) {
+          enqueueSnackbar(response?.error?.data?.message, {
+            variant: "error",
+          });
+          setApiLoading(false);
+        }
+        setOpen(false);
+      });
     }
     setTimeout(() => {
-      //commented the reset as Nafees Vaiya only want to back previous screen by clicking discard(15-12-2022)
-      // reset({...defaultValue})
       !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
     }, 500);
-    setOpen(false);
   };
-
 
   return (
     <div>
@@ -97,14 +91,23 @@ const confirmDiscard = (props) => {
             >
               {t("label:cancel")}
             </Button>
-            <Button
+            <LoadingButton
               variant="contained"
               color="secondary"
-              className="rounded-4 font-semibold min-w-[112px]"
-              onClick={() => modalRef === "confirmRefundRequestApprove" ? handleConfirmRefundRequest() : handleClose()}
+              className="rounded-4 button2 min-w-[153px]"
+              aria-label="Confirm"
+              size="large"
+              type="submit"
+              loading={apiLoading}
+              loadingPosition="center"
+              onClick={() =>
+                modalRef === "confirmRefundRequestApprove"
+                  ? handleConfirmRefundRequest()
+                  : handleClose()
+              }
             >
               {t("label:confirm")}
-            </Button>
+            </LoadingButton>
           </DialogActions>
         </div>
       </Dialog>
