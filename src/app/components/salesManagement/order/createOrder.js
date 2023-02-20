@@ -56,9 +56,9 @@ import ClientService from "../../../data-access/services/clientsService/ClientSe
 import { useCreateOrderMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from "../../../data-access/services/authService";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { es, nn, nb } from "date-fns/locale";
+// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { es, nn, nb } from "date-fns/locale";
 import { formatInTimeZone } from "date-fns-tz";
 
 const createOrder = () => {
@@ -1430,10 +1430,6 @@ const createOrder = () => {
                           }
                         >
                           <div className="create-order-due-date w-full">
-                            <LocalizationProvider
-                              dateAdapter={AdapterDateFns}
-                              adapterLocale={es}
-                            >
                               <DesktopDateTimePicker
                                 label={t("label:dueDateForPaymentLink")}
                                 // inputFormat="dd MMM, yyyy HH:mm"
@@ -1509,7 +1505,6 @@ const createOrder = () => {
                                   />
                                 )}
                               />
-                            </LocalizationProvider>
                             {customDateDropDown && (
                               <div
                                 className="absolute bg-white max-h-min rounded-4 shadow-4 w-9/12 z-999"
