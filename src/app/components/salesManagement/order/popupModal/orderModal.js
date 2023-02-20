@@ -120,15 +120,16 @@ const OrderModal = (props) => {
       requestRefundApproval(payload).then((response) => {
         if (response?.data?.status_code === 201) {
           enqueueSnackbar(response?.data?.message, { variant: "success" });
-          setApiLoading(false);
+          // setApiLoading(false);
         } else if (response?.error) {
           enqueueSnackbar(response?.error?.data?.message, {
             variant: "error",
           });
-          setApiLoading(false);
+          // setApiLoading(false);
         }
         setOpen(false);
         setFlag(false);
+        setApiLoading(false);
       });
     } else if (headerTitle === "Resend Order") {
       setApiLoading(true);
@@ -136,7 +137,7 @@ const OrderModal = (props) => {
       resendOrder(preparedPayload).then((res) => {
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
-          setApiLoading(false);
+          // setApiLoading(false);
         }
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
@@ -151,7 +152,7 @@ const OrderModal = (props) => {
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
-          setApiLoading(false);
+          // setApiLoading(false);
         }
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
@@ -174,7 +175,7 @@ const OrderModal = (props) => {
             window.location.pathname.includes("/create-order/details/")
               ? navigate(-1)
               : "";
-            setApiLoading(false);
+            // setApiLoading(false);
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
               if (
@@ -188,8 +189,9 @@ const OrderModal = (props) => {
               //   variant: "error",
               // });
             } else setOpen(false);
-            setApiLoading(false);
+            // setApiLoading(false);
           }
+          setApiLoading(false);
           // setOpen(false);
         }
       );
@@ -204,12 +206,10 @@ const OrderModal = (props) => {
       refundRequestDecision(params).then((response) => {
         if (response?.data?.status_code === 202) {
           enqueueSnackbar(response?.data?.message, { variant: "success" });
-          setApiLoading(false);
         } else if (response?.error) {
           enqueueSnackbar(response?.error?.data?.message, {
             variant: "error",
           });
-          setApiLoading(false);
         }
         setOpen(false);
         setFlag(false);
