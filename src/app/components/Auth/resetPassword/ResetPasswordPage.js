@@ -173,7 +173,7 @@ function ResetPasswordPage() {
         <div className="w-full max-w-320 sm:w-320 mx-auto  h-full bg-grey-50 rounded-md p-10 flex justify-end items-center">
           <div className="flex flex-col pb-92">
             <div className="header4 text-center mb-5">
-              {t("label:PasswordUpdatedSuccessfully")}!
+              {t("label:passwordUpdatedSuccessfully")}!
             </div>
             <Link to="/login">
               <Button
