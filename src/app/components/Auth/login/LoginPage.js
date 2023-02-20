@@ -123,7 +123,8 @@ const LoginPage = () => {
     const cred = JSON.parse(localStorage.getItem('cred'))
     AuthService.sendOtp(cred)
       .then((response) => {
-        if (response?.status_code === 201) {
+        if (response[0]?.status_code === 201) {
+          setOTP(response[1]);
           setIsCode(true);
           setLoading(false);
         } else {
