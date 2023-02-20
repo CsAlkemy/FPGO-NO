@@ -1,17 +1,10 @@
 import React from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useSnackbar } from "notistack";
-import { useRefundRequestDecisionMutation } from "app/store/api/apiSlice";
-import { LoadingButton } from "@mui/lab";
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useSnackbar} from "notistack";
+import {useRefundRequestDecisionMutation} from "app/store/api/apiSlice";
+import {LoadingButton} from "@mui/lab";
 
 const confirmDiscard = (props) => {
   const navigate = useNavigate();
@@ -42,31 +35,31 @@ const confirmDiscard = (props) => {
 
   const handleConfirmRefundRequest = () => {
     setApiLoading(true);
-    setTimeout(() => {
-      if (modalRef === "confirmRefundRequestApprove") {
-        const { orderUuid, amount } = values;
-        const params = {
-          orderUuid,
-          amount,
-          isApproved: true,
-          note: null,
-        };
+    if (modalRef === "confirmRefundRequestApprove") {
+      const { orderUuid, amount } = values;
+      const params = {
+        orderUuid,
+        amount,
+        isApproved: true,
+        note: null,
+      };
 
-        refundRequestDecision(params).then((response) => {
-          if (response?.data?.status_code === 202) {
-            enqueueSnackbar(response?.data?.message, { variant: "success" });
-          } else if (response?.error) {
-            enqueueSnackbar(response?.error?.data?.message, {
-              variant: "error",
-            });
-          }
-        });
-      }
-      setTimeout(() => {
-        !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
-      }, 500);
-      setOpen(false);
-    }, [500]);
+      refundRequestDecision(params).then((response) => {
+        if (response?.data?.status_code === 202) {
+          enqueueSnackbar(response?.data?.message, { variant: "success" });
+          setApiLoading(false);
+        } else if (response?.error) {
+          enqueueSnackbar(response?.error?.data?.message, {
+            variant: "error",
+          });
+          setApiLoading(false);
+        }
+        setOpen(false);
+      });
+    }
+    setTimeout(() => {
+      !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
+    }, 500);
   };
 
   return (
