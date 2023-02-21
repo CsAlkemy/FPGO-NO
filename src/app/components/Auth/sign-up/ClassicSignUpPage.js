@@ -184,6 +184,50 @@ function ClassicSignUpPage() {
                 <Typography className="bg-gray-100 p-14 my-16 subtitle3 text-MonochromeGray-700">
                   {t("label:companyInformation")}
                 </Typography>
+    <div className="flex flex-col flex-auto items-center justify-around sm:justify-center md:p-32 bg-ccc">
+      <Paper className="flex w-11/12 md:w-auto min-h-auto rounded-xl sm:rounded-2xl custom-drop-shadow overflow-hidden max-w-screen-lg">
+        <div className="w-full md:w-auto py-32 pb-60 md:pb-auto p-16 sm:p-56 md:p-48 ltr:border-r-1 rtl:border-l-1">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-32">
+            <div className="col-span-1 md:col-span-6">
+              <AuthMobileHeader isShow={true} />
+              <div className="flex justify-between items-center">
+                <div className="header4 mt-32 sm:mt-0">
+                  {t("label:registration")}
+                </div>
+                <Hidden smDown>
+                  <Select
+                    sx={{ height: 36 }}
+                    defaultValue="English"
+                    displayEmpty
+                    renderValue={(value) => {
+                      return (
+                        <Box
+                          sx={{ display: "flex", gap: 1 }}
+                          className="flex justify-start items-start"
+                        >
+                          <SvgIcon color="primary">
+                            <LanguageIcon className="text-MonochromeGray-300" />
+                          </SvgIcon>
+                          <div className="my-auto">{value}</div>
+                        </Box>
+                      );
+                    }}
+                  >
+                    {languages.map((option) => (
+                      <MenuItem
+                        key={option.value}
+                        value={option.label}
+                        onClick={() => handleLanguageChange(option.value)}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Hidden>
+              </div>
+              <Typography className="bg-gray-100 p-14 my-16 subtitle3 text-MonochromeGray-700">
+                {t("label:companyInformation")}
+              </Typography>
 
                 <form
                     name="registerForm"
@@ -355,6 +399,58 @@ function ClassicSignUpPage() {
                                     <span className="text-primary-500">
                               {t("label:tnc")}
                             </span>{" "}
+                            {t("label:ofFrontPaymentGo")}
+                          </p>
+                        }
+                        control={<Checkbox size="small" {...field} />}
+                      />
+                      <FormHelperText>
+                        {errors?.acceptTermsConditions?.message}
+                      </FormHelperText>
+                    </FormControl>
+                  )}
+                />
+                <div className="flex justify-end items-center ">
+                  <div className="grid grid-cols-2 gap-x-12 w-full md:w-auto">
+                    <Link to="/login">
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        className="w-full md:w-auto mt-32 rounded-4 font-600 border-MonochromeGray-50"
+                      >
+                        {t("label:backToLogin")}
+                      </Button>
+                    </Link>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="secondary"
+                      className="w-full md:w-auto mt-32 rounded-4 font-600"
+                    >
+                      {t("label:createAccount")}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            {/*<div className="col-span-1 md:col-span-2">*/}
+            {/*  <div className="border-1 border-MonochromeGray-50 rounded-2">*/}
+            {/*    <div className="subtitle2 bg-primary-25 p-16 ">*/}
+            {/*      {t("label:howMuchItCost")} ?*/}
+            {/*    </div>*/}
+            {/*    <Typography className="px-32 py-10 body2">*/}
+            {/*      {t("label:howMuchItCostMessage")}*/}
+            {/*      /!*Arcu ultrices vel ullamcorper ipsum vitae in in massa.*!/*/}
+            {/*      /!*Habitasse quisque amet, metus, donec risus, molestie ipsum,*!/*/}
+            {/*      /!*sed tristique. Egestas vitae dignissim lectus mauris.*!/*/}
+            {/*      /!*Facilisis non ante id nisl amet, nunc. Quis felis nisi,*!/*/}
+            {/*      /!*dignissim lacus, consectetur egestas id lectus nunc. Malesuada*!/*/}
+            {/*      /!*elementum maecenas scelerisque porttitor purus diam*!/*/}
+            {/*      /!*condimentum pretium neque. Consequat nunc pulvinar neque,*!/*/}
+            {/*      /!*velit facilisis quam mi vel.*!/*/}
+            {/*    </Typography>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
                                     {t("label:ofFrontPaymentGo")}
                                   </p>
                                 }
@@ -409,8 +505,9 @@ function ClassicSignUpPage() {
               {/*</div>*/}
             </div>
           </div>
-        </Paper>
-      </div>
+        </div>
+      </Paper>
+    </div>
   );
 }
 
