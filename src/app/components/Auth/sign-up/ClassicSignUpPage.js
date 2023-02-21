@@ -36,20 +36,20 @@ import { useCreateRegistrationRequestMutation } from "app/store/api/apiSlice";
  */
 const schema = yup.object().shape({
   organizationid: yup
-    .string()
-    .matches(/\b\d{9}\b/, {
-      message: "Must be 9 digits",
-      excludeEmptyString: true,
-    })
-    .required("You must enter your Organization ID"),
+      .string()
+      .matches(/\b\d{9}\b/, {
+        message: "Must be 9 digits",
+        excludeEmptyString: true,
+      })
+      .required("You must enter your Organization ID"),
   companyname: yup.string().required("You must enter your Company Name"),
   name: yup.string().required("You must enter your name"),
   phonenumber: yup.string().required("You must enter your Phone Number"),
   organizationtype: yup.string().required("You must select type"),
   email: yup
-    .string()
-    .email("You must enter a valid email")
-    .required("You must enter a email"),
+      .string()
+      .email("You must enter a valid email")
+      .required("You must enter a email"),
   // password: yup
   //   .string()
   //   .required("Please enter your password.")
@@ -58,8 +58,8 @@ const schema = yup.object().shape({
   //   .string()
   //   .oneOf([yup.ref("password"), null], "Passwords must match"),
   acceptTermsConditions: yup
-    .boolean()
-    .oneOf([true], "The terms and conditions must be accepted."),
+      .boolean()
+      .oneOf([true], "The terms and conditions must be accepted."),
 });
 
 const defaultValues = {
@@ -115,13 +115,13 @@ function ClassicSignUpPage() {
 
   useEffect(() => {
     ClientService.organizationTypeList()
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          setOrgTypeList(res.data);
-          setIsLoading(false);
-        }
-      })
-      .catch((e) => {});
+        .then((res) => {
+          if (res?.status_code === 200 && res?.is_data) {
+            setOrgTypeList(res.data);
+            setIsLoading(false);
+          }
+        })
+        .catch((e) => {});
   }, [isLoading]);
 
   const languages = [
@@ -140,17 +140,17 @@ function ClassicSignUpPage() {
   };
 
   return (
-      <div className='bg-ccc h-screen my-auto flex flex-col justify-center'>
-        <div className='w-full p-20 sm:p-0 md:w-3/4 bg-white mx-auto my-auto rounded-0 sm:rounded-xl'>
-          <div className='p-16 sm:p-56 md:p-48'>
+      <div className="flex flex-col flex-auto items-center justify-around sm:justify-center md:p-32 bg-ccc">
+        <Paper className="flex w-11/12 md:w-auto min-h-auto rounded-xl sm:rounded-2xl custom-drop-shadow overflow-hidden max-w-screen-lg">
+          <div className="w-full md:w-auto py-32 pb-60 md:pb-auto p-16 sm:p-56 md:p-48 ltr:border-r-1 rtl:border-l-1">
             <div className="grid grid-cols-1 md:grid-cols-6 gap-32">
-              <div className="col-span-1 md:col-span-4">
+              <div className="col-span-1 md:col-span-6">
                 <AuthMobileHeader isShow={true} />
                 <div className="flex justify-between items-center">
-                  <div className="header4 mt-32 sm:mt-10">
+                  <div className="header4 mt-32 sm:mt-0">
                     {t("label:registration")}
                   </div>
-                  <Hidden mdDown>
+                  <Hidden smDown>
                     <Select
                         sx={{ height: 36 }}
                         defaultValue="English"
@@ -350,7 +350,7 @@ function ClassicSignUpPage() {
                           >
                             <FormControlLabel
                                 label={
-                                  <p className='mt-[.25rem]'>
+                                  <p>
                                     {t("label:iAcceptThe")}{" "}
                                     <span className="text-primary-500">
                               {t("label:tnc")}
@@ -361,7 +361,7 @@ function ClassicSignUpPage() {
                                 control={<Checkbox size="small" {...field} />}
                             />
                             <FormHelperText>
-                                {errors?.acceptTermsConditions?.message}
+                              {errors?.acceptTermsConditions?.message}
                             </FormHelperText>
                           </FormControl>
                       )}
@@ -389,28 +389,27 @@ function ClassicSignUpPage() {
                   </div>
                 </form>
               </div>
-              <div className="col-span-1 md:col-span-2">
-                <div className="border-1 border-MonochromeGray-50 rounded-2">
-                  <div className="subtitle2 bg-primary-25 p-16 ">
-                    {t("label:howMuchItCost")} ?
-                  </div>
-                  <Typography className="px-32 py-10 body2">
-                    {t("label:howMuchItCostMessage")}
-                    {/*Arcu ultrices vel ullamcorper ipsum vitae in in massa.*/}
-                    {/*Habitasse quisque amet, metus, donec risus, molestie ipsum,*/}
-                    {/*sed tristique. Egestas vitae dignissim lectus mauris.*/}
-                    {/*Facilisis non ante id nisl amet, nunc. Quis felis nisi,*/}
-                    {/*dignissim lacus, consectetur egestas id lectus nunc. Malesuada*/}
-                    {/*elementum maecenas scelerisque porttitor purus diam*/}
-                    {/*condimentum pretium neque. Consequat nunc pulvinar neque,*/}
-                    {/*velit facilisis quam mi vel.*/}
-                  </Typography>
-                </div>
-              </div>
+              {/*<div className="col-span-1 md:col-span-2">*/}
+              {/*  <div className="border-1 border-MonochromeGray-50 rounded-2">*/}
+              {/*    <div className="subtitle2 bg-primary-25 p-16 ">*/}
+              {/*      {t("label:howMuchItCost")} ?*/}
+              {/*    </div>*/}
+              {/*    <Typography className="px-32 py-10 body2">*/}
+              {/*      {t("label:howMuchItCostMessage")}*/}
+              {/*      /!*Arcu ultrices vel ullamcorper ipsum vitae in in massa.*!/*/}
+              {/*      /!*Habitasse quisque amet, metus, donec risus, molestie ipsum,*!/*/}
+              {/*      /!*sed tristique. Egestas vitae dignissim lectus mauris.*!/*/}
+              {/*      /!*Facilisis non ante id nisl amet, nunc. Quis felis nisi,*!/*/}
+              {/*      /!*dignissim lacus, consectetur egestas id lectus nunc. Malesuada*!/*/}
+              {/*      /!*elementum maecenas scelerisque porttitor purus diam*!/*/}
+              {/*      /!*condimentum pretium neque. Consequat nunc pulvinar neque,*!/*/}
+              {/*      /!*velit facilisis quam mi vel.*!/*/}
+              {/*    </Typography>*/}
+              {/*  </div>*/}
+              {/*</div>*/}
             </div>
           </div>
-
-        </div>
+        </Paper>
       </div>
   );
 }
