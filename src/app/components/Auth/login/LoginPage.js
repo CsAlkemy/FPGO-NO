@@ -1,31 +1,24 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 import _ from "@lodash";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
-import {
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {LoadingButton} from "@mui/lab";
+import {IconButton, InputAdornment, TextField,} from "@mui/material";
+import {useSnackbar} from "notistack";
 import * as React from "react";
-import { useEffect, useRef } from "react";
-import { AutoTabProvider } from "react-auto-tab";
-import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import {useEffect, useRef} from "react";
+import {AutoTabProvider} from "react-auto-tab";
+import {Controller, useForm} from "react-hook-form";
+import {Link, useNavigate} from "react-router-dom";
 import * as yup from "yup";
 import AuthService from "../../../data-access/services/authService";
 import AuthLayout from "../Layout/layout";
 import TimeCounter from "./utils/timeCounter";
 import Contact from "../Layout/contact";
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { BUSINESS_ADMIN, FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-import { selectUser } from "app/store/userSlice";
+import {useTranslation} from "react-i18next";
+import {useSelector} from "react-redux";
+import {BUSINESS_ADMIN, FP_ADMIN} from "../../../utils/user-roles/UserRoles";
+import {selectUser} from "app/store/userSlice";
 
 const LoginPage = () => {
   const [isCode, setIsCode] = React.useState(false);
