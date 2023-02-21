@@ -37,7 +37,7 @@ const Timer = (props) => {
   return (
     <>
       {minutes === 0 && seconds === 0 ? (
-        <span>0:0</span> 
+        <span> 0:0 </span>
       ) : (
         <span>
           {' '}

@@ -1,41 +1,34 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 import _ from "@lodash";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
-import {
-  Box,
-  Checkbox,
-  FormControl, FormControlLabel,
-  Hidden,
-  IconButton,
-  InputAdornment, MenuItem, Select, SvgIcon, TextField
-} from "@mui/material";
-import { useSnackbar } from "notistack";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {LoadingButton} from "@mui/lab";
+import {Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, TextField} from "@mui/material";
+import {useSnackbar} from "notistack";
 import * as React from "react";
-import { useEffect } from 'react';
-import { AutoTabProvider } from "react-auto-tab";
-import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import {useEffect} from "react";
+import {AutoTabProvider} from "react-auto-tab";
+import {Controller, useForm} from "react-hook-form";
+import {Link, useNavigate} from "react-router-dom";
 import * as yup from "yup";
 import AuthService from "../../../data-access/services/authService";
 import AuthLayout from '../Layout/layout';
 import TimeCounter from "./utils/timeCounter";
 import Contact from '../Layout/contact'
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import MultiLanguageService from '../../../data-access/services/multiLanguageService/MultiLanguageService';
-import { useTranslation } from 'react-i18next';
-import { changeLanguage } from 'app/store/i18nSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { BUSINESS_ADMIN, FP_ADMIN } from '../../../utils/user-roles/UserRoles';
-import { selectUser } from 'app/store/userSlice';
+import {useTranslation} from 'react-i18next';
+import {useSelector} from 'react-redux';
+import {BUSINESS_ADMIN, FP_ADMIN} from '../../../utils/user-roles/UserRoles';
+import {selectUser} from 'app/store/userSlice';
 
 const LoginPage = () => {
   const [isCode, setIsCode] = React.useState(false);
   const [resend, setResend] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [OTP, setOTP] = React.useState("");
+  const [otpTyped, setOtpTyped] = React.useState([]);
   const user = useSelector(selectUser)
   const {t} = useTranslation()
+
 
 
   const [resendClicked, setResendClicked] = React.useState(false);
@@ -104,6 +97,7 @@ const LoginPage = () => {
     setLoading(true);
     e.preventDefault();
     const otp = `${e.target[0].value}${e.target[1].value}${e.target[2].value}${e.target[3].value}${e.target[4].value}`;
+    console.log("OTP Length",otp.length);
     const loginToken = JSON.parse(localStorage.getItem("cred")).loginToken;
     AuthService.verifyOtp(loginToken, otp)
       .then((response) => {
@@ -148,16 +142,7 @@ const LoginPage = () => {
     };
   }, [])
 
-  const languages = [
-    {
-      value: "English",
-      label: "en"
-    },
-    {
-      value: "Norwegian",
-      label: "no"
-    },
-  ];
+console.log(otpTyped);
 
   return (
     <AuthLayout>
@@ -297,26 +282,42 @@ const LoginPage = () => {
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  onChange={(e)=>{
+                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
+                  }}
+
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  onChange={(e)=>{
+                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
+                  }}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  onChange={(e)=>{
+                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
+                  }}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  onChange={(e)=>{
+                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
+                  }}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  onChange={(e)=>{
+                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
+                  }}
                 />
               </AutoTabProvider>
               <div className="flex justify-between py-40 text-16 font-semibold">
@@ -353,6 +354,7 @@ const LoginPage = () => {
                 size="large"
                 type="submit"
                 loading={loading}
+                disabled={otpTyped.length !== 5}
                 loadingPosition="center"
               >
                 {t("label:confirm")}
