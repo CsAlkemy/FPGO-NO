@@ -144,7 +144,7 @@ function ClassicSignUpPage() {
       <Paper className="flex w-11/12 md:w-auto min-h-auto rounded-xl sm:rounded-2xl custom-drop-shadow overflow-hidden max-w-screen-lg">
         <div className="w-full md:w-auto py-32 pb-60 md:pb-auto p-16 sm:p-56 md:p-48 ltr:border-r-1 rtl:border-l-1">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-32">
-            <div className="col-span-1 md:col-span-4">
+            <div className="col-span-1 md:col-span-6">
               <AuthMobileHeader isShow={true} />
               <div className="flex justify-between items-center">
                 <div className="header4 mt-32 sm:mt-0">
@@ -389,24 +389,24 @@ function ClassicSignUpPage() {
                 </div>
               </form>
             </div>
-            <div className="col-span-1 md:col-span-2">
-              <div className="border-1 border-MonochromeGray-50 rounded-2">
-                <div className="subtitle2 bg-primary-25 p-16 ">
-                  {t("label:howMuchItCost")} ?
-                </div>
-                <Typography className="px-32 py-10 body2">
-                  {t("label:howMuchItCostMessage")}
-                  {/*Arcu ultrices vel ullamcorper ipsum vitae in in massa.*/}
-                  {/*Habitasse quisque amet, metus, donec risus, molestie ipsum,*/}
-                  {/*sed tristique. Egestas vitae dignissim lectus mauris.*/}
-                  {/*Facilisis non ante id nisl amet, nunc. Quis felis nisi,*/}
-                  {/*dignissim lacus, consectetur egestas id lectus nunc. Malesuada*/}
-                  {/*elementum maecenas scelerisque porttitor purus diam*/}
-                  {/*condimentum pretium neque. Consequat nunc pulvinar neque,*/}
-                  {/*velit facilisis quam mi vel.*/}
-                </Typography>
-              </div>
-            </div>
+            {/*<div className="col-span-1 md:col-span-2">*/}
+            {/*  <div className="border-1 border-MonochromeGray-50 rounded-2">*/}
+            {/*    <div className="subtitle2 bg-primary-25 p-16 ">*/}
+            {/*      {t("label:howMuchItCost")} ?*/}
+            {/*    </div>*/}
+            {/*    <Typography className="px-32 py-10 body2">*/}
+            {/*      {t("label:howMuchItCostMessage")}*/}
+            {/*      /!*Arcu ultrices vel ullamcorper ipsum vitae in in massa.*!/*/}
+            {/*      /!*Habitasse quisque amet, metus, donec risus, molestie ipsum,*!/*/}
+            {/*      /!*sed tristique. Egestas vitae dignissim lectus mauris.*!/*/}
+            {/*      /!*Facilisis non ante id nisl amet, nunc. Quis felis nisi,*!/*/}
+            {/*      /!*dignissim lacus, consectetur egestas id lectus nunc. Malesuada*!/*/}
+            {/*      /!*elementum maecenas scelerisque porttitor purus diam*!/*/}
+            {/*      /!*condimentum pretium neque. Consequat nunc pulvinar neque,*!/*/}
+            {/*      /!*velit facilisis quam mi vel.*!/*/}
+            {/*    </Typography>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </div>
         </div>
       </Paper>
