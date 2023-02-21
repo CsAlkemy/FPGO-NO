@@ -3,40 +3,44 @@ import _ from "@lodash";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
-  Box,
   Checkbox,
-  FormControl, FormControlLabel,
-  Hidden,
+  FormControl,
+  FormControlLabel,
   IconButton,
-  InputAdornment, MenuItem, Select, SvgIcon, TextField
+  InputAdornment,
+  TextField,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import * as React from "react";
-import { useEffect } from 'react';
+import { useEffect, useRef } from "react";
 import { AutoTabProvider } from "react-auto-tab";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import AuthService from "../../../data-access/services/authService";
-import AuthLayout from '../Layout/layout';
+import AuthLayout from "../Layout/layout";
 import TimeCounter from "./utils/timeCounter";
-import Contact from '../Layout/contact'
+import Contact from "../Layout/contact";
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import MultiLanguageService from '../../../data-access/services/multiLanguageService/MultiLanguageService';
-import { useTranslation } from 'react-i18next';
-import { changeLanguage } from 'app/store/i18nSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { BUSINESS_ADMIN, FP_ADMIN } from '../../../utils/user-roles/UserRoles';
-import { selectUser } from 'app/store/userSlice';
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { BUSINESS_ADMIN, FP_ADMIN } from "../../../utils/user-roles/UserRoles";
+import { selectUser } from "app/store/userSlice";
 
 const LoginPage = () => {
   const [isCode, setIsCode] = React.useState(false);
   const [resend, setResend] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [OTP, setOTP] = React.useState("");
-  const user = useSelector(selectUser)
-  const {t} = useTranslation()
+  const [one, setOne] = React.useState(false);
+  const [two, setTwo] = React.useState(false);
+  const [three, setThree] = React.useState(false);
+  const [four, setFour] = React.useState(false);
+  const [five, setFive] = React.useState(false);
 
+  const user = useSelector(selectUser);
+  const { t } = useTranslation();
+  const inputRef = useRef();
 
   const [resendClicked, setResendClicked] = React.useState(false);
 
@@ -73,6 +77,18 @@ const LoginPage = () => {
   });
   const { isValid, dirtyFields, errors } = formState;
 
+  useEffect(() => {
+    const handleEnterKey = (event) => {
+      if (event.key === "Enter" && one && two && three && four && five) {
+        inputRef.current.click();
+      }
+    };
+    document.addEventListener("keydown", handleEnterKey);
+    return () => {
+      document.removeEventListener("keydown", handleEnterKey);
+    };
+  }, [one, two, three, four, five]);
+
   // handle submit
   const onSubmit = async (values) => {
     setLoading(true);
@@ -96,8 +112,7 @@ const LoginPage = () => {
       .catch((e) => {
         setLoading(false);
         enqueueSnackbar(e, { variant: "error" });
-      })
-    // setIsCode(true);
+      });
   };
 
   const submitOTP = (e) => {
@@ -108,9 +123,9 @@ const LoginPage = () => {
     AuthService.verifyOtp(loginToken, otp)
       .then((response) => {
         if (response?.status_code === 201) {
-          // history.length = 0;
-          // navigate("/sales/orders-list");
-          user[0] === FP_ADMIN || user[0] === BUSINESS_ADMIN ?  navigate("/dashboard") : navigate("/sales/orders-list")
+          user[0] === FP_ADMIN || user[0] === BUSINESS_ADMIN
+            ? navigate("/dashboard")
+            : navigate("/sales/orders-list");
         }
       })
       .catch((error) => {
@@ -120,21 +135,19 @@ const LoginPage = () => {
   };
 
   const resendOTP = () => {
-    const cred = JSON.parse(localStorage.getItem('cred'))
-    AuthService.sendOtp(cred)
-      .then((response) => {
-        if (response[0]?.status_code === 201) {
-          setOTP(response[1]);
-          setIsCode(true);
-          setLoading(false);
-        } else {
-          enqueueSnackbar(response, { variant: "error" });
-          setLoading(false);
-        }
-      })
-  }
+    const cred = JSON.parse(localStorage.getItem("cred"));
+    AuthService.sendOtp(cred).then((response) => {
+      if (response[0]?.status_code === 201) {
+        setOTP(response[1]);
+        setIsCode(true);
+        setLoading(false);
+      } else {
+        enqueueSnackbar(response, { variant: "error" });
+        setLoading(false);
+      }
+    });
+  };
 
-  //handle show password
   const handleClickShowPassword = () => {
     setData({
       ...data,
@@ -144,24 +157,13 @@ const LoginPage = () => {
 
   useEffect(() => {
     return () => {
-      localStorage.removeItem('cred')
+      localStorage.removeItem("cred");
     };
-  }, [])
-
-  const languages = [
-    {
-      value: "English",
-      label: "en"
-    },
-    {
-      value: "Norwegian",
-      label: "no"
-    },
-  ];
+  }, []);
 
   return (
     <AuthLayout>
-      <AuthMobileHeader isShow ={isCode} />
+      <AuthMobileHeader isShow={isCode} />
       {!isCode === true && (
         <form
           name="loginForm"
@@ -211,11 +213,7 @@ const LoginPage = () => {
                         onClick={handleClickShowPassword}
                         edge="end"
                       >
-                        {data.showPassword ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
+                        {data.showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -273,50 +271,115 @@ const LoginPage = () => {
           </div>
         </form>
       )}
-      {!isCode === true && (
-        <Contact />
-      )}
+      {!isCode === true && <Contact />}
       {!!isCode === true && (
         <div className="w-full mx-auto px-0 sm:px-20">
           <div className="flex flex-col pb-92">
             <form onSubmit={submitOTP}>
-              <div className="header4 text-left sm:text-center mb-5 mt-32">{t("label:securityCode")}</div>
-              <div className="body2 mt-10 text-left sm:text-center pb-60">
-                {t("label:aFiveDigitCodeSentToYourEmailPleaseTypeTheCodeToContinue")}
+              <div className="header4 text-left sm:text-center mb-5 mt-32">
+                {t("label:securityCode")}
               </div>
-              {
-                // || window.location.hostname === "localhost"
-                window.location.hostname === "demo.frontpayment.no"&&
-                (<div className="body2 mt-10 text-left sm:text-center pb-60">
+              <div className="body2 mt-10 text-left sm:text-center pb-60">
+                {t(
+                  "label:aFiveDigitCodeSentToYourEmailPleaseTypeTheCodeToContinue"
+                )}
+              </div>
+              {window.location.hostname === "demo.frontpayment.no" && (
+                <div className="body2 mt-10 text-left sm:text-center pb-60">
                   {`OTP : ${OTP}`}
-                </div>)
-              }
+                </div>
+              )}
               <AutoTabProvider className="grid grid-cols-5 gap-4">
                 <input
                   name="input1"
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  // onChange={(e) => handleInputChange(e, 0)}
+                  onBlur={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  onBlur={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  // onChange={(e) => handleInputChange(e, 1)}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  // onChange={(e) => handleInputChange(e, 2)}
+                  onBlur={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  // onChange={(e) => handleInputChange(e, 3)}
+                  onBlur={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
+                  // onChange={(e) => handleInputChange(e, 4)}
+                  onBlur={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
                 />
               </AutoTabProvider>
               <div className="flex justify-between py-40 text-16 font-semibold">
@@ -337,9 +400,8 @@ const LoginPage = () => {
                       : "cursor-pointer text-MonochromeGray-300 opacity-50 pointer-events-none"
                   }
                   onClick={() => {
-                    resendOTP()
-                    setResendClicked(true)
-
+                    resendOTP();
+                    setResendClicked(true);
                   }}
                 >
                   {t("label:resendCode")}
@@ -352,7 +414,9 @@ const LoginPage = () => {
                 aria-label="Confirm"
                 size="large"
                 type="submit"
+                ref={inputRef}
                 loading={loading}
+                disabled={!(one && two && three && four && five)}
                 loadingPosition="center"
               >
                 {t("label:confirm")}
@@ -362,7 +426,6 @@ const LoginPage = () => {
         </div>
       )}
     </AuthLayout>
-
   );
 };
 
