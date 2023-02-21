@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Hidden, MenuItem, Select, SvgIcon } from "@mui/material";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useDispatch } from "react-redux";
-import { changeLanguage } from 'app/store/i18nSlice';
+import { changeLanguage } from "app/store/i18nSlice";
 
 const authMobileHeader = (props) => {
   const { isShow } = props;
@@ -18,9 +18,9 @@ const authMobileHeader = (props) => {
     },
   ];
 
-  const handleLanguageChange = (lng)=> {
+  const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
-  }
+  };
 
   return (
     <div>
