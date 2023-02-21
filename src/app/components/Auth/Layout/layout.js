@@ -24,10 +24,10 @@ const AuthLayout = ({ children }) => {
 
     return (
         <div
-            className="flex flex-col flex-auto items-center justify-start sm:justify-center min-w-0 md:p-32  sm:bg-ccc relative"
+            className="flex flex-col flex-auto items-center justify-start sm:justify-center min-w-0 md:p-32  md:bg-ccc relative"
         >
-            <div className="relative z-10 flex w-11/12 sm:w-auto min-h-auto max-h-3xl rounded-xl bg-white sm:rounded-2xl overflow-hidden h-661 sm:custom-drop-shadow remove-mui-paper-transition">
-                <div className="w-full sm:w-auto py-32 md:pb-auto px-0 sm:px-12 md:px-14 ">
+            <div className="relative z-10 flex w-11/12 md:w-auto min-h-auto max-h-3xl rounded-xl bg-white md:rounded-2xl overflow-hidden h-661 sm:custom-drop-shadow remove-mui-paper-transition">
+                <div className="w-full md:w-auto py-32 md:pb-auto px-16 md:px-18">
                     <div className="w-full max-w-384 sm:w-360 mx-auto flex flex-col h-full justify-start">
                         {children}
                     </div>

@@ -223,21 +223,21 @@ const LoginPage = () => {
           />
 
           <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between">
-            <div className="invisible">
-              <Controller
-                name="remember"
-                control={control}
-                render={({ field }) => (
-                  <FormControl>
-                    <FormControlLabel
-                      className="caption2 text-MonochromeGray-300"
-                      label={t("label:rememberMe")}
-                      control={<Checkbox size="small" {...field} />}
-                    />
-                  </FormControl>
-                )}
-              />
-            </div>
+            {/*<div className="invisible">*/}
+            {/*  <Controller*/}
+            {/*    name="remember"*/}
+            {/*    control={control}*/}
+            {/*    render={({ field }) => (*/}
+            {/*      <FormControl>*/}
+            {/*        <FormControlLabel*/}
+            {/*          className="caption2 text-MonochromeGray-300"*/}
+            {/*          label={t("label:rememberMe")}*/}
+            {/*          control={<Checkbox size="small" {...field} />}*/}
+            {/*        />*/}
+            {/*      </FormControl>*/}
+            {/*    )}*/}
+            {/*  />*/}
+            {/*</div>*/}
 
             <Link
               className="login-page-no-underline caption2 text-primary-500"
