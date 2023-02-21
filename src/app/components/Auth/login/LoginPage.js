@@ -1,35 +1,41 @@
-import {yupResolver} from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import _ from "@lodash";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {LoadingButton} from "@mui/lab";
-import {Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, TextField} from "@mui/material";
-import {useSnackbar} from "notistack";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
+import { useSnackbar } from "notistack";
 import * as React from "react";
-import {useEffect} from "react";
-import {AutoTabProvider} from "react-auto-tab";
-import {Controller, useForm} from "react-hook-form";
-import {Link, useNavigate} from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { AutoTabProvider } from "react-auto-tab";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import AuthService from "../../../data-access/services/authService";
-import AuthLayout from '../Layout/layout';
+import AuthLayout from "../Layout/layout";
 import TimeCounter from "./utils/timeCounter";
-import Contact from '../Layout/contact'
+import Contact from "../Layout/contact";
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import {useTranslation} from 'react-i18next';
-import {useSelector} from 'react-redux';
-import {BUSINESS_ADMIN, FP_ADMIN} from '../../../utils/user-roles/UserRoles';
-import {selectUser} from 'app/store/userSlice';
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { BUSINESS_ADMIN, FP_ADMIN } from "../../../utils/user-roles/UserRoles";
+import { selectUser } from "app/store/userSlice";
 
 const LoginPage = () => {
-  const [isCode, setIsCode] = React.useState(false);
+  const [isCode, setIsCode] = React.useState(true);
   const [resend, setResend] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [OTP, setOTP] = React.useState("");
-  const [otpTyped, setOtpTyped] = React.useState([]);
-  const user = useSelector(selectUser)
-  const {t} = useTranslation()
-
-
+  const [inputValues, setInputValues] = React.useState([]);
+  const user = useSelector(selectUser);
+  const { t } = useTranslation();
+  const inputRef = useRef();
 
   const [resendClicked, setResendClicked] = React.useState(false);
 
@@ -66,6 +72,18 @@ const LoginPage = () => {
   });
   const { isValid, dirtyFields, errors } = formState;
 
+  useEffect(() => {
+    const handleEnterKey = (event) => {
+      if (event.key === "Enter" && inputValues.length === 5) {
+        inputRef.current.click();
+      }
+    };
+    document.addEventListener("keydown", handleEnterKey);
+    return () => {
+      document.removeEventListener("keydown", handleEnterKey);
+    };
+  }, [inputValues]);
+
   // handle submit
   const onSubmit = async (values) => {
     setLoading(true);
@@ -89,22 +107,34 @@ const LoginPage = () => {
       .catch((e) => {
         setLoading(false);
         enqueueSnackbar(e, { variant: "error" });
-      })
-    // setIsCode(true);
+      });
   };
+
+  const handleInputChange = (event, index) => {
+    const value = event.target.value;
+    const newInputValues = [...inputValues];
+    if (value) {
+      newInputValues[index] = value;
+    } else {
+      delete newInputValues[index];
+    }
+    // Remove any undefined or empty elements from the array
+    const filteredInputValues = newInputValues.filter((val) => val);
+    setInputValues(filteredInputValues);
+  };
+  console.log("Input Values", inputValues);
 
   const submitOTP = (e) => {
     setLoading(true);
     e.preventDefault();
     const otp = `${e.target[0].value}${e.target[1].value}${e.target[2].value}${e.target[3].value}${e.target[4].value}`;
-    console.log("OTP Length",otp.length);
     const loginToken = JSON.parse(localStorage.getItem("cred")).loginToken;
     AuthService.verifyOtp(loginToken, otp)
       .then((response) => {
         if (response?.status_code === 201) {
-          // history.length = 0;
-          // navigate("/sales/orders-list");
-          user[0] === FP_ADMIN || user[0] === BUSINESS_ADMIN ?  navigate("/dashboard") : navigate("/sales/orders-list")
+          user[0] === FP_ADMIN || user[0] === BUSINESS_ADMIN
+            ? navigate("/dashboard")
+            : navigate("/sales/orders-list");
         }
       })
       .catch((error) => {
@@ -114,21 +144,19 @@ const LoginPage = () => {
   };
 
   const resendOTP = () => {
-    const cred = JSON.parse(localStorage.getItem('cred'))
-    AuthService.sendOtp(cred)
-      .then((response) => {
-        if (response[0]?.status_code === 201) {
-          setOTP(response[1]);
-          setIsCode(true);
-          setLoading(false);
-        } else {
-          enqueueSnackbar(response, { variant: "error" });
-          setLoading(false);
-        }
-      })
-  }
+    const cred = JSON.parse(localStorage.getItem("cred"));
+    AuthService.sendOtp(cred).then((response) => {
+      if (response[0]?.status_code === 201) {
+        setOTP(response[1]);
+        setIsCode(true);
+        setLoading(false);
+      } else {
+        enqueueSnackbar(response, { variant: "error" });
+        setLoading(false);
+      }
+    });
+  };
 
-  //handle show password
   const handleClickShowPassword = () => {
     setData({
       ...data,
@@ -138,15 +166,13 @@ const LoginPage = () => {
 
   useEffect(() => {
     return () => {
-      localStorage.removeItem('cred')
+      localStorage.removeItem("cred");
     };
-  }, [])
-
-console.log(otpTyped);
+  }, []);
 
   return (
     <AuthLayout>
-      <AuthMobileHeader isShow ={isCode} />
+      <AuthMobileHeader isShow={isCode} />
       {!isCode === true && (
         <form
           name="loginForm"
@@ -196,11 +222,7 @@ console.log(otpTyped);
                         onClick={handleClickShowPassword}
                         edge="end"
                       >
-                        {data.showPassword ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
+                        {data.showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -258,66 +280,55 @@ console.log(otpTyped);
           </div>
         </form>
       )}
-      {!isCode === true && (
-        <Contact />
-      )}
+      {!isCode === true && <Contact />}
       {!!isCode === true && (
         <div className="w-full mx-auto px-0 sm:px-20">
           <div className="flex flex-col pb-92">
             <form onSubmit={submitOTP}>
-              <div className="header4 text-left sm:text-center mb-5 mt-32">{t("label:securityCode")}</div>
-              <div className="body2 mt-10 text-left sm:text-center pb-60">
-                {t("label:aFiveDigitCodeSentToYourEmailPleaseTypeTheCodeToContinue")}
+              <div className="header4 text-left sm:text-center mb-5 mt-32">
+                {t("label:securityCode")}
               </div>
-              {
-                // || window.location.hostname === "localhost"
-                window.location.hostname === "demo.frontpayment.no"&&
-                (<div className="body2 mt-10 text-left sm:text-center pb-60">
+              <div className="body2 mt-10 text-left sm:text-center pb-60">
+                {t(
+                  "label:aFiveDigitCodeSentToYourEmailPleaseTypeTheCodeToContinue"
+                )}
+              </div>
+              {window.location.hostname === "demo.frontpayment.no" && (
+                <div className="body2 mt-10 text-left sm:text-center pb-60">
                   {`OTP : ${OTP}`}
-                </div>)
-              }
+                </div>
+              )}
               <AutoTabProvider className="grid grid-cols-5 gap-4">
                 <input
                   name="input1"
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e)=>{
-                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
-                  }}
-
+                  onChange={(e) => handleInputChange(e, 0)}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e)=>{
-                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
-                  }}
+                  onChange={(e) => handleInputChange(e, 1)}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e)=>{
-                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
-                  }}
+                  onChange={(e) => handleInputChange(e, 2)}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e)=>{
-                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
-                  }}
+                  onChange={(e) => handleInputChange(e, 3)}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e)=>{
-                    setOtpTyped(oldArray => [...oldArray, e.target.value]);
-                  }}
+                  onChange={(e) => handleInputChange(e, 4)}
                 />
               </AutoTabProvider>
               <div className="flex justify-between py-40 text-16 font-semibold">
@@ -338,9 +349,8 @@ console.log(otpTyped);
                       : "cursor-pointer text-MonochromeGray-300 opacity-50 pointer-events-none"
                   }
                   onClick={() => {
-                    resendOTP()
-                    setResendClicked(true)
-
+                    resendOTP();
+                    setResendClicked(true);
                   }}
                 >
                   {t("label:resendCode")}
@@ -353,8 +363,9 @@ console.log(otpTyped);
                 aria-label="Confirm"
                 size="large"
                 type="submit"
+                ref={inputRef}
                 loading={loading}
-                disabled={otpTyped.length !== 5}
+                disabled={inputValues.length !== 5}
                 loadingPosition="center"
               >
                 {t("label:confirm")}
@@ -364,7 +375,6 @@ console.log(otpTyped);
         </div>
       )}
     </AuthLayout>
-
   );
 };
 
