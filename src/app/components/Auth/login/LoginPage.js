@@ -28,11 +28,16 @@ import { BUSINESS_ADMIN, FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import { selectUser } from "app/store/userSlice";
 
 const LoginPage = () => {
-  const [isCode, setIsCode] = React.useState(true);
+  const [isCode, setIsCode] = React.useState(false);
   const [resend, setResend] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [OTP, setOTP] = React.useState("");
-  const [inputValues, setInputValues] = React.useState([]);
+  const [one, setOne] = React.useState(false);
+  const [two, setTwo] = React.useState(false);
+  const [three, setThree] = React.useState(false);
+  const [four, setFour] = React.useState(false);
+  const [five, setFive] = React.useState(false);
+
   const user = useSelector(selectUser);
   const { t } = useTranslation();
   const inputRef = useRef();
@@ -74,7 +79,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     const handleEnterKey = (event) => {
-      if (event.key === "Enter" && inputValues.length === 5) {
+      if (event.key === "Enter" && one && two && three && four && five) {
         inputRef.current.click();
       }
     };
@@ -82,7 +87,7 @@ const LoginPage = () => {
     return () => {
       document.removeEventListener("keydown", handleEnterKey);
     };
-  }, [inputValues]);
+  }, [one, two, three, four, five]);
 
   // handle submit
   const onSubmit = async (values) => {
@@ -109,20 +114,6 @@ const LoginPage = () => {
         enqueueSnackbar(e, { variant: "error" });
       });
   };
-
-  const handleInputChange = (event, index) => {
-    const value = event.target.value;
-    const newInputValues = [...inputValues];
-    if (value) {
-      newInputValues[index] = value;
-    } else {
-      delete newInputValues[index];
-    }
-    // Remove any undefined or empty elements from the array
-    const filteredInputValues = newInputValues.filter((val) => val);
-    setInputValues(filteredInputValues);
-  };
-  console.log("Input Values", inputValues);
 
   const submitOTP = (e) => {
     setLoading(true);
@@ -304,31 +295,91 @@ const LoginPage = () => {
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e) => handleInputChange(e, 0)}
+                  // onChange={(e) => handleInputChange(e, 0)}
+                  onBlur={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setOne(true) : setOne(false)
+                  }
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e) => handleInputChange(e, 1)}
+                  onBlur={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setTwo(true) : setTwo(false)
+                  }
+                  // onChange={(e) => handleInputChange(e, 1)}
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e) => handleInputChange(e, 2)}
+                  // onChange={(e) => handleInputChange(e, 2)}
+                  onBlur={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setThree(true) : setThree(false)
+                  }
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e) => handleInputChange(e, 3)}
+                  // onChange={(e) => handleInputChange(e, 3)}
+                  onBlur={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setFour(true) : setFour(false)
+                  }
                 />
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
                   tabbable="true"
-                  onChange={(e) => handleInputChange(e, 4)}
+                  // onChange={(e) => handleInputChange(e, 4)}
+                  onBlur={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
+                  onChange={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
+                  onFocus={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
+                  onPaste={(e) =>
+                    e.target.value ? setFive(true) : setFive(false)
+                  }
                 />
               </AutoTabProvider>
               <div className="flex justify-between py-40 text-16 font-semibold">
@@ -365,7 +416,7 @@ const LoginPage = () => {
                 type="submit"
                 ref={inputRef}
                 loading={loading}
-                disabled={inputValues.length !== 5}
+                disabled={!(one && two && three && four && five)}
                 loadingPosition="center"
               >
                 {t("label:confirm")}
