@@ -185,7 +185,7 @@ export default function Dashboard() {
           <LanguageWidget /> */}
             </div>
           </div>
-          <div className="my-32 grid grid-cols-1 sm:grid-cols-2 gap-20">
+          <div className="my-32 grid grid-cols-1 sm:grid-cols-1 gap-20">
             {/*<CostsTile datas={analyticsData} />*/}
             <TopCustomers datas={analyticsData} />
           </div>

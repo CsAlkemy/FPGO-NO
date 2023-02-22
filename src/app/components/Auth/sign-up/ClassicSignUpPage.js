@@ -346,7 +346,8 @@ function ClassicSignUpPage() {
                             <span className="text-primary-500">
                               {t("label:tnc")}
                             </span>{" "}
-                            {t("label:ofFrontPaymentGo")}
+                            {t("label:of")} {" "}
+                            {t("label:frontGo")}
                           </p>
                         }
                         control={<Checkbox size="small" {...field} />}
