@@ -131,7 +131,7 @@ function ClassicSignUpPage() {
     dispatch(changeLanguage(lng));
   };
   return (
-    <div className="bg-ccc h-screen my-auto flex flex-col justify-center">
+    <div className="bg-ccc h-auto md:h-screen my-auto flex flex-col justify-center">
       <div className="w-full p-20 sm:p-0 md:w-2/4 bg-white mx-auto my-auto rounded-0 sm:rounded-xl">
         <div className="p-16 sm:p-56 md:p-48">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-32">
@@ -346,7 +346,8 @@ function ClassicSignUpPage() {
                             <span className="text-primary-500">
                               {t("label:tnc")}
                             </span>{" "}
-                            {t("label:ofFrontPaymentGo")}
+                            {t("label:of")} {" "}
+                            {t("label:frontGo")}
                           </p>
                         }
                         control={<Checkbox size="small" {...field} />}
