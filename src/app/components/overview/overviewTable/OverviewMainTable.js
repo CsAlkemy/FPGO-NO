@@ -608,14 +608,14 @@ export default function OverviewMainTable(props) {
             <div>
               <Select
                 sx={{ height: 40 }}
-                // defaultValue="All"
+                defaultValue={props.tableName === refundRequestsOverview ? t("label:pending") : t("label:all")}
                 displayEmpty
                 className="w-full min-h-auto"
                 renderValue={(value) => {
                   return (
                     <Box
                       sx={{ display: "flex", gap: 1 }}
-                      className="flex justify-start items-center"
+                      className="flex justify-start items-center mt-4"
                     >
                       <div className="my-auto">{value}</div>
                     </Box>
@@ -641,20 +641,27 @@ export default function OverviewMainTable(props) {
             <div>
               <Select
                 sx={{ height: 40 }}
-                // defaultValue="Sort By: All"
+                defaultValue={t("label:selectOptionToSort")}
                 displayEmpty
                 className="w-full min-h-auto"
                 renderValue={(value) => {
                   return (
                     <Box
                       sx={{ display: "flex", gap: 1 }}
-                      className="flex justify-start items-center"
+                      className="flex justify-start items-center mt-4"
                     >
                       <div className="my-auto">{value}</div>
                     </Box>
                   );
                 }}
               >
+                {/*<MenuItem*/}
+                {/*  key={"notSelected"}*/}
+                {/*  value={"notSelected"}*/}
+                {/*  // onClick={() => handleRequestSort(null, option.id)}*/}
+                {/*>*/}
+                {/*  Select a option to sort*/}
+                {/*</MenuItem>*/}
                 {props.headerRows
                   .filter(
                     (headerRow) =>

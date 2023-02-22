@@ -89,8 +89,13 @@ const createOrder = () => {
                     className={`${
                       info.status.toLowerCase() === "paid"
                         ? "bg-confirmed"
-                        : info.status.toLowerCase() === "sent"
+                        : info.status.toLowerCase() === "sent" ||
+                          info.status.toLowerCase() === "refund pending" ||
+                          info.status.toLowerCase() === "partial refunded" ||
+                          info.status.toLowerCase() === "refunded"
                         ? "bg-pending"
+                        : info.status.toLowerCase() === "invoiced"
+                        ? "bg-invoiced"
                         : "bg-rejected"
                     } rounded-4 px-16 py-4 body3 ml-10`}
                   >

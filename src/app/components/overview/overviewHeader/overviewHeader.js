@@ -194,7 +194,7 @@ export default function OverviewHeader(props) {
               <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
-                placeholder={props.tableRef === customerOrdersListOverview ? t("label:searchByOrderID") : t("label:searchByNameEmailPhoneNo")}
+                placeholder={props.tableRef === customerOrdersListOverview ? t("label:searchByOrderID") : props.tableRef === ordersListOverview ? t("label:searchByOrderIDNamePhoneNo") : t("label:searchByNameEmailPhoneNo")}
                 inputProps={{ "aria-label": "search google maps" }}
                 onChange={(ev) => dispatch(setSearchText(ev.target.value))}
               />
