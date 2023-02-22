@@ -1,14 +1,6 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 import LanguageIcon from "@mui/icons-material/Language";
-import {
-  Box,
-  Hidden,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  SvgIcon,
-} from "@mui/material";
+import {Box, Hidden, InputLabel, MenuItem, Select, SvgIcon,} from "@mui/material";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
@@ -16,20 +8,20 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { changeLanguage } from "app/store/i18nSlice";
+import {changeLanguage} from "app/store/i18nSlice";
 import MuiPhoneNumber from "material-ui-phone-number";
-import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import {useSnackbar} from "notistack";
+import {useEffect, useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
+import {useDispatch} from "react-redux";
+import {Link, useNavigate} from "react-router-dom";
 import * as yup from "yup";
 import "../../../../styles/colors.css";
 import AuthService from "../../../data-access/services/authService";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import { useCreateRegistrationRequestMutation } from "app/store/api/apiSlice";
+import {useCreateRegistrationRequestMutation} from "app/store/api/apiSlice";
 
 /**
  * Form Validation Schema
@@ -138,19 +130,18 @@ function ClassicSignUpPage() {
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
   };
-
   return (
-    <div className="flex flex-col flex-auto items-center justify-around sm:justify-center md:p-32 bg-ccc">
-      <Paper className="flex w-11/12 md:w-auto min-h-auto rounded-xl sm:rounded-2xl custom-drop-shadow overflow-hidden max-w-screen-lg">
-        <div className="w-full md:w-auto py-32 pb-60 md:pb-auto p-16 sm:p-56 md:p-48 ltr:border-r-1 rtl:border-l-1">
+    <div className="bg-ccc h-screen my-auto flex flex-col justify-center">
+      <div className="w-full p-20 sm:p-0 md:w-2/4 bg-white mx-auto my-auto rounded-0 sm:rounded-xl">
+        <div className="p-16 sm:p-56 md:p-48">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-32">
             <div className="col-span-1 md:col-span-6">
               <AuthMobileHeader isShow={true} />
               <div className="flex justify-between items-center">
-                <div className="header4 mt-32 sm:mt-0">
+                <div className="header4 mt-32 sm:mt-10">
                   {t("label:registration")}
                 </div>
-                <Hidden smDown>
+                <Hidden mdDown>
                   <Select
                     sx={{ height: 36 }}
                     defaultValue="English"
@@ -350,7 +341,7 @@ function ClassicSignUpPage() {
                     >
                       <FormControlLabel
                         label={
-                          <p>
+                          <p className="mt-[.25rem]">
                             {t("label:iAcceptThe")}{" "}
                             <span className="text-primary-500">
                               {t("label:tnc")}
@@ -409,7 +400,7 @@ function ClassicSignUpPage() {
             {/*</div>*/}
           </div>
         </div>
-      </Paper>
+      </div>
     </div>
   );
 }

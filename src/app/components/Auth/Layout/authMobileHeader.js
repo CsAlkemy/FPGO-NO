@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Hidden, MenuItem, Select, SvgIcon } from "@mui/material";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useDispatch } from "react-redux";
-import { changeLanguage } from 'app/store/i18nSlice';
+import { changeLanguage } from "app/store/i18nSlice";
 
 const authMobileHeader = (props) => {
   const { isShow } = props;
@@ -18,13 +18,13 @@ const authMobileHeader = (props) => {
     },
   ];
 
-  const handleLanguageChange = (lng)=> {
+  const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
-  }
+  };
 
   return (
     <div>
-      <Hidden smDown>
+      <Hidden mdDown>
         {!isShow === true && (
           <img
             className="w-auto h-full mx-auto max-h-64 mb-52"
@@ -34,7 +34,7 @@ const authMobileHeader = (props) => {
           />
         )}
       </Hidden>
-      <Hidden smUp>
+      <Hidden mdUp>
         <div className="flex justify-between items-center pb-20 border-b-1 border-MonochromeGray-50">
           <img
             className="w-auto h-full max-h-48"
