@@ -63,7 +63,7 @@ const createProducts = () => {
     defaultValueCreateProduct,
     resolver: yupResolver(validateSchemaProductCreate),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   const onRawSubmit = (values) => {
     if (
       localStorage.getItem("defaultCategories") &&
@@ -242,7 +242,7 @@ const createProducts = () => {
                       variant="contained"
                       type="submit"
                       className="font-semibold rounded-4 w-full sm:w-auto"
-                      disabled={user.role[0] === FP_ADMIN}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
                     >
                       {t("label:updateProduct")}
                     </Button>
