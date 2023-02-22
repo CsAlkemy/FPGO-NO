@@ -36,7 +36,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "app/store/userSlice";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import { Button } from "@mui/material";
-import { ConvertToContString } from "../../../utils/ConvertToContString";
+import { CharCont } from "../../../utils/helperFunctions";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 
@@ -153,7 +153,7 @@ export default function OverViewResponsiveBody(props) {
                 {rdt.label}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {ConvertToContString(props.row[rdt.id], 20)}
+                {CharCont(props.row[rdt.id], 20)}
               </div>
             </div>
           );
@@ -181,7 +181,7 @@ export default function OverViewResponsiveBody(props) {
                 {rdt.label}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {ConvertToContString(props.row[rdt.id], 20)}
+                {CharCont(props.row[rdt.id], 20)}
               </div>
             </div>
           );
@@ -330,7 +330,7 @@ export default function OverViewResponsiveBody(props) {
                   {rdt.label}
                 </div>
                 <div className="body3 text-MonochromeGray-700">
-                  {ConvertToContString(props.row[rdt.id], 20)}
+                  {CharCont(props.row[rdt.id], 20)}
                 </div>
               </div>
             );
@@ -900,7 +900,7 @@ export default function OverViewResponsiveBody(props) {
                 {rdt.label}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {ConvertToContString(props.row[rdt.id], 20)}
+                {CharCont(props.row[rdt.id], 20)}
               </div>
             </div>
           );
@@ -951,7 +951,7 @@ export default function OverViewResponsiveBody(props) {
                 {rdt.label}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {ConvertToContString(props.row[rdt.id], 20)}
+                {CharCont(props.row[rdt.id], 20)}
               </div>
             </div>
           );
@@ -1002,7 +1002,7 @@ export default function OverViewResponsiveBody(props) {
                 {rdt.label}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {ConvertToContString(props.row[rdt.id], 20)}
+                {CharCont(props.row[rdt.id], 20)}
               </div>
             </div>
           );

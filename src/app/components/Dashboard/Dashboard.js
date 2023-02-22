@@ -10,7 +10,6 @@ import RevenuePerDay from "./RevenuePerDayChart";
 import {StatTiles} from "./StatTiles";
 import TopCustomers from "./TopCustomers";
 import DashboardService from "../../data-access/services/dashboard/DashboardService";
-import CostsTile from "./CostsTile";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -176,7 +175,7 @@ export default function Dashboard() {
             <RevenuePerDay datas={analyticsData} />
           </div>
           <div className="my-32">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-32 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-20 w-full">
               <PaymentMethodsPie datas={analyticsData} />{" "}
               <OrderStatusPie datas={analyticsData} />{" "}
               <CustomersPie datas={analyticsData} />
