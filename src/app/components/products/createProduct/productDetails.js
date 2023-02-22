@@ -154,7 +154,7 @@ const createProducts = () => {
     defaultValueCreateProduct.description = info?.description
       ? info?.description
       : "";
-    defaultValueCreateProduct.tax = info?.taxRate ? info?.taxRate : "";
+    defaultValueCreateProduct.tax = info?.taxRate === 0 ? 0 : info?.taxRate ? info?.taxRate : "";
     defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
     reset({ ...defaultValueCreateProduct });
   }, [isLoading]);
