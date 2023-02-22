@@ -22,7 +22,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate, useParams } from "react-router-dom";
-import CreditCheckService from "../../../data-access/services/creditCheckService/CreditCheckService";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import {
   PaymentDefaultValue,
@@ -32,6 +31,7 @@ import {
 } from "../utils/helper";
 import PaymentHeader from "./paymentHeader";
 import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
+import { LoadingButton } from "@mui/lab";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -39,11 +39,12 @@ const paymentInformation = () => {
   const [editOpen, setEditOpen] = React.useState(false);
   const orderUuid = useParams().uuid;
   const { enqueueSnackbar } = useSnackbar();
-  const [visible, setVisible] = React.useState(false);
+  const [isApproved, setIsApproved] = React.useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState([]);
-  const [creditCheckMessage, setCreditCheckMessage] = useState("N/A");
+  const [creditCheckMessage, setCreditCheckMessage] = useState("");
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
+  const [apiLoading, setApiLoading] = React.useState(false);
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -106,7 +107,6 @@ const paymentInformation = () => {
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
   const onSubmit = (values) => {
-    // console.log("custom data", customData);
     setOpen(true);
     const data = isUpdateData
       ? {
@@ -137,7 +137,6 @@ const paymentInformation = () => {
           // navigate(`${response?.data?.paymentUrl}`);
           window.location.href = `${response?.data?.paymentUrl}`;
         }
-        // console.log("r : ", response);
       })
       .catch((e) => {
         enqueueSnackbar(e, { variant: "error" });
@@ -223,14 +222,13 @@ const paymentInformation = () => {
   }, [isLoading]);
 
   const handleCreditCheck = () => {
+    setApiLoading(true);
     const params = {
       // type : customData?.customerType.toLowerCase(),
       type:
         getValues("orgIdCreditCheck").length === 9 ? "corporate" : "private",
       creditCheckId: getValues("orgIdCreditCheck"),
     };
-    if (params.creditCheckId.length !== 11 && params.creditCheckId.length !== 9)
-      return setCreditCheckMessage("N/A");
     const creditCheckPrivateData = {
       personalId: params.creditCheckId,
       type: params.type,
@@ -243,24 +241,18 @@ const paymentInformation = () => {
       params.type === "private"
         ? creditCheckPrivateData
         : creditCheckCorporateData;
-
+    setApiLoading(true);
     paymentScreenCreditCheck(preparedPayload).then((response) => {
-      // console.log("RES :", response);
-      if (response?.data?.data?.isApproved)
+      if (response?.data?.data?.isApproved) {
+        setIsApproved(true);
         setCreditCheckMessage("Credit check was successful");
-      else setCreditCheckMessage("Credit check was declined");
+        setApiLoading(false);
+      } else {
+        setIsApproved(false);
+        setCreditCheckMessage("Credit check was declined");
+        setApiLoading(false);
+      }
     });
-    // CreditCheckService.creditCheckForCheckout(preparedPayload, params.type)
-    //   .then((response) => {
-    //     // console.log("RES :", response);
-    //     if (response?.data?.isApproved)
-    //       setCreditCheckMessage("Credit check was successful");
-    //     else setCreditCheckMessage("Credit check was declined");
-    //   })
-    //   .catch((e) => {
-    //     enqueueSnackbar(e, { variant: "error" });
-    //     setCreditCheckMessage("N/A");
-    //   });
     setCustomData({
       ...customData,
       isCeditCheck: true,
@@ -772,24 +764,36 @@ const paymentInformation = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.orgIdCreditCheck}
-                                    helperText={
-                                      errors?.orgIdCreditCheck?.message
-                                    }
+                                    // helperText={
+                                    //   errors?.orgIdCreditCheck?.message
+                                    // }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
                                   />
                                 )}
                               />
-                              <Button
+                              <LoadingButton
                                 variant="contained"
+                                color="secondary"
                                 className="w-full md:w-auto font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800"
+                                aria-label="Confirm"
+                                size="large"
+                                type="button"
+                                loading={apiLoading}
+                                loadingPosition="center"
                                 onClick={() => handleCreditCheck()}
                               >
                                 {t("label:check")}
-                              </Button>
+                              </LoadingButton>
                             </div>
-                            <div className="text-MonochromeGray-300 my-8">
+                            <div
+                              className={`${
+                                !!isApproved
+                                  ? "text-primary-500"
+                                  : "text-red-500"
+                              } text-MonochromeGray-300 my-8 mx-8`}
+                            >
                               {creditCheckMessage}
                             </div>
                           </div>
