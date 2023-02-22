@@ -55,7 +55,7 @@ const createCategory = (onSubmit = () => {}) => {
     defaultValue,
     resolver: yupResolver(validateSchema),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   const onRawSubmit = (values) => {
     if (
       localStorage.getItem("defaultPdList") &&
@@ -199,7 +199,7 @@ const createCategory = (onSubmit = () => {}) => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
                       loadingPosition="center"
                     >
                       {t("label:updateCategory")}
