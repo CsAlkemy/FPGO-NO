@@ -3,7 +3,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { Box, Button, Hidden, Menu, MenuItem, TextField } from '@mui/material';
+import { Box, Button, Hidden, Menu, MenuItem, TextField } from "@mui/material";
 import "../../../../styles/colors.css";
 import InputBase from "@mui/material/InputBase";
 import {
@@ -18,8 +18,10 @@ import {
   fpAdminUsersOverview,
   businessAdminUsersOverview,
   organizationWiseUsersOverview,
-  customerOrdersListOverview, refundRequestsOverview, clientOrdersListOverview,
-} from '../overviewTable/TablesName';
+  customerOrdersListOverview,
+  refundRequestsOverview,
+  clientOrdersListOverview,
+} from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddIcon from "@mui/icons-material/Add";
@@ -37,9 +39,9 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { t } from "i18next";
 import Select from "@mui/material/Select";
 import { writeFile, utils } from "xlsx";
-import { DesktopDatePicker } from '@mui/lab';
-import ClientService from '../../../data-access/services/clientsService/ClientService';
-import { useSnackbar } from 'notistack';
+import { DesktopDatePicker } from "@mui/lab";
+import ClientService from "../../../data-access/services/clientsService/ClientService";
+import { useSnackbar } from "notistack";
 
 export default function OverviewHeader(props) {
   const dispatch = useDispatch();
@@ -113,8 +115,8 @@ export default function OverviewHeader(props) {
         user.role[0] === FP_ADMIN
           ? FP_ADMIN
           : user?.user_data?.organization?.uuid
-            ? user?.user_data?.organization?.uuid
-            : false
+          ? user?.user_data?.organization?.uuid
+          : false
       )
         .then((response) => {
           let wb = utils.book_new(),
@@ -123,7 +125,7 @@ export default function OverviewHeader(props) {
           writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
         })
         .catch((e) => {
-          enqueueSnackbar(e, {variant : "error"})
+          enqueueSnackbar(e, { variant: "error" });
         });
     }
   };
@@ -140,14 +142,28 @@ export default function OverviewHeader(props) {
   ];
 
   const handleDateChange = (date) => {
-    props.changeDate(date)
+    props.changeDate(date);
+  };
+
+  const getPlaceHolder = () => {
+    switch (props.tableRef) {
+      case customerOrdersListOverview:
+        return t("label:searchByOrderID");
+      case ordersListOverview:
+        return t("label:searchByOrderIDNamePhoneNo");
+      case customersListOverview:
+        return t("label:searchByNameOrgIDPhoneNo");
+      default:
+        return t("label:searchByNameEmailPhoneNo");
+    }
   };
 
   return (
     <>
       <Hidden smUp>
         <div className="py-4">
-          {(props.tableRef === customerOrdersListOverview || props.tableRef === clientOrdersListOverview) ? (
+          {props.tableRef === customerOrdersListOverview ||
+          props.tableRef === clientOrdersListOverview ? (
             ""
           ) : (
             <div className="subtitle1 text-MonochromeGray-900 my-14">
@@ -159,7 +175,7 @@ export default function OverviewHeader(props) {
               <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
-                placeholder={t("label:searchByNameEmailPhoneNo")}
+                placeholder={getPlaceHolder()}
                 inputProps={{ "aria-label": "search google maps" }}
                 onChange={(ev) => dispatch(setSearchText(ev.target.value))}
               />
@@ -169,11 +185,13 @@ export default function OverviewHeader(props) {
       </Hidden>
       <Hidden smDown>
         <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-0 sm:px-20">
-          {props.tableRef !== clientOrdersListOverview && (<Typography className="flex header6 col-span-2 my-14 md:my-0">
-            {(props.tableRef === customerOrdersListOverview)
-              ? ""
-              : props.headerSubtitle}
-          </Typography>)}
+          {props.tableRef !== clientOrdersListOverview && (
+            <Typography className="flex header6 col-span-2 my-14 md:my-0">
+              {props.tableRef === customerOrdersListOverview
+                ? ""
+                : props.headerSubtitle}
+            </Typography>
+          )}
           {props.tableRef === clientOrdersListOverview && (
             <div className="flex header6 col-span-2 my-14 md:my-0">
               <DesktopDatePicker
@@ -182,7 +200,9 @@ export default function OverviewHeader(props) {
                 views={["year", "month"]}
                 value={props.selectedDate}
                 onChange={handleDateChange}
-                renderInput={(params) => <TextField size="small" {...params} type="date" />}
+                renderInput={(params) => (
+                  <TextField size="small" {...params} type="date" />
+                )}
               />
             </div>
           )}
@@ -194,7 +214,7 @@ export default function OverviewHeader(props) {
               <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
-                placeholder={props.tableRef === customerOrdersListOverview ? t("label:searchByOrderID") : props.tableRef === ordersListOverview ? t("label:searchByOrderIDNamePhoneNo") : t("label:searchByNameEmailPhoneNo")}
+                placeholder={getPlaceHolder()}
                 inputProps={{ "aria-label": "search google maps" }}
                 onChange={(ev) => dispatch(setSearchText(ev.target.value))}
               />
@@ -248,7 +268,8 @@ export default function OverviewHeader(props) {
                     </MenuItem>
                   </Menu>
                 </div>
-              ) : (props.tableRef === customerOrdersListOverview  || props.tableRef === clientOrdersListOverview) ? (
+              ) : props.tableRef === customerOrdersListOverview ||
+                props.tableRef === clientOrdersListOverview ? (
                 ""
               ) : props.tableRef === creditChecksListOverview ? (
                 <div>
@@ -288,30 +309,32 @@ export default function OverviewHeader(props) {
                     </MenuItem>
                   </Menu>
                 </div>
-              ) : props.tableRef !== refundRequestsOverview && (
-                <div>
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    aria-haspopup="true"
-                    onClick={handleClick}
-                    className="rounded-md button2 flex-nowrap"
-                    disabled={
-                      ((props.tableRef === userListOverview ||
-                        props.tableRef === fpAdminUsersOverview ||
-                        props.tableRef === businessAdminUsersOverview) &&
-                        user.role[0] === GENERAL_USER) ||
-                      ((props.tableRef === ordersListOverview ||
-                        props.tableRef === productsListOverview ||
-                        props.tableRef === categoriesListOverview) &&
-                        user.role[0] === FP_ADMIN) ||
-                      (props.tableRef === clientsListOverview &&
-                        user.role[0] !== FP_ADMIN)
-                    }
-                  >
-                    {props.headerButtonLabel}
-                  </Button>
-                </div>
+              ) : (
+                props.tableRef !== refundRequestsOverview && (
+                  <div>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                      className="rounded-md button2 flex-nowrap"
+                      disabled={
+                        ((props.tableRef === userListOverview ||
+                          props.tableRef === fpAdminUsersOverview ||
+                          props.tableRef === businessAdminUsersOverview) &&
+                          user.role[0] === GENERAL_USER) ||
+                        ((props.tableRef === ordersListOverview ||
+                          props.tableRef === productsListOverview ||
+                          props.tableRef === categoriesListOverview) &&
+                          user.role[0] === FP_ADMIN) ||
+                        (props.tableRef === clientsListOverview &&
+                          user.role[0] !== FP_ADMIN)
+                      }
+                    >
+                      {props.headerButtonLabel}
+                    </Button>
+                  </div>
+                )
               )}
             </div>
           </div>
