@@ -80,6 +80,16 @@ class OrdersService {
       const preparePhone =
         row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
       const phone = preparePhone ? preparePhone.split("+") : null;
+
+      //On the fly get the order is expired or not
+      const dueDate = row.paymentLinkDueDate;
+      const splitedTimeAndDate = dueDate.split(", ");
+      const splitedDates = splitedTimeAndDate[1].split(".");
+      const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+      const dueDateTimeStamp = new Date(formatedDate).getTime();
+      const currentTimeStamp = new Date().getTime();
+      const isExpired = dueDateTimeStamp < currentTimeStamp;
+
       return {
         uuid: row.orderUuid,
         date: row.dateCreated,
@@ -89,17 +99,22 @@ class OrdersService {
         phone: phone ? "+" + phone[phone.length - 1] : null,
         email: row?.email ? row?.email : null,
         amount: row.amount,
-        stage: row?.status ? row?.status.toLowerCase() : null,
+        stage: row?.status
+          ? isExpired
+            ? "expired"
+            : row.status.toLowerCase()
+          : null,
         // stage: "Partial Refunded",
-        refundResend:
-          row.status.toLowerCase() === "sent"
-            ? "Resend"
-            : row.status.toLowerCase() === "paid" ||
-              row.status.toLowerCase() === "partial refunded"
-            // || row.status.toLowerCase() === "invoiced"
-            ? "Refund"
-            : null,
-        isCancel: row.status.toLowerCase() === "sent",
+        refundResend: isExpired
+          ? null
+          : row.status.toLowerCase() === "sent"
+          ? "Resend"
+          : row.status.toLowerCase() === "paid" ||
+            row.status.toLowerCase() === "partial refunded"
+          ? // || row.status.toLowerCase() === "invoiced"
+            "Refund"
+          : null,
+        isCancel: !isExpired && row.status.toLowerCase() === "sent",
         // refundResend: "Resend",
         // isCancel: true,
       };
@@ -765,7 +780,7 @@ class OrdersService {
     });
   };
 
-  mapRefundRequestsList = (data)=> {
+  mapRefundRequestsList = (data) => {
     let d;
     d = data.map((row) => {
       return {
@@ -776,16 +791,14 @@ class OrdersService {
         orderAmount: row.orderAmount,
         refundAmount: row.refundAmount,
         stage: row?.status ? row?.status.toLowerCase() : null,
-        approveAction: row?.status
-          ? row?.status.toLowerCase()
-          : null,
+        approveAction: row?.status ? row?.status.toLowerCase() : null,
         isCancel: row?.status.toLowerCase() === "refund pending",
       };
     });
     d.status_code = 200;
     d.is_data = true;
     return d;
-  }
+  };
 
   refundRequests = async () => {
     return new Promise((resolve, reject) => {
