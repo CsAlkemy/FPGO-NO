@@ -63,7 +63,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
     PrivateDefaultValue,
     resolver: yupResolver(validateSchemaUpdatePrivateCustomer),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const billingAddress = watch("billingAddress") || "";
   const zip = watch("billingZip") || "";
@@ -238,7 +238,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                       aria-label="Confirm"
                       size="large"
                       type="submit"
-                      disabled={user.role[0] === FP_ADMIN}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
                       loading={loading}
                       loadingPosition="center"
                     >
