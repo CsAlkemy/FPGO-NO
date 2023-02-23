@@ -1091,9 +1091,9 @@ const OrderInformation = ({ info }) => {
                                 dirtyFields.email &&
                                 dirtyFields.customerName &&
                                 dirtyFields.orgorPID ? (
-                                  <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                  <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                                 ) : (
-                                  <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                  <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                                 )}
                               </span>
                             </div>
@@ -1543,9 +1543,9 @@ const OrderInformation = ({ info }) => {
                                   dirtyFields.customerReference &&
                                   dirtyFields.customerNotes &&
                                   dirtyFields.termsConditions ? (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                                   ) : (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                                   )}
                                 </span>
                               </div>
@@ -1730,9 +1730,9 @@ const OrderInformation = ({ info }) => {
                                 <span>
                                   {dirtyFields.internalReferenceNo &&
                                   dirtyFields.customerNotesInternal ? (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                                   ) : (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                                   )}
                                 </span>
                               </div>

@@ -353,7 +353,7 @@ const OrderModal = (props) => {
                   !flag && (
                     <div>
                       <div className="caption2">{t("label:refundType")}</div>
-                      <div className="grid grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
+                      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
                         <Button
                           variant="outlined"
                           className={`body2 ${

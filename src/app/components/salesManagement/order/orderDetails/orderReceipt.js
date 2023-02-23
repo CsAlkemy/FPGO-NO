@@ -45,12 +45,17 @@ const orderReceipt = ({info}) => {
 
   return (
     <div>
-      <Pdf targetRef={ref} filename={`kvittering_${info?.organizationDetails?.name}_${info?.orderUuid}.pdf`} x={.5} y={.5}>
+      <Pdf
+        targetRef={ref}
+        filename={`kvittering_${info?.organizationDetails?.name}_${info?.orderUuid}.pdf`}
+        x={0.5}
+        y={0.5}
+      >
         {({ toPdf }) => (
           <Button
             color="secondary"
-            variant="outlined"
-            className="button-outline-product text-MonochromeGray-700 mb-4"
+            variant="contained"
+            className="button2 rounded-4 mb-20 hover:bg-MonochromeGray-25 hover:text-MonochromeGray-700"
             onClick={toPdf}
           >
             {t("label:exportToPdf")}
@@ -58,7 +63,10 @@ const orderReceipt = ({info}) => {
         )}
       </Pdf>
       <div className="flex flex-col flex-auto min-w-0 max-w-screen-xl mb-32 md:mb-0">
-        <div className="flex-auto  w-full border-1 border-MonochromeGray-50 max-w-lg"  ref={ref}>
+        <div
+          className="flex-auto  w-full border-1 border-MonochromeGray-50 max-w-lg"
+          ref={ref}
+        >
           {/*md:w-3/4 lg:w-2/3 xl:w-7/12*/}
           <div className="order-receipt-container">
             <img
@@ -71,8 +79,7 @@ const orderReceipt = ({info}) => {
                 {t("label:transactionReceipt")}
               </div>
               <div className="subtitle3 text-MonochromeGray-700 flex justify-end">
-                {t("label:orderId")}:{" "}
-                {info?.orderUuid ? info?.orderUuid : "-"}
+                {t("label:orderId")}: {info?.orderUuid ? info?.orderUuid : "-"}
               </div>
             </div>
 
@@ -145,7 +152,7 @@ const orderReceipt = ({info}) => {
                   info?.organizationDetails?.billingAddress?.countryCode &&
                   info?.organizationDetails?.billingAddress?.msisdn
                     ? info?.organizationDetails?.billingAddress?.countryCode +
-                    info?.organizationDetails?.billingAddress?.msisdn
+                      info?.organizationDetails?.billingAddress?.msisdn
                     : "-, "}
                 </div>
                 <div>
@@ -174,23 +181,23 @@ const orderReceipt = ({info}) => {
             </div>
             {info?.productList && info?.productList.length
               ? info.productList.map((row, index) => (
-                <div
-                  key={index}
-                  className="order-receipt-table body4 border-b-1 border-MonochromeGray-50"
-                >
-                  <div className="my-auto py-16 px-10 ">{row.name}</div>
-                  <div className="my-auto py-16 px-10">{row.quantity}</div>
-                  <div className="my-auto py-16 px-10 text-right">
-                    {row.rate}
+                  <div
+                    key={index}
+                    className="order-receipt-table body4 border-b-1 border-MonochromeGray-50"
+                  >
+                    <div className="my-auto py-16 px-10 ">{row.name}</div>
+                    <div className="my-auto py-16 px-10">{row.quantity}</div>
+                    <div className="my-auto py-16 px-10 text-right">
+                      {row.rate}
+                    </div>
+                    <div className="my-auto py-16 px-10 text-right">
+                      {row.tax}
+                    </div>
+                    <div className="my-auto py-16 px-10 text-right">
+                      {row.amount}
+                    </div>
                   </div>
-                  <div className="my-auto py-16 px-10 text-right">
-                    {row.tax}
-                  </div>
-                  <div className="my-auto py-16 px-10 text-right">
-                    {row.amount}
-                  </div>
-                </div>
-              ))
+                ))
               : ""}
             <div className="grid grid-cols-1 sm:grid-cols-3 my-10">
               <div className="col-span-2"></div>

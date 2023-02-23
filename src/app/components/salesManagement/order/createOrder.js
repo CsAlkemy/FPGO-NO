@@ -1,6 +1,6 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { ClickAwayListener } from "@mui/base";
-import { Search } from "@mui/icons-material";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {ClickAwayListener} from "@mui/base";
+import {Search} from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Cancel from "@mui/icons-material/Cancel";
@@ -10,11 +10,7 @@ import EventIcon from "@mui/icons-material/Event";
 import RedoIcon from "@mui/icons-material/Redo";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
-import {
-  DesktopDatePicker,
-  DesktopDateTimePicker,
-  LoadingButton,
-} from "@mui/lab";
+import {DesktopDatePicker, DesktopDateTimePicker, LoadingButton,} from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
@@ -32,15 +28,15 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { FiMinus } from "react-icons/fi";
-import { IoMdAdd } from "react-icons/io";
+import {useSnackbar} from "notistack";
+import React, {useEffect, useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
+import {BsFillCheckCircleFill} from "react-icons/bs";
+import {FiMinus} from "react-icons/fi";
+import {IoMdAdd} from "react-icons/io";
 import PhoneInput from "react-phone-input-2";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import ProductService from "../../../data-access/services/productsService/ProductService";
@@ -53,13 +49,13 @@ import {
   validateSchemaCreateOrderPrivateOrderByEmail,
 } from "../utils/helper";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
-import { useCreateOrderMutation } from "app/store/api/apiSlice";
+import {useCreateOrderMutation} from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from "../../../data-access/services/authService";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { es, nn, nb } from "date-fns/locale";
-import { formatInTimeZone } from "date-fns-tz";
+import {formatInTimeZone} from "date-fns-tz";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -1430,81 +1426,78 @@ const createOrder = () => {
                           }
                         >
                           <div className="create-order-due-date w-full">
-                              <DesktopDateTimePicker
-                                label={t("label:dueDateForPaymentLink")}
-                                // inputFormat="dd MMM, yyyy HH:mm"
-                                inputFormat="dd.MM.yyyy HH:mm"
-                                autoFocus
-                                ampm={false}
-                                disableOpenPicker
-                                value={
-                                  !value
-                                    ? new Date().setDate(
-                                        new Date().getDate() + 1
-                                      )
-                                    : getUTCTime(value)
-                                  // : value
-                                }
-                                required
-                                open={datePickerOpen}
-                                disabled={!watchOrderDate}
-                                minDate={
-                                  watchOrderDate
-                                    ? new Date().setDate(
-                                        watchOrderDate.getDate() + 1
-                                      )
-                                    : new Date().setDate(
-                                        new Date().getDate() - 30
-                                      )
-                                }
-                                disablePast={true}
-                                onChange={(_) => {
-                                  console.log("On Change Fired", _);
-                                  let utc =
-                                    _.getTime() + _.getTimezoneOffset() * 60000;
-                                  let nd = new Date(
-                                    utc +
-                                      3000000 * new Date().getTimezoneOffset()
-                                  );
-                                  console.log("nd :", nd);
-                                  return onChange(_);
-                                  // return onChange(nd)
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    onBlur={onBlur}
-                                    type="date"
-                                    required
-                                    fullWidth
-                                    onFocus={() =>
-                                      setCustomDateDropDown(!customDateDropDown)
-                                    }
-                                    error={!!errors.dueDatePaymentLink}
-                                    helperText={
-                                      errors?.dueDatePaymentLink?.message
-                                    }
-                                    sx={{
-                                      svg: {
-                                        color: "#E7AB52",
-                                        cursor: "pointer",
-                                      },
-                                    }}
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment
-                                          position="end"
-                                          onClick={() =>
-                                            setCustomDateDropDown(true)
-                                          }
-                                        >
-                                          <EventIcon />
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                )}
-                              />
+                            <DesktopDateTimePicker
+                              label={t("label:dueDateForPaymentLink")}
+                              // inputFormat="dd MMM, yyyy HH:mm"
+                              inputFormat="dd.MM.yyyy HH:mm"
+                              autoFocus
+                              ampm={false}
+                              disableOpenPicker
+                              value={
+                                !value
+                                  ? new Date().setDate(new Date().getDate() + 1)
+                                  : getUTCTime(value)
+                                // : value
+                              }
+                              required
+                              open={datePickerOpen}
+                              disabled={!watchOrderDate}
+                              minDate={
+                                watchOrderDate
+                                  ? new Date().setDate(
+                                      watchOrderDate.getDate() + 1
+                                    )
+                                  : new Date().setDate(
+                                      new Date().getDate() - 30
+                                    )
+                              }
+                              disablePast={true}
+                              onChange={(_) => {
+                                console.log("On Change Fired", _);
+                                let utc =
+                                  _.getTime() + _.getTimezoneOffset() * 60000;
+                                let nd = new Date(
+                                  utc + 3000000 * new Date().getTimezoneOffset()
+                                );
+                                console.log("nd :", nd);
+                                return onChange(_);
+                                // return onChange(nd)
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  onBlur={onBlur}
+                                  type="date"
+                                  required
+                                  fullWidth
+                                  onFocus={() =>
+                                    setCustomDateDropDown(!customDateDropDown)
+                                  }
+                                  error={!!errors.dueDatePaymentLink}
+                                  helperText={
+                                    errors?.dueDatePaymentLink?.message
+                                  }
+                                  sx={{
+                                    svg: {
+                                      color: "#E7AB52",
+                                      cursor: "pointer",
+                                    },
+                                  }}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <InputAdornment
+                                        position="end"
+                                        onClick={() =>
+                                          setCustomDateDropDown(true)
+                                        }
+                                      >
+                                        <EventIcon />
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                />
+                              )}
+                            />
                             {customDateDropDown && (
                               <div
                                 className="absolute bg-white max-h-min rounded-4 shadow-4 w-9/12 z-999"
@@ -1934,25 +1927,29 @@ const createOrder = () => {
                         id="panel2a-header"
                       >
                         <div
-                          className={`subtitle3  flex gap-10 my-auto ${
+                          className={`subtitle3  flex gap-10 my-auto items-center ${
                             !expandedPanel2
                               ? "text-MonochromeGray-700"
                               : "text-white"
                           }`}
                         >
-                          {t("label:customerDetails")}
+                          <div className="my-auto mt-2">
+                            {t("label:customerDetails")}
+                          </div>
+
                           <span>
-                            {dirtyFields.primaryPhoneNumber &&
-                            dirtyFields.email &&
-                            dirtyFields.customerName &&
-                            dirtyFields.billingAddress &&
-                            dirtyFields.billingZip &&
-                            dirtyFields.billingCity &&
-                            dirtyFields.billingCountry &&
-                            dirtyFields.orgorPID ? (
-                              <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                            {(dirtyFields.primaryPhoneNumber &&
+                              dirtyFields.email &&
+                              dirtyFields.customerName &&
+                              dirtyFields.billingAddress &&
+                              dirtyFields.billingZip &&
+                              dirtyFields.billingCity &&
+                              dirtyFields.billingCountry &&
+                              dirtyFields.orgorPID) ||
+                            dirtyFields.searchCustomer ? (
+                              <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                             ) : (
-                              <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                              <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                             )}
                           </span>
                         </div>
@@ -2391,9 +2388,9 @@ const createOrder = () => {
                               dirtyFields.receiptNo &&
                               dirtyFields.customerNotes &&
                               dirtyFields.termsConditions ? (
-                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                               ) : (
-                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                               )}
                             </span>
                           </div>
@@ -2550,9 +2547,9 @@ const createOrder = () => {
                             <span>
                               {dirtyFields.internalReferenceNo &&
                               dirtyFields.customerNotesInternal ? (
-                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                               ) : (
-                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                               )}
                             </span>
                           </div>
