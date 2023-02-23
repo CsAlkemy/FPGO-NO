@@ -175,7 +175,7 @@ export default function OverviewHeader(props) {
               <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
-                placeholder={t("label:searchByNameEmailPhoneNo")}
+                placeholder={getPlaceHolder()}
                 inputProps={{ "aria-label": "search google maps" }}
                 onChange={(ev) => dispatch(setSearchText(ev.target.value))}
               />
