@@ -82,7 +82,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
     CreateCorporateDefaultValue,
     resolver: yupResolver(validateSchema),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const billingAddress = watch("billingAddress") || "";
   const zip = watch("billingZip") || "";
@@ -366,7 +366,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
                       loadingPosition="center"
                     >
                       {t("label:update")}
