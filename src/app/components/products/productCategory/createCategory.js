@@ -137,7 +137,7 @@ const createCategory = () => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.name}
-                        helperText={errors?.name?.message}
+                        helperText={errors?.name?.message ? t(`helperText:${errors?.name?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                         required
@@ -157,7 +157,7 @@ const createCategory = () => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.description}
-                        helperText={errors?.description?.message}
+                        helperText={errors?.description?.message ? t(`helperText:${errors?.description?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                       />

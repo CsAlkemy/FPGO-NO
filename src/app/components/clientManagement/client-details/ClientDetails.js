@@ -744,7 +744,7 @@ const ClientDetails = () => {
                                     type="number"
                                     autoComplete="off"
                                     error={!!errors.id}
-                                    helperText={errors?.id?.message}
+                                    helperText={errors?.id?.message ? t(`helperText:${errors?.id?.message}`) : ""}
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -761,7 +761,7 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.clientName}
-                                    helperText={errors?.clientName?.message}
+                                    helperText={errors?.clientName?.message ? t(`helperText:${errors?.clientName?.message}`) : ""}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -801,7 +801,7 @@ const ClientDetails = () => {
                                       })}
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.organizationType?.message}
+                                      {errors?.organizationType?.message ? t(`helperText:${errors?.organizationType?.message}`) : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -818,7 +818,7 @@ const ClientDetails = () => {
                                       autoComplete="off"
                                       error={!!errors.parentClientName}
                                       helperText={
-                                        errors?.parentClientName?.message
+                                        errors?.parentClientName?.message ? t(`helperText:${errors?.parentClientName?.message}`) : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -865,7 +865,7 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.fullName}
-                                    helperText={errors?.fullName?.message}
+                                    helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -897,7 +897,7 @@ const ClientDetails = () => {
                                       onBlur={handleOnBlurGetDialCode}
                                     />
                                     <FormHelperText>
-                                      {errors?.primaryPhoneNumber?.message}
+                                      {errors?.primaryPhoneNumber?.message ? t(`helperText:${errors?.primaryPhoneNumber?.message}`) : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -912,7 +912,7 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.designation}
-                                    helperText={errors?.designation?.message}
+                                    helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -929,7 +929,7 @@ const ClientDetails = () => {
                                     type="email"
                                     autoComplete="off"
                                     error={!!errors.email}
-                                    helperText={errors?.email?.message}
+                                    helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1016,7 +1016,7 @@ const ClientDetails = () => {
                                         required
                                         error={!!errors.contactEndDate}
                                         helperText={
-                                          errors?.contactEndDate?.message
+                                          errors?.contactEndDate?.message ? t(`helperText:${errors?.contactEndDate?.message}`) : ""
                                         }
                                       />
                                     )}
@@ -1033,7 +1033,7 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.commision}
-                                    helperText={errors?.commision?.message}
+                                    helperText={errors?.commision?.message ? t(`helperText:${errors?.commision?.message}`) : ""}
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1058,7 +1058,7 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.smsCost}
-                                    helperText={errors?.smsCost?.message}
+                                    helperText={errors?.smsCost?.message ? t(`helperText:${errors?.smsCost?.message}`) : ""}
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1083,7 +1083,7 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.emailCost}
-                                    helperText={errors?.emailCost?.message}
+                                    helperText={errors?.emailCost?.message ? t(`helperText:${errors?.emailCost?.message}`) : ""}
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1109,7 +1109,7 @@ const ClientDetails = () => {
                                     autoComplete="off"
                                     error={!!errors.creditCheckCost}
                                     helperText={
-                                      errors?.creditCheckCost?.message
+                                      errors?.creditCheckCost?.message ? t(`helperText:${errors?.creditCheckCost?.message}`) : ""
                                     }
                                     variant="outlined"
                                     required

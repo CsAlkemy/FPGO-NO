@@ -20,8 +20,8 @@ import { useTranslation } from 'react-i18next';
 const schema = yup.object().shape({
   email: yup
     .string()
-    .email("You must enter a valid email")
-    .required("You must enter a email"),
+    .email("youMustEnterAValidEmail")
+    .required("youMustEnterAEmail"),
 });
 
 const defaultValues = {
@@ -94,7 +94,7 @@ function ForgotPasswordPage() {
                   label={t("label:email")}
                   type="email"
                   error={!!errors.email}
-                  helperText={errors?.email?.message}
+                  helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth

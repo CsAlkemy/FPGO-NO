@@ -477,7 +477,7 @@ const paymentInformation = () => {
                                         value={field.value || ""}
                                       />
                                       <FormHelperText>
-                                        {errors?.phone?.message}
+                                        {errors?.phone?.message ? t(`helperText:${errors?.phone?.message}`) : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -493,7 +493,7 @@ const paymentInformation = () => {
                                       className="mb-32 md:mb-auto"
                                       autoComplete="off"
                                       error={!!errors.email}
-                                      helperText={errors?.email?.message}
+                                      helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                       required={
@@ -519,7 +519,7 @@ const paymentInformation = () => {
                                         autoComplete="off"
                                         error={!!errors.customerName}
                                         helperText={
-                                          errors?.customerName?.message
+                                          errors?.customerName?.message ? t(`helperText:${errors?.customerName?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -546,7 +546,7 @@ const paymentInformation = () => {
                                           "corporate"
                                         }
                                         helperText={
-                                          errors?.orgIdOrPNumber?.message
+                                          errors?.orgIdOrPNumber?.message ? t(`helperText:${errors?.orgIdOrPNumber?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -574,7 +574,7 @@ const paymentInformation = () => {
                                       autoComplete="off"
                                       error={!!errors.billingAddress}
                                       helperText={
-                                        errors?.billingAddress?.message
+                                        errors?.billingAddress?.message ? t(`helperText:${errors?.billingAddress?.message}`) : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -603,7 +603,7 @@ const paymentInformation = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.billingZip}
-                                      helperText={errors?.billingZip?.message}
+                                      helperText={errors?.billingZip?.message ? t(`helperText:${errors?.billingZip?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                       // inputlabelprops={{
@@ -631,7 +631,7 @@ const paymentInformation = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.billingCity}
-                                    helperText={errors?.billingCity?.message}
+                                    helperText={errors?.billingCity?.message ? t(`helperText:${errors?.billingCity?.message}`) : ""}
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -678,7 +678,7 @@ const paymentInformation = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.billingCountry?.message}
+                                      {errors?.billingCountry?.message ? t(`helperText:${errors?.billingCountry?.message}`) : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
