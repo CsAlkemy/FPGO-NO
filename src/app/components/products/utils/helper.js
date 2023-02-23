@@ -1,18 +1,18 @@
 import * as yup from 'yup';
 
 export const validateSchema = yup.object().shape({
-  name: yup.string() .required('You must enter Category Name'),
-  description: yup.string().max(200,'Description should not be more than 200 characters')
+  name: yup.string() .required('youMustEnterCategoryName'),
+  description: yup.string().max(200,'descriptionCharacterLimitationRule')
 });
 
 export const validateSchemaProductCreate = yup.object().shape({
-  productID: yup.string() .required('You must enter product Id'),
-  productName: yup.string() .required('You must enter product name'),
+  productID: yup.string() .required('youMustEnterProductId'),
+  productName: yup.string() .required('youMustEnterProductName'),
   price: yup
     .string()
-    .required('You must enter price'),
-  tax: yup.string() .required('You must select tax'),
-  unit: yup.string().matches(/^[a-zA-Z ]*$/,`Product Unit Can't be Number`)
+    .required('youMustEnterPrice'),
+  tax: yup.string() .required('youMustSelectTax'),
+  unit: yup.string().matches(/^[a-zA-Z ]*$/,`productUnitCanTBeNumber`)
 });
 
 

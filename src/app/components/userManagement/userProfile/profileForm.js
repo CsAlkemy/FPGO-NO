@@ -204,7 +204,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="email"
                   autoComplete="off"
                   error={!!errors.email}
-                  helperText={errors?.email?.message}
+                  helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -221,7 +221,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="text"
                   autoComplete="off"
                   error={!!errors.fullName}
-                  helperText={errors?.fullName?.message}
+                  helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -248,7 +248,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                     onBlur={handleOnBlurGetDialCode}
                   />
                   <FormHelperText>
-                    {errors?.phoneNumber?.message}
+                    {errors?.phoneNumber?.message ? t(`helperText:${errors?.phoneNumber?.message}`) : ""}
                   </FormHelperText>
                 </FormControl>
               )}
@@ -295,7 +295,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="text"
                   autoComplete="off"
                   error={!!errors.designation}
-                  helperText={errors?.designation?.message}
+                  helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
                   variant="outlined"
                   fullWidth
                 />
@@ -356,7 +356,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                       <MenuItem disabled>{t("label:noRoleFound")}</MenuItem>
                     )}
                   </Select>
-                  <FormHelperText>{errors?.role?.message}</FormHelperText>
+                  <FormHelperText>{errors?.role?.message ? t(`helperText:${errors?.role?.message}`) : ""}</FormHelperText>
                 </FormControl>
               )}
             />

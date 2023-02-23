@@ -31,18 +31,18 @@ const schema = yup.object().shape({
   organizationId: yup
     .string()
     .matches(/^[0-9]+$/, {
-      message: "Organization ID must be number",
+      message: "organizationIdMustBeNumber",
       excludeEmptyString: true,
     })
-    .required("Organization ID is required")
+    .required("organizationIdIsRequired")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "Must be exactly 9 numbers")
-    .max(9, "Must be exactly 9 numbers"),
+    .min(9, "pNumberMustBeNumber")
+    .max(9, "pNumberMustBeNumber"),
   // trems: yup
   //   .bool()
-  //   .required("You need to accept the terms and conditions")
-  //   .oneOf([true], "You need to accept the terms and conditions"),
+  //   .required("youNeedToAcceptTheTermsAndConditions")
+  //   .oneOf([true], "youNeedToAcceptTheTermsAndConditions"),
 });
 
 export default function CreditCheckCorporateClient() {
@@ -161,7 +161,7 @@ export default function CreditCheckCorporateClient() {
                             label={t("label:organizationId")}
                             type="number"
                             error={!!errors.organizationId}
-                            helperText={errors?.organizationId?.message}
+                            helperText={errors?.organizationId?.message ? t(`helperText:${errors?.organizationId?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth

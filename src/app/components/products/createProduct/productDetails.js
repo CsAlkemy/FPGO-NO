@@ -310,7 +310,7 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.productID}
-                              helperText={errors?.productID?.message}
+                              helperText={errors?.productID?.message ? t(`helperText:${errors?.productID?.message}`) : ""}
                               variant="outlined"
                               required
                               fullWidth
@@ -331,7 +331,7 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.productName}
-                              helperText={errors?.productName?.message}
+                              helperText={errors?.productName?.message ? t(`helperText:${errors?.productName?.message}`) : ""}
                               variant="outlined"
                               fullWidth
                               required
@@ -353,7 +353,7 @@ const createProducts = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.price}
-                            helperText={errors?.price?.message}
+                            helperText={errors?.price?.message ? t(`helperText:${errors?.price?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             required
@@ -379,7 +379,7 @@ const createProducts = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.unit}
-                            helperText={errors?.unit?.message}
+                            helperText={errors?.unit?.message ? t(`helperText:${errors?.unit?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             value={field.value || ""}
@@ -397,7 +397,7 @@ const createProducts = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.manufacturer}
-                            helperText={errors?.manufacturer?.message}
+                            helperText={errors?.manufacturer?.message ? t(`helperText:${errors?.manufacturer?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             disabled={productType === 2 ? true : false}
@@ -497,7 +497,7 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.description}
-                              helperText={errors?.description?.message}
+                              helperText={errors?.description?.message ? t(`helperText:${errors?.description?.message}`) : ""}
                               variant="outlined"
                               fullWidth
                               value={field.value || ""}
@@ -575,7 +575,7 @@ const createProducts = () => {
                               type="number"
                               autoComplete="off"
                               error={!!errors.cost}
-                              helperText={errors?.cost?.message}
+                              helperText={errors?.cost?.message ? t(`helperText:${errors?.cost?.message}`) : ""}
                               variant="outlined"
                               fullWidth
                               InputProps={{

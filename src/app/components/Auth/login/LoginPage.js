@@ -50,9 +50,9 @@ const LoginPage = () => {
   const schema = yup.object().shape({
     email: yup
       .string()
-      .email("You must enter a valid email")
-      .required("You must enter a email"),
-    password: yup.string().required("Please enter your password."),
+      .email("youMustEnterAValidEmail")
+      .required("youMustEnterAEmail"),
+    password: yup.string().required("pleaseEnterYourPassword."),
   });
 
   // default form values
@@ -175,7 +175,7 @@ const LoginPage = () => {
                 type="email"
                 autoComplete="off"
                 error={!!errors.email}
-                helperText={errors?.email?.message}
+                helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                 variant="outlined"
                 required
                 fullWidth

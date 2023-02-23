@@ -268,7 +268,7 @@ export default function CreateUsers() {
                             type="email"
                             autoComplete="off"
                             error={!!errors.email}
-                            helperText={errors?.email?.message}
+                            helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth
@@ -285,7 +285,7 @@ export default function CreateUsers() {
                             type="text"
                             autoComplete="off"
                             error={!!errors.fullName}
-                            helperText={errors?.fullName?.message}
+                            helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth
@@ -316,7 +316,7 @@ export default function CreateUsers() {
                               onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.phoneNumber?.message}
+                              {errors?.phoneNumber?.message ? t(`helperText:${errors?.phoneNumber?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -379,7 +379,7 @@ export default function CreateUsers() {
                             type="text"
                             autoComplete="off"
                             error={!!errors.designation}
-                            helperText={errors?.designation?.message}
+                            helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                           />
@@ -461,7 +461,7 @@ export default function CreateUsers() {
                           type={!hide ? "text" : "password"}
                           autoComplete="off"
                           error={!!errors.password}
-                          helperText={errors?.password?.message}
+                          helperText={errors?.password?.message ? t(`helperText:${errors?.password?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -491,7 +491,7 @@ export default function CreateUsers() {
                           type={!hide ? "text" : "password"}
                           autoComplete="off"
                           error={!!errors.confirmpassword}
-                          helperText={errors?.confirmpassword?.message}
+                          helperText={errors?.confirmpassword?.message ? t(`helperText:${errors?.confirmpassword?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth

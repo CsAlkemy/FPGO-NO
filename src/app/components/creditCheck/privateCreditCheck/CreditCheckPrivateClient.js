@@ -30,18 +30,18 @@ const schema = yup.object().shape({
   personalId: yup
     .string()
     .matches(/^[0-9]+$/, {
-      message: "P number must be number",
+      message: "pNumberMustBeNumber",
       excludeEmptyString: true,
     })
-    .required("P Number is required")
+    .required("pNumberIsRequired")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(11, "Must be exactly 11 numbers")
-    .max(11, "Must be exactly 11 numbers"),
+    .min(11, "mustBeExactlyElevenNumbers")
+    .max(11, "mustBeExactlyElevenNumbers"),
   trems: yup
     .bool()
-    .required("You need to accept the terms and conditions")
-    .oneOf([true], "You need to accept the terms and conditions"),
+    .required("youNeedToAcceptTheTermsAndConditions")
+    .oneOf([true], "youNeedToAcceptTheTermsAndConditions"),
 });
 
 export default function CreditCheckPrivateClient() {
@@ -163,7 +163,7 @@ export default function CreditCheckPrivateClient() {
                             label={t("label:personalId")}
                             type="text"
                             error={!!errors.personalId}
-                            helperText={errors?.personalId?.message}
+                            helperText={errors?.personalId?.message ? t(`helperText:${errors?.personalId?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth
@@ -190,7 +190,7 @@ export default function CreditCheckPrivateClient() {
                               //onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.phoneNumber?.message}
+                              {errors?.phoneNumber?.message ? t(`helperText:${errors?.phoneNumber?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -228,7 +228,7 @@ export default function CreditCheckPrivateClient() {
                               }
                             />
                             <FormHelperText>
-                              {errors?.trems?.message}
+                              {errors?.trems?.message ? t(`helperText:${errors?.trems?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
