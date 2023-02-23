@@ -438,9 +438,9 @@ const createCorporateCustomer = () => {
                           dirtyFields.shippingZip &&
                           dirtyFields.shippingCity &&
                           dirtyFields.shippingCountry ? (
-                          <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                         ) : (
-                          <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                         )}
                       </div>
                     </AccordionSummary>
@@ -650,7 +650,7 @@ const createCorporateCustomer = () => {
                           dirtyFields.notes ? (
                           <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                         ) : (
-                          <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                         )}
                       </div>
                     </AccordionSummary>
