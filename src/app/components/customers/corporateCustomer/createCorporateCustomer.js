@@ -206,7 +206,7 @@ const createCorporateCustomer = () => {
                           type="number"
                           autoComplete="off"
                           error={!!errors.organizationID}
-                          helperText={errors?.organizationID?.message}
+                          helperText={errors?.organizationID?.message ? t(`helperText:${errors?.organizationID?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -246,7 +246,7 @@ const createCorporateCustomer = () => {
                         type='text'
                         autoComplete='off'
                         error={!!errors.OrganizationName}
-                        helperText={errors?.OrganizationName?.message}
+                        helperText={errors?.OrganizationName?.message ? t(`helperText:${errors?.OrganizationName?.message}`) : ""}
                         variant='outlined'
                         fullWidth
                         required
@@ -269,7 +269,7 @@ const createCorporateCustomer = () => {
                         type={t("label:email")}
                         autoComplete="off"
                         error={!!errors.orgEmail}
-                        helperText={errors?.orgEmail?.message}
+                        helperText={errors?.orgEmail?.message ? t(`helperText:${errors?.orgEmail?.message}`) : ""}
                         variant="outlined"
                         required
                         value={field.value || ''}
@@ -304,7 +304,7 @@ const createCorporateCustomer = () => {
 
                           />
                           <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message}
+                            {errors?.primaryPhoneNumber?.message ? t(`helperText:${errors?.primaryPhoneNumber?.message}`) : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -323,7 +323,7 @@ const createCorporateCustomer = () => {
                           type='text'
                           autoComplete='off'
                           error={!!errors.billingAddress}
-                          helperText={errors?.billingAddress?.message}
+                          helperText={errors?.billingAddress?.message ? t(`helperText:${errors?.billingAddress?.message}`) : ""}
                           variant='outlined'
                           fullWidth
                           required
@@ -345,7 +345,7 @@ const createCorporateCustomer = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.billingZip}
-                          helperText={errors?.billingZip?.message}
+                          helperText={errors?.billingZip?.message ? t(`helperText:${errors?.billingZip?.message}`) : ""}
                           variant="outlined"
                           fullWidth
                           required
@@ -366,7 +366,7 @@ const createCorporateCustomer = () => {
                         type='text'
                         autoComplete='off'
                         error={!!errors.billingCity}
-                        helperText={errors?.billingCity?.message}
+                        helperText={errors?.billingCity?.message ? t(`helperText:${errors?.billingCity?.message}`) : ""}
                         variant='outlined'
                         fullWidth
                         required
@@ -413,7 +413,7 @@ const createCorporateCustomer = () => {
                           )}
                         </Select>
                         <FormHelperText>
-                          {errors?.billingCountry?.message}
+                          {errors?.billingCountry?.message ? t(`helperText:${errors?.billingCountry?.message}`) : ""}
                         </FormHelperText>
                       </FormControl>
                     )}
@@ -438,9 +438,9 @@ const createCorporateCustomer = () => {
                           dirtyFields.shippingZip &&
                           dirtyFields.shippingCity &&
                           dirtyFields.shippingCountry ? (
-                          <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                         ) : (
-                          <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                         )}
                       </div>
                     </AccordionSummary>
@@ -513,7 +513,7 @@ const createCorporateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingAddress}
                                           helperText={
-                                            errors?.shippingAddress?.message
+                                            errors?.shippingAddress?.message ? t(`helperText:${errors?.shippingAddress?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -540,7 +540,7 @@ const createCorporateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingZip}
                                           helperText={
-                                            errors?.shippingZip?.message
+                                            errors?.shippingZip?.message ? t(`helperText:${errors?.shippingZip?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -567,7 +567,7 @@ const createCorporateCustomer = () => {
                                         disabled={sameAddress}
                                         error={!!errors.shippingCity}
                                         helperText={
-                                          errors?.shippingCity?.message
+                                          errors?.shippingCity?.message ? t(`helperText:${errors?.shippingCity?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -612,7 +612,7 @@ const createCorporateCustomer = () => {
                                           ))}
                                         </Select>
                                         <FormHelperText>
-                                          {errors?.shippingCountry?.message}
+                                          {errors?.shippingCountry?.message ? t(`helperText:${errors?.shippingCountry?.message}`) : ""}
                                         </FormHelperText>
                                       </FormControl>
                                     )}
@@ -650,7 +650,7 @@ const createCorporateCustomer = () => {
                           dirtyFields.notes ? (
                           <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                         ) : (
-                          <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                         )}
                       </div>
                     </AccordionSummary>
@@ -680,7 +680,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.fullName}
-                                  helperText={errors?.fullName?.message}
+                                  helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -700,7 +700,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.designation}
-                                  helperText={errors?.designation?.message}
+                                  helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -752,7 +752,7 @@ const createCorporateCustomer = () => {
                                   type="email"
                                   autoComplete="off"
                                   error={!!errors.email}
-                                  helperText={errors?.email?.message}
+                                  helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -776,7 +776,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.notes}
-                                  helperText={errors?.notes?.message}
+                                  helperText={errors?.notes?.message ? t(`helperText:${errors?.notes?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -824,7 +824,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.fullName}
-                                      helperText={errors?.fullName}
+                                      helperText={errors?.fullName ? t(`helperText:${errors?.fullName}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{
@@ -845,7 +845,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.designation}
-                                      helperText={errors?.designation?.message}
+                                      helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{
@@ -927,7 +927,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.notes}
-                                      helperText={errors?.message}
+                                      helperText={errors?.message ? t(`helperText:${errors?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{

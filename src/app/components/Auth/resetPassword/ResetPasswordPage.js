@@ -19,16 +19,16 @@ import { useTranslation } from 'react-i18next';
  */
 const schema = Yup.object().shape({
   password: Yup.string()
-    .required("Please enter your password.")
+    .required("pleaseEnterYourPassword.")
     .matches(
       /^(?=.*[a-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must be at least 8-15 digits and contain number and alphabets."
+      "passwordCombinationRules."
     ),
   confirmpassword: Yup.string().when("password", {
     is: (val) => !!(val && val.length > 0),
     then: Yup.string().oneOf(
       [Yup.ref("password")],
-      "Both password need to be the same"
+      "bothPasswordNeedToBeTheSame"
     ),
   }),
 });
@@ -101,7 +101,7 @@ function ResetPasswordPage() {
                   label={t("label:password")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.password}
-                  helperText={errors?.password?.message}
+                  helperText={errors?.password?.message ? t(`helperText:${errors?.password?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -131,7 +131,7 @@ function ResetPasswordPage() {
                   label={t("label:confirmPassword")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.confirmpassword}
-                  helperText={errors?.confirmpassword?.message}
+                  helperText={errors?.confirmpassword?.message ? t(`helperText:${errors?.confirmpassword?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth

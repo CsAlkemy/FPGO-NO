@@ -31,7 +31,8 @@ import {
   approvalListOverviewFPAdmin,
   businessAdminUsersOverview,
   categoriesListOverview,
-  clientAdminOverview, clientOrdersListOverview,
+  clientAdminOverview,
+  clientOrdersListOverview,
   clientsListOverview,
   creditChecksListOverview,
   customerOrdersListOverview,
@@ -43,7 +44,7 @@ import {
   refundRequestsOverview,
   subClientAdminOverview,
   userListOverview,
-} from './TablesName';
+} from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 
 export default function OverviewMainTable(props) {
@@ -61,8 +62,13 @@ export default function OverviewMainTable(props) {
   //   return 2;
   // }
   // const [page, setPage] = useState(pageNumCount(props.tableName));
-  const [data, setData] = useState(props.tableName === refundRequestsOverview ?
-    props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending") : props.tableData);
+  const [data, setData] = useState(
+    props.tableName === refundRequestsOverview
+      ? props.tableData.filter(
+          (row) => row.stage.toLowerCase() === "refund pending"
+        )
+      : props.tableData
+  );
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filteredData, setFilteredData] = useState([]);
   const [item, setItems] = useState(0);
@@ -79,9 +85,24 @@ export default function OverviewMainTable(props) {
   // }, [props.isLoading]);
   useEffect(() => {
     if (searchText.length !== 0) {
-      setData(FuseUtils.filterArrayByString(props.tableName === refundRequestsOverview ? filteredData : props.tableData, searchText));
+      setData(
+        FuseUtils.filterArrayByString(
+          props.tableName === refundRequestsOverview
+            ? filteredData
+            : props.tableData,
+          searchText
+        )
+      );
     } else {
-      setData(props.tableName === refundRequestsOverview && !filteredData.length ? props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending") : refundRequestsOverview && !!filteredData.length ? filteredData : props.tableData);
+      setData(
+        props.tableName === refundRequestsOverview && !filteredData.length
+          ? props.tableData.filter(
+              (row) => row.stage.toLowerCase() === "refund pending"
+            )
+          : refundRequestsOverview && !!filteredData.length
+          ? filteredData
+          : props.tableData
+      );
     }
   }, [props.isLoading, searchText]);
   const [sortOrder, setSortOrder] = useState({
@@ -207,16 +228,28 @@ export default function OverviewMainTable(props) {
         setData(props.tableData);
         break;
       case 1:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "sent"));
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
+        );
         break;
       case 2:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "paid"));
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "paid")
+        );
         break;
       case 3:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "invoiced"));
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "invoiced"
+          )
+        );
         break;
       case 4:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "expired"));
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "expired"
+          )
+        );
         break;
     }
   };
@@ -349,9 +382,23 @@ export default function OverviewMainTable(props) {
         break;
       case 4:
         setData(
-          props.tableData.filter(
-            (row) => row.stage.toLowerCase() === "=expired"
-          )
+          props.tableData
+            .map((data) => {
+              const dueDate = data.dueDate;
+              const splitedTimeAndDate = dueDate.split(", ");
+              const splitedDates = splitedTimeAndDate[1].split(".");
+              const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+              const dueDateTimeStamp = new Date(formatedDate).getTime();
+              const currentTimeStamp = new Date().getTime();
+              const isExpired = dueDateTimeStamp < currentTimeStamp;
+              const statusChanged = data?.status
+                ? isExpired
+                  ? "expired"
+                  : data.status.toLowerCase()
+                : null;
+              return { ...data, status: statusChanged };
+            })
+            .filter((row) => row.stage.toLowerCase() === "expired")
         );
         break;
     }
@@ -361,9 +408,15 @@ export default function OverviewMainTable(props) {
     switch (newValue) {
       case 0:
         setData(
-          props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending")
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "refund pending"
+          )
         );
-        setFilteredData(props.tableData.filter((row) => row.stage.toLowerCase() === "refund pending"))
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "refund pending"
+          )
+        );
         break;
       case 1:
         setData(
@@ -608,7 +661,11 @@ export default function OverviewMainTable(props) {
             <div>
               <Select
                 sx={{ height: 40 }}
-                defaultValue={props.tableName === refundRequestsOverview ? t("label:pending") : t("label:all")}
+                defaultValue={
+                  props.tableName === refundRequestsOverview
+                    ? t("label:pending")
+                    : t("label:all")
+                }
                 displayEmpty
                 className="w-full min-h-auto"
                 renderValue={(value) => {
@@ -641,7 +698,7 @@ export default function OverviewMainTable(props) {
             <div>
               <Select
                 sx={{ height: 40 }}
-                defaultValue={t("label:selectOptionToSort")}
+                defaultValue={t("label:sort")}
                 displayEmpty
                 className="w-full min-h-auto"
                 renderValue={(value) => {
@@ -732,7 +789,9 @@ export default function OverviewMainTable(props) {
             tableRef={props.tableName}
             changeDate={props.changeDate ? props.changeDate : null}
             selectedDate={props.selectedDate ? props.selectedDate : null}
-            setSelectedDate={props.setSelectedDate ? props.setSelectedDate : null}
+            setSelectedDate={
+              props.setSelectedDate ? props.setSelectedDate : null
+            }
           />
           <Box
             sx={{

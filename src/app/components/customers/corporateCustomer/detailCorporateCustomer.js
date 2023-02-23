@@ -82,7 +82,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
     CreateCorporateDefaultValue,
     resolver: yupResolver(validateSchema),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const billingAddress = watch("billingAddress") || "";
   const zip = watch("billingZip") || "";
@@ -366,7 +366,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
                       loadingPosition="center"
                     >
                       {t("label:update")}
@@ -424,7 +424,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.customerID}
-                                      helperText={errors?.customerID?.message}
+                                      helperText={errors?.customerID?.message ? t(`helperText:${errors?.customerID?.message}`) : ""}
                                       variant="outlined"
                                       required
                                       fullWidth
@@ -443,7 +443,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.organizationID}
-                                      helperText={errors?.organizationID?.message}
+                                      helperText={errors?.organizationID?.message ? t(`helperText:${errors?.organizationID?.message}`) : ""}
                                       variant="outlined"
                                       required
                                       fullWidth
@@ -465,7 +465,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.OrganizationName}
-                                      helperText={errors?.OrganizationName?.message}
+                                      helperText={errors?.OrganizationName?.message ? t(`helperText:${errors?.OrganizationName?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                       value={field.value || ''}
@@ -484,7 +484,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="email"
                                       autoComplete="off"
                                       error={!!errors.orgEmail}
-                                      helperText={errors?.orgEmail?.message}
+                                      helperText={errors?.orgEmail?.message ? t(`helperText:${errors?.orgEmail?.message}`) : ""}
                                       variant="outlined"
                                       required
                                       fullWidth
@@ -515,7 +515,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                         // onBlur={handleOnBlurGetDialCode}
                                       />
                                       <FormHelperText>
-                                        {errors?.primaryPhoneNumber?.message}
+                                        {errors?.primaryPhoneNumber?.message ? t(`helperText:${errors?.primaryPhoneNumber?.message}`) : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -562,7 +562,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             autoComplete="off"
                                             error={!!errors.billingAddress}
                                             helperText={
-                                              errors?.billingAddress?.message
+                                              errors?.billingAddress?.message ? t(`helperText:${errors?.billingAddress?.message}`) : ""
                                             }
                                             variant="outlined"
                                             fullWidth
@@ -583,7 +583,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             type="text"
                                             autoComplete="off"
                                             error={!!errors.billingZip}
-                                            helperText={errors?.billingZip?.message}
+                                            helperText={errors?.billingZip?.message ? t(`helperText:${errors?.billingZip?.message}`) : ""}
                                             variant="outlined"
                                             fullWidth
                                             value={field.value || ''}
@@ -603,7 +603,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.billingCity}
-                                          helperText={errors?.billingCity?.message}
+                                          helperText={errors?.billingCity?.message ? t(`helperText:${errors?.billingCity?.message}`) : ""}
                                           variant="outlined"
                                           fullWidth
                                           value={field.value || ''}
@@ -642,7 +642,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             ))}
                                           </Select>
                                           <FormHelperText>
-                                            {errors?.billingCountry?.message}
+                                            {errors?.billingCountry?.message ? t(`helperText:${errors?.billingCountry?.message}`) : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -721,7 +721,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                   disabled={sameAddress}
                                                   error={!!errors.shippingAddress}
                                                   helperText={
-                                                    errors?.shippingAddress?.message
+                                                    errors?.shippingAddress?.message ? t(`helperText:${errors?.shippingAddress?.message}`) : ""
                                                   }
                                                   variant="outlined"
                                                   fullWidth
@@ -744,7 +744,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                   disabled={sameAddress}
                                                   error={!!errors.shippingZip}
                                                   helperText={
-                                                    errors?.shippingZip?.message
+                                                    errors?.shippingZip?.message ? t(`helperText:${errors?.shippingZip?.message}`) : ""
                                                   }
                                                   variant="outlined"
                                                   fullWidth
@@ -767,7 +767,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                 disabled={sameAddress}
                                                 error={!!errors.shippingCity}
                                                 helperText={
-                                                  errors?.shippingCity?.message
+                                                  errors?.shippingCity?.message ? t(`helperText:${errors?.shippingCity?.message}`) : ""
                                                 }
                                                 variant="outlined"
                                                 fullWidth
@@ -812,7 +812,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                   )}
                                                 </Select>
                                                 <FormHelperText>
-                                                  {errors?.shippingCountry?.message}
+                                                  {errors?.shippingCountry?.message ? t(`helperText:${errors?.shippingCountry?.message}`) : ""}
                                                 </FormHelperText>
                                               </FormControl>
                                             )}
@@ -855,7 +855,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.fullName}
-                                          helperText={errors?.fullName?.message}
+                                          helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
                                           variant="outlined"
                                           fullWidth
                                           value={field.value || ''}
@@ -872,7 +872,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.designation}
-                                          helperText={errors?.designation?.message}
+                                          helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
                                           variant="outlined"
                                           fullWidth
                                           value={field.value || ''}
@@ -904,7 +904,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             // onBlur={handleOnBlurGetDialCode}
                                           />
                                           <FormHelperText>
-                                            {errors?.billingPhoneNumber?.message}
+                                            {errors?.billingPhoneNumber?.message ? t(`helperText:${errors?.billingPhoneNumber?.message}`) : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -919,7 +919,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="email"
                                           autoComplete="off"
                                           error={!!errors.email}
-                                          helperText={errors?.email?.message}
+                                          helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
                                           variant="outlined"
                                           fullWidth
                                           value={field.value || ''}
@@ -940,7 +940,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.notes}
-                                          helperText={errors?.notes?.message}
+                                          helperText={errors?.notes?.message ? t(`helperText:${errors?.notes?.message}`) : ""}
                                           variant="outlined"
                                           fullWidth
                                           value={field.value || ''}
@@ -985,7 +985,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               type="text"
                                               autoComplete="off"
                                               error={!!errors?.fullName}
-                                              helperText={errors?.fullName}
+                                              helperText={errors?.fullName ? t(`helperText:${errors?.fullName}`) : ""}
                                               variant="outlined"
                                               fullWidth
                                               value={field.value || ''}
@@ -1004,7 +1004,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               autoComplete="off"
                                               error={!!errors?.designation}
                                               helperText={
-                                                errors?.designation?.message
+                                                errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""
                                               }
                                               variant="outlined"
                                               fullWidth
@@ -1076,7 +1076,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               type="text"
                                               autoComplete="off"
                                               error={!!errors?.notes}
-                                              helperText={errors?.message}
+                                              helperText={errors?.message ? t(`helperText:${errors?.message}`) : ""}
                                               variant="outlined"
                                               fullWidth
                                               value={field.value || ''}

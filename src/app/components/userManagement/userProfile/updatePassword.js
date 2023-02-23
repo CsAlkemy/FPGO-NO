@@ -83,7 +83,7 @@ const updatePassword = ({role}) => {
                   type={!hide ? "text" : "password"}
                   autoComplete="off"
                   error={!!errors.currentPassword}
-                  helperText={errors?.currentPassword?.message}
+                  helperText={errors?.currentPassword?.message ? t(`helperText:${errors?.currentPassword?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -116,7 +116,7 @@ const updatePassword = ({role}) => {
                 type={!hide ? "text" : "password"}
                 autoComplete="off"
                 error={!!errors.password}
-                helperText={errors?.password?.message}
+                helperText={errors?.password?.message ? t(`helperText:${errors?.password?.message}`) : ""}
                 variant="outlined"
                 required
                 fullWidth
@@ -147,7 +147,7 @@ const updatePassword = ({role}) => {
                 type={!hide ? "text" : "password"}
                 autoComplete="off"
                 error={!!errors.confirmpassword}
-                helperText={errors?.confirmpassword?.message}
+                helperText={errors?.confirmpassword?.message ? t(`helperText:${errors?.confirmpassword?.message}`) : ""}
                 variant="outlined"
                 required
                 fullWidth

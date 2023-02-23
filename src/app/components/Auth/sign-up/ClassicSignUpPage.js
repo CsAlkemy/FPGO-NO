@@ -30,28 +30,28 @@ const schema = yup.object().shape({
   organizationid: yup
     .string()
     .matches(/\b\d{9}\b/, {
-      message: "Must be 9 digits",
+      message: "mustBeNineDigits",
       excludeEmptyString: true,
     })
-    .required("You must enter your Organization ID"),
-  companyname: yup.string().required("You must enter your Company Name"),
-  name: yup.string().required("You must enter your name"),
-  phonenumber: yup.string().required("You must enter your Phone Number"),
-  organizationtype: yup.string().required("You must select type"),
+    .required("youMustEnterYourOrganizationId"),
+  companyname: yup.string().required("youMustEnterYourCompanyName"),
+  name: yup.string().required("youMustEnterYourName"),
+  phonenumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  organizationtype: yup.string().required("youMustSelectType"),
   email: yup
     .string()
-    .email("You must enter a valid email")
-    .required("You must enter a email"),
+    .email("youMustEnterAValidEmail")
+    .required("youMustEnterAEmail"),
   // password: yup
   //   .string()
-  //   .required("Please enter your password.")
+  //   .required("pleaseEnterYourPassword.")
   //   .min(8, "Password is too short - should be 8 chars minimum."),
   // passwordConfirm: yup
   //   .string()
   //   .oneOf([yup.ref("password"), null], "Passwords must match"),
   acceptTermsConditions: yup
     .boolean()
-    .oneOf([true], "The terms and conditions must be accepted."),
+    .oneOf([true], "theTermsAndConditionsMustBeAccepted"),
 });
 
 const defaultValues = {
@@ -195,7 +195,7 @@ function ClassicSignUpPage() {
                           label={t("label:organizationId")}
                           type="number"
                           error={!!errors.organizationid}
-                          helperText={errors?.organizationid?.message}
+                          helperText={errors?.organizationid?.message ? t(`helperText:${errors?.organizationid?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -212,7 +212,7 @@ function ClassicSignUpPage() {
                           label={t("label:companyName")}
                           type="companyname"
                           error={!!errors.companyname}
-                          helperText={errors?.companyname?.message}
+                          helperText={errors?.companyname?.message ? t(`helperText:${errors?.companyname?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth

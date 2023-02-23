@@ -36,6 +36,7 @@ import {
 } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from '../../../data-access/services/authService';
+import {LoadingButton} from "@mui/lab";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -50,6 +51,7 @@ const createProducts = () => {
   const [info, setInfo] = useState([]);
   const [defaultCategories, setDefaultCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = React.useState(false);
   const userInfo = UtilsServices.getFPUserData();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -80,6 +82,7 @@ const createProducts = () => {
       productType,
       values
     );
+    setLoading(true)
     updateProduct(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
         enqueueSnackbar(response?.data?.message, { variant: "success" });
@@ -87,6 +90,7 @@ const createProducts = () => {
       } else {
         enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
       }
+      setLoading(false)
     });
   };
   // form end
@@ -237,15 +241,19 @@ const createProducts = () => {
                         ? t("label:inactive")
                         : t("label:active")}
                     </Button>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      type="submit"
-                      className="font-semibold rounded-4 w-full sm:w-auto"
-                      disabled={user.role[0] === FP_ADMIN || !isDirty}
+                    <LoadingButton
+                        variant="contained"
+                        color="secondary"
+                        className="rounded-4 button2 w-full sm:w-auto"
+                        aria-label="Confirm"
+                        size="large"
+                        type="submit"
+                        loading={loading}
+                        disabled={user.role[0] === FP_ADMIN || !isDirty}
+                        loadingPosition="center"
                     >
                       {t("label:updateProduct")}
-                    </Button>
+                    </LoadingButton>
                   </div>
                 </div>
                 <div className="main-layout-product">
@@ -302,7 +310,7 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.productID}
-                              helperText={errors?.productID?.message}
+                              helperText={errors?.productID?.message ? t(`helperText:${errors?.productID?.message}`) : ""}
                               variant="outlined"
                               required
                               fullWidth
@@ -323,7 +331,7 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.productName}
-                              helperText={errors?.productName?.message}
+                              helperText={errors?.productName?.message ? t(`helperText:${errors?.productName?.message}`) : ""}
                               variant="outlined"
                               fullWidth
                               required
@@ -345,7 +353,7 @@ const createProducts = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.price}
-                            helperText={errors?.price?.message}
+                            helperText={errors?.price?.message ? t(`helperText:${errors?.price?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             required
@@ -371,7 +379,7 @@ const createProducts = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.unit}
-                            helperText={errors?.unit?.message}
+                            helperText={errors?.unit?.message ? t(`helperText:${errors?.unit?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             value={field.value || ""}
@@ -389,7 +397,7 @@ const createProducts = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.manufacturer}
-                            helperText={errors?.manufacturer?.message}
+                            helperText={errors?.manufacturer?.message ? t(`helperText:${errors?.manufacturer?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             disabled={productType === 2 ? true : false}
@@ -489,7 +497,7 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.description}
-                              helperText={errors?.description?.message}
+                              helperText={errors?.description?.message ? t(`helperText:${errors?.description?.message}`) : ""}
                               variant="outlined"
                               fullWidth
                               value={field.value || ""}
@@ -567,7 +575,7 @@ const createProducts = () => {
                               type="number"
                               autoComplete="off"
                               error={!!errors.cost}
-                              helperText={errors?.cost?.message}
+                              helperText={errors?.cost?.message ? t(`helperText:${errors?.cost?.message}`) : ""}
                               variant="outlined"
                               fullWidth
                               InputProps={{
