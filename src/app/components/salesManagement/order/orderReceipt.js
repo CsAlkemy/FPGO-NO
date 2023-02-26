@@ -47,7 +47,6 @@ const orderReceipt = () => {
       amount: 5000,
     },
   ];
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const user = useSelector(selectUser);
   const ref = createRef();
   useEffect(() => {

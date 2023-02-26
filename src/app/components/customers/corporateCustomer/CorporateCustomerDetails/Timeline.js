@@ -16,7 +16,6 @@ import {useParams} from "react-router-dom";
 const TimelineLog = () => {
   const { t } = useTranslation();
   const queryParams = useParams();
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [logs, setLogs] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const [defaultTimeline, setDefaultTimeline] = useState(true);

@@ -11,10 +11,11 @@ import { useTranslation } from "react-i18next";
 import { Skeleton, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
+import { useParams } from 'react-router-dom';
 
 const TimelineLog = () => {
   const { t } = useTranslation();
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
+  const queryParams = useParams();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
   const [isFetching, setIsFetching] = React.useState(true);
@@ -36,7 +37,7 @@ const TimelineLog = () => {
     const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
     setSelectedDate(prepareSelectedDate);
     ClientService.getClientTimelineByUUID(
-      info?.organizationDetails?.uuid,
+      queryParams.uuid,
       timeStamp
     )
       .then((res) => {
@@ -60,7 +61,7 @@ const TimelineLog = () => {
       // setSelectedDate(date);
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
       ClientService.getClientTimelineByUUID(
-        info?.organizationDetails?.uuid,
+        queryParams.uuid,
         timeStamp
       )
         .then((res) => {

@@ -165,9 +165,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
   };
   // form end
   const handleMakeInactive = () => {
-    CustomersService.makeInactiveCustomerByUUID(
-      JSON.parse(localStorage.getItem("tableRowDetails")).uuid
-    )
+    CustomersService.makeInactiveCustomerByUUID(queryParams.id)
       .then((res) => {
         if (res?.status_code === 202) {
           enqueueSnackbar(res.message, { variant: "success" });
