@@ -2,7 +2,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Search } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
-import { DateTimePicker, DesktopDatePicker } from "@mui/lab";
+import {
+  DateTimePicker,
+  DesktopDatePicker,
+  DesktopDateTimePicker,
+} from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
@@ -541,6 +545,10 @@ const OrderInformation = ({ info }) => {
                           </div>
                         </div>
                       ))}
+                      <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                        {/*TODO: joni vai please add grandtotal here*/}
+                        {t("label:grandTotal")} : {t("label:nok")} {10000}
+                      </div>
                     </AccordionDetails>
                   </Accordion>
                 </Hidden>
@@ -828,7 +836,7 @@ const OrderInformation = ({ info }) => {
                               onClickAway={handleDueDatePickerClose}
                             >
                               <div className="create-order-due-date w-full">
-                                <DateTimePicker
+                                <DesktopDateTimePicker
                                   label={t("label:dueDateForPaymentLink")}
                                   inputFormat="dd.MM.yyyy HH:mm"
                                   // inputFormat="dd.MMM.yyyy"
@@ -1041,7 +1049,7 @@ const OrderInformation = ({ info }) => {
                         <div className="body3 text-MonochromeGray-300">
                           {t("label:creditCheckDetailsOrderPage")}
                         </div>
-                        <div className="send-order-credit-check mt-24 mb-16">
+                        <div className="send-order-credit-check">
                           <div className="subtitle3 text-MonochromeGray-500">
                             {t("label:creditCheckFlagOrderPage")}
                           </div>
