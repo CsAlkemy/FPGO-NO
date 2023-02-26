@@ -112,8 +112,6 @@ const CreateClient = () => {
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = (values) => {
-    const info = JSON.parse(localStorage.getItem("tableRowDetails"));
-
     const primaryPhoneNumber = values?.primaryPhoneNumber
       ? values.primaryPhoneNumber.split("+")
       : null;
