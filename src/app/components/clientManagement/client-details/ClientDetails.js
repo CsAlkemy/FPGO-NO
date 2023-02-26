@@ -424,7 +424,7 @@ const ClientDetails = () => {
     }
   };
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   // TODO : turn on the flag based on the input field or we can omit that as it got validation
 
   const onSubmit = (values) => {
@@ -688,6 +688,7 @@ const ClientDetails = () => {
                       type="submit"
                       loading={loading}
                       loadingPosition="center"
+                      disabled={!isDirty}
                     >
                       {t("label:update")}
                     </LoadingButton>
