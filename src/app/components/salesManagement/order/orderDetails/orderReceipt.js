@@ -14,7 +14,7 @@ import { selectUser } from "app/store/userSlice";
 import { useTranslation } from "react-i18next";
 import Pdf from "react-to-pdf";
 
-const orderReceipt = ({info}) => {
+const orderReceipt = ({ info }) => {
   const { t } = useTranslation();
   const ref = createRef();
 
@@ -78,7 +78,7 @@ const orderReceipt = ({info}) => {
               <div className="subtitle1 text-MonochromeGray-700">
                 {t("label:transactionReceipt")}
               </div>
-              <div className="subtitle3 text-MonochromeGray-700 flex justify-end">
+              <div className="subtitle3 text-MonochromeGray-700 flex md:justify-end">
                 {t("label:orderId")}: {info?.orderUuid ? info?.orderUuid : "-"}
               </div>
             </div>
