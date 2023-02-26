@@ -39,7 +39,6 @@ const createCategory = (onSubmit = () => {}) => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [productsList, setProductsList] = useState([]);
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [defaultProducts, setDefaultProducts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
