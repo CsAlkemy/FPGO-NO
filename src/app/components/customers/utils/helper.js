@@ -75,6 +75,32 @@ export const CreateCorporateDefaultValue = {
   contact: [],
 };
 
+export const CorporateDetailsDefaultValue = {
+  customerID: "",
+
+  organizationID: "",
+  OrganizationName: "",
+  orgEmail: "",
+  primaryPhoneNumber: "47",
+  billingAddress: "",
+  billingZip: "",
+  billingCity: "",
+  billingCountry: "",
+
+  shippingPhoneNumber: "47",
+  shippingEmail: "",
+  shippingAddress: "",
+  shippingZip: "",
+  shippingCity: "",
+  shippingCountry: "",
+  fullName: "",
+  designation: "",
+  phone: "47",
+  email: "",
+  notes: "",
+  contact: [],
+};
+
 export const PrivateDefaultValue = {
   customerID: "",
 
