@@ -194,7 +194,7 @@ const createCorporateCustomer = () => {
                   )}
                 </div>
                 <div className="my-32 px-10 md:px-16">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 w-full md:w-3/4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
                     <Controller
                       name="organizationID"
                       control={control}
@@ -202,7 +202,7 @@ const createCorporateCustomer = () => {
                         <TextField
                           {...field}
                           label={t("label:organizationId")}
-                          className="col-span-1 md:col-span-2"
+                          className="col-span-1 md:col-span-1"
                           type="number"
                           autoComplete="off"
                           error={!!errors.organizationID}
@@ -216,7 +216,7 @@ const createCorporateCustomer = () => {
                     <LoadingButton
                       variant="contained"
                       color="secondary"
-                      className="col-span-1 w-full button2 rounded-4 h-fit mt-7"
+                      className="col-span-1 w-full button2 rounded-4 h-fit mt-7 md:max-w-[190px]"
                       aria-label="Confirm"
                       size="large"
                       type="button"

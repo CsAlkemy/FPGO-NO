@@ -40,6 +40,7 @@ import { DoneAll, UTurnLeft } from "@mui/icons-material";
 import { defaultValueCreateClient } from "../../clientManagement/utils/helper";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import { useTranslation } from "react-i18next";
+import {CharCont} from "../../../utils/helperFunctions";
 
 export default function OverViewMainTableBody(props) {
   const { t } = useTranslation();
@@ -181,12 +182,12 @@ export default function OverViewMainTableBody(props) {
               return props.row.type === "Corporate" ? (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
                   <LocationCityIcon className="mr-12 text-[#50C9B1]" />
-                  {props.row[rdt]}
+                  {CharCont(props.row[rdt],30)}
                 </TableCell>
               ) : (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
                   <PersonIcon className="mr-12 text-[#68C7E7]" />
-                  {props.row[rdt]}
+                  {CharCont(props.row[rdt],30)}
                 </TableCell>
               );
             } else {
@@ -196,12 +197,12 @@ export default function OverViewMainTableBody(props) {
                     className="mr-12"
                     style={{ color: "#C6C7C7" }}
                   />
-                  {props.row[rdt]}
+                  {CharCont(props.row[rdt],30)}
                 </TableCell>
               ) : (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
                   <PersonIcon className="mr-12" style={{ color: "#C6C7C7" }} />
-                  {props.row[rdt]}
+                  {CharCont(props.row[rdt],30)}
                 </TableCell>
               );
             }

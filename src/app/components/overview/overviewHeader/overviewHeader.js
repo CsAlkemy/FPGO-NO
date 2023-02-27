@@ -266,10 +266,10 @@ export default function OverviewHeader(props) {
                     className="px-16"
                   >
                     <MenuItem onClick={() => navigate(`/customers/private`)}>
-                      <AddIcon /> {t("label:privateCustomer")}
+                      <AddIcon className='text-[#68C7E7]' /> {t("label:privateCustomer")}
                     </MenuItem>
                     <MenuItem onClick={() => navigate(`/customers/corporate`)}>
-                      <AddIcon />
+                      <AddIcon className='text-[#50C9B1]' />
                       {t("label:corporateCustomer")}
                     </MenuItem>
                   </Menu>

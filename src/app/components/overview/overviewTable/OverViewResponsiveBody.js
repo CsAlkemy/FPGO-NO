@@ -264,7 +264,7 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                   <div className="body3 text-MonochromeGray-700">
                     <LocationCityIcon className="mr-12" color="secondary" />
-                    {props.row[rdt.id]}
+                    {CharCont(props.row[rdt.id],25)}
                   </div>
                 </div>
               ) : (
@@ -275,7 +275,7 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                   <div className="body3 text-MonochromeGray-700">
                     <PersonIcon className="mr-12" color="secondary" />
-                    {props.row[rdt.id]}
+                      {CharCont(props.row[rdt.id],25)}
                   </div>
                 </div>
               );
@@ -291,7 +291,7 @@ export default function OverViewResponsiveBody(props) {
                       className="mr-12"
                       style={{ color: "#C6C7C7" }}
                     />
-                    {props.row[rdt.id]}
+                      {CharCont(props.row[rdt.id],25)}
                   </div>
                 </div>
               ) : (
@@ -305,7 +305,7 @@ export default function OverViewResponsiveBody(props) {
                       className="mr-12"
                       style={{ color: "#C6C7C7" }}
                     />
-                    {props.row[rdt.id]}
+                      {CharCont(props.row[rdt.id],25)}
                   </div>
                 </div>
               );

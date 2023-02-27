@@ -736,7 +736,7 @@ const paymentInformation = () => {
                               }}
                             >
                               <img
-                                className="max-h-20 md:max-h-48"
+                                className={` ${item.name === 'VIPPS' ? 'max-h-16 min-h-16': 'max-h-32 min-h-32'} md:max-h-48`}
                                 src={item.logo}
                                 alt={item.name}
                               />
