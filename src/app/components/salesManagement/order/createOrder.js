@@ -62,6 +62,7 @@ import AuthService from "../../../data-access/services/authService";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { es, nn, nb } from "date-fns/locale";
 import { formatInTimeZone } from "date-fns-tz";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -334,7 +335,7 @@ const createOrder = () => {
       totalDiscount = totalDiscount + parseFloat(watchDiscount);
     if (total) grandTotal = grandTotal + total;
     if (total > 0) {
-      return ` ${total.toFixed(2)}`;
+      return ` ${ThousandSeparator(total)}`;
     }
   };
 
@@ -2698,7 +2699,7 @@ const createOrder = () => {
                         {t("label:subTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {subTotal.toFixed(2) / 2}
+                        {t("label:nok")} { ThousandSeparator(subTotal.toFixed(2) / 2) }
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2706,7 +2707,7 @@ const createOrder = () => {
                         {t("label:tax")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {totalTax.toFixed(2) / 2}
+                        {t("label:nok")} { ThousandSeparator(totalTax.toFixed(2) / 2) }
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2714,7 +2715,7 @@ const createOrder = () => {
                         {t("label:discount")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {totalDiscount.toFixed(2) / 2}
+                        {t("label:nok")} { ThousandSeparator(totalDiscount.toFixed(2) / 2) }
                       </div>
                     </div>
                   </div>
@@ -2724,7 +2725,7 @@ const createOrder = () => {
                         {t("label:grandTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {grandTotal.toFixed(2) / 2}
+                        {t("label:nok")} { ThousandSeparator(grandTotal.toFixed(2) / 2) }
                       </div>
                     </div>
                   </div>
