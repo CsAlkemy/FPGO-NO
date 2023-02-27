@@ -101,7 +101,7 @@ class OrdersService {
         email: row?.email ? row?.email : null,
         amount: ThousandSeparator(row.amount),
         stage: row?.status
-          ? isExpired
+          ? row.status.toLowerCase() === 'sent' && isExpired
             ? "expired"
             : row.status.toLowerCase()
           : null,
