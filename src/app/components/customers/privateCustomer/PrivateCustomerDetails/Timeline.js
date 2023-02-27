@@ -8,10 +8,12 @@ import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import {useTranslation} from "react-i18next";
 import React, {useEffect, useState} from "react";
-import {Skeleton, TextField} from "@mui/material";
+import {Hidden, Skeleton, TextField} from "@mui/material";
 import CustomersService from "../../../../data-access/services/customersService/CustomersService";
 import {DesktopDatePicker} from "@mui/lab";
 import {useParams} from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+import {CharCont} from "../../../../utils/helperFunctions";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
@@ -132,7 +134,12 @@ const TimelineLog = () => {
                           {t("label:sentTo")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
-                          {log.sentTo}
+                          <Hidden smUp>
+                            <Tooltip title={log.sentTo}>
+                              <div>{CharCont(log.sentTo, 20)}</div>
+                            </Tooltip>
+                          </Hidden>
+                          <Hidden smDown>{log.sentTo}</Hidden>
                         </div>
                       </div>
                     )}
@@ -230,17 +237,17 @@ const TimelineLog = () => {
           <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
           <div className="flex gap-10">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
         </div>

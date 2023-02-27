@@ -3,6 +3,7 @@ import axios from "axios";
 import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 class OrdersService {
   //Not using - Shifted RTK-Query
@@ -98,9 +99,9 @@ class OrdersService {
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
         email: row?.email ? row?.email : null,
-        amount: row.amount,
+        amount: ThousandSeparator(row.amount),
         stage: row?.status
-          ? isExpired
+          ? row.status.toLowerCase() === 'sent' && isExpired
             ? "expired"
             : row.status.toLowerCase()
           : null,

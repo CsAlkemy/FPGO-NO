@@ -1,22 +1,14 @@
-import {
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import React, { createRef, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectUser } from "app/store/userSlice";
+import React, {createRef, useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {selectUser} from "app/store/userSlice";
 import PaymentHeader from "../payment/paymentHeader";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import { useSnackbar } from "notistack";
-import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import {useSnackbar} from "notistack";
+import {useParams} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 import Pdf from "react-to-pdf";
+import {ThousandSeparator} from "../../../utils/helperFunctions";
+import {LoadingButton} from "@mui/lab";
 
 const orderReceipt = () => {
   const { t } = useTranslation();
@@ -24,29 +16,8 @@ const orderReceipt = () => {
   const [orderDetails, setOrderDetails] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const param = useParams();
-  const rows = [
-    {
-      productName: "ahaha",
-      qty: 200,
-      rate: 2000,
-      tax: 5,
-      amount: 5000,
-    },
-    {
-      productName: "ahaha",
-      qty: 200,
-      rate: 2000,
-      tax: 5,
-      amount: 5000,
-    },
-    {
-      productName: "ahaha",
-      qty: 200,
-      rate: 2000,
-      tax: 5,
-      amount: 5000,
-    },
-  ];
+  const [loading, setLoading] = useState(false);
+
   const user = useSelector(selectUser);
   const ref = createRef();
   useEffect(() => {
@@ -72,14 +43,23 @@ const orderReceipt = () => {
         y={0.5}
       >
         {({ toPdf }) => (
-          <Button
-            color="secondary"
-            variant="contained"
-            className="button2 rounded-4 mb-20 hover:bg-MonochromeGray-25 hover:text-MonochromeGray-700"
-            onClick={toPdf}
-          >
-            {t("label:exportToPdf")}
-          </Button>
+            <LoadingButton
+                variant="contained"
+                color="secondary"
+                className="button2 rounded-4 mb-20 hover:bg-MonochromeGray-25 hover:text-MonochromeGray-700"
+                size="large"
+                loading={loading}
+                onClick={() => {
+                  toPdf();
+                  setLoading(true);
+                  setTimeout(() => {
+                    setLoading(false);
+                  }, [1000]);
+                }}
+                loadingPosition="center"
+            >
+              {t("label:exportToPdf")}
+            </LoadingButton>
         )}
       </Pdf>
       <div className="flex flex-col flex-auto min-w-0 max-w-screen-xl">
@@ -210,13 +190,13 @@ const orderReceipt = () => {
                     <div className="my-auto py-16 px-10 ">{row.name}</div>
                     <div className="my-auto py-16 px-10">{row.quantity}</div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {row.rate}
+                      { ThousandSeparator(row.rate) }
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
                       {row.tax}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {row.amount}
+                      { ThousandSeparator(row.amount) }
                     </div>
                   </div>
                 ))
@@ -229,7 +209,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.subTotal
-                      ? orderDetails?.orderSummary?.subTotal
+                      ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -239,7 +219,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.discount
-                      ? orderDetails?.orderSummary?.discount
+                      ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -249,7 +229,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.tax
-                      ? orderDetails?.orderSummary?.tax
+                      ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -259,7 +239,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.grandTotal
-                      ? orderDetails?.orderSummary?.grandTotal
+                      ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>

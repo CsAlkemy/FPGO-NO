@@ -30,7 +30,7 @@ export const ThousandSeparator = (number) => {
     }
   }
   if (decimalIndex !== arr.length) {
-    result.push(".");
+    result.push(",");
     for (let i = decimalIndex + 1; i < arr.length; i++) {
       result.push(arr[i]);
     }
