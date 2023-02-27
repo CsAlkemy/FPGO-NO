@@ -17,6 +17,7 @@ import { useSnackbar } from "notistack";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Pdf from "react-to-pdf";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 const orderReceipt = () => {
   const { t } = useTranslation();
@@ -210,13 +211,13 @@ const orderReceipt = () => {
                     <div className="my-auto py-16 px-10 ">{row.name}</div>
                     <div className="my-auto py-16 px-10">{row.quantity}</div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {row.rate}
+                      { ThousandSeparator(row.rate) }
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
                       {row.tax}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {row.amount}
+                      { ThousandSeparator(row.amount) }
                     </div>
                   </div>
                 ))
@@ -229,7 +230,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.subTotal
-                      ? orderDetails?.orderSummary?.subTotal
+                      ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -239,7 +240,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.discount
-                      ? orderDetails?.orderSummary?.discount
+                      ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -249,7 +250,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.tax
-                      ? orderDetails?.orderSummary?.tax
+                      ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -259,7 +260,7 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.grandTotal
-                      ? orderDetails?.orderSummary?.grandTotal
+                      ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>

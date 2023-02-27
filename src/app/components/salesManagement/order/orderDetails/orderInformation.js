@@ -47,6 +47,7 @@ import { useTranslation } from "react-i18next";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
 import AuthService from "../../../../data-access/services/authService";
 import ClientService from "../../../../data-access/services/clientsService/ClientService";
+import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const OrderInformation = ({ info }) => {
   const { t } = useTranslation();
@@ -755,7 +756,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:nok")}{" "}
                             {info.productList &&
                             info.productList?.[index]?.amount
-                              ? info.productList[index].amount
+                              ? ThousandSeparator(info.productList[index].amount)
                               : ""}
                           </div>
                         </div>
@@ -1827,7 +1828,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:subTotal")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.subTotal}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.subTotal) }
                           </div>
                         </div>
                         <div className="flex justify-between items-center  my-20">
@@ -1835,7 +1836,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:tax")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.tax}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.tax) }
                           </div>
                         </div>
                         <div className="flex justify-between items-center  my-20">
@@ -1843,7 +1844,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:discount")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.discount}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.discount) }
                           </div>
                         </div>
                       </div>
@@ -1853,7 +1854,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:grandTotal")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.grandTotal}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.grandTotal) }
                           </div>
                         </div>
                       </div>
