@@ -21,7 +21,25 @@ const orderLog = ({ info }) => {
   useEffect(() => {
     OrdersService.getOrdersLogByUUID(info.orderUuid)
       .then((res) => {
-        setLogs(res?.data);
+        let orderData = [];
+        let data = res?.data;
+        let checkExpired = data.findIndex(item => item.slug === 'order-expired');
+
+        if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
+          orderData.push({
+            "title":"Order Expired and was not paid",
+            "slug":"order-expired",
+            "datetime":info.paymentLinkDueDate,
+            "sentTo": null,
+            "actionBy":null,
+            "note":null,
+            "paymentMethod":null,
+            "refundAmount":null
+          });
+        }
+        orderData.push(...data);
+        
+        setLogs(orderData);
         setLoading(false);
       })
       .catch((e) => {
