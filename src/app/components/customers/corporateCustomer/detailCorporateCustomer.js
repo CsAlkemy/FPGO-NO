@@ -471,6 +471,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       helperText={errors?.OrganizationName?.message ? t(`helperText:${errors?.OrganizationName?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
+                                      required
                                       value={field.value || ''}
                                       //disabled
                                     />
@@ -655,7 +656,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                               </div>
                               <div className="shipping-information px-7 sm:px-14">
                                 <div className="w-full">
-                                  <div className="flex justify-between items-center billing-address-head no-padding-x">
+                                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center no-padding-x">
                                     <div className="billing-address-head no-padding-x">
                                       {t("label:shippingAddress")}
                                       {(shippingAddress &&
@@ -670,7 +671,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                     </div>
                                     <div className="billing-address-right">
                                       <FormControlLabel
-                                        className="font-bold"
+                                        className="subtitle3 -ml-[.2rem] "
                                         control={
                                           <Switch
                                             onChange={() =>
@@ -678,20 +679,13 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             }
                                             checked={sameAddress}
                                             name="jason"
+                                            className="subtitle3"
                                             color="secondary"
                                             ref={sameAddRef}
                                           />
                                         }
                                         label={t("label:sameAsBillingAddress")}
                                         labelPlacement="start"
-                                        // disabled={
-                                        //   !billingPhoneNumber ||
-                                        //   !billingEmail ||
-                                        //   !billingAddress ||
-                                        //   !zip ||
-                                        //   !city ||
-                                        //   !country
-                                        // }
                                       />
                                     </div>
                                   </div>
@@ -954,7 +948,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                 </div>
                                 {addContactIndex.map((index) => (
                                   <div key={`contact:${index}`}>
-                                    <div className="flex justify-between items-center no-padding-x mt-48 border-b-1 border-MonochromeGray-25">
+                                    <div className="flex justify-between items-center no-padding-x mt-32 border-b-1 border-MonochromeGray-25">
                                       <div className="billing-address-head no-padding-x">
                                         {t("label:contact")} {index + 1}
                                         {dirtyFields.fullName &&
