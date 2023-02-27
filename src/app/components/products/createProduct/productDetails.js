@@ -47,7 +47,6 @@ const createProducts = () => {
   const [productType, setProductType] = React.useState(1);
   const [categoriesList, setCategoriesList] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [defaultCategories, setDefaultCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

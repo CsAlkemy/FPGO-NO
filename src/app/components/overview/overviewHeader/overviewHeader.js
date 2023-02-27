@@ -153,6 +153,12 @@ export default function OverviewHeader(props) {
         return t("label:searchByOrderIDNamePhoneNo");
       case customersListOverview:
         return t("label:searchByNameOrgIDPhoneNo");
+      case creditChecksListOverview:
+        return t("label:searchByNameOrgIDPhoneNo");
+      case refundRequestsOverview:
+        return t("label:searchByOrderIDNamePhoneNo");
+      case clientOrdersListOverview:
+        return t("label:searchByOrderIDNamePhoneNo");
       default:
         return t("label:searchByNameEmailPhoneNo");
     }

@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from 'react-router-dom';
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-import { CreateCorporateDefaultValue, validateSchema } from "../utils/helper";
+import { CreateCorporateDefaultValue, CorporateDetailsDefaultValue, validateSchema } from "../utils/helper";
 import Journal from "./CorporateCustomerDetails/Journal";
 import Orders from "./CorporateCustomerDetails/Orders";
 import Timeline from "./CorporateCustomerDetails/Timeline";
@@ -79,7 +79,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   // form
   const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
     mode: "onChange",
-    CreateCorporateDefaultValue,
+    CorporateDetailsDefaultValue,
     resolver: yupResolver(validateSchema),
   });
   const { isValid, dirtyFields, errors, isDirty } = formState;
@@ -98,41 +98,41 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
     CustomersService.getCustomerDetailsByUUID(queryParams.id)
       .then((response)=> {
         setInfo(response?.data);
-        CreateCorporateDefaultValue.customerID = info?.uuid ? info.uuid : "";
-        CreateCorporateDefaultValue.organizationID = info?.organizationId
+        CorporateDetailsDefaultValue.customerID = info?.uuid ? info.uuid : "";
+        CorporateDetailsDefaultValue.organizationID = info?.organizationId
           ? info.organizationId
           : "";
-        CreateCorporateDefaultValue.orgEmail = info?.email ? info.email : "";
-        CreateCorporateDefaultValue.OrganizationName = info?.name ? info.name : "";
-        CreateCorporateDefaultValue.primaryPhoneNumber =
+        CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
+        CorporateDetailsDefaultValue.OrganizationName = info?.name ? info.name : "";
+        CorporateDetailsDefaultValue.primaryPhoneNumber =
           info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
 
-        CreateCorporateDefaultValue.billingAddress = info?.addresses?.billing
+        CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
           ?.street
           ? info.addresses.billing.street
           : "";
-        CreateCorporateDefaultValue.billingZip = info?.addresses?.billing?.zip
+        CorporateDetailsDefaultValue.billingZip = info?.addresses?.billing?.zip
           ? info.addresses.billing.zip
           : "";
-        CreateCorporateDefaultValue.billingCity = info?.addresses?.billing?.city
+        CorporateDetailsDefaultValue.billingCity = info?.addresses?.billing?.city
           ? info.addresses.billing.city
           : "";
-        CreateCorporateDefaultValue.billingCountry = info?.addresses?.billing
+        CorporateDetailsDefaultValue.billingCountry = info?.addresses?.billing
           ?.country
           ? info.addresses.billing.country
           : "";
 
-        CreateCorporateDefaultValue.shippingAddress = info?.addresses?.shipping
+        CorporateDetailsDefaultValue.shippingAddress = info?.addresses?.shipping
           ?.street
           ? info.addresses.shipping?.street
           : "";
-        CreateCorporateDefaultValue.shippingZip = info?.addresses?.shipping?.zip
+        CorporateDetailsDefaultValue.shippingZip = info?.addresses?.shipping?.zip
           ? info.addresses.shipping?.zip
           : "";
-        CreateCorporateDefaultValue.shippingCity = info?.addresses?.shipping?.city
+        CorporateDetailsDefaultValue.shippingCity = info?.addresses?.shipping?.city
           ? info.addresses.shipping?.city
           : "";
-        CreateCorporateDefaultValue.shippingCountry = info?.addresses?.shipping
+        CorporateDetailsDefaultValue.shippingCountry = info?.addresses?.shipping
           ?.country
           ? info.addresses.shipping?.country
           : "";
@@ -156,30 +156,30 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             );
 
           }
-          CreateCorporateDefaultValue.fullName = info?.additionalContactDetails[0]
+          CorporateDetailsDefaultValue.fullName = info?.additionalContactDetails[0]
             ?.name
             ? info.additionalContactDetails[0].name
             : "";
-          CreateCorporateDefaultValue.designation = info
+          CorporateDetailsDefaultValue.designation = info
             ?.additionalContactDetails[0]?.designation
             ? info.additionalContactDetails[0].designation
             : "";
-          CreateCorporateDefaultValue.phone =
+          CorporateDetailsDefaultValue.phone =
             info?.additionalContactDetails[0]?.countryCode &&
             info.additionalContactDetails[0].msisdn
               ? info.additionalContactDetails[0].countryCode +
               info.additionalContactDetails[0].msisdn
               : "";
-          CreateCorporateDefaultValue.email = info?.additionalContactDetails[0]
+          CorporateDetailsDefaultValue.email = info?.additionalContactDetails[0]
             ?.email
             ? info.additionalContactDetails[0].email
             : "";
-          CreateCorporateDefaultValue.notes = info?.additionalContactDetails[0]
+          CorporateDetailsDefaultValue.notes = info?.additionalContactDetails[0]
             ?.notes
             ? info.additionalContactDetails[0].notes
             : "";
         }
-        reset({ ...CreateCorporateDefaultValue });
+        reset({ ...CorporateDetailsDefaultValue });
         // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
 
         if (
@@ -228,6 +228,9 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         navigate("/customers/customers-list")
         enqueueSnackbar(e, {variant: "error"})
       })
+    return ()=> {
+      reset({ ...CorporateDetailsDefaultValue })
+    }
   }, [isLoading]);
 
   const onRawSubmit = (values) => {
@@ -287,7 +290,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   const handleMakeInactive = () => {
     updateCustomerStatus(info.uuid).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response.message, { variant: "success" });
+        enqueueSnackbar(response?.data?.message, { variant: "success" });
         navigate(`/customers/customers-list`);
       } else {
         enqueueSnackbar(response?.error?.data?.message, { variant: "error" });

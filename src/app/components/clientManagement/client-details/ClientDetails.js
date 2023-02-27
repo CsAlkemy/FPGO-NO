@@ -53,7 +53,6 @@ const ClientDetails = () => {
   const plan2 = useRef(null);
   const plan3 = useRef(null);
   const sameAddressRef = useRef(null);
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [tabValue, setTabValue] = React.useState("1");
   const [addVatIndex, setAddVatIndex] = React.useState([0, 1, 2, 3, 4]);
@@ -425,12 +424,10 @@ const ClientDetails = () => {
     }
   };
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   // TODO : turn on the flag based on the input field or we can omit that as it got validation
 
   const onSubmit = (values) => {
-    const info = JSON.parse(localStorage.getItem("tableRowDetails"));
-
     const primaryPhoneNumber = values?.primaryPhoneNumber
       ? values.primaryPhoneNumber.split("+")
       : null;
@@ -691,6 +688,7 @@ const ClientDetails = () => {
                       type="submit"
                       loading={loading}
                       loadingPosition="center"
+                      disabled={!isDirty}
                     >
                       {t("label:update")}
                     </LoadingButton>

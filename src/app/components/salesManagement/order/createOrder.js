@@ -1,6 +1,6 @@
-import {yupResolver} from "@hookform/resolvers/yup";
-import {ClickAwayListener} from "@mui/base";
-import {Search} from "@mui/icons-material";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ClickAwayListener } from "@mui/base";
+import { Search } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Cancel from "@mui/icons-material/Cancel";
@@ -10,13 +10,19 @@ import EventIcon from "@mui/icons-material/Event";
 import RedoIcon from "@mui/icons-material/Redo";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
-import {DesktopDatePicker, DesktopDateTimePicker, LoadingButton,} from "@mui/lab";
+import {
+  DesktopDatePicker,
+  DesktopDateTimePicker,
+  LoadingButton,
+} from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Autocomplete,
+  Backdrop,
   Button,
+  CircularProgress,
   FormControl,
   FormHelperText,
   Hidden,
@@ -28,15 +34,15 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import {useSnackbar} from "notistack";
-import React, {useEffect, useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {useTranslation} from "react-i18next";
-import {BsFillCheckCircleFill} from "react-icons/bs";
-import {FiMinus} from "react-icons/fi";
-import {IoMdAdd} from "react-icons/io";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { FiMinus } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
 import PhoneInput from "react-phone-input-2";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import ProductService from "../../../data-access/services/productsService/ProductService";
@@ -49,13 +55,13 @@ import {
   validateSchemaCreateOrderPrivateOrderByEmail,
 } from "../utils/helper";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
-import {useCreateOrderMutation} from "app/store/api/apiSlice";
+import { useCreateOrderMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from "../../../data-access/services/authService";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { es, nn, nb } from "date-fns/locale";
-import {formatInTimeZone} from "date-fns-tz";
+import { formatInTimeZone } from "date-fns-tz";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -72,6 +78,7 @@ const createOrder = () => {
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [itemLoader, setItemLoader] = useState(false);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createOrder, response] = useCreateOrderMutation();
@@ -333,6 +340,7 @@ const createOrder = () => {
 
   const addNewOrder = () => {
     // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
+    setItemLoader(true);
     setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
     setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
@@ -340,8 +348,12 @@ const createOrder = () => {
     setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
   };
   const onDelete = (index) => {
+    setItemLoader(true);
     //resetField(``)
     setValue(`order[${index}].productName`, "");
     setValue(`order[${index}].productID`, "");
@@ -353,6 +365,9 @@ const createOrder = () => {
     addOrderIndex.length > 1
       ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
       : setAddOrderIndex([...addOrderIndex]);
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
   };
   const onSameRowAction = (index) => {
     setValue(`order[${index}].productName`, "");
@@ -617,6 +632,16 @@ const createOrder = () => {
 
   return (
     <div className="create-product-container">
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 2,
+          color: "#0088AE",
+          background: "white",
+        }}
+        open={itemLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div className="inside-div-product">
         <div className="rounded-sm bg-white p-0 md:px-20">
           <form
@@ -666,366 +691,393 @@ const createOrder = () => {
               </Hidden>
             </div>
             <Hidden smUp>
-              <Accordion
-                defaultExpanded={true}
-                className={`${
-                  !expandedPanelOrder ? "bg-primary-25" : "bg-primary-700"
-                } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
-              >
-                <AccordionSummary
-                  expandIcon={
-                    !expandedPanelOrder ? (
-                      <IoMdAdd className="icon-size-20" />
-                    ) : (
-                      <FiMinus
-                        className={`icon-size-20 ${
-                          !expandedPanelOrder ? "" : "text-white"
-                        }`}
-                      />
-                    )
-                  }
-                  onClick={() => setExpandedPanelOrder(!expandedPanelOrder)}
-                  id="panel2a-header"
+              <div className="px-10">
+                <Accordion
+                  defaultExpanded={true}
+                  className={`${
+                    !expandedPanelOrder ? "bg-primary-25" : "bg-primary-700"
+                  } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
                 >
-                  <div
-                    className={`subtitle3  flex gap-10 my-auto ${
-                      !expandedPanelOrder
-                        ? "text-MonochromeGray-700"
-                        : "text-white"
-                    }`}
+                  <AccordionSummary
+                    expandIcon={
+                      !expandedPanelOrder ? (
+                        <IoMdAdd className="icon-size-20" />
+                      ) : (
+                        <FiMinus
+                          className={`icon-size-20 ${
+                            !expandedPanelOrder ? "" : "text-white"
+                          }`}
+                        />
+                      )
+                    }
+                    onClick={() => setExpandedPanelOrder(!expandedPanelOrder)}
+                    id="panel2a-header"
                   >
-                    {t("label:orderDetails")}
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails className="bg-white px-0">
-                  <div className="sticky top-28 z-9999">
-                    <Button
-                      className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
-                      startIcon={<AddIcon className="text-main" />}
-                      variant="contained"
-                      onClick={() => addNewOrder()}
-                      disabled={addOrderIndex.length >= 20 ? true : false}
+                    <div
+                      className={`subtitle3  flex gap-10 my-auto ${
+                        !expandedPanelOrder
+                          ? "text-MonochromeGray-700"
+                          : "text-white"
+                      }`}
                     >
-                      Add Item
-                    </Button>
-                  </div>
-                  {addOrderIndex.map((index) => (
-                    <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
-                      <Controller
-                        control={control}
-                        required
-                        name={`order[${index}].productName`}
-                        render={({ field: { ref, onChange, ...field } }) => (
-                          <Autocomplete
-                            disabled={
-                              index === 0 ||
-                              index === Math.min(...addOrderIndex)
-                                ? false
-                                : !watch(
-                                    `order[${
-                                      index -
-                                      (addOrderIndex[
-                                        addOrderIndex.indexOf(index)
-                                      ] -
-                                        addOrderIndex[
-                                          addOrderIndex.indexOf(index - 1)
-                                        ])
-                                    }].productName`
-                                  )
-                              // !watch(
-                              //   `order[${index -
-                              //   (index -
-                              //     addOrderIndex[
-                              //     addOrderIndex.indexOf(index - 1)
-                              //     ])
-                              //   }].productName`
-                              // )
-                            }
-                            freeSolo
-                            autoSelect
-                            onBlur={pnameOnBlur}
-                            options={productsList}
-                            forcePopupIcon={<Search />}
-                            getOptionLabel={(option) =>
-                              option?.name ? option.name : option ? option : ""
-                            }
-                            size="small"
-                            //className="custom-input-height"
-                            onChange={(_, data) => {
-                              if (data) {
-                                if (data?.name) {
-                                  setValue(
-                                    `order[${index}].productName`,
-                                    data.name
-                                  );
-                                  setValue(
-                                    `order[${index}].productID`,
-                                    data.id
-                                  );
-                                  setValue(`order[${index}].rate`, data.price);
-                                  setValue(`order[${index}].tax`, data.tax);
-                                  disableCurrentProductRow(index);
-
-                                  const watchRate = watch(
-                                    `order[${index}].rate`
-                                  );
-                                  const watchTax = watch(`order[${index}].tax`);
-                                  const watchName = watch(
-                                    `order[${index}].productName`
-                                  );
-                                  const watchId = watch(
-                                    `order[${index}].productID`
-                                  );
-
-                                  for (
-                                    let i = 0;
-                                    i < addOrderIndex.length;
-                                    i++
-                                  ) {
-                                    if (
-                                      watchName &&
-                                      watchId &&
-                                      watchRate &&
-                                      watchTax &&
-                                      i !== index &&
-                                      watchName ===
-                                        watch(`order[${i}].productName`) &&
-                                      watchId ===
-                                        watch(`order[${i}].productID`) &&
-                                      watchRate === watch(`order[${i}].rate`) &&
-                                      watchTax === watch(`order[${i}].tax`)
-                                    ) {
-                                      let quantityNum = isNaN(
-                                        parseInt(watch(`order[${i}].quantity`))
-                                      )
-                                        ? 1
-                                        : parseInt(
-                                            watch(`order[${i}].quantity`)
-                                          );
-                                      setValue(
-                                        `order[${i}].quantity`,
-                                        quantityNum + 1
-                                      );
-                                      // onDelete(index);
-                                      onSameRowAction(index);
-                                      enqueueSnackbar(
-                                        `Same product found in Row ${
-                                          i + 1
-                                        } and ${index + 1}, merged together!`,
-                                        { variant: "success" }
-                                      );
-                                    }
-                                  }
-                                } else
-                                  setValue(
-                                    `order[${index}].productName`,
-                                    data ? data : ""
-                                  );
-                              } else {
-                                setValue(`order[${index}].productName`, "");
-                                setValue(`order[${index}].productID`, "");
-                                setValue(`order[${index}].rate`, "");
-                                setValue(`order[${index}].tax`, "");
-                                enableCurrentProductRow(index);
-                              }
-                              return onChange(data);
-                            }}
-                            renderOption={(props, option, { selected }) => (
-                              <MenuItem
-                                {...props}
-                                key={option.uuid}
-                              >{`${option.name}`}</MenuItem>
-                            )}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                placeholder="Product Name"
-                                {...field}
-                                className="custom-input-height"
-                                inputRef={ref}
-                              />
-                            )}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name={`order[${index}].productID`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="Product ID"
-                            className="bg-white custom-input-height"
-                            type="text"
-                            autoComplete="off"
-                            error={!!errors.productID}
-                            helperText={errors?.productID?.message}
-                            variant="outlined"
-                            fullWidth
-                            disabled={disableRowIndexes.includes(index)}
-                          />
-                        )}
-                      />
-                      <div className="grid grid-cols-3 gap-20">
+                      {t("label:orderDetails")}
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails className="bg-white px-0">
+                    <div className="sticky top-28 z-40">
+                      <Button
+                        className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
+                        startIcon={<AddIcon className="text-main" />}
+                        variant="contained"
+                        onClick={() => addNewOrder()}
+                        disabled={addOrderIndex.length >= 20 ? true : false}
+                      >
+                        Add Item
+                      </Button>
+                    </div>
+                    {addOrderIndex.map((index) => (
+                      <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
                         <Controller
-                          name={`order[${index}].quantity`}
                           control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label="Qty"
-                              className="bg-white custom-input-height col-span-2"
-                              type="number"
-                              required
-                              autoComplete="off"
-                              error={!!errors?.order?.[index]?.quantity}
-                              // helperText={
-                              //   errors?.order?.[index]?.quantity?.message
-                              // }
-                              // error={!!errors.quantity}
-                              // helperText={errors?.quantity?.message}
-                              variant="outlined"
-                              fullWidth
+                          required
+                          name={`order[${index}].productName`}
+                          render={({ field: { ref, onChange, ...field } }) => (
+                            <Autocomplete
+                              disabled={
+                                index === 0 ||
+                                index === Math.min(...addOrderIndex)
+                                  ? false
+                                  : !watch(
+                                      `order[${
+                                        index -
+                                        (addOrderIndex[
+                                          addOrderIndex.indexOf(index)
+                                        ] -
+                                          addOrderIndex[
+                                            addOrderIndex.indexOf(index - 1)
+                                          ])
+                                      }].productName`
+                                    )
+                                // !watch(
+                                //   `order[${index -
+                                //   (index -
+                                //     addOrderIndex[
+                                //     addOrderIndex.indexOf(index - 1)
+                                //     ])
+                                //   }].productName`
+                                // )
+                              }
+                              freeSolo
+                              autoSelect
+                              onBlur={pnameOnBlur}
+                              options={productsList}
+                              forcePopupIcon={<Search />}
+                              getOptionLabel={(option) =>
+                                option?.name
+                                  ? option.name
+                                  : option
+                                  ? option
+                                  : ""
+                              }
+                              size="small"
+                              //className="custom-input-height"
+                              onChange={(_, data) => {
+                                if (data) {
+                                  if (data?.name) {
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data.name
+                                    );
+                                    setValue(
+                                      `order[${index}].productID`,
+                                      data.id
+                                    );
+                                    setValue(
+                                      `order[${index}].rate`,
+                                      data.price
+                                    );
+                                    setValue(`order[${index}].tax`, data.tax);
+                                    disableCurrentProductRow(index);
+
+                                    const watchRate = watch(
+                                      `order[${index}].rate`
+                                    );
+                                    const watchTax = watch(
+                                      `order[${index}].tax`
+                                    );
+                                    const watchName = watch(
+                                      `order[${index}].productName`
+                                    );
+                                    const watchId = watch(
+                                      `order[${index}].productID`
+                                    );
+
+                                    for (
+                                      let i = 0;
+                                      i < addOrderIndex.length;
+                                      i++
+                                    ) {
+                                      if (
+                                        watchName &&
+                                        watchId &&
+                                        watchRate &&
+                                        watchTax &&
+                                        i !== index &&
+                                        watchName ===
+                                          watch(`order[${i}].productName`) &&
+                                        watchId ===
+                                          watch(`order[${i}].productID`) &&
+                                        watchRate ===
+                                          watch(`order[${i}].rate`) &&
+                                        watchTax === watch(`order[${i}].tax`)
+                                      ) {
+                                        let quantityNum = isNaN(
+                                          parseInt(
+                                            watch(`order[${i}].quantity`)
+                                          )
+                                        )
+                                          ? 1
+                                          : parseInt(
+                                              watch(`order[${i}].quantity`)
+                                            );
+                                        setValue(
+                                          `order[${i}].quantity`,
+                                          quantityNum + 1
+                                        );
+                                        // onDelete(index);
+                                        onSameRowAction(index);
+                                        enqueueSnackbar(
+                                          `Same product found in Row ${
+                                            i + 1
+                                          } and ${index + 1}, merged together!`,
+                                          { variant: "success" }
+                                        );
+                                      }
+                                    }
+                                  } else
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data ? data : ""
+                                    );
+                                } else {
+                                  setValue(`order[${index}].productName`, "");
+                                  setValue(`order[${index}].productID`, "");
+                                  setValue(`order[${index}].rate`, "");
+                                  setValue(`order[${index}].tax`, "");
+                                  enableCurrentProductRow(index);
+                                }
+                                return onChange(data);
+                              }}
+                              renderOption={(props, option, { selected }) => (
+                                <MenuItem
+                                  {...props}
+                                  key={option.uuid}
+                                >{`${option.name}`}</MenuItem>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  placeholder="Product Name"
+                                  {...field}
+                                  className="custom-input-height"
+                                  inputRef={ref}
+                                />
+                              )}
                             />
                           )}
                         />
                         <Controller
-                          name={`order[${index}].rate`}
+                          name={`order[${index}].productID`}
                           control={control}
                           render={({ field }) => (
                             <TextField
                               {...field}
-                              label="Rate"
-                              className="bg-white custom-input-height col-span-1"
-                              type="number"
+                              label="Product ID"
+                              className="bg-white custom-input-height"
+                              type="text"
                               autoComplete="off"
-                              error={!!errors?.order?.[index]?.rate}
-                              // helperText={errors?.order?.[index]?.rate?.message}
+                              error={!!errors.productID}
+                              helperText={errors?.productID?.message}
                               variant="outlined"
-                              required
                               fullWidth
+                              value={field.value || ""}
                               disabled={disableRowIndexes.includes(index)}
                             />
                           )}
                         />
-                      </div>
-                      <div className="grid grid-cols-3 gap-20">
-                        <Controller
-                          name={`order[${index}].discount`}
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label="Discount"
-                              className="bg-white custom-input-height col-span-2"
-                              type="number"
-                              autoComplete="off"
-                              error={!!errors.discount}
-                              helperText={errors?.discount?.message}
-                              variant="outlined"
-                              fullWidth
-                            />
-                          )}
-                        />
-                        {!disableRowIndexes.includes(index) ? (
+                        <div className="grid grid-cols-3 gap-20">
                           <Controller
-                            name={`order[${index}].tax`}
-                            control={control}
-                            render={({ field }) => (
-                              <FormControl
-                                error={!!errors?.order?.[index]?.tax}
-                                required
-                                fullWidth
-                              >
-                                <InputLabel id="demo-simple-select-outlined-label-type">
-                                  Tax
-                                </InputLabel>
-                                <Select
-                                  {...field}
-                                  labelId="demo-simple-select-outlined-label-type"
-                                  id="demo-simple-select-outlined"
-                                  label="Tax"
-                                  defaultValue={defaultTaxValue}
-                                  className="col-span-1"
-                                  disabled={disableRowIndexes.includes(index)}
-                                  inputlabelprops={{
-                                    shrink: !!field.value || touchedFields.tax,
-                                  }}
-                                >
-                                  {taxes && taxes.length ? (
-                                    taxes.map((tax, index) =>
-                                      tax.status === "Active" ? (
-                                        <MenuItem key={index} value={tax.value}>
-                                          {tax.value}
-                                        </MenuItem>
-                                      ) : (
-                                        <MenuItem
-                                          key={index}
-                                          value={tax.value}
-                                          disabled
-                                        >
-                                          {tax.value}
-                                        </MenuItem>
-                                      )
-                                    )
-                                  ) : (
-                                    <MenuItem key={0} value={0}>
-                                      0
-                                    </MenuItem>
-                                  )}
-                                </Select>
-                                <FormHelperText>
-                                  {errors?.order?.[index]?.tax?.message}
-                                </FormHelperText>
-                              </FormControl>
-                            )}
-                          />
-                        ) : (
-                          <Controller
-                            name={`order[${index}].tax`}
+                            name={`order[${index}].quantity`}
                             control={control}
                             render={({ field }) => (
                               <TextField
                                 {...field}
-                                label="Tax"
-                                className="bg-white custom-input-height"
+                                label="Qty"
+                                className="bg-white custom-input-height col-span-2"
                                 type="number"
-                                autoComplete="off"
-                                error={!!errors?.order?.[index]?.tax}
-                                helperText={
-                                  errors?.order?.[index]?.tax?.message
-                                }
-                                variant="outlined"
                                 required
-                                placeholder="Tax"
-                                disabled={disableRowIndexes.includes(index)}
+                                value={field.value || ""}
+                                autoComplete="off"
+                                error={!!errors?.order?.[index]?.quantity}
+                                // helperText={
+                                //   errors?.order?.[index]?.quantity?.message
+                                // }
+                                // error={!!errors.quantity}
+                                // helperText={errors?.quantity?.message}
+                                variant="outlined"
                                 fullWidth
                               />
                             )}
                           />
-                        )}
-                      </div>
-                      <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
-                        <div>{t("label:total")}</div>
-                        <div>
-                          {t("label:nok")} {productWiseTotal(index)}
+                          <Controller
+                            name={`order[${index}].rate`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Rate"
+                                className="bg-white custom-input-height col-span-1"
+                                type="number"
+                                autoComplete="off"
+                                error={!!errors?.order?.[index]?.rate}
+                                // helperText={errors?.order?.[index]?.rate?.message}
+                                variant="outlined"
+                                required
+                                value={field.value || ""}
+                                fullWidth
+                                disabled={disableRowIndexes.includes(index)}
+                              />
+                            )}
+                          />
                         </div>
+                        <div className="grid grid-cols-3 gap-20">
+                          <Controller
+                            name={`order[${index}].discount`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Discount"
+                                className="bg-white custom-input-height col-span-2"
+                                type="number"
+                                autoComplete="off"
+                                value={field.value || ""}
+                                error={!!errors.discount}
+                                helperText={errors?.discount?.message}
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                          />
+                          {!disableRowIndexes.includes(index) ? (
+                            <Controller
+                              name={`order[${index}].tax`}
+                              control={control}
+                              render={({ field }) => (
+                                <FormControl
+                                  error={!!errors?.order?.[index]?.tax}
+                                  required
+                                  fullWidth
+                                >
+                                  <InputLabel id="demo-simple-select-outlined-label-type">
+                                    Tax
+                                  </InputLabel>
+                                  <Select
+                                    {...field}
+                                    labelId="demo-simple-select-outlined-label-type"
+                                    id="demo-simple-select-outlined"
+                                    label="Tax"
+                                    value={field.value || ""}
+                                    defaultValue={defaultTaxValue}
+                                    className="col-span-1"
+                                    disabled={disableRowIndexes.includes(index)}
+                                    inputlabelprops={{
+                                      shrink:
+                                        !!field.value || touchedFields.tax,
+                                    }}
+                                  >
+                                    {taxes && taxes.length ? (
+                                      taxes.map((tax, index) =>
+                                        tax.status === "Active" ? (
+                                          <MenuItem
+                                            key={index}
+                                            value={tax.value}
+                                          >
+                                            {tax.value}
+                                          </MenuItem>
+                                        ) : (
+                                          <MenuItem
+                                            key={index}
+                                            value={tax.value}
+                                            disabled
+                                          >
+                                            {tax.value}
+                                          </MenuItem>
+                                        )
+                                      )
+                                    ) : (
+                                      <MenuItem key={0} value={0}>
+                                        0
+                                      </MenuItem>
+                                    )}
+                                  </Select>
+                                  <FormHelperText>
+                                    {errors?.order?.[index]?.tax?.message}
+                                  </FormHelperText>
+                                </FormControl>
+                              )}
+                            />
+                          ) : (
+                            <Controller
+                              name={`order[${index}].tax`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label="Tax"
+                                  className="bg-white custom-input-height"
+                                  type="number"
+                                  autoComplete="off"
+                                  error={!!errors?.order?.[index]?.tax}
+                                  helperText={
+                                    errors?.order?.[index]?.tax?.message
+                                  }
+                                  variant="outlined"
+                                  required
+                                  placeholder="Tax"
+                                  disabled={disableRowIndexes.includes(index)}
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          )}
+                        </div>
+                        <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
+                          <div>{t("label:total")}</div>
+                          <div>
+                            {t("label:nok")} {productWiseTotal(index)}
+                          </div>
+                        </div>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                          startIcon={
+                            <RemoveCircleOutlineIcon className="text-red-400" />
+                          }
+                          onClick={() => onDelete(index)}
+                        >
+                          Remove Item
+                        </Button>
                       </div>
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
-                        startIcon={
-                          <RemoveCircleOutlineIcon className="text-red-400" />
-                        }
-                        onClick={() => onDelete(index)}
-                      >
-                        Remove Item
-                      </Button>
+                    ))}
+                    <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                      {/*TODO: joni vai please add grandtotal here*/}
+                      {t("label:grandTotal")} : {t("label:nok")} {grandTotal}
                     </div>
-                  ))}
-                </AccordionDetails>
-              </Accordion>
+                  </AccordionDetails>
+                </Accordion>
+              </div>
             </Hidden>
 
             <Hidden smDown>
@@ -1453,13 +1505,11 @@ const createOrder = () => {
                               }
                               disablePast={true}
                               onChange={(_) => {
-                                console.log("On Change Fired", _);
                                 let utc =
                                   _.getTime() + _.getTimezoneOffset() * 60000;
                                 let nd = new Date(
                                   utc + 3000000 * new Date().getTimezoneOffset()
                                 );
-                                console.log("nd :", nd);
                                 return onChange(_);
                                 // return onChange(nd)
                               }}
@@ -1861,7 +1911,7 @@ const createOrder = () => {
                     <div className="body3 text-MonochromeGray-300">
                       {t("label:creditCheckDetailsOrderPage")}
                     </div>
-                    <div className="send-order-credit-check mt-24 mb-16">
+                    <div className="send-order-credit-check">
                       <div className="flex gap-20 w-full md:w-3/4 my-32">
                         <Button
                           variant="outlined"
