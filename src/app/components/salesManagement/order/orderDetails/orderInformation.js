@@ -532,9 +532,9 @@ const OrderInformation = ({ info }) => {
                                   disabled
                                   defaultValue={
                                     info.productList &&
-                                    info.productList?.[index]?.tax
-                                      ? info.productList[index].tax
-                                      : ""
+                                    info.productList?.[index]?.tax === 0
+                                      ? 0
+                                      :info.productList[index]?.tax
                                   }
                                 />
                               )}
@@ -746,9 +746,9 @@ const OrderInformation = ({ info }) => {
                                 disabled
                                 defaultValue={
                                   info.productList &&
-                                  info.productList?.[index]?.tax
-                                    ? info.productList[index].tax
-                                    : ""
+                                  info.productList?.[index]?.tax === 0
+                                    ? 0
+                                      :info.productList[index]?.tax
                                 }
                               />
                             )}
