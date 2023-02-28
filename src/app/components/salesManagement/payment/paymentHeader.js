@@ -29,20 +29,15 @@ const paymentHeader = () => {
   const orderDetails = window.location.pathname.includes("/order/details");
 
   useEffect(() => {
-    if (!checkout && orderDetails) dispatch(changeLanguage("no"));
-    else if (checkout && orderDetails && !!localStorage.getItem("language")) {
-      dispatch(changeLanguage(localStorage.getItem("language")));
-    } else {
-      dispatch(changeLanguage("no"));
-    }
-
-    return () => {
-      localStorage.removeItem("language");
-    };
+    if (
+      !!localStorage.getItem("i18nextLng") &&
+      localStorage.getItem("i18nextLng") === "en"
+    )
+      dispatch(changeLanguage("en"));
+    else dispatch(changeLanguage("no"));
   }, []);
 
   const handleLanguageChange = (lng) => {
-    localStorage.setItem("language", lng);
     dispatch(changeLanguage(lng));
   };
 
@@ -58,12 +53,8 @@ const paymentHeader = () => {
           sx={{ height: 36 }}
           // defaultValue="English"
           defaultValue={
-            !checkout && orderDetails
-              ? "Norwegian"
-              : checkout &&
-                orderDetails &&
-                !!localStorage.getItem("language") &&
-                localStorage.getItem("language") === "en"
+            !!localStorage.getItem("i18nextLng") &&
+            localStorage.getItem("i18nextLng") === "en"
               ? "English"
               : "Norwegian"
           }
