@@ -715,7 +715,7 @@ export default function OverviewMainTable(props) {
           </div>
           <div className="my-20 grid grid-cols-2 gap-10 justify-between items-center">
             <div className="subtitle3 text-MonochromeGray-500">
-              {props.tableData.length} {t("label:resultsFound")}
+              {data.length} {t("label:resultsFound")}
             </div>
             <div>
               <Select
