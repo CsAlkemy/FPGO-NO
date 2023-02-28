@@ -542,13 +542,16 @@ const OrderInformation = ({ info }) => {
                           </div>
                           <div className="flex justify-between subtitle1 py-20 border-t-1 border-MonochromeGray-50">
                             <div>{t("label:total")}</div>
-                            <div>{t("label:nok")} 2,400</div>
+                            <div>{t("label:nok")} {info.productList &&
+                            info.productList?.[index]?.amount
+                              ? info.productList[index].amount
+                              : ""}</div>
                           </div>
                         </div>
                       ))}
                       <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
                         {/*TODO: joni vai please add grandtotal here*/}
-                        {t("label:grandTotal")} : {t("label:nok")} {10000}
+                        {t("label:grandTotal")} : {t("label:nok")} {info.orderSummary.grandTotal}
                       </div>
                     </AccordionDetails>
                   </Accordion>
