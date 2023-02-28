@@ -351,7 +351,7 @@ const CreateClient = () => {
               <div className="client-details">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:clientDetails")}
-                  {dirtyFields.organizationID &&
+                  {dirtyFields.id &&
                   dirtyFields.clientName &&
                   dirtyFields.organizationType ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
@@ -1473,7 +1473,7 @@ const CreateClient = () => {
               <div className="Back Office Account for APTIC Engine">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:backOfficeAccountForApticEngine")}
-                  {dirtyFields.APTIEngineCuserName ? (
+                  {dirtyFields.APTIEngineCuserName && dirtyFields.APTIEnginePassword ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
