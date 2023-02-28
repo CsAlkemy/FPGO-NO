@@ -720,7 +720,7 @@ export default function OverviewMainTable(props) {
             <div>
               <Select
                 sx={{ height: 40 }}
-                defaultValue={t("label:sort")}
+                defaultValue={t("label:sortBy")}
                 displayEmpty
                 className="w-full min-h-auto"
                 renderValue={(value) => {
