@@ -46,6 +46,7 @@ import {
   userListOverview,
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
+import UtilsService from '../../../utils/UtilsService';
 
 export default function OverviewMainTable(props) {
   const { t } = useTranslation();
@@ -124,9 +125,10 @@ export default function OverviewMainTable(props) {
       : newValue === 1
       ? setData(
           props.tableData.filter(
-            (row) =>
-              new Date(row.reqOn).toLocaleDateString() ===
-              new Date().toLocaleDateString()
+            (row) => {
+              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+              return preparedDate.getDate() === new Date().getDate()
+            }
           )
         )
       : newValue === 2
@@ -134,68 +136,70 @@ export default function OverviewMainTable(props) {
           props.tableData.filter((row) => {
             let date = new Date();
             let day = new Date(row.reqOn).getDay();
+            const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
             switch (new Date().getDay()) {
               case 0:
                 return (
-                  new Date(row.reqOn).toLocaleDateString() ===
-                  new Date().toLocaleDateString()
+                  preparedDate.getDate() === new Date().getDate()
                 );
               case 1:
                 date.setDate(date.getDate() - 1);
                 return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
+                  preparedDate.getDate() <=
+                    new Date().getDate() &&
+                  preparedDate.getDate() >=
+                    date.getDate()
                 );
               case 2:
                 date.setDate(date.getDate() - 2);
                 return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
+                  preparedDate.getDate() <=
+                  date.getDate() &&
+                  preparedDate.getDate() >=
+                  date.getDate()
                 );
               case 3:
                 date.setDate(date.getDate() - 3);
                 return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
+                  preparedDate.getDate() <=
+                  date.getDate() &&
+                  preparedDate.getDate() >=
+                  date.getDate()
                 );
               case 4:
                 date.setDate(date.getDate() - 4);
                 return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
+                  preparedDate.getDate() <=
+                  date.getDate() &&
+                  preparedDate.getDate() >=
+                  date.getDate()
                 );
               case 5:
                 date.setDate(date.getDate() - 5);
                 return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
+                  preparedDate.getDate() <=
+                  date.getDate() &&
+                  preparedDate.getDate() >=
+                  date.getDate()
                 );
               case 6:
                 date.setDate(date.getDate() - 6);
                 return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
+                  preparedDate.getDate() <=
+                  date.getDate() &&
+                  preparedDate.getDate() >=
+                  date.getDate()
                 );
             }
           })
         )
       : setData(
           props.tableData.filter(
-            (row) =>
-              new Date(row.reqOn).toLocaleDateString().split("/")[0] ===
-              new Date().toLocaleDateString().split("/")[0]
+            (row) =>{
+              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+              return preparedDate.getMonth() ===
+              new Date().getMonth()
+            }
           )
         );
   };
@@ -358,6 +362,20 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const businessAdminUsersListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        break;
+      case 1:
+        setData(props.tableData.filter((row) => row.status === "Active"));
+        break;
+      case 2:
+        setData(props.tableData.filter((row) => row.status === "Inactive"));
+        break;
+    }
+  };
+
   const ordersListTableTabPanelsData = (event, newValue) => {
     switch (newValue) {
       case 0:
@@ -494,6 +512,9 @@ export default function OverviewMainTable(props) {
         break;
       case organizationWiseUsersOverview:
         organizationWiseUsersListTableTabPanelsData(event, newValue);
+        break;
+      case businessAdminUsersOverview:
+        businessAdminUsersListTableTabPanelsData(event, newValue);
         break;
       case ordersListOverview:
         ordersListTableTabPanelsData(event, newValue);
@@ -656,6 +677,7 @@ export default function OverviewMainTable(props) {
             headerButtonLabel={props.headerButtonLabel}
             tableRef={props.tableName}
             tableData={props.tableData}
+            isLoading={props.isLoading}
           />
           <div className="">
             <div>
@@ -792,6 +814,7 @@ export default function OverviewMainTable(props) {
             setSelectedDate={
               props.setSelectedDate ? props.setSelectedDate : null
             }
+            isLoading={props.isLoading}
           />
           <Box
             sx={{

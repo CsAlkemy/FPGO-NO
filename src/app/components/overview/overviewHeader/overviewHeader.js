@@ -142,7 +142,8 @@ export default function OverviewHeader(props) {
   ];
 
   const handleDateChange = (date) => {
-    props.changeDate(date);
+    if (date.getMonth() !== new Date(props.selectedDate).getMonth())
+      props.changeDate(date);
   };
 
   const getPlaceHolder = () => {
@@ -209,6 +210,8 @@ export default function OverviewHeader(props) {
                 renderInput={(params) => (
                   <TextField size="small" {...params} type="date" />
                 )}
+                disableFuture={true}
+                disabled={props.isLoading}
               />
             </div>
           )}
