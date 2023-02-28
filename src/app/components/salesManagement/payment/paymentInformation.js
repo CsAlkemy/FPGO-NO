@@ -790,7 +790,7 @@ const paymentInformation = () => {
                             <div
                               className={`${
                                 !!isApproved
-                                  ? "text-primary-500"
+                                  ? "text-green-600"
                                   : "text-red-500"
                               } text-MonochromeGray-300 my-8 mx-8`}
                             >

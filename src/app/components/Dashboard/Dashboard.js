@@ -168,13 +168,13 @@ export default function Dashboard() {
               </Button>
             </div>
           </div>
-          <div className="my-32">
+          <div className="my-20">
             <StatTiles datas={analyticsData} />
           </div>
-          <div className="my-32">
+          <div className="my-20">
             <RevenuePerDay datas={analyticsData} />
           </div>
-          <div className="my-32">
+          <div className="my-20">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-20 w-full">
               <PaymentMethodsPie datas={analyticsData} />{" "}
               <OrderStatusPie datas={analyticsData} />{" "}
@@ -184,7 +184,7 @@ export default function Dashboard() {
           <LanguageWidget /> */}
             </div>
           </div>
-          <div className="my-32 grid grid-cols-1 sm:grid-cols-1 gap-20">
+          <div className="my-20 grid grid-cols-1 sm:grid-cols-1 gap-20">
             {/*<CostsTile datas={analyticsData} />*/}
             <TopCustomers datas={analyticsData} />
           </div>
