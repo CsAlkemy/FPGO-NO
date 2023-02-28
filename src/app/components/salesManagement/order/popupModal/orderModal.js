@@ -179,7 +179,8 @@ const OrderModal = (props) => {
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
               if (
-                !response?.error?.data?.message.toLowerCase().includes("admin")
+                // !response?.error?.data?.message.toLowerCase().includes("admin")
+                !(response?.error?.data?.message === "refundRejectionForWeeklyThresholdExceed" || response?.error?.data?.message === "refundRejectionForRequestAmountThresholdExceed")
               ) {
                 setIsDisableRefundRequest(true);
               }

@@ -32,6 +32,7 @@ import {
 import PaymentHeader from "./paymentHeader";
 import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -790,7 +791,7 @@ const paymentInformation = () => {
                             <div
                               className={`${
                                 !!isApproved
-                                  ? "text-primary-500"
+                                  ? "text-green-600"
                                   : "text-red-500"
                               } text-MonochromeGray-300 my-8 mx-8`}
                             >
@@ -813,7 +814,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.subTotal
-                              ? orderDetails?.orderSummary?.subTotal
+                              ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                               : ""}
                           </div>
                         </div>
@@ -824,7 +825,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.tax
-                              ? orderDetails?.orderSummary?.tax
+                              ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                               : 0}
                           </div>
                         </div>
@@ -835,7 +836,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.discount
-                              ? orderDetails?.orderSummary?.discount
+                              ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                               : 0}
                           </div>
                         </div>
@@ -848,7 +849,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.grandTotal
-                              ? orderDetails?.orderSummary?.grandTotal
+                              ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                               : ""}
                           </div>
                         </div>
@@ -870,7 +871,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.subTotal
-                            ? orderDetails?.orderSummary?.subTotal
+                            ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                             : ""}
                         </div>
                       </div>
@@ -881,7 +882,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.tax
-                            ? orderDetails?.orderSummary?.tax
+                            ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                             : 0}
                         </div>
                       </div>
@@ -892,7 +893,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.discount
-                            ? orderDetails?.orderSummary?.discount
+                            ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                             : 0}
                         </div>
                       </div>
@@ -905,7 +906,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.grandTotal
-                            ? orderDetails?.orderSummary?.grandTotal
+                            ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                             : ""}
                         </div>
                       </div>

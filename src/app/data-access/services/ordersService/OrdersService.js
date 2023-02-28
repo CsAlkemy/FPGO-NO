@@ -89,7 +89,7 @@ class OrdersService {
       const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
       const dueDateTimeStamp = new Date(formatedDate).getTime();
       const currentTimeStamp = new Date().getTime();
-      const isExpired = dueDateTimeStamp < currentTimeStamp;
+      const isExpired = row.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
 
       return {
         uuid: row.orderUuid,
@@ -101,7 +101,7 @@ class OrdersService {
         email: row?.email ? row?.email : null,
         amount: ThousandSeparator(row.amount),
         stage: row?.status
-          ? row.status.toLowerCase() === 'sent' && isExpired
+          ? isExpired
             ? "expired"
             : row.status.toLowerCase()
           : null,
