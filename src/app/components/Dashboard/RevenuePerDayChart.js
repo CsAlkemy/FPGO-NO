@@ -21,7 +21,7 @@ function RevenuePerDay(props) {
   const [revenueChartData, setRevenueChartData] = useState({
     name: "Revenue",
     data: revenueChart.map((rc) => {
-      return { x: rc.date * 1000, y: rc.value };
+      return { x: rc.date * 1000, y: ThousandSeparator(rc.value) };
     }),
   });
 
