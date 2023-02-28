@@ -60,8 +60,8 @@ const createOrder = () => {
           const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
           const dueDateTimeStamp = new Date(formatedDate).getTime();
           const currentTimeStamp = new Date().getTime();
-          const isExpired = dueDateTimeStamp < currentTimeStamp;
-          info.status = info.status.toLowerCase() === 'sent' && isExpired ? 'Expired' : info.status;
+          const isExpired = info.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
+          info.status = isExpired ? 'Expired' : info.status;
           
           setInfo(info);
           setIsLoading(false);
