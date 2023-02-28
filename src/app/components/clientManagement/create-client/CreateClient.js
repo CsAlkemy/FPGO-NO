@@ -11,7 +11,7 @@ import {
   Button,
   FormControl,
   FormControlLabel,
-  FormHelperText,
+  FormHelperText, Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -324,7 +324,7 @@ const CreateClient = () => {
           >
             <div className=" header-click-to-action">
               <div className="header-text header6">Create New Client</div>
-              <div className="flex gap-10 w-full justify-between sm:w-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full justify-between sm:w-auto">
                 <Button
                   color="secondary"
                   onClick={() => setOpen(true)}
@@ -1672,110 +1672,244 @@ const CreateClient = () => {
                   )}
                 </div>
                 <div className="p-10">
-                  <div className="px-16">
-                    <div className="product-list">
-                      <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
-                        <div className="my-auto text-MonochromeGray-500 col-span-4">
-                          {t("label:name")}
-                        </div>
-                        <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
-                          {`Value (%)`}
-                        </div>
-                        <div className="my-auto text-MonochromeGray-500 col-span-4">
-                          {t("label:bookKeepingReference")}
-                        </div>
-                        <div className="my-auto col-span-1 text-MonochromeGray-500">
-                          {" "}
-                          {t("label:delete")}
-                        </div>
-                      </div>
+                  <Hidden mdUp>
+                    <div className="px-16 shadow-md rounded-md">
                       {addVatIndex.map((index) => (
-                        <div
-                          key={index}
-                          className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
-                        >
-                          <div className="my-auto col-span-4">
-                            <Controller
-                              name={`vat[${index}].vatName`}
-                              control={control}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  type="text"
-                                  autoComplete="off"
-                                  className="bg-white custom-input-height"
-                                  error={!!errors.vatName}
-                                  helperText={errors?.vatName?.message}
-                                  variant="outlined"
-                                  required
-                                  fullWidth
-                                />
-                              )}
-                            />
+                          <div
+                              key={index}
+                              className="subtitle3 w-full md:w-3/4 mt-20"
+                          >
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">
+                              <Controller
+                                  name={`vat[${index}].vatName`}
+                                  control={control}
+                                  render={({ field }) => (
+                                      <TextField
+                                          {...field}
+                                          type="text"
+                                          value={field.value || ""}
+                                          autoComplete="off"
+                                          placeholder={t("label:name")}
+                                          className="bg-white"
+                                          error={!!errors.vatName}
+                                          helperText={
+                                            errors?.vatName?.message
+                                          }
+                                          variant="outlined"
+                                          required
+                                          fullWidth
+                                      />
+                                  )}
+                              />
+                              <Controller
+                                  name={`vat[${index}].vatValue`}
+                                  control={control}
+                                  render={({ field }) => (
+                                      <TextField
+                                          {...field}
+                                          type="number"
+                                          value={field.value || ""}
+                                          className=""
+                                          autoComplete="off"
+                                          error={!!errors.vatValue}
+                                          helperText={
+                                            errors?.vatValue?.message
+                                          }
+                                          variant="outlined"
+                                          placeholder={t(
+                                              "label:valuePercentage"
+                                          )}
+                                          required
+                                          fullWidth
+                                      />
+                                  )}
+                              />
+                            </div>
+
+                            <div className="my-20">
+                              <Controller
+                                  name={`vat[${index}].bookKeepingReference`}
+                                  control={control}
+                                  render={({ field }) => (
+                                      <TextField
+                                          {...field}
+                                          type="text"
+                                          value={field.value || ""}
+                                          className="bg-white"
+                                          autoComplete="off"
+                                          placeholder={t(
+                                              "label:bookKeepingReference"
+                                          )}
+                                          error={
+                                            !!errors?.vat?.[index]
+                                                ?.bookKeepingReference
+                                          }
+                                          helperText={
+                                            errors?.bookKeepingReference
+                                                ?.message
+                                          }
+                                          variant="outlined"
+                                          required
+                                          fullWidth
+                                      />
+                                  )}
+                              />
+                            </div>
+                            <div className="mt-20 mb-10">
+                              <Controller
+                                  name={`vat[${index}].vatActive`}
+                                  type="checkbox"
+                                  control={control}
+                                  render={({
+                                             field: {
+                                               onChange,
+                                               value,
+                                               ref,
+                                               onBlur,
+                                             },
+                                           }) => (
+                                      <FormControl
+                                          required
+                                          error={!!errors.Switch}
+                                          label={t("label:status")}
+                                      >
+                                        <Switch
+                                            color="secondary"
+                                            checked={value}
+                                            onBlur={onBlur}
+                                            onChange={(ev) =>
+                                                onChange(ev.target.checked)
+                                            }
+                                            inputRef={ref}
+                                            required
+                                        />
+                                        <FormHelperText>
+                                          {errors?.Switch?.message}
+                                        </FormHelperText>
+                                      </FormControl>
+                                  )}
+                              />
+                            </div>
                           </div>
-                          <div className="my-auto text-right col-span-3">
-                            <Controller
-                              name={`vat[${index}].vatValue`}
-                              control={control}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  type="number"
-                                  className="text-right  custom-input-height"
-                                  autoComplete="off"
-                                  error={!!errors.vatValue}
-                                  helperText={errors?.vatValue?.message}
-                                  variant="outlined"
-                                  required
-                                  fullWidth
-                                  inputProps={{ style: { textAlign: "right" } }}
-                                />
-                              )}
-                            />
-                          </div>
-                          <div className="my-auto col-span-4">
-                            <Controller
-                              name={`vat[${index}].bookKeepingReference`}
-                              control={control}
-                              render={({ field }) => (
-                                <TextField
-                                  {...field}
-                                  type="text"
-                                  className="bg-white custom-input-height"
-                                  autoComplete="off"
-                                  error={
-                                    !!errors?.vat?.[index]?.bookKeepingReference
-                                  }
-                                  helperText={
-                                    errors?.bookKeepingReference?.message
-                                  }
-                                  variant="outlined"
-                                  required
-                                  fullWidth
-                                />
-                              )}
-                            />
-                          </div>
-                          <div className="my-auto col-span-1 text-right">
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => onDelete(index)}
-                            >
-                              <RemoveCircleOutline className="icon-size-20 text-red-500" />
-                            </IconButton>
-                          </div>
-                        </div>
                       ))}
                       <Button
-                        className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
-                        startIcon={<AddIcon />}
-                        onClick={() => addNewVat()}
-                        disabled={addVatIndex.length >= 4 ? true : false}
+                          className="my-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
+                          startIcon={<AddIcon />}
+                          onClick={() => addNewVat()}
+                          disabled={
+                            addVatIndex.length >= 4 ? true : false
+                          }
                       >
                         {t("label:addItem")}
                       </Button>
                     </div>
-                  </div>
+                  </Hidden>
+                  <Hidden mdDown>
+                    <div className="px-16">
+                      <div className="product-list">
+                        <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
+                          <div className="my-auto text-MonochromeGray-500 col-span-4">
+                            {t("label:name")}
+                          </div>
+                          <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
+                            {`Value (%)`}
+                          </div>
+                          <div className="my-auto text-MonochromeGray-500 col-span-4">
+                            {t("label:bookKeepingReference")}
+                          </div>
+                          <div className="my-auto col-span-1 text-MonochromeGray-500">
+                            {" "}
+                            {t("label:delete")}
+                          </div>
+                        </div>
+                        {addVatIndex.map((index) => (
+                            <div
+                                key={index}
+                                className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
+                            >
+                              <div className="my-auto col-span-4">
+                                <Controller
+                                    name={`vat[${index}].vatName`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            type="text"
+                                            autoComplete="off"
+                                            className="bg-white custom-input-height"
+                                            error={!!errors.vatName}
+                                            helperText={errors?.vatName?.message}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                        />
+                                    )}
+                                />
+                              </div>
+                              <div className="my-auto text-right col-span-3">
+                                <Controller
+                                    name={`vat[${index}].vatValue`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            type="number"
+                                            className="text-right  custom-input-height"
+                                            autoComplete="off"
+                                            error={!!errors.vatValue}
+                                            helperText={errors?.vatValue?.message}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            inputProps={{ style: { textAlign: "right" } }}
+                                        />
+                                    )}
+                                />
+                              </div>
+                              <div className="my-auto col-span-4">
+                                <Controller
+                                    name={`vat[${index}].bookKeepingReference`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            type="text"
+                                            className="bg-white custom-input-height"
+                                            autoComplete="off"
+                                            error={
+                                              !!errors?.vat?.[index]?.bookKeepingReference
+                                            }
+                                            helperText={
+                                              errors?.bookKeepingReference?.message
+                                            }
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                        />
+                                    )}
+                                />
+                              </div>
+                              <div className="my-auto col-span-1 text-right">
+                                <IconButton
+                                    aria-label="delete"
+                                    onClick={() => onDelete(index)}
+                                >
+                                  <RemoveCircleOutline className="icon-size-20 text-red-500" />
+                                </IconButton>
+                              </div>
+                            </div>
+                        ))}
+                        <Button
+                            className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
+                            startIcon={<AddIcon />}
+                            onClick={() => addNewVat()}
+                            disabled={addVatIndex.length >= 4 ? true : false}
+                        >
+                          {t("label:addItem")}
+                        </Button>
+                      </div>
+                    </div>
+                  </Hidden>
                 </div>
               </div>
               <div className="Invoice Fee Category">

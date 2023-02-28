@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 import { selectUser } from "app/store/userSlice";
 import { useTranslation } from "react-i18next";
 import Pdf from "react-to-pdf";
-import { ThousandSeparator } from "../../../../utils/helperFunctions";
+import {CharCont, ThousandSeparator} from "../../../../utils/helperFunctions";
 import { LoadingButton } from "@mui/lab";
+import {Hidden} from "@mui/material";
 
 const orderReceipt = ({ info }) => {
   const { t } = useTranslation();
@@ -56,7 +57,7 @@ const orderReceipt = ({ info }) => {
               src="assets/images/logo/front-go.svg"
               alt="logo"
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center pt-32 pb-20 border-b-1 border-MonochromeGray-50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-0 justify-between items-center pt-32 pb-20 border-b-1 border-MonochromeGray-50">
               <div className="subtitle1 text-MonochromeGray-700">
                 {t("label:transactionReceipt")}
               </div>
@@ -66,7 +67,7 @@ const orderReceipt = ({ info }) => {
             </div>
 
             <div className="flex gap-20 pt-20 justify-between">
-              <div className="text-MonochromeGray-700 body3 flex flex-col gap-5">
+              <div className="text-MonochromeGray-700 body3 flex flex-col gap-10 md:gap-5">
                 <div>
                   {t("label:customer")}:{" "}
                   {info?.customerDetails?.name
@@ -102,7 +103,7 @@ const orderReceipt = ({ info }) => {
                   {info?.paymentLinkDueDate ? info?.paymentLinkDueDate : "-"}
                 </div>
               </div>
-              <div className="text-MonochromeGray-700 body3 flex flex-col gap-5">
+              <div className="text-MonochromeGray-700 body3 flex flex-col gap-10 md:gap-5">
                 <div>
                   {info?.organizationDetails?.name
                     ? info?.organizationDetails?.name
@@ -137,13 +138,25 @@ const orderReceipt = ({ info }) => {
                       info?.organizationDetails?.billingAddress?.msisdn
                     : "-, "}
                 </div>
-                <div>
-                  {t("label:email")}. :{" "}
-                  {info?.organizationDetails?.billingAddress &&
-                  info?.organizationDetails?.billingAddress?.email
-                    ? info?.organizationDetails?.billingAddress?.email
-                    : "-, "}
-                </div>
+                <Hidden smUp>
+                  <div>
+                    {t("label:email")} :{" "}
+                    {info?.organizationDetails?.billingAddress &&
+                    info?.organizationDetails?.billingAddress?.email
+                        ? CharCont(info?.organizationDetails?.billingAddress?.email, 10)
+                        : "-, "}
+                  </div>
+                </Hidden>
+                <Hidden smDown>
+                  <div>
+                    {t("label:email")} :{" "}
+                    {info?.organizationDetails?.billingAddress &&
+                    info?.organizationDetails?.billingAddress?.email
+                        ? info?.organizationDetails?.billingAddress?.email
+                        : "-, "}
+                  </div>
+                </Hidden>
+
               </div>
             </div>
             <div className="order-receipt-table subtitle3 mt-20 border-b-1 border-MonochromeGray-300">

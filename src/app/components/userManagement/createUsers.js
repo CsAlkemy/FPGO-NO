@@ -191,12 +191,12 @@ export default function CreateUsers() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex-auto p-20 sm:p-0 w-full max-w-screen-md bg-white">
-            <div className="rounded-sm bg-white p-20">
+            <div className="rounded-sm bg-white p-0 sm:p-20">
               <div className=" header-click-to-action">
                 <div className="header-text header6">
                   {t("label:createUser")}
                 </div>
-                <div className="flex gap-x-10 w-full sm:w-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full sm:w-auto">
                   <Button
                     color="secondary"
                     type="reset"
@@ -212,7 +212,7 @@ export default function CreateUsers() {
                   <LoadingButton
                     variant="contained"
                     color="secondary"
-                    className="rounded-4 button2"
+                    className="rounded-4 button2 mb-10 sm:mb-0"
                     aria-label="Confirm"
                     size="large"
                     type="submit"
@@ -231,7 +231,7 @@ export default function CreateUsers() {
                   <div className="create-user-roles caption2">
                     {t("label:userRole")}
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-7 mt-10">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-7 mt-10">
                     {roleList
                       .filter((role) => {
                         return role.hierarchy !== 2 && role.hierarchy !== 3;
@@ -322,52 +322,43 @@ export default function CreateUsers() {
                         )}
                       />
                       {(type === BUSINESS_ADMIN || type === GENERAL_USER) && (
-                        <Controller
-                          name="organization"
-                          control={control}
-                          render={({ field }) => (
-                            <FormControl
-                              error={!!errors.organization}
-                              required
-                              fullWidth
-                            >
-                              <InputLabel id="demo-simple-select-label-role-org">
-                                {t("label:organization")}
-                              </InputLabel>
-                              <Select
-                                {...field}
-                                labelId="demo-simple-select-label-role-org"
-                                //id="demo-simple-select"
-                                required
-                                disabled={
-                                  user.role[0] === BUSINESS_ADMIN ||
-                                  user.role[0] === GENERAL_USER
-                                }
-                              >
-                                {/*{*/}
-                                {/*  user.role[0] === BUSINESS_ADMIN  && (*/}
-                                {/*    <MenuItem*/}
-                                {/*      key={0}*/}
-                                {/*      value={user?.user_data?.organization?.name}*/}
-                                {/*    >*/}
-                                {/*      {user?.user_data?.organization?.name}*/}
-                                {/*    </MenuItem>*/}
-                                {/*  )*/}
-                                {/*}*/}
-                                {organizationsList.map((item, index) => {
-                                  return (
-                                    <MenuItem key={index} value={item.uuid}>
-                                      {item.name}
-                                    </MenuItem>
-                                  );
-                                })}
-                              </Select>
-                              <FormHelperText>
-                                {errors.organization?.message}
-                              </FormHelperText>
-                            </FormControl>
-                          )}
-                        />
+                          <Controller
+                              name="organization"
+                              control={control}
+                              render={({ field }) => (
+                                  <FormControl
+                                      error={!!errors.organization}
+                                      required
+                                      fullWidth
+                                  >
+                                    <InputLabel id="demo-simple-select-label-role">
+                                      {t("label:organization")}
+                                    </InputLabel>
+                                    <Select
+                                        {...field}
+                                        labelId="demo-simple-select-label-role"
+                                        id="demo-simple-select"
+                                        label={t("label:organization")}
+                                        placeholder={t("label:organization")}
+                                        disabled={
+                                            user.role[0] === BUSINESS_ADMIN ||
+                                            user.role[0] === GENERAL_USER
+                                        }
+                                    >
+                                      {organizationsList.map((item, index) => {
+                                        return (
+                                            <MenuItem key={index} value={item.uuid}>
+                                              {item.name}
+                                            </MenuItem>
+                                        );
+                                      })}
+                                    </Select>
+                                    <FormHelperText>
+                                      {errors.organization?.message}
+                                    </FormHelperText>
+                                  </FormControl>
+                              )}
+                          />
                       )}
                       <Controller
                         name="designation"
