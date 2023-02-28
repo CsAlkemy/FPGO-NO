@@ -24,8 +24,8 @@ const TopCustomers = (props) => {
       <div className="mt-10">
         <div className="grid grid-cols-5 justify-between gap-10 subtitle3 bg-primary-25 p-10">
           <div className="self-start col-span-2">{t("label:name")}</div>
-          <div className="justify-self-end col-span-1">{t("label:orders")}</div>
-          <div className="justify-self-end col-span-2">
+          <div className="self-start col-span-1">{t("label:orders")}</div>
+          <div className="self-start col-span-2">
             {t("label:totalRevenue")}
           </div>
         </div>
@@ -45,10 +45,10 @@ const TopCustomers = (props) => {
                   </Tooltip>
                 </Hidden>
 
-                <div className="justify-self-end col-span-1">
+                <div className="self-start col-span-1">
                   {customer.orders}
                 </div>
-                <div className="justify-self-end col-span-2">
+                <div className="self-start col-span-2">
                   {t("label:nok")} {ThousandSeparator(customer?.revenue)}
                 </div>
               </div>
