@@ -129,7 +129,6 @@ const createPrivateCustomer = () => {
                   {dirtyFields.primaryPhoneNumber &&
                   dirtyFields.customerEmail &&
                   dirtyFields.customerName &&
-                  dirtyFields.pNumber &&
                   dirtyFields.billingAddress &&
                   dirtyFields.billingZip &&
                   dirtyFields.billingCity &&
