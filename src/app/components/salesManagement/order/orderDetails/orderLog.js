@@ -27,7 +27,7 @@ const orderLog = ({ info }) => {
 
         if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
           orderData.push({
-            "title":"Order Expired and was not paid",
+            "title": t("label:orderExpired"),
             "slug":"order-expired",
             "datetime":info.paymentLinkDueDate,
             "sentTo": null,
