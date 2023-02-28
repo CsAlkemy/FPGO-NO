@@ -11,7 +11,7 @@ import UserService from "../../../data-access/services/userService/UserService";
 import AuthService from "../../../data-access/services/authService/AuthService";
 import { useTranslation } from 'react-i18next';
 
-const updatePassword = ({role}) => {
+const updatePassword = ({role, userProfile}) => {
   const {t} = useTranslation()
   const [hide, setHide] = React.useState(true);
   const { enqueueSnackbar } = useSnackbar();
@@ -34,7 +34,7 @@ const updatePassword = ({role}) => {
 
     UserService.changePassword(
       param,
-      JSON.parse(localStorage.getItem("userProfile")).uuid
+      userProfile.uuid
     )
       .then((res) => {
       if (res.status_code === 202) {
@@ -43,7 +43,7 @@ const updatePassword = ({role}) => {
         });
         if (
           user['data'].uuid ===
-          JSON.parse(localStorage.getItem("userProfile")).uuid
+          userProfile.uuid
         ) {
           AuthService.logout();
         }
