@@ -358,6 +358,20 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const businessAdminUsersListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        break;
+      case 1:
+        setData(props.tableData.filter((row) => row.status === "Active"));
+        break;
+      case 2:
+        setData(props.tableData.filter((row) => row.status === "Inactive"));
+        break;
+    }
+  };
+
   const ordersListTableTabPanelsData = (event, newValue) => {
     switch (newValue) {
       case 0:
@@ -494,6 +508,9 @@ export default function OverviewMainTable(props) {
         break;
       case organizationWiseUsersOverview:
         organizationWiseUsersListTableTabPanelsData(event, newValue);
+        break;
+      case businessAdminUsersOverview:
+        businessAdminUsersListTableTabPanelsData(event, newValue);
         break;
       case ordersListOverview:
         ordersListTableTabPanelsData(event, newValue);
