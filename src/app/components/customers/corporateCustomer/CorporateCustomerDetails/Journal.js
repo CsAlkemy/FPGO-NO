@@ -152,6 +152,7 @@ const Journal = () => {
           value={selectedDate}
           onChange={handleDateChange}
           renderInput={(params) => <TextField {...params} type="date" />}
+          disableFuture={true}
         />
       </div>
       <div>
