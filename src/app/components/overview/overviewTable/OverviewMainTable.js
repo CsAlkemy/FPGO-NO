@@ -660,6 +660,7 @@ export default function OverviewMainTable(props) {
             headerButtonLabel={props.headerButtonLabel}
             tableRef={props.tableName}
             tableData={props.tableData}
+            isLoading={props.isLoading}
           />
           <div className="">
             <div>
@@ -796,6 +797,7 @@ export default function OverviewMainTable(props) {
             setSelectedDate={
               props.setSelectedDate ? props.setSelectedDate : null
             }
+            isLoading={props.isLoading}
           />
           <Box
             sx={{
