@@ -408,7 +408,7 @@ export default function OverviewMainTable(props) {
               const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
               const dueDateTimeStamp = new Date(formatedDate).getTime();
               const currentTimeStamp = new Date().getTime();
-              const isExpired = dueDateTimeStamp < currentTimeStamp;
+              const isExpired = data.stage.toLowerCase() === "sent" && dueDateTimeStamp < currentTimeStamp;
               const statusChanged = data?.status
                 ? isExpired
                   ? "expired"
