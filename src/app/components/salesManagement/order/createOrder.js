@@ -61,7 +61,6 @@ import AuthService from "../../../data-access/services/authService";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { es, nn, nb } from "date-fns/locale";
-import { formatInTimeZone } from "date-fns-tz";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 const createOrder = () => {
@@ -614,21 +613,6 @@ const createOrder = () => {
     return new Date(
       `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     );
-  };
-
-  const getUTCTime = (d) => {
-    let convertedDate = new Date(d);
-    const osloDateTime = formatInTimeZone(
-      convertedDate,
-      "Europe/Oslo",
-      "yyyy-MM-dd HH:mm:ss"
-    );
-    // if(!!d) {
-    //   let utc = (convertedDate.getTime() + 3600000) + (convertedDate.getTimezoneOffset() * 60000);
-    //   let nd = new Date(utc + (3600000*(new Date().getTimezoneOffset())));
-    //   return nd
-    // }
-    if (!!d) return osloDateTime;
   };
 
   return (
@@ -1489,7 +1473,7 @@ const createOrder = () => {
                               value={
                                 !value
                                   ? new Date().setDate(new Date().getDate() + 1)
-                                  : getUTCTime(value)
+                                  : value
                                 // : value
                               }
                               required

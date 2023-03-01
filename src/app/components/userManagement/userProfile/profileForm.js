@@ -121,16 +121,20 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     defaultValues.role = userProfile["userRoleDetails"]?.slug
       ? userProfile["userRoleDetails"].slug
       : "";
-    defaultValues.organization = userProfile["organizationDetails"]?.uuid
-      ? userProfile["organizationDetails"]?.uuid
-      : "";
+    defaultValues.organization =
+      (role === 0 && userProfile["userRoleDetails"].slug === FP_ADMIN) ||
+      role === 1
+        ? "Front Payment AS"
+        : userProfile["organizationDetails"]?.uuid
+        ? userProfile["organizationDetails"]?.uuid
+        : "";
     defaultValues.preferredLanguage = userProfile?.preferredLanguage
       ? userProfile.preferredLanguage
       : "";
     // defaultValues.branch = userProfile['organizationDetails']?.name
     reset({ ...defaultValues });
 
-    if(isLoading) {
+    if (isLoading) {
       AuthService.axiosRequestHelper().then((isAuthenticated) => {
         UserService.userRoleList(true)
           .then((response) => {
@@ -204,7 +208,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="email"
                   autoComplete="off"
                   error={!!errors.email}
-                  helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
+                  helperText={
+                    errors?.email?.message
+                      ? t(`helperText:${errors?.email?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
@@ -221,7 +229,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="text"
                   autoComplete="off"
                   error={!!errors.fullName}
-                  helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
+                  helperText={
+                    errors?.fullName?.message
+                      ? t(`helperText:${errors?.fullName?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
@@ -248,42 +260,78 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                     onBlur={handleOnBlurGetDialCode}
                   />
                   <FormHelperText>
-                    {errors?.phoneNumber?.message ? t(`helperText:${errors?.phoneNumber?.message}`) : ""}
+                    {errors?.phoneNumber?.message
+                      ? t(`helperText:${errors?.phoneNumber?.message}`)
+                      : ""}
                   </FormHelperText>
                 </FormControl>
               )}
             />
 
-            <Controller
-              name="organization"
-              control={control}
-              render={({ field }) => (
-                <FormControl error={!!errors.organization} required fullWidth>
-                  <InputLabel id="demo-simple-select-label-org">
-                    {t("label:organization")}
-                  </InputLabel>
-                  <Select
-                    {...field}
-                    labelId="demo-simple-select-label-org"
-                    id="demo-simple-select"
-                    label="Organization"
-                    disabled={
-                      user.role[0] === BUSINESS_ADMIN ||
-                      userProfile["userRoleDetails"].slug === FP_ADMIN ||
-                      role !== 0
-                    }
-                  >
-                    {organizationsList.map((item, index) => {
-                      return (
-                        <MenuItem key={index} value={item.uuid}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+            {role === 0 &&
+              userProfile["userRoleDetails"].slug !== FP_ADMIN &&
+              role !== 1 && (
+                <Controller
+                  name="organization"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl
+                      error={!!errors.organization}
+                      required
+                      fullWidth
+                    >
+                      <InputLabel id="demo-simple-select-label-org">
+                        {t("label:organization")}
+                      </InputLabel>
+                      <Select
+                        {...field}
+                        labelId="demo-simple-select-label-org"
+                        id="demo-simple-select"
+                        label="Organization"
+                        disabled={
+                          user.role[0] === BUSINESS_ADMIN ||
+                          userProfile["userRoleDetails"].slug === FP_ADMIN ||
+                          role !== 0
+                        }
+                      >
+                        {organizationsList.map((item, index) => {
+                          return (
+                            <MenuItem key={index} value={item.uuid}>
+                              {item.name}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               )}
-            />
+            {((role === 0 &&
+              userProfile["userRoleDetails"].slug === FP_ADMIN) ||
+              role === 1) && (
+              <Controller
+                name="organization"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label={t("label:organization")}
+                    type="text"
+                    autoComplete="off"
+                    error={!!errors.organization}
+                    helperText={
+                      errors?.organization?.message
+                        ? t(`helperText:${errors?.organization?.message}`)
+                        : ""
+                    }
+                    variant="outlined"
+                    fullWidth
+                    defaultValue={"Front Payment AS"}
+                    disabled
+                  />
+                )}
+              />
+            )}
 
             <Controller
               name="designation"
@@ -295,7 +343,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="text"
                   autoComplete="off"
                   error={!!errors.designation}
-                  helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
+                  helperText={
+                    errors?.designation?.message
+                      ? t(`helperText:${errors?.designation?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   fullWidth
                 />
@@ -356,7 +408,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                       <MenuItem disabled>{t("label:noRoleFound")}</MenuItem>
                     )}
                   </Select>
-                  <FormHelperText>{errors?.role?.message ? t(`helperText:${errors?.role?.message}`) : ""}</FormHelperText>
+                  <FormHelperText>
+                    {errors?.role?.message
+                      ? t(`helperText:${errors?.role?.message}`)
+                      : ""}
+                  </FormHelperText>
                 </FormControl>
               )}
             />

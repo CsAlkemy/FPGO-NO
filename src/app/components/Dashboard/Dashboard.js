@@ -127,6 +127,17 @@ export default function Dashboard() {
                         setFromDate(date.getTime() / 1000);
                         return onChange(date);
                       }}
+                      PopperProps={{
+                        sx: {
+                          "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                            borderRadius: '8px',
+                            "&.Mui-selected": {
+                              backgroundColor: "#c9eee7",
+                              color: "#323434",
+                            }
+                          }
+                        }
+                      }}
                       disableFuture
                       shouldDisableDate={disableAfterOfEndDate}
                       renderInput={(params) => (
@@ -148,6 +159,17 @@ export default function Dashboard() {
                       onChange={(date) => {
                         setToDate(date.getTime() / 1000);
                         return onChange(date);
+                      }}
+                      PopperProps={{
+                        sx: {
+                          "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                            borderRadius: '8px',
+                            "&.Mui-selected": {
+                              backgroundColor: "#c9eee7",
+                              color: "#323434",
+                            }
+                          }
+                        }
                       }}
                       disableFuture
                       shouldDisableDate={disableBeforeOfStartDate}
