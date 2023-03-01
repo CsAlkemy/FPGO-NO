@@ -108,6 +108,9 @@ const ClientDetails = () => {
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
+  useEffect(() => {
+      window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (isLoading) {
@@ -668,11 +671,11 @@ const ClientDetails = () => {
                   <div className="header-text header6">
                     Client Details ({info?.organizationDetails?.uuid})
                     {info?.status === "Active" ? (
-                      <span className="bg-confirmed rounded-4 px-16 py-4 body3">
+                      <span className=" ml-5 bg-confirmed rounded-4 px-16 py-4 body3">
                         Active
                       </span>
                     ) : (
-                      <span className="bg-rejected rounded-4 px-16 py-4 body3">
+                      <span className="bg-rejected ml-5 rounded-4 px-16 py-4 body3">
                         Inactive
                       </span>
                     )}

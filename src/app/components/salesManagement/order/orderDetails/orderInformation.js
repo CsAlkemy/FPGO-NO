@@ -479,7 +479,7 @@ const OrderInformation = ({ info }) => {
                                   defaultValue={
                                     info.productList &&
                                     info.productList?.[index]?.rate
-                                      ? info.productList[index].rate
+                                      ? ThousandSeparator(info.productList[index].rate)
                                       : ""
                                   }
                                 />
@@ -544,14 +544,13 @@ const OrderInformation = ({ info }) => {
                             <div>{t("label:total")}</div>
                             <div>{t("label:nok")} {info.productList &&
                             info.productList?.[index]?.amount
-                              ? info.productList[index].amount
+                              ? ThousandSeparator(info.productList[index].amount)
                               : ""}</div>
                           </div>
                         </div>
                       ))}
                       <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
-                        {/*TODO: joni vai please add grandtotal here*/}
-                        {t("label:grandTotal")} : {t("label:nok")} {info.orderSummary.grandTotal}
+                        {t("label:grandTotal")} : {t("label:nok")} {ThousandSeparator(info.orderSummary.grandTotal)}
                       </div>
                     </AccordionDetails>
                   </Accordion>
@@ -691,7 +690,7 @@ const OrderInformation = ({ info }) => {
                                 defaultValue={
                                   info.productList &&
                                   info.productList?.[index]?.rate
-                                    ? info.productList[index].rate
+                                    ? ThousandSeparator(info.productList[index].rate)
                                     : ""
                                 }
                               />

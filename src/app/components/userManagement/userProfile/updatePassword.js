@@ -63,13 +63,13 @@ const updatePassword = ({role, userProfile}) => {
   return (
     <div className="simple">
       <div className=" change-password-header subtitle2">{t("label:changePassword")}</div>
-      <div className="p-32 sm:p-20">
+      <div className="p-20 sm:p-20">
         {t("label:changePasswordValidationRule")}
         {/*Your password must be between 8-15 digits and contain both numbers and*/}
         {/*alphabets.*/}
       </div>
       <form name="createUserForm" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <div className="p-32 sm:p-20">
+        <div className="p-20 sm:p-20 mb-20">
         {
           role !== 0 && (
             <Controller
