@@ -178,7 +178,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             ?.notes
             ? info.additionalContactDetails[0].notes
             : "";
-        }
+        } else setAddContactIndex([]);
         reset({ ...CorporateDetailsDefaultValue });
         // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
 
