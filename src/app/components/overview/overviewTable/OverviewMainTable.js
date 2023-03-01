@@ -47,6 +47,7 @@ import {
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from '../../../utils/UtilsService';
+import moment from 'moment';
 
 export default function OverviewMainTable(props) {
   const { t } = useTranslation();
@@ -145,126 +146,17 @@ export default function OverviewMainTable(props) {
         )
         break;
       case 2:
+        const currentDate = moment();
+        // const allDates = [...];
+        // const filtered = allDates.filter(date => moment(date).isSame(currentDate, 'week');
         setData(
           props.tableData.filter((row) => {
-            let date = new Date();
-            let day = new Date(row.reqOn).getDay();
-            const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-            switch (new Date().getDay()) {
-              case 0:
-                return (
-                  preparedDate.getDate() === new Date().getDate()
-                );
-              case 1:
-                date.setDate(date.getDate() - 1);
-                return (
-                  preparedDate.getDate() <=
-                  new Date().getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 2:
-                date.setDate(date.getDate() - 2);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 3:
-                date.setDate(date.getDate() - 3);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 4:
-                date.setDate(date.getDate() - 4);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 5:
-                date.setDate(date.getDate() - 5);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 6:
-                date.setDate(date.getDate() - 6);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-            }
+            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(currentDate, 'week')
           })
         );
         setFilteredData(
           props.tableData.filter((row) => {
-            let date = new Date();
-            let day = new Date(row.reqOn).getDay();
-            const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-            switch (new Date().getDay()) {
-              case 0:
-                return (
-                  preparedDate.getDate() === new Date().getDate()
-                );
-              case 1:
-                date.setDate(date.getDate() - 1);
-                return (
-                  preparedDate.getDate() <=
-                  new Date().getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 2:
-                date.setDate(date.getDate() - 2);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 3:
-                date.setDate(date.getDate() - 3);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 4:
-                date.setDate(date.getDate() - 4);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 5:
-                date.setDate(date.getDate() - 5);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-              case 6:
-                date.setDate(date.getDate() - 6);
-                return (
-                  preparedDate.getDate() <=
-                  date.getDate() &&
-                  preparedDate.getDate() >=
-                  date.getDate()
-                );
-            }
+            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(currentDate, 'week')
           })
         );
         break;
@@ -289,88 +181,6 @@ export default function OverviewMainTable(props) {
         );
         break;
     }
-    // newValue === 0
-    //   ? setData(props.tableData)
-    //   : newValue === 1
-    //   ? setData(
-    //       props.tableData.filter(
-    //         (row) => {
-    //           const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-    //           return preparedDate.getDate() === new Date().getDate()
-    //         }
-    //       )
-    //     )
-    //   : newValue === 2
-    //   ? setData(
-    //       props.tableData.filter((row) => {
-    //         let date = new Date();
-    //         let day = new Date(row.reqOn).getDay();
-    //         const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-    //         switch (new Date().getDay()) {
-    //           case 0:
-    //             return (
-    //               preparedDate.getDate() === new Date().getDate()
-    //             );
-    //           case 1:
-    //             date.setDate(date.getDate() - 1);
-    //             return (
-    //               preparedDate.getDate() <=
-    //                 new Date().getDate() &&
-    //               preparedDate.getDate() >=
-    //                 date.getDate()
-    //             );
-    //           case 2:
-    //             date.setDate(date.getDate() - 2);
-    //             return (
-    //               preparedDate.getDate() <=
-    //               date.getDate() &&
-    //               preparedDate.getDate() >=
-    //               date.getDate()
-    //             );
-    //           case 3:
-    //             date.setDate(date.getDate() - 3);
-    //             return (
-    //               preparedDate.getDate() <=
-    //               date.getDate() &&
-    //               preparedDate.getDate() >=
-    //               date.getDate()
-    //             );
-    //           case 4:
-    //             date.setDate(date.getDate() - 4);
-    //             return (
-    //               preparedDate.getDate() <=
-    //               date.getDate() &&
-    //               preparedDate.getDate() >=
-    //               date.getDate()
-    //             );
-    //           case 5:
-    //             date.setDate(date.getDate() - 5);
-    //             return (
-    //               preparedDate.getDate() <=
-    //               date.getDate() &&
-    //               preparedDate.getDate() >=
-    //               date.getDate()
-    //             );
-    //           case 6:
-    //             date.setDate(date.getDate() - 6);
-    //             return (
-    //               preparedDate.getDate() <=
-    //               date.getDate() &&
-    //               preparedDate.getDate() >=
-    //               date.getDate()
-    //             );
-    //         }
-    //       })
-    //     )
-    //   : setData(
-    //       props.tableData.filter(
-    //         (row) =>{
-    //           const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-    //           return preparedDate.getMonth() ===
-    //           new Date().getMonth()
-    //         }
-    //       )
-    //     );
   };
 
   const clientsListTableTabPanelsData = (event, newValue) => {
