@@ -146,16 +146,23 @@ class OrdersService {
             ordr.tax !== ""
         )
         .map((order) => {
+          //Decimal comma to dot separator conversion logic
+          const rate = order.rate;
+          const splitedRate = rate.split(",");
+          const dotFormatRate = `${splitedRate[0]}.${splitedRate[1]}`;
+          const floatRate = parseFloat(dotFormatRate);
+
           return {
             name: order?.productName ? order?.productName : null,
             productId: order.productID,
             quantity: order.quantity,
-            rate: order.rate,
+            // rate: order.rate,
+            rate: floatRate,
             discount: order?.discount ? order?.discount : 0,
             tax: order.tax,
             amount:
               order.quantity && order.rate
-                ? parseInt(order.quantity) * parseFloat(order.rate) -
+                ? parseInt(order.quantity) * parseFloat(floatRate) -
                   parseFloat(order?.discount ? order.discount : 0)
                 : null,
           };

@@ -59,7 +59,7 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
           then: yup
             .string()
             .required("")
-            .matches(/^[0-9]+$/),
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -127,7 +127,7 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
           then: yup
             .string()
             .required("")
-            .matches(/^[0-9]+$/),
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -198,7 +198,7 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
           then: yup
             .string()
             .required("")
-            .matches(/^[0-9]+$/),
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -272,7 +272,7 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
           then: yup
             .string()
             .required("")
-            .matches(/^[0-9]+$/),
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
