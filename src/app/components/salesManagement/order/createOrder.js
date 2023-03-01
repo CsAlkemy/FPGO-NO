@@ -739,18 +739,10 @@ const createOrder = () => {
                                           addOrderIndex.indexOf(index)
                                         ] -
                                           addOrderIndex[
-                                            addOrderIndex.indexOf(index - 1)
+                                            addOrderIndex.indexOf(index) - 1
                                           ])
                                       }].productName`
                                     )
-                                // !watch(
-                                //   `order[${index -
-                                //   (index -
-                                //     addOrderIndex[
-                                //     addOrderIndex.indexOf(index - 1)
-                                //     ])
-                                //   }].productName`
-                                // )
                               }
                               freeSolo
                               autoSelect
@@ -1114,7 +1106,7 @@ const createOrder = () => {
                                         addOrderIndex.indexOf(index)
                                       ] -
                                         addOrderIndex[
-                                          addOrderIndex.indexOf(index - 1)
+                                          addOrderIndex.indexOf(index) - 1
                                         ])
                                     }].productName`
                                   )
