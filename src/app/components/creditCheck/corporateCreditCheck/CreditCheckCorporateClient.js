@@ -124,12 +124,12 @@ export default function CreditCheckCorporateClient() {
                   {t("label:creditCheckCorporateClient")}
                 </div>
                 {!isSuccess && (
-                  <div className="flex gap-20 w-full md:w-auto">
+                  <div className=" grid grid-cols-1 sm:grid-cols-2 gap-20 p-10 sm:p-auto justify-end w-full sm:w-auto ">
                     <Link to={"/credit-check/credit-checks-list"}>
                       <Button
                         color="secondary"
-                        variant="text"
-                        className="button2"
+                        variant="outlined"
+                        className="button2 rounded-md w-full  text-center"
                         type="button"
                       >
                         {t("label:cancel")}
@@ -141,7 +141,7 @@ export default function CreditCheckCorporateClient() {
                       loadingPosition="center"
                       variant="contained"
                       color="secondary"
-                      className="font-semibold rounded-4 w-full sm:w-auto min-w-[140px]"
+                      className="font-semibold rounded-4 w-full min-w-[140px]"
                     >
                       {t("label:confirm")}
                     </LoadingButton>

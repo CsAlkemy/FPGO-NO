@@ -127,12 +127,12 @@ export default function CreditCheckPrivateClient() {
                   {t("label:creditCheckPrivateClient")}
                 </div>
                 {!isSuccess && (
-                  <div className=" flex flex-col sm:flex-row gap-20 justify-end w-full sm:w-auto ">
+                  <div className=" grid grid-cols-1 sm:grid-cols-2 gap-20 p-10 sm:p-auto justify-end w-full sm:w-auto ">
                     <Link to={"/credit-check/credit-checks-list"}>
                       <Button
                         color="secondary"
-                        variant="text"
-                        className="button2 text-center"
+                        variant="outlined"
+                        className="button2 rounded-md w-full  text-center"
                       >
                         {t("label:cancel")}
                       </Button>
@@ -143,7 +143,7 @@ export default function CreditCheckPrivateClient() {
                       loadingPosition="center"
                       variant="contained"
                       color="secondary"
-                      className="font-semibold rounded-4 w-full sm:w-auto min-w-[140px]"
+                      className="font-semibold rounded-4 w-full min-w-[140px]"
                     >
                       {t("label:confirm")}
                     </LoadingButton>
@@ -227,7 +227,7 @@ export default function CreditCheckPrivateClient() {
                                 </div>
                               }
                             />
-                            <FormHelperText>
+                            <FormHelperText className='ml-32'>
                               {errors?.trems?.message ? t(`helperText:${errors?.trems?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
