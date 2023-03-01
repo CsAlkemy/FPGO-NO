@@ -14,6 +14,7 @@ import { useSnackbar } from "notistack";
 import { selectUser } from "app/store/userSlice";
 import { useTranslation } from "react-i18next";
 import { useGetClientOrganizationsSummaryListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function BusinessAdminUsersOverview() {
   const { t } = useTranslation();
@@ -93,18 +94,39 @@ export default function BusinessAdminUsersOverview() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={businessAdminUsersOverview}
-      headerRows={businessAdminUsersListOverviewHeaderRows}
-      // tableData={businessAdminUsers}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={businessAdminUsersRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={businessAdminUsersOverview}
+          headerRows={businessAdminUsersListOverviewHeaderRows}
+          // tableData={businessAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={businessAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={businessAdminUsersOverview}
+          headerRows={businessAdminUsersListOverviewHeaderRows}
+          // tableData={businessAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={businessAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

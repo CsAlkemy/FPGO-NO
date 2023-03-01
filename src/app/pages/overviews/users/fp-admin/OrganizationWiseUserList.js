@@ -18,6 +18,7 @@ import { useSnackbar } from "notistack";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useGetUsersListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function OrganizationWiseUserList() {
   const { t } = useTranslation();
@@ -90,18 +91,39 @@ export default function OrganizationWiseUserList() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={organizationWiseUsersOverview}
-      headerRows={organizationWiseUsersListOverviewHeaderRows}
-      // tableData={userList}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={organizationWiseUsersRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={organizationWiseUsersOverview}
+          headerRows={organizationWiseUsersListOverviewHeaderRows}
+          // tableData={userList}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={organizationWiseUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={organizationWiseUsersOverview}
+          headerRows={organizationWiseUsersListOverviewHeaderRows}
+          // tableData={userList}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={organizationWiseUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

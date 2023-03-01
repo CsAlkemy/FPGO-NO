@@ -10,6 +10,7 @@ import ProductService from "../../../data-access/services/productsService/Produc
 import { useSnackbar } from "notistack";
 import { useTranslation } from 'react-i18next';
 import { useGetProductsListQuery } from 'app/store/api/apiSlice';
+import Hidden from '@mui/material/Hidden';
 
 export default function ProductOverview() {
   const {t} = useTranslation()
@@ -81,19 +82,41 @@ export default function ProductOverview() {
   const preparedData = data?.is_data ?  ProductService.mapProductsList(data.data) : []
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={productsListOverview}
-      headerRows={producstListHeaderRows}
-      // tableData={productList.tableData}
-      tableData={data?.is_data ? preparedData : []}
-      // tableData={productListRows}
-      rowDataFields={productsListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      isLoading={isFetching}
-      // isLoading={isLoading}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={productsListOverview}
+          headerRows={producstListHeaderRows}
+          // tableData={productList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          // tableData={productListRows}
+          rowDataFields={productsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isFetching}
+          // isLoading={isLoading}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={productsListOverview}
+          headerRows={producstListHeaderRows}
+          // tableData={productList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          // tableData={productListRows}
+          rowDataFields={productsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isFetching}
+          // isLoading={isLoading}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }
