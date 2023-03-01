@@ -193,8 +193,8 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
   return (
     <>
       <form name="createUserForm" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col justify-center w-full mt-32 mb-32 px-0 md:px-14">
-          <div className="form-pair-input">
+        <div className="flex flex-col justify-center w-full mt-32 mb-20 px-0 md:px-14">
+          <div className="form-pair-input mb-0-i">
             <Controller
               name="email"
               control={control}

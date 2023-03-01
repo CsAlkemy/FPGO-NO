@@ -88,7 +88,7 @@ const index = () => {
         <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 ">
           <div className=" p-20 sm:p-28 w-full mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-10 justify-between">
-              <div className="col-span-1 md:col-span-3 border-1 border-MonochromeGray-50">
+              <div className="col-span-1 md:col-span-3 border-1 border-MonochromeGray-50 bg-white">
                 <div className="rounded-sm bg-white p-20 ">
                   <div className=" header-click-to-action">
                     {role === 0 ? (
