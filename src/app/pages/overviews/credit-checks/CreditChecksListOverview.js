@@ -10,6 +10,7 @@ import CreditCheckService from "../../../data-access/services/creditCheckService
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useGetCreditChecksListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function CreditChecksListOverview() {
   const { t } = useTranslation();
@@ -82,18 +83,39 @@ export default function CreditChecksListOverview() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={creditChecksListOverview}
-      headerRows={creditChecksListHeaderRows}
-      // tableData={creditCheckList.tableData}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={creditChecksListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={creditChecksListOverview}
+          headerRows={creditChecksListHeaderRows}
+          // tableData={creditCheckList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={creditChecksListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={creditChecksListOverview}
+          headerRows={creditChecksListHeaderRows}
+          // tableData={creditCheckList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={creditChecksListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

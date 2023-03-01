@@ -10,6 +10,7 @@ import { useSnackbar } from "notistack";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import { useTranslation } from "react-i18next";
 import { useGetRefundRequestsListQuery } from 'app/store/api/apiSlice';
+import Hidden from '@mui/material/Hidden';
 
 export default function RefundRequestsOverview() {
   const { t } = useTranslation();
@@ -100,16 +101,35 @@ export default function RefundRequestsOverview() {
   const preparedData = data?.is_data ?  OrdersService.mapRefundRequestsList(data.data) : []
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      // headerButtonLabel={headerButtonLabel}
-      tableName={refundRequestsOverview}
-      headerRows={refundRequestsOverviewHeaderRows}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={refundRequestsOverviewRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          // headerButtonLabel={headerButtonLabel}
+          tableName={refundRequestsOverview}
+          headerRows={refundRequestsOverviewHeaderRows}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={refundRequestsOverviewRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          // headerButtonLabel={headerButtonLabel}
+          tableName={refundRequestsOverview}
+          headerRows={refundRequestsOverviewHeaderRows}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={refundRequestsOverviewRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

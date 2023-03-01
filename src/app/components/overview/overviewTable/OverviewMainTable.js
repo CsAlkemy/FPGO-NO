@@ -71,7 +71,7 @@ export default function OverviewMainTable(props) {
         )
       : props.tableData
   );
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(!props?.isMobileScreen ? 10 : props.tableData.length);
   const [filteredData, setFilteredData] = useState([]);
   const [item, setItems] = useState(0);
   const navigate = useNavigate();
@@ -81,7 +81,6 @@ export default function OverviewMainTable(props) {
   const [refundRequestCount, setRefundRequestCount] = useState(
     localStorage.getItem("refundRequestCount")
   );
-
   // useEffect(() => {
   //     setData(props.tableData);
   // }, [props.isLoading]);
@@ -96,6 +95,7 @@ export default function OverviewMainTable(props) {
           searchText
         )
       );
+      setRowsPerPage(!props?.isMobileScreen ? 10 : props.tableData.length);
     } else {
       setData(
         props.tableName === refundRequestsOverview && !filteredData.length
@@ -106,6 +106,7 @@ export default function OverviewMainTable(props) {
           ? filteredData
           : props.tableData
       );
+      setRowsPerPage(!props?.isMobileScreen ? 10 : props.tableData.length);
     }
   }, [props.isLoading, searchText]);
   const [sortOrder, setSortOrder] = useState({
