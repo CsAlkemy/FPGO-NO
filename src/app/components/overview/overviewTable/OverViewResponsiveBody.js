@@ -1026,16 +1026,15 @@ export default function OverViewResponsiveBody(props) {
           switch (props.row.stage) {
             case "paid":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Paid" />
                   </div>
@@ -1043,16 +1042,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "sent":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Sent" />
                   </div>
@@ -1060,16 +1058,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "expired":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Expired" />
                   </div>
@@ -1077,16 +1074,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "invoiced":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Invoiced" />
                   </div>
@@ -1094,16 +1090,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "cancelled":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Cancelled" />
                   </div>
@@ -1111,16 +1106,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "refunded":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Refunded" />
                   </div>
@@ -1128,16 +1122,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "refund pending":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Refund Pending" />
                   </div>
@@ -1145,16 +1138,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "partial refunded":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Partial Refunded" />
                   </div>
@@ -1162,16 +1154,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "completed":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Completed" />
                   </div>
@@ -1179,16 +1170,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "reminder sent":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Reminder Sent" />
                   </div>
@@ -1196,16 +1186,15 @@ export default function OverViewResponsiveBody(props) {
               );
             case "sent to debt collection":
               return (
-                <div className="grid grid-cols-2 justify-between items-center">
+                <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+                  props.rowClickAction(props.row);
+                }}>
                   <div className="subtitle3 text-primary-900">
                     {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                     {rdt.label}
                   </div>
                   <div
                     className="body3 text-MonochromeGray-700"
-                    onClick={() => {
-                      props.rowClickAction(props.row);
-                    }}
                   >
                     <OverviewStatus name="Debt Collection" />
                   </div>
@@ -1275,16 +1264,15 @@ export default function OverViewResponsiveBody(props) {
           // );
         } else if (rdt.id === "amount") {
           return (
-            <div className="grid grid-cols-2 justify-between items-center">
+            <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+              props.rowClickAction(props.row);
+            }}>
               <div className="subtitle3 text-primary-900">
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
               </div>
               <div
                 className="body3 text-MonochromeGray-700"
-                onClick={() => {
-                  props.rowClickAction(props.row);
-                }}
               >
                 {props.row[rdt.id]}
               </div>
@@ -1393,7 +1381,9 @@ export default function OverViewResponsiveBody(props) {
           );
         } else {
           return (
-            <div className="grid grid-cols-2 justify-between items-center">
+            <div className="grid grid-cols-2 justify-between items-center" onClick={() => {
+              props.rowClickAction(props.row);
+            }}>
               <div className="subtitle3 text-primary-900">
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
