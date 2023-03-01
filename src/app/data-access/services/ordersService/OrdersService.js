@@ -89,7 +89,9 @@ class OrdersService {
       const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
       const dueDateTimeStamp = new Date(formatedDate).getTime();
       const currentTimeStamp = new Date().getTime();
-      const isExpired = row.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
+      const isExpired =
+        row.status.toLowerCase() === "sent" &&
+        dueDateTimeStamp < currentTimeStamp;
 
       return {
         uuid: row.orderUuid,
@@ -111,7 +113,8 @@ class OrdersService {
           : row.status.toLowerCase() === "sent"
           ? "Resend"
           : row.status.toLowerCase() === "paid" ||
-            row.status.toLowerCase() === "partial refunded"
+            row.status.toLowerCase() === "partial refunded" ||
+            row.status.toLowerCase() === "refund pending"
           ? // || row.status.toLowerCase() === "invoiced"
             "Refund"
           : null,
