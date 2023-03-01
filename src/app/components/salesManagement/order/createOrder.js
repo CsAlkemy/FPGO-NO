@@ -316,11 +316,19 @@ const createOrder = () => {
     //Amount : (Rate * Qty) - discount
     //Discount : Sum of discounts
     //Grand Total : Sum of amounts
+    let rate, splitedRate,dotFormatRate, floatRate;
+    if (!!watchRate) {
+      rate = watchRate;
+      splitedRate = rate.split(",");
+      dotFormatRate = `${splitedRate[0]}.${splitedRate[1]}`;
+      floatRate = parseFloat(dotFormatRate);
+    }
+
     const total =
-      parseInt(watchQuantity) * parseFloat(watchRate) -
+      parseInt(watchQuantity) * floatRate -
       parseFloat(watchDiscount);
     const subTotalCalculation =
-      (parseInt(watchQuantity) * parseFloat(watchRate)) /
+      (parseInt(watchQuantity) * floatRate) /
       ((100 + watchTax) / 100);
     const totalTaxCalculation = subTotalCalculation
       ? (subTotalCalculation * (watchTax / 100)) / 2
@@ -334,7 +342,7 @@ const createOrder = () => {
       totalDiscount = totalDiscount + parseFloat(watchDiscount);
     if (total) grandTotal = grandTotal + total;
     if (total > 0) {
-      return ` ${ThousandSeparator(total)}`;
+      return ` ${total}`;
     }
   };
 
@@ -914,7 +922,6 @@ const createOrder = () => {
                                 {...field}
                                 label="Rate"
                                 className="bg-white custom-input-height col-span-1"
-                                type="number"
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.rate}
                                 // helperText={errors?.order?.[index]?.rate?.message}
@@ -923,6 +930,9 @@ const createOrder = () => {
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
+                                onChange={e => {
+                                  console.log("eeee : ",e);
+                                }}
                               />
                             )}
                           />
@@ -1268,7 +1278,6 @@ const createOrder = () => {
                             {...field}
                             //label="Rate"
                             className="bg-white custom-input-height"
-                            type="number"
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
@@ -1371,7 +1380,7 @@ const createOrder = () => {
                     </div>
                     <div className="my-auto">
                       <div className="body3 text-right">
-                        NOK {productWiseTotal(index)}
+                        {t("label:nok")} {ThousandSeparator(productWiseTotal(index))}
                       </div>
                     </div>
                     <div className="my-auto">
