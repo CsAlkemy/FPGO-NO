@@ -10,6 +10,7 @@ import { setOverviewMainTableDataSlice } from "app/store/overview-table/overview
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useGetApprovalClientsListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function ApprovalListOverview() {
   const { t } = useTranslation();
@@ -83,18 +84,39 @@ export default function ApprovalListOverview() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={approvalListOverviewFPAdmin}
-      headerRows={approvalListForFPAdminHeaderRows}
-      // tableData={approvalList.tableData}
-      tableData={preparedData}
-      rowDataFields={approvalListForFPAdminRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={approvalListOverviewFPAdmin}
+          headerRows={approvalListForFPAdminHeaderRows}
+          // tableData={approvalList.tableData}
+          tableData={preparedData}
+          rowDataFields={approvalListForFPAdminRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={approvalListOverviewFPAdmin}
+          headerRows={approvalListForFPAdminHeaderRows}
+          // tableData={approvalList.tableData}
+          tableData={preparedData}
+          rowDataFields={approvalListForFPAdminRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

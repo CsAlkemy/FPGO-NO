@@ -26,8 +26,8 @@ class CreditCheckService {
         type: row.type,
       };
     });
-    d.status_code = 200;
-    d.is_data = true;
+    // d.status_code = 200;
+    // d.is_data = true;
     return d;
   };
 

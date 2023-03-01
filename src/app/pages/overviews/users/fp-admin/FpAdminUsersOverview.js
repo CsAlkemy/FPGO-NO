@@ -13,6 +13,7 @@ import {
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useGetFPAdminUsersListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function FpAdminUsersOverview() {
   const { t } = useTranslation();
@@ -78,18 +79,39 @@ export default function FpAdminUsersOverview() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={fpAdminUsersOverview}
-      headerRows={fpAdminUsersListOverviewHeaderRows}
-      // tableData={fpAdminUsers}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={fpAdminUsersRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={fpAdminUsersOverview}
+          headerRows={fpAdminUsersListOverviewHeaderRows}
+          // tableData={fpAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={fpAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={fpAdminUsersOverview}
+          headerRows={fpAdminUsersListOverviewHeaderRows}
+          // tableData={fpAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={fpAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }
