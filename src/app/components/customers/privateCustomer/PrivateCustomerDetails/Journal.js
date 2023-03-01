@@ -151,8 +151,8 @@ const Journal = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} type="date" />}
-          disableFuture={true}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
         />
       </div>
       <div>

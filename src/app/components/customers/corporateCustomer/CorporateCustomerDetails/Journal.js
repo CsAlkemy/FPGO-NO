@@ -115,6 +115,14 @@ const Journal = () => {
       })
   }
 
+  const disableFromNextMonth = (date) => {
+    console.log("disableFromNextMonth");
+    const paramMonth = date.getMonth();
+    console.log("paramMonth",paramMonth);
+    console.log("new Date().getMonth() <= paramMonth",new Date().getMonth() <= paramMonth);
+    return new Date().getMonth() <= paramMonth;
+  };
+
   return (
     <div className="w-full sm:w-3/4">
       <TextField
@@ -151,8 +159,8 @@ const Journal = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} type="date" />}
-          disableFuture={true}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
         />
       </div>
       <div>

@@ -29,7 +29,8 @@ const paymentHeader = () => {
   const orderDetails = window.location.pathname.includes("/order/details");
 
   useEffect(() => {
-    if (
+    if (!checkout && orderDetails) dispatch(changeLanguage("no"));
+    else if (
       !!localStorage.getItem("i18nextLng") &&
       localStorage.getItem("i18nextLng") === "en"
     )
@@ -53,8 +54,10 @@ const paymentHeader = () => {
           sx={{ height: 36 }}
           // defaultValue="English"
           defaultValue={
-            !!localStorage.getItem("i18nextLng") &&
-            localStorage.getItem("i18nextLng") === "en"
+            !checkout && orderDetails
+              ? "Norwegian"
+              : !!localStorage.getItem("i18nextLng") &&
+                localStorage.getItem("i18nextLng") === "en"
               ? "English"
               : "Norwegian"
           }
