@@ -191,7 +191,7 @@ const index = () => {
                 </div>
               </div>
               <div className="col-span-1 bg-white border-1 border-MonochromeGray-50">
-                <UpdatePassword role={role} />
+                <UpdatePassword role={role} userProfile={userProfile}/>
               </div>
             </div>
           </div>

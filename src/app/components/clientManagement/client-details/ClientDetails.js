@@ -1,7 +1,13 @@
-import {yupResolver} from "@hookform/resolvers/yup";
-import {Search, Visibility, VisibilityOff} from "@mui/icons-material";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Search, Visibility, VisibilityOff } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import {DesktopDatePicker, LoadingButton, TabContext, TabList, TabPanel,} from "@mui/lab";
+import {
+  DesktopDatePicker,
+  LoadingButton,
+  TabContext,
+  TabList,
+  TabPanel,
+} from "@mui/lab";
 import {
   Backdrop,
   Box,
@@ -10,6 +16,7 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
+  Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -19,19 +26,22 @@ import {
   Tab,
   TextField,
 } from "@mui/material";
-import {useSnackbar} from "notistack";
-import React, {useEffect, useRef, useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {useTranslation} from "react-i18next";
-import {BsFillCheckCircleFill} from "react-icons/bs";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 import PhoneInput from "react-phone-input-2";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import ConfirmModal from "../../common/confirmmationDialog";
-import {defaultValue, validateSchema} from "../utils/helper";
+import { defaultValue, validateSchema } from "../utils/helper";
 import Orders from "./Orders";
 import Timeline from "./Timeline";
-import {useUpdateClientMutation, useUpdateClientStatusMutation,} from "app/store/api/apiSlice";
+import {
+  useUpdateClientMutation,
+  useUpdateClientStatusMutation,
+} from "app/store/api/apiSlice";
 
 const ClientDetails = () => {
   const { t } = useTranslation();
@@ -124,8 +134,8 @@ const ClientDetails = () => {
           }
         })
         .catch((e) => {
-          navigate("/clients/clients-list")
-          enqueueSnackbar(e, {variant:"error"})
+          navigate("/clients/clients-list");
+          enqueueSnackbar(e, { variant: "error" });
         });
     }
   }, [isLoading]);
@@ -156,14 +166,14 @@ const ClientDetails = () => {
       if (
         info?.addresses &&
         info?.addresses["billing"]?.email ===
-        info?.addresses["shipping"]?.email &&
+          info?.addresses["shipping"]?.email &&
         info?.addresses["billing"]?.street ===
-        info?.addresses["shipping"]?.street &&
+          info?.addresses["shipping"]?.street &&
         info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
         info?.addresses["billing"]?.city ===
-        info?.addresses["shipping"]?.city &&
+          info?.addresses["shipping"]?.city &&
         info?.addresses["billing"]?.country ===
-        info?.addresses["shipping"]?.country
+          info?.addresses["shipping"]?.country
       ) {
         setSameAddress(true);
       } else setSameAddress(false);
@@ -183,7 +193,7 @@ const ClientDetails = () => {
         info?.primaryContactDetails?.countryCode &&
         info.primaryContactDetails?.msisdn
           ? info.primaryContactDetails?.countryCode +
-          info.primaryContactDetails?.msisdn
+            info.primaryContactDetails?.msisdn
           : "";
       defaultValue.designation = info?.primaryContactDetails?.designation
         ? info.primaryContactDetails?.designation
@@ -214,7 +224,7 @@ const ClientDetails = () => {
           info?.addresses["billing"]?.countryCode &&
           info.addresses["billing"].msisdn
             ? info.addresses["billing"].countryCode +
-            info.addresses["billing"].msisdn
+              info.addresses["billing"].msisdn
             : "";
         defaultValue.billingEmail = info?.addresses["billing"]?.email
           ? info.addresses["billing"].email
@@ -237,7 +247,7 @@ const ClientDetails = () => {
           info?.addresses["shipping"]?.countryCode &&
           info?.addresses["shipping"]?.msisdn
             ? info.addresses["shipping"].countryCode +
-            info.addresses["shipping"].msisdn
+              info.addresses["shipping"].msisdn
             : "";
         defaultValue.shippingEmail = info?.addresses["shipping"]?.email
           ? info.addresses["shipping"].email
@@ -333,10 +343,10 @@ const ClientDetails = () => {
             info?.settings?.currency[0].code === "NOK"
               ? "Norwegian Krone"
               : info?.settings?.currency[0].code === "SEK"
-                ? "Swedish Krona"
-                : info?.settings?.currency[0].code === "DKK"
-                  ? "Danish Krone"
-                  : "European Euro",
+              ? "Swedish Krona"
+              : info?.settings?.currency[0].code === "DKK"
+              ? "Danish Krone"
+              : "European Euro",
         });
       }
 
@@ -459,22 +469,22 @@ const ClientDetails = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-        .filter((v) => v.vatValue)
-        .map((vat, index) => {
-          return {
-            uuid:
-              info?.settings?.vatRates &&
-              info?.settings?.vatRates[index]?.uuid
-                ? info?.settings?.vatRates[index]?.uuid
+          .filter((v) => v.vatValue)
+          .map((vat, index) => {
+            return {
+              uuid:
+                info?.settings?.vatRates &&
+                info?.settings?.vatRates[index]?.uuid
+                  ? info?.settings?.vatRates[index]?.uuid
+                  : null,
+              name: vat.vatName ? vat?.vatName : null,
+              value: parseFloat(vat.vatValue),
+              isActive: vat?.vatActive ? vat.vatActive : false,
+              bookKeepingReference: vat?.bookKeepingReference
+                ? vat.bookKeepingReference
                 : null,
-            name: vat.vatName ? vat?.vatName : null,
-            value: parseFloat(vat.vatValue),
-            isActive: vat?.vatActive ? vat.vatActive : false,
-            bookKeepingReference: vat?.bookKeepingReference
-              ? vat.bookKeepingReference
-              : null,
-          };
-        })
+            };
+          })
       : null;
 
     const clientUpdatedData = {
@@ -667,7 +677,7 @@ const ClientDetails = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-10 w-full justify-between sm:w-auto">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-10 w-full justify-between sm:w-auto mb-5 sm:mb-0">
                     <Button
                       color="secondary"
                       onClick={() => changeClientStatus()}
@@ -742,7 +752,11 @@ const ClientDetails = () => {
                                     type="number"
                                     autoComplete="off"
                                     error={!!errors.id}
-                                    helperText={errors?.id?.message ? t(`helperText:${errors?.id?.message}`) : ""}
+                                    helperText={
+                                      errors?.id?.message
+                                        ? t(`helperText:${errors?.id?.message}`)
+                                        : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -759,7 +773,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.clientName}
-                                    helperText={errors?.clientName?.message ? t(`helperText:${errors?.clientName?.message}`) : ""}
+                                    helperText={
+                                      errors?.clientName?.message
+                                        ? t(
+                                            `helperText:${errors?.clientName?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -799,7 +819,11 @@ const ClientDetails = () => {
                                       })}
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.organizationType?.message ? t(`helperText:${errors?.organizationType?.message}`) : ""}
+                                      {errors?.organizationType?.message
+                                        ? t(
+                                            `helperText:${errors?.organizationType?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -816,7 +840,11 @@ const ClientDetails = () => {
                                       autoComplete="off"
                                       error={!!errors.parentClientName}
                                       helperText={
-                                        errors?.parentClientName?.message ? t(`helperText:${errors?.parentClientName?.message}`) : ""
+                                        errors?.parentClientName?.message
+                                          ? t(
+                                              `helperText:${errors?.parentClientName?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -863,7 +891,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.fullName}
-                                    helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
+                                    helperText={
+                                      errors?.fullName?.message
+                                        ? t(
+                                            `helperText:${errors?.fullName?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -895,7 +929,11 @@ const ClientDetails = () => {
                                       onBlur={handleOnBlurGetDialCode}
                                     />
                                     <FormHelperText>
-                                      {errors?.primaryPhoneNumber?.message ? t(`helperText:${errors?.primaryPhoneNumber?.message}`) : ""}
+                                      {errors?.primaryPhoneNumber?.message
+                                        ? t(
+                                            `helperText:${errors?.primaryPhoneNumber?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -910,7 +948,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.designation}
-                                    helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
+                                    helperText={
+                                      errors?.designation?.message
+                                        ? t(
+                                            `helperText:${errors?.designation?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -927,7 +971,13 @@ const ClientDetails = () => {
                                     type="email"
                                     autoComplete="off"
                                     error={!!errors.email}
-                                    helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
+                                    helperText={
+                                      errors?.email?.message
+                                        ? t(
+                                            `helperText:${errors?.email?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -999,8 +1049,8 @@ const ClientDetails = () => {
                                 name="contactEndDate"
                                 control={control}
                                 render={({
-                                           field: { onChange, value, onBlur },
-                                         }) => (
+                                  field: { onChange, value, onBlur },
+                                }) => (
                                   <DesktopDatePicker
                                     label={t("label:contractEndDate")}
                                     inputFormat="dd.MM.yyyy"
@@ -1014,7 +1064,11 @@ const ClientDetails = () => {
                                         required
                                         error={!!errors.contactEndDate}
                                         helperText={
-                                          errors?.contactEndDate?.message ? t(`helperText:${errors?.contactEndDate?.message}`) : ""
+                                          errors?.contactEndDate?.message
+                                            ? t(
+                                                `helperText:${errors?.contactEndDate?.message}`
+                                              )
+                                            : ""
                                         }
                                       />
                                     )}
@@ -1031,7 +1085,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.commision}
-                                    helperText={errors?.commision?.message ? t(`helperText:${errors?.commision?.message}`) : ""}
+                                    helperText={
+                                      errors?.commision?.message
+                                        ? t(
+                                            `helperText:${errors?.commision?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1056,7 +1116,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.smsCost}
-                                    helperText={errors?.smsCost?.message ? t(`helperText:${errors?.smsCost?.message}`) : ""}
+                                    helperText={
+                                      errors?.smsCost?.message
+                                        ? t(
+                                            `helperText:${errors?.smsCost?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1081,7 +1147,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.emailCost}
-                                    helperText={errors?.emailCost?.message ? t(`helperText:${errors?.emailCost?.message}`) : ""}
+                                    helperText={
+                                      errors?.emailCost?.message
+                                        ? t(
+                                            `helperText:${errors?.emailCost?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1107,7 +1179,11 @@ const ClientDetails = () => {
                                     autoComplete="off"
                                     error={!!errors.creditCheckCost}
                                     helperText={
-                                      errors?.creditCheckCost?.message ? t(`helperText:${errors?.creditCheckCost?.message}`) : ""
+                                      errors?.creditCheckCost?.message
+                                        ? t(
+                                            `helperText:${errors?.creditCheckCost?.message}`
+                                          )
+                                        : ""
                                     }
                                     variant="outlined"
                                     required
@@ -1374,7 +1450,7 @@ const ClientDetails = () => {
                         </div>
                         <div className="shipping-information">
                           <div className="p-10 w-full md:w-3/4">
-                            <div className="flex justify-between items-center billing-address-head">
+                            <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center">
                               <div className="billing-address-head">
                                 {t("label:shippingAddress")}
                                 {(shippingPhoneNumber &&
@@ -1417,11 +1493,11 @@ const ClientDetails = () => {
                             </div>
                             {!sameAddress &&
                               ((billingPhoneNumber &&
-                                  billingEmail &&
-                                  billingAddress &&
-                                  zip &&
-                                  city &&
-                                  country) ||
+                                billingEmail &&
+                                billingAddress &&
+                                zip &&
+                                city &&
+                                country) ||
                                 shippingPhoneNumber ||
                                 shippingEmail ||
                                 shippingAddress ||
@@ -1574,7 +1650,7 @@ const ClientDetails = () => {
                                               info?.addresses["shipping"]
                                                 ?.country
                                                 ? info.addresses["shipping"]
-                                                  .country
+                                                    .country
                                                 : ""
                                             }
                                           >
@@ -2163,28 +2239,14 @@ const ClientDetails = () => {
                             )}
                           </div>
                           <div className="p-10">
-                            <div className="px-16">
-                              <div className="product-list">
-                                <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
-                                  <div className="my-auto text-MonochromeGray-500 col-span-4">
-                                    {t("label:name")}
-                                  </div>
-                                  <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
-                                    {`Value (%)`}
-                                  </div>
-                                  <div className="my-auto text-MonochromeGray-500 col-span-4">
-                                    {t("label:bookKeepingReference")}
-                                  </div>
-                                  <div className="my-auto col-span-1 text-MonochromeGray-500">
-                                    {" "}
-                                  </div>
-                                </div>
+                            <Hidden mdUp>
+                              <div className="px-16 shadow-md rounded-md">
                                 {addVatIndex.map((index) => (
                                   <div
                                     key={index}
-                                    className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
+                                    className="subtitle3 w-full md:w-3/4 mt-20"
                                   >
-                                    <div className="my-auto col-span-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">
                                       <Controller
                                         name={`vat[${index}].vatName`}
                                         control={control}
@@ -2194,7 +2256,8 @@ const ClientDetails = () => {
                                             type="text"
                                             value={field.value || ""}
                                             autoComplete="off"
-                                            className="bg-white custom-input-height"
+                                            placeholder={t("label:name")}
+                                            className="bg-white"
                                             error={!!errors.vatName}
                                             helperText={
                                               errors?.vatName?.message
@@ -2205,8 +2268,6 @@ const ClientDetails = () => {
                                           />
                                         )}
                                       />
-                                    </div>
-                                    <div className="my-auto text-right col-span-3">
                                       <Controller
                                         name={`vat[${index}].vatValue`}
                                         control={control}
@@ -2215,23 +2276,24 @@ const ClientDetails = () => {
                                             {...field}
                                             type="number"
                                             value={field.value || ""}
-                                            className="text-right  custom-input-height"
+                                            className=""
                                             autoComplete="off"
                                             error={!!errors.vatValue}
                                             helperText={
                                               errors?.vatValue?.message
                                             }
                                             variant="outlined"
+                                            placeholder={t(
+                                              "label:valuePercentage"
+                                            )}
                                             required
                                             fullWidth
-                                            inputProps={{
-                                              style: { textAlign: "right" },
-                                            }}
                                           />
                                         )}
                                       />
                                     </div>
-                                    <div className="my-auto col-span-4">
+
+                                    <div className="my-20">
                                       <Controller
                                         name={`vat[${index}].bookKeepingReference`}
                                         control={control}
@@ -2240,8 +2302,11 @@ const ClientDetails = () => {
                                             {...field}
                                             type="text"
                                             value={field.value || ""}
-                                            className="bg-white custom-input-height"
+                                            className="bg-white"
                                             autoComplete="off"
+                                            placeholder={t(
+                                              "label:bookKeepingReference"
+                                            )}
                                             error={
                                               !!errors?.vat?.[index]
                                                 ?.bookKeepingReference
@@ -2257,22 +2322,23 @@ const ClientDetails = () => {
                                         )}
                                       />
                                     </div>
-                                    <div className="my-auto col-span-1 text-right">
+                                    <div className="mt-20 mb-10">
                                       <Controller
                                         name={`vat[${index}].vatActive`}
                                         type="checkbox"
                                         control={control}
                                         render={({
-                                                   field: {
-                                                     onChange,
-                                                     value,
-                                                     ref,
-                                                     onBlur,
-                                                   },
-                                                 }) => (
+                                          field: {
+                                            onChange,
+                                            value,
+                                            ref,
+                                            onBlur,
+                                          },
+                                        }) => (
                                           <FormControl
                                             required
                                             error={!!errors.Switch}
+                                            label={t("label:status")}
                                           >
                                             <Switch
                                               color="secondary"
@@ -2294,7 +2360,7 @@ const ClientDetails = () => {
                                   </div>
                                 ))}
                                 <Button
-                                  className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
+                                  className="my-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
                                   startIcon={<AddIcon />}
                                   onClick={() => addNewVat()}
                                   disabled={
@@ -2304,7 +2370,152 @@ const ClientDetails = () => {
                                   {t("label:addItem")}
                                 </Button>
                               </div>
-                            </div>
+                            </Hidden>
+                            <Hidden mdDown>
+                              <div className="px-16">
+                                <div className="product-list">
+                                  <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
+                                    <div className="my-auto text-MonochromeGray-500 col-span-4">
+                                      {t("label:name")}
+                                    </div>
+                                    <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
+                                      {t("label:valuePercentage")}
+                                    </div>
+                                    <div className="my-auto text-MonochromeGray-500 col-span-4">
+                                      {t("label:bookKeepingReference")}
+                                    </div>
+                                    <div className="my-auto col-span-1 text-MonochromeGray-500">
+                                      {" "}
+                                    </div>
+                                  </div>
+
+                                  {addVatIndex.map((index) => (
+                                    <div
+                                      key={index}
+                                      className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
+                                    >
+                                      <div className="my-auto col-span-4">
+                                        <Controller
+                                          name={`vat[${index}].vatName`}
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              type="text"
+                                              value={field.value || ""}
+                                              autoComplete="off"
+                                              className="bg-white custom-input-height"
+                                              error={!!errors.vatName}
+                                              helperText={
+                                                errors?.vatName?.message
+                                              }
+                                              variant="outlined"
+                                              required
+                                              fullWidth
+                                            />
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="my-auto text-right col-span-3">
+                                        <Controller
+                                          name={`vat[${index}].vatValue`}
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              type="number"
+                                              value={field.value || ""}
+                                              className="text-right  custom-input-height"
+                                              autoComplete="off"
+                                              error={!!errors.vatValue}
+                                              helperText={
+                                                errors?.vatValue?.message
+                                              }
+                                              variant="outlined"
+                                              required
+                                              fullWidth
+                                              inputProps={{
+                                                style: { textAlign: "right" },
+                                              }}
+                                            />
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="my-auto col-span-4">
+                                        <Controller
+                                          name={`vat[${index}].bookKeepingReference`}
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              type="text"
+                                              value={field.value || ""}
+                                              className="bg-white custom-input-height"
+                                              autoComplete="off"
+                                              error={
+                                                !!errors?.vat?.[index]
+                                                  ?.bookKeepingReference
+                                              }
+                                              helperText={
+                                                errors?.bookKeepingReference
+                                                  ?.message
+                                              }
+                                              variant="outlined"
+                                              required
+                                              fullWidth
+                                            />
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="my-auto col-span-1 text-right">
+                                        <Controller
+                                          name={`vat[${index}].vatActive`}
+                                          type="checkbox"
+                                          control={control}
+                                          render={({
+                                            field: {
+                                              onChange,
+                                              value,
+                                              ref,
+                                              onBlur,
+                                            },
+                                          }) => (
+                                            <FormControl
+                                              required
+                                              error={!!errors.Switch}
+                                            >
+                                              <Switch
+                                                color="secondary"
+                                                checked={value}
+                                                onBlur={onBlur}
+                                                onChange={(ev) =>
+                                                  onChange(ev.target.checked)
+                                                }
+                                                inputRef={ref}
+                                                required
+                                              />
+                                              <FormHelperText>
+                                                {errors?.Switch?.message}
+                                              </FormHelperText>
+                                            </FormControl>
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                  ))}
+                                  <Button
+                                    className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
+                                    startIcon={<AddIcon />}
+                                    onClick={() => addNewVat()}
+                                    disabled={
+                                      addVatIndex.length >= 4 ? true : false
+                                    }
+                                  >
+                                    {t("label:addItem")}
+                                  </Button>
+                                </div>
+                              </div>
+                            </Hidden>
                           </div>
                         </div>
                         <div className="Invoice Fee Category">
