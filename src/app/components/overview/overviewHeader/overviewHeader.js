@@ -208,9 +208,9 @@ export default function OverviewHeader(props) {
                 value={props.selectedDate}
                 onChange={handleDateChange}
                 renderInput={(params) => (
-                  <TextField size="small" {...params} type="date" />
+                  <TextField size="small" {...params}  error={false} type="date" />
                 )}
-                disableFuture={true}
+                disableFuture
                 disabled={props.isLoading}
               />
             </div>
