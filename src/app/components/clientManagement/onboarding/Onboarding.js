@@ -54,6 +54,7 @@ const Onboarding = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
+  const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
@@ -62,7 +63,7 @@ const Onboarding = () => {
   const [onboardClient] = useOnboardClientMutation();
 
   // form
-  const { control, formState, handleSubmit, reset, setValue } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
     mode: "onChange",
     defaultValueOnBoard,
     resolver: yupResolver(validateSchemaOnBoard),
@@ -70,12 +71,18 @@ const Onboarding = () => {
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);
+    changeVatRateIcon(Math.max(...addVatIndex) + 1);
   };
 
   const onDelete = (index) => {
     addVatIndex.length > 1
       ? setAddVatIndex(addVatIndex.filter((i) => i !== index))
       : setAddVatIndex([...addVatIndex]);
+
+    setValue(`vat[${index}].vatName`, "");
+    setValue(`vat[${index}].vatValue`, "");
+    setValue(`vat[${index}].bookKeepingReference`, "");
+    changeVatRateIcon(index, true);
   };
 
   useEffect(() => {
@@ -170,8 +177,6 @@ const Onboarding = () => {
   };
 
   const { isValid, dirtyFields, errors } = formState;
-  console.log(errors);
-  // TODO : turn on the flag based on the input field or we can omit that as it got validation
 
   const onSubmit = (values) => {
     const primaryPhoneNumber = values?.primaryPhoneNumber
@@ -375,6 +380,36 @@ const Onboarding = () => {
   };
   // end form
 
+  const changeVatRateIcon = (index, lessCheck = false) => {
+    const watchVateName = watch(`vat[${index}].vatName`) || null;
+    const watchVateValue = watch(`vat[${index}].vatValue`) || null;
+    if (!lessCheck) {
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    } else {
+      const watchVateName =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatName`
+        ) || null;
+      const watchVateValue =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatValue`
+        ) || null;
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-1 flex-col items-center justify-center p-24">
@@ -453,7 +488,11 @@ const Onboarding = () => {
                               type="number"
                               autoComplete="off"
                               error={!!errors.id}
-                              helperText={errors?.id?.message ? t(`helperText:${errors?.id?.message}`) : ""}
+                              helperText={
+                                errors?.id?.message
+                                  ? t(`helperText:${errors?.id?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -470,7 +509,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.clientName}
-                              helperText={errors?.clientName?.message ? t(`helperText:${errors?.clientName?.message}`) : ""}
+                              helperText={
+                                errors?.clientName?.message
+                                  ? t(
+                                      `helperText:${errors?.clientName?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -515,7 +560,11 @@ const Onboarding = () => {
                                 )}
                               </Select>
                               <FormHelperText>
-                                {errors?.organizationType?.message ? t(`helperText:${errors?.organizationType?.message}`) : ""}
+                                {errors?.organizationType?.message
+                                  ? t(
+                                      `helperText:${errors?.organizationType?.message}`
+                                    )
+                                  : ""}
                               </FormHelperText>
                             </FormControl>
                           )}
@@ -548,7 +597,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.parentClientName}
-                                helperText={errors?.parentClientName?.message ? t(`helperText:${errors?.parentClientName?.message}`) : ""}
+                                helperText={
+                                  errors?.parentClientName?.message
+                                    ? t(
+                                        `helperText:${errors?.parentClientName?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 required
@@ -593,7 +648,11 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.fullName}
-                              helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
+                              helperText={
+                                errors?.fullName?.message
+                                  ? t(`helperText:${errors?.fullName?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -624,7 +683,11 @@ const Onboarding = () => {
                                 onBlur={handleOnBlurGetDialCode}
                               />
                               <FormHelperText>
-                                {errors?.primaryPhoneNumber?.message ? t(`helperText:${errors?.primaryPhoneNumber?.message}`) : ""}
+                                {errors?.primaryPhoneNumber?.message
+                                  ? t(
+                                      `helperText:${errors?.primaryPhoneNumber?.message}`
+                                    )
+                                  : ""}
                               </FormHelperText>
                             </FormControl>
                           )}
@@ -639,7 +702,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.designation}
-                              helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
+                              helperText={
+                                errors?.designation?.message
+                                  ? t(
+                                      `helperText:${errors?.designation?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               fullWidth
                             />
@@ -655,7 +724,11 @@ const Onboarding = () => {
                               type="email"
                               autoComplete="off"
                               error={!!errors.email}
-                              helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
+                              helperText={
+                                errors?.email?.message
+                                  ? t(`helperText:${errors?.email?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -735,7 +808,13 @@ const Onboarding = () => {
                                   type="date"
                                   required
                                   error={!!errors.contactEndDate}
-                                  helperText={errors?.contactEndDate?.message ? t(`helperText:${errors?.contactEndDate?.message}`) : ""}
+                                  helperText={
+                                    errors?.contactEndDate?.message
+                                      ? t(
+                                          `helperText:${errors?.contactEndDate?.message}`
+                                        )
+                                      : ""
+                                  }
                                 />
                               )}
                             />
@@ -751,7 +830,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.commision}
-                              helperText={errors?.commision?.message ? t(`helperText:${errors?.commision?.message}`) : ""}
+                              helperText={
+                                errors?.commision?.message
+                                  ? t(
+                                      `helperText:${errors?.commision?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -775,7 +860,11 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.smsCost}
-                              helperText={errors?.smsCost?.message ? t(`helperText:${errors?.smsCost?.message}`) : ""}
+                              helperText={
+                                errors?.smsCost?.message
+                                  ? t(`helperText:${errors?.smsCost?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -799,7 +888,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.emailCost}
-                              helperText={errors?.emailCost?.message ? t(`helperText:${errors?.emailCost?.message}`) : ""}
+                              helperText={
+                                errors?.emailCost?.message
+                                  ? t(
+                                      `helperText:${errors?.emailCost?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -823,7 +918,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.creditCheckCost}
-                              helperText={errors?.creditCheckCost?.message ? t(`helperText:${errors?.creditCheckCost?.message}`) : ""}
+                              helperText={
+                                errors?.creditCheckCost?.message
+                                  ? t(
+                                      `helperText:${errors?.creditCheckCost?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -847,7 +948,11 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.ehfCost}
-                              helperText={errors?.ehfCost?.message ? t(`helperText:${errors?.ehfCost?.message}`) : ""}
+                              helperText={
+                                errors?.ehfCost?.message
+                                  ? t(`helperText:${errors?.ehfCost?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -968,7 +1073,13 @@ const Onboarding = () => {
                                 type="email"
                                 autoComplete="off"
                                 error={!!errors.billingEmail}
-                                helperText={errors?.billingEmail?.message ? t(`helperText:${errors?.billingEmail?.message}`) : ""}
+                                helperText={
+                                  errors?.billingEmail?.message
+                                    ? t(
+                                        `helperText:${errors?.billingEmail?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -988,7 +1099,13 @@ const Onboarding = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.billingAddress}
-                                  helperText={errors?.billingAddress?.message ? t(`helperText:${errors?.billingAddress?.message}`) : ""}
+                                  helperText={
+                                    errors?.billingAddress?.message
+                                      ? t(
+                                          `helperText:${errors?.billingAddress?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   required
                                   fullWidth
@@ -1008,7 +1125,11 @@ const Onboarding = () => {
                                   type="number"
                                   autoComplete="off"
                                   error={!!errors.zip}
-                                  helperText={errors?.zip?.message ? t(`helperText:${errors?.zip?.message}`) : ""}
+                                  helperText={
+                                    errors?.zip?.message
+                                      ? t(`helperText:${errors?.zip?.message}`)
+                                      : ""
+                                  }
                                   variant="outlined"
                                   required
                                   fullWidth
@@ -1028,7 +1149,11 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.city}
-                                helperText={errors?.city?.message ? t(`helperText:${errors?.city?.message}`) : ""}
+                                helperText={
+                                  errors?.city?.message
+                                    ? t(`helperText:${errors?.city?.message}`)
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1803,8 +1928,7 @@ const Onboarding = () => {
                   <div className="vat rate">
                     <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                       {t("label:vatRate")}
-                      {defaultValueOnBoard.vat.length > 0 ? (
-                        //TODO: i am not sure how to active the check icon here.
+                      {defaultValueOnBoard.vat.length > 0 || isVatIconGreen ? (
                         <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                       ) : (
                         <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -1838,6 +1962,7 @@ const Onboarding = () => {
                                   control={control}
                                   render={({ field }) => (
                                     <TextField
+                                      onKeyUp={() => changeVatRateIcon(index)}
                                       {...field}
                                       type="text"
                                       autoComplete="off"
@@ -1858,6 +1983,7 @@ const Onboarding = () => {
                                   render={({ field }) => (
                                     <TextField
                                       {...field}
+                                      onKeyUp={() => changeVatRateIcon(index)}
                                       type="number"
                                       className="text-right  custom-input-height"
                                       autoComplete="off"
@@ -1901,6 +2027,7 @@ const Onboarding = () => {
                                 <IconButton
                                   aria-label="delete"
                                   onClick={() => onDelete(index)}
+                                  disabled={index === Math.min(...addVatIndex)}
                                 >
                                   <RemoveCircleOutline className="icon-size-20 text-red-500" />
                                 </IconButton>
