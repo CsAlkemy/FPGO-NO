@@ -382,6 +382,7 @@ const CreateClient = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
+                  disabled={!isValid}
                 >
                   {t("label:createClient")}
                 </LoadingButton>
