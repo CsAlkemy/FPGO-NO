@@ -214,7 +214,6 @@ class ClientService {
   };
 
   vateRatesList = async (orgUuid, isSkipIsAuthenticated) => {
-    return new Promise((resolve, reject) => {
       const URL = `${EnvVariable.BASEURL}/clients/vat/list/${orgUuid}`;
       if (isSkipIsAuthenticated) {
         return new Promise((resolve, reject) => {
@@ -222,7 +221,7 @@ class ClientService {
             .get(URL)
             .then((response) => {
               if (response?.data?.status_code === 200) {
-                resolve(response.data);
+                resolve(response?.data);
               } else reject("Something went wrong");
             })
             .catch((e) => {
@@ -251,7 +250,6 @@ class ClientService {
             reject("Something went wrong");
           });
       }
-    });
   };
 
   createClient = async (params) => {
