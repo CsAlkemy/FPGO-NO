@@ -64,6 +64,7 @@ export const validateSchemaCreateBusinessAdmin = yup.object().shape({
   email: yup.string().email('youMustEnterAValidEmail').required('youMustEnterAEmail'),
   fullName: yup.string().required('youMustEnterYourName'),
   phoneNumber: yup.string().required('youMustEnterYourPhoneNumber'),
+  organization: yup.string().required('youMustEnterOrganization'),
   preferredLanguage: yup.string().required("youMustSelectYourPreferredLanguage"),
   password: yup
     .string()
@@ -145,7 +146,8 @@ export const schemaUserProfileFpAdmin = yup.object().shape({
   email: yup.string().email('youMustEnterAValidEmail').required('youMustEnterAEmail'),
   fullName: yup.string().required('youMustEnterYourName'),
   //phoneNumber: yup.string().required('youMustEnterYourPhoneNumber'),
-  organization: yup.string().required('You must enter your organization'),
+  organization: yup.string().required('youMustEnterOrganization'),
+  //organization: yup.string().required('You must enter your organization'),
   // designation: yup.string().required("You must enter your designation"),
   role: yup.string().required('You must select your role'),
   branch: yup.string().required('You must select your branch'),

@@ -68,6 +68,7 @@ const orderLog = ({ info }) => {
                     log.slug === "order-sent" ||
                     log.slug === "order-resent" ||
                     log.slug === "payment-link-opened" ||
+                    log.slug === "partial-refunded" ||
                     log.slug === "refund-sent" ||
                     log.slug === "payment-successful" ? (
                       <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
