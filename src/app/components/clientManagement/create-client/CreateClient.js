@@ -55,6 +55,7 @@ const CreateClient = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
+  const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
@@ -102,12 +103,18 @@ const CreateClient = () => {
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);
+    changeVatRateIcon(Math.max(...addVatIndex) + 1);
   };
 
   const onDelete = (index) => {
     addVatIndex.length > 1
       ? setAddVatIndex(addVatIndex.filter((i) => i !== index))
       : setAddVatIndex([...addVatIndex]);
+
+    setValue(`vat[${index}].vatName`, "");
+    setValue(`vat[${index}].vatValue`, "");
+    setValue(`vat[${index}].bookKeepingReference`, "");
+    changeVatRateIcon(index, true);
   };
 
   const { isValid, dirtyFields, errors } = formState;
@@ -316,6 +323,36 @@ const CreateClient = () => {
       .catch((e) => {});
   }, [isLoading]);
 
+  const changeVatRateIcon = (index, lessCheck = false) => {
+    const watchVateName = watch(`vat[${index}].vatName`) || null;
+    const watchVateValue = watch(`vat[${index}].vatValue`) || null;
+    if (!lessCheck) {
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    } else {
+      const watchVateName =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatName`
+        ) || null;
+      const watchVateValue =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatValue`
+        ) || null;
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    }
+  };
+
   return (
     <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
       <div className="flex-auto p-20 sm:p-0 w-full mx-auto bg-white">
@@ -345,6 +382,7 @@ const CreateClient = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
+                  disabled={!isValid}
                 >
                   {t("label:createClient")}
                 </LoadingButton>
@@ -1668,8 +1706,7 @@ const CreateClient = () => {
               <div className="vat rate">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:vatRate")}
-                  {defaultValueCreateClient.vat.length > 0 ? (
-                    //TODO: i am not sure how to active the check icon here.
+                  {defaultValueCreateClient.vat.length > 0 || isVatIconGreen ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -1836,6 +1873,7 @@ const CreateClient = () => {
                               control={control}
                               render={({ field }) => (
                                 <TextField
+                                  onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="text"
                                   autoComplete="off"
@@ -1855,6 +1893,7 @@ const CreateClient = () => {
                               control={control}
                               render={({ field }) => (
                                 <TextField
+                                  onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="number"
                                   className="text-right  custom-input-height"
@@ -1896,6 +1935,7 @@ const CreateClient = () => {
                             <IconButton
                               aria-label="delete"
                               onClick={() => onDelete(index)}
+                              disabled={index === Math.min(...addVatIndex)}
                             >
                               <RemoveCircleOutline className="icon-size-20 text-red-500" />
                             </IconButton>
