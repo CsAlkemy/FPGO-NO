@@ -528,7 +528,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                               </div>
                               <div className="shipping-information px-7 sm:px-14">
                                 <div className="w-full">
-                                  <div className="flex justify-between items-center billing-address-head no-padding-x">
+                                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center no-padding-x">
                                     <div className="billing-address-head no-padding-x">
                                       {t("label:shippingAddress")}
                                       {(sameAddress &&
@@ -545,9 +545,9 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                         <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
                                       )}
                                     </div>
-                                    <div className="billing-address-right">
+                                    <div className="billing-address-right ml-0">
                                       <FormControlLabel
-                                        className="font-bold"
+                                        className="font-bold ml-0"
                                         control={
                                           <Switch
                                             onChange={() =>
