@@ -55,7 +55,6 @@ const CreateClient = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
-  const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
@@ -103,18 +102,12 @@ const CreateClient = () => {
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);
-    changeVatRateIcon(Math.max(...addVatIndex) + 1);
   };
 
   const onDelete = (index) => {
     addVatIndex.length > 1
       ? setAddVatIndex(addVatIndex.filter((i) => i !== index))
       : setAddVatIndex([...addVatIndex]);
-
-    setValue(`vat[${index}].vatName`, "");
-    setValue(`vat[${index}].vatValue`, "");
-    setValue(`vat[${index}].bookKeepingReference`, "");
-    changeVatRateIcon(index, true);
   };
 
   const { isValid, dirtyFields, errors } = formState;
@@ -151,18 +144,18 @@ const CreateClient = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-          .filter((v) => v.vatValue)
-          .map((vat) => {
-            return {
-              uuid: null,
-              name: vat?.vatName ? vat?.vatName : null,
-              value: parseFloat(vat.vatValue),
-              isActive: true,
-              bookKeepingReference: vat?.bookKeepingReference
-                ? vat.bookKeepingReference
-                : null,
-            };
-          })
+        .filter((v) => v.vatValue)
+        .map((vat) => {
+          return {
+            uuid: null,
+            name: vat?.vatName ? vat?.vatName : null,
+            value: parseFloat(vat.vatValue),
+            isActive: true,
+            bookKeepingReference: vat?.bookKeepingReference
+              ? vat.bookKeepingReference
+              : null,
+          };
+        })
       : null;
 
     const createClientData = {
@@ -322,36 +315,6 @@ const CreateClient = () => {
       })
       .catch((e) => {});
   }, [isLoading]);
-
-  const changeVatRateIcon = (index, lessCheck = false) => {
-    const watchVateName = watch(`vat[${index}].vatName`) || null;
-    const watchVateValue = watch(`vat[${index}].vatValue`) || null;
-    if (!lessCheck) {
-      if (watchVateName && watchVateValue) {
-        setIsVatIconGreen(true);
-      } else setIsVatIconGreen(false);
-    } else {
-      const watchVateName =
-        !watch(
-          `order[${
-            index -
-            (addVatIndex[addVatIndex.indexOf(index)] -
-              addVatIndex[addVatIndex.indexOf(index) - 1])
-          }].vatName`
-        ) || null;
-      const watchVateValue =
-        !watch(
-          `order[${
-            index -
-            (addVatIndex[addVatIndex.indexOf(index)] -
-              addVatIndex[addVatIndex.indexOf(index) - 1])
-          }].vatValue`
-        ) || null;
-      if (watchVateName && watchVateValue) {
-        setIsVatIconGreen(true);
-      } else setIsVatIconGreen(false);
-    }
-  };
 
   return (
     <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
@@ -991,7 +954,7 @@ const CreateClient = () => {
               </div>
               <div className="shipping-information">
                 <div className="p-10 w-full md:w-3/4">
-                  <div className="flex justify-between items-center billing-address-head">
+                  <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center">
                     <div className="billing-address-head">
                       {t("label:shippingAddress")}
                       {(dirtyFields.shippingPhoneNumber &&
@@ -1705,33 +1668,178 @@ const CreateClient = () => {
               <div className="vat rate">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:vatRate")}
-                  {defaultValueCreateClient.vat.length > 0  || isVatIconGreen? (
+                  {defaultValueCreateClient.vat.length > 0 ? (
+                    //TODO: i am not sure how to active the check icon here.
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
                   )}
                 </div>
                 <div className="p-10">
-                  <Hidden mdUp>
-                    <div className="px-16 shadow-md rounded-md">
+                  {/*<Hidden mdUp>*/}
+                  {/*  <div className="px-16 shadow-md rounded-md">*/}
+                  {/*    {addVatIndex.map((index) => (*/}
+                  {/*        <div*/}
+                  {/*            key={index}*/}
+                  {/*            className="subtitle3 w-full md:w-3/4 mt-20"*/}
+                  {/*        >*/}
+                  {/*          <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].vatName`}*/}
+                  {/*                control={control}*/}
+                  {/*                render={({ field }) => (*/}
+                  {/*                    <TextField*/}
+                  {/*                        {...field}*/}
+                  {/*                        type="text"*/}
+                  {/*                        value={field.value || ""}*/}
+                  {/*                        autoComplete="off"*/}
+                  {/*                        placeholder={t("label:name")}*/}
+                  {/*                        className="bg-white"*/}
+                  {/*                        error={!!errors.vatName}*/}
+                  {/*                        helperText={*/}
+                  {/*                          errors?.vatName?.message*/}
+                  {/*                        }*/}
+                  {/*                        variant="outlined"*/}
+                  {/*                        required*/}
+                  {/*                        fullWidth*/}
+                  {/*                    />*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].vatValue`}*/}
+                  {/*                control={control}*/}
+                  {/*                render={({ field }) => (*/}
+                  {/*                    <TextField*/}
+                  {/*                        {...field}*/}
+                  {/*                        type="number"*/}
+                  {/*                        value={field.value || ""}*/}
+                  {/*                        className=""*/}
+                  {/*                        autoComplete="off"*/}
+                  {/*                        error={!!errors.vatValue}*/}
+                  {/*                        helperText={*/}
+                  {/*                          errors?.vatValue?.message*/}
+                  {/*                        }*/}
+                  {/*                        variant="outlined"*/}
+                  {/*                        placeholder={t(*/}
+                  {/*                            "label:valuePercentage"*/}
+                  {/*                        )}*/}
+                  {/*                        required*/}
+                  {/*                        fullWidth*/}
+                  {/*                    />*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*          </div>*/}
+
+                  {/*          <div className="my-20">*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].bookKeepingReference`}*/}
+                  {/*                control={control}*/}
+                  {/*                render={({ field }) => (*/}
+                  {/*                    <TextField*/}
+                  {/*                        {...field}*/}
+                  {/*                        type="text"*/}
+                  {/*                        value={field.value || ""}*/}
+                  {/*                        className="bg-white"*/}
+                  {/*                        autoComplete="off"*/}
+                  {/*                        placeholder={t(*/}
+                  {/*                            "label:bookKeepingReference"*/}
+                  {/*                        )}*/}
+                  {/*                        error={*/}
+                  {/*                          !!errors?.vat?.[index]*/}
+                  {/*                              ?.bookKeepingReference*/}
+                  {/*                        }*/}
+                  {/*                        helperText={*/}
+                  {/*                          errors?.bookKeepingReference*/}
+                  {/*                              ?.message*/}
+                  {/*                        }*/}
+                  {/*                        variant="outlined"*/}
+                  {/*                        required*/}
+                  {/*                        fullWidth*/}
+                  {/*                    />*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*          </div>*/}
+                  {/*          <div className="mt-20 mb-10">*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].vatActive`}*/}
+                  {/*                type="checkbox"*/}
+                  {/*                control={control}*/}
+                  {/*                render={({*/}
+                  {/*                           field: {*/}
+                  {/*                             onChange,*/}
+                  {/*                             value,*/}
+                  {/*                             ref,*/}
+                  {/*                             onBlur,*/}
+                  {/*                           },*/}
+                  {/*                         }) => (*/}
+                  {/*                    <FormControl*/}
+                  {/*                        required*/}
+                  {/*                        error={!!errors.Switch}*/}
+                  {/*                        label={t("label:status")}*/}
+                  {/*                    >*/}
+                  {/*                      <Switch*/}
+                  {/*                          color="secondary"*/}
+                  {/*                          checked={value}*/}
+                  {/*                          onBlur={onBlur}*/}
+                  {/*                          onChange={(ev) =>*/}
+                  {/*                              onChange(ev.target.checked)*/}
+                  {/*                          }*/}
+                  {/*                          inputRef={ref}*/}
+                  {/*                          required*/}
+                  {/*                      />*/}
+                  {/*                      <FormHelperText>*/}
+                  {/*                        {errors?.Switch?.message}*/}
+                  {/*                      </FormHelperText>*/}
+                  {/*                    </FormControl>*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*          </div>*/}
+                  {/*        </div>*/}
+                  {/*    ))}*/}
+                  {/*    <Button*/}
+                  {/*        className="my-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"*/}
+                  {/*        startIcon={<AddIcon />}*/}
+                  {/*        onClick={() => addNewVat()}*/}
+                  {/*        disabled={*/}
+                  {/*          addVatIndex.length >= 4 ? true : false*/}
+                  {/*        }*/}
+                  {/*    >*/}
+                  {/*      {t("label:addItem")}*/}
+                  {/*    </Button>*/}
+                  {/*  </div>*/}
+                  {/*</Hidden>*/}
+                  <div className="px-16">
+                    <div className="product-list">
+                      <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
+                        <div className="my-auto text-MonochromeGray-500 col-span-4">
+                          {t("label:name")}
+                        </div>
+                        <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
+                          {`Value (%)`}
+                        </div>
+                        <div className="my-auto text-MonochromeGray-500 col-span-4">
+                          {t("label:bookKeepingReference")}
+                        </div>
+                        <div className="my-auto col-span-1 text-MonochromeGray-500">
+                          {" "}
+                          {t("label:delete")}
+                        </div>
+                      </div>
                       {addVatIndex.map((index) => (
                         <div
                           key={index}
-                          className="subtitle3 w-full md:w-3/4 mt-20"
+                          className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
                         >
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">
+                          <div className="my-auto col-span-4">
                             <Controller
                               name={`vat[${index}].vatName`}
                               control={control}
                               render={({ field }) => (
                                 <TextField
-                                  onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="text"
-                                  value={field.value || ""}
                                   autoComplete="off"
-                                  placeholder={t("label:name")}
-                                  className="bg-white"
+                                  className="bg-white custom-input-height"
                                   error={!!errors.vatName}
                                   helperText={errors?.vatName?.message}
                                   variant="outlined"
@@ -1740,29 +1848,28 @@ const CreateClient = () => {
                                 />
                               )}
                             />
+                          </div>
+                          <div className="my-auto text-right col-span-3">
                             <Controller
                               name={`vat[${index}].vatValue`}
                               control={control}
                               render={({ field }) => (
                                 <TextField
-                                  onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="number"
-                                  value={field.value || ""}
-                                  className=""
+                                  className="text-right  custom-input-height"
                                   autoComplete="off"
                                   error={!!errors.vatValue}
                                   helperText={errors?.vatValue?.message}
                                   variant="outlined"
-                                  placeholder={t("label:valuePercentage")}
                                   required
                                   fullWidth
+                                  inputProps={{ style: { textAlign: "right" } }}
                                 />
                               )}
                             />
                           </div>
-
-                          <div className="my-20">
+                          <div className="my-auto col-span-4">
                             <Controller
                               name={`vat[${index}].bookKeepingReference`}
                               control={control}
@@ -1770,10 +1877,8 @@ const CreateClient = () => {
                                 <TextField
                                   {...field}
                                   type="text"
-                                  value={field.value || ""}
-                                  className="bg-white"
+                                  className="bg-white custom-input-height"
                                   autoComplete="off"
-                                  placeholder={t("label:bookKeepingReference")}
                                   error={
                                     !!errors?.vat?.[index]?.bookKeepingReference
                                   }
@@ -1787,40 +1892,18 @@ const CreateClient = () => {
                               )}
                             />
                           </div>
-                          <div className="mt-20 mb-10">
-                            <Controller
-                              name={`vat[${index}].vatActive`}
-                              type="checkbox"
-                              control={control}
-                              render={({
-                                field: { onChange, value, ref, onBlur },
-                              }) => (
-                                <FormControl
-                                  required
-                                  error={!!errors.Switch}
-                                  label={t("label:status")}
-                                >
-                                  <Switch
-                                    color="secondary"
-                                    checked={value}
-                                    onBlur={onBlur}
-                                    onChange={(ev) =>
-                                      onChange(ev.target.checked)
-                                    }
-                                    inputRef={ref}
-                                    required
-                                  />
-                                  <FormHelperText>
-                                    {errors?.Switch?.message}
-                                  </FormHelperText>
-                                </FormControl>
-                              )}
-                            />
+                          <div className="my-auto col-span-1 text-right">
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => onDelete(index)}
+                            >
+                              <RemoveCircleOutline className="icon-size-20 text-red-500" />
+                            </IconButton>
                           </div>
                         </div>
                       ))}
                       <Button
-                        className="my-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
+                        className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
                         startIcon={<AddIcon />}
                         onClick={() => addNewVat()}
                         disabled={addVatIndex.length >= 4 ? true : false}
@@ -1828,119 +1911,7 @@ const CreateClient = () => {
                         {t("label:addItem")}
                       </Button>
                     </div>
-                  </Hidden>
-                  <Hidden mdDown>
-                    <div className="px-16">
-                      <div className="product-list">
-                        <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
-                          <div className="my-auto text-MonochromeGray-500 col-span-4">
-                            {t("label:name")}
-                          </div>
-                          <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
-                            {`Value (%)`}
-                          </div>
-                          <div className="my-auto text-MonochromeGray-500 col-span-4">
-                            {t("label:bookKeepingReference")}
-                          </div>
-                          <div className="my-auto col-span-1 text-MonochromeGray-500">
-                            {" "}
-                            {t("label:delete")}
-                          </div>
-                        </div>
-                        {addVatIndex.map((index) => (
-                          <div
-                            key={index}
-                            className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
-                          >
-                            <div className="my-auto col-span-4">
-                              <Controller
-                                name={`vat[${index}].vatName`}
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    onKeyUp={() => changeVatRateIcon(index)}
-                                    {...field}
-                                    type="text"
-                                    autoComplete="off"
-                                    className="bg-white custom-input-height"
-                                    error={!!errors.vatName}
-                                    helperText={errors?.vatName?.message}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                  />
-                                )}
-                              />
-                            </div>
-                            <div className="my-auto text-right col-span-3">
-                              <Controller
-                                name={`vat[${index}].vatValue`}
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    onKeyUp={() => changeVatRateIcon(index)}
-                                    {...field}
-                                    type="number"
-                                    className="text-right  custom-input-height"
-                                    autoComplete="off"
-                                    error={!!errors.vatValue}
-                                    helperText={errors?.vatValue?.message}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    inputProps={{
-                                      style: { textAlign: "right" },
-                                    }}
-                                  />
-                                )}
-                              />
-                            </div>
-                            <div className="my-auto col-span-4">
-                              <Controller
-                                name={`vat[${index}].bookKeepingReference`}
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    {...field}
-                                    type="text"
-                                    className="bg-white custom-input-height"
-                                    autoComplete="off"
-                                    error={
-                                      !!errors?.vat?.[index]
-                                        ?.bookKeepingReference
-                                    }
-                                    helperText={
-                                      errors?.bookKeepingReference?.message
-                                    }
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                  />
-                                )}
-                              />
-                            </div>
-                            <div className="my-auto col-span-1 text-right">
-                              <IconButton
-                                aria-label="delete"
-                                onClick={() => onDelete(index)}
-                                disabled={index === Math.min(...addVatIndex)}
-                              >
-                                <RemoveCircleOutline className="icon-size-20 text-red-500" />
-                              </IconButton>
-                            </div>
-                          </div>
-                        ))}
-                        <Button
-                          className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
-                          startIcon={<AddIcon />}
-                          onClick={() => addNewVat()}
-                          disabled={addVatIndex.length >= 4 ? true : false}
-                        >
-                          {t("label:addItem")}
-                        </Button>
-                      </div>
-                    </div>
-                  </Hidden>
+                  </div>
                 </div>
               </div>
               <div className="Invoice Fee Category">
