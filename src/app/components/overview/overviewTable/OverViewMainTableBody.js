@@ -40,7 +40,7 @@ import { DoneAll, UTurnLeft } from "@mui/icons-material";
 import { defaultValueCreateClient } from "../../clientManagement/utils/helper";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import { useTranslation } from "react-i18next";
-import {CharCont} from "../../../utils/helperFunctions";
+import { CharCont } from "../../../utils/helperFunctions";
 
 export default function OverViewMainTableBody(props) {
   const { t } = useTranslation();
@@ -181,28 +181,39 @@ export default function OverViewMainTableBody(props) {
             if (props.row.status === "Active") {
               return props.row.type === "Corporate" ? (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <LocationCityIcon className="mr-12 text-[#50C9B1]" />
-                  {CharCont(props.row[rdt],30)}
+                  <div className='flex items-center gap-7'>
+                    <LocationCityIcon className=" text-[#50C9B1]" />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               ) : (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <PersonIcon className="mr-12 text-[#68C7E7]" />
-                  {CharCont(props.row[rdt],30)}
+                  <div className='flex items-center gap-7'>
+                    <PersonIcon className="text-[#68C7E7]" />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               );
             } else {
               return props.row.type === "Corporate" ? (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <LocationCityIcon
-                    className="mr-12"
-                    style={{ color: "#C6C7C7" }}
-                  />
-                  {CharCont(props.row[rdt],30)}
+                  <div className='flex items-center gap-7'>
+                    <LocationCityIcon
+                        style={{ color: "#C6C7C7" }}
+                    />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               ) : (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <PersonIcon className="mr-12" style={{ color: "#C6C7C7" }} />
-                  {CharCont(props.row[rdt],30)}
+                  <div className='flex items-center gap-7'>
+                    <PersonIcon className="" style={{ color: "#C6C7C7" }} />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               );
             }
@@ -570,13 +581,19 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "customerName") {
           return props.row.type === "Private" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <PersonIcon className="mr-12" color="secondary" />
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              <div className='flex gap-7 items-center'>
+                <PersonIcon className='text-[#68C7E7]' />
+                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              </div>
+
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <LocationCityIcon className="mr-12" color="secondary" />
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              <div className='flex gap-7 items-center'>
+                <LocationCityIcon  className='text-[#50C9B1]' />
+                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              </div>
+
             </TableCell>
           );
         } else {

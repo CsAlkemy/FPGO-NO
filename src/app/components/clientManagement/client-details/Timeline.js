@@ -59,7 +59,7 @@ const TimelineLog = () => {
     if (defaultTimeline) {
       const prepareSelectedDate = `${
         new Date().getMonth() + 1
-      }.01.${new Date().getFullYear()} 00:00:00`;
+      }.09.${new Date().getFullYear()} 00:00:00`;
       // setSelectedDate(date);
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
       ClientService.getClientTimelineByUUID(
