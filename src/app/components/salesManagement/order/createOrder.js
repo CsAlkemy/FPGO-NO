@@ -316,20 +316,21 @@ const createOrder = () => {
     //Amount : (Rate * Qty) - discount
     //Discount : Sum of discounts
     //Grand Total : Sum of amounts
-    let rate, splitedRate,dotFormatRate, floatRate;
+    let rate, splitedRate, dotFormatRate, floatRate;
     if (!!watchRate) {
       rate = watchRate;
-      splitedRate = rate.split(",");
-      dotFormatRate = `${splitedRate[0]}.${splitedRate[1]}`;
+      splitedRate = rate.toString().includes(",") ? rate.split(",") : rate;
+      dotFormatRate =
+        typeof splitedRate === "object"
+          ? `${splitedRate[0]}.${splitedRate[1]}`
+          : splitedRate;
       floatRate = parseFloat(dotFormatRate);
     }
 
     const total =
-      parseInt(watchQuantity) * floatRate -
-      parseFloat(watchDiscount);
+      parseInt(watchQuantity) * floatRate - parseFloat(watchDiscount);
     const subTotalCalculation =
-      (parseInt(watchQuantity) * floatRate) /
-      ((100 + watchTax) / 100);
+      (parseInt(watchQuantity) * floatRate) / ((100 + watchTax) / 100);
     const totalTaxCalculation = subTotalCalculation
       ? (subTotalCalculation * (watchTax / 100)) / 2
       : 0;
@@ -930,8 +931,8 @@ const createOrder = () => {
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
-                                onChange={e => {
-                                  console.log("eeee : ",e);
+                                onChange={(e) => {
+                                  console.log("eeee : ", e);
                                 }}
                               />
                             )}
@@ -1380,7 +1381,8 @@ const createOrder = () => {
                     </div>
                     <div className="my-auto">
                       <div className="body3 text-right">
-                        {t("label:nok")} {ThousandSeparator(productWiseTotal(index))}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(productWiseTotal(index))}
                       </div>
                     </div>
                     <div className="my-auto">
@@ -2684,7 +2686,8 @@ const createOrder = () => {
                         {t("label:subTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} { ThousandSeparator(subTotal.toFixed(2) / 2) }
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(subTotal.toFixed(2) / 2)}
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2692,7 +2695,8 @@ const createOrder = () => {
                         {t("label:tax")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} { ThousandSeparator(totalTax.toFixed(2) / 2) }
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(totalTax.toFixed(2) / 2)}
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2700,7 +2704,8 @@ const createOrder = () => {
                         {t("label:discount")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} { ThousandSeparator(totalDiscount.toFixed(2) / 2) }
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(totalDiscount.toFixed(2) / 2)}
                       </div>
                     </div>
                   </div>
@@ -2710,7 +2715,8 @@ const createOrder = () => {
                         {t("label:grandTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} { ThousandSeparator(grandTotal.toFixed(2) / 2) }
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(grandTotal.toFixed(2) / 2)}
                       </div>
                     </div>
                   </div>

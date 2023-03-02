@@ -148,8 +148,13 @@ class OrdersService {
         .map((order) => {
           //Decimal comma to dot separator conversion logic
           const rate = order.rate;
-          const splitedRate = rate.split(",");
-          const dotFormatRate = `${splitedRate[0]}.${splitedRate[1]}`;
+          const splitedRate = rate.toString().includes(",")
+            ? rate.split(",")
+            : rate;
+          const dotFormatRate =
+            typeof splitedRate === "object"
+              ? `${splitedRate[0]}.${splitedRate[1]}`
+              : splitedRate;
           const floatRate = parseFloat(dotFormatRate);
 
           return {
