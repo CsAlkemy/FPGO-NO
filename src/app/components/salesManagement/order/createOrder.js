@@ -931,9 +931,6 @@ const createOrder = () => {
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
-                                onChange={(e) => {
-                                  console.log("eeee : ", e);
-                                }}
                               />
                             )}
                           />
@@ -984,7 +981,7 @@ const createOrder = () => {
                                         !!field.value || touchedFields.tax,
                                     }}
                                   >
-                                    {taxes && taxes.length ? (
+                                    {!!taxes && taxes.length ? (
                                       taxes.map((tax, index) =>
                                         tax.status === "Active" ? (
                                           <MenuItem
