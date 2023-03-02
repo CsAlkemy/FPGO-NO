@@ -160,6 +160,8 @@ export default function OverviewHeader(props) {
         return t("label:searchByOrderIDNamePhoneNo");
       case clientOrdersListOverview:
         return t("label:searchByOrderIDNamePhoneNo");
+      case productsListOverview:
+        return t("label:searchByProductNameAndID");
       default:
         return t("label:searchByNameEmailPhoneNo");
     }

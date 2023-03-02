@@ -1,44 +1,37 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {LoadingButton} from "@mui/lab";
 import {
-  Button,
-  FormControl,
-  FormHelperText,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
+    Button,
+    FormControl,
+    FormHelperText,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
 } from "@mui/material";
-import { selectUser } from "app/store/userSlice";
-import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import {selectUser} from "app/store/userSlice";
+import {useSnackbar} from "notistack";
+import React, {useEffect, useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
 import PhoneInput from "react-phone-input-2";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 import UserService from "../../data-access/services/userService/UserService";
-import {
-  BUSINESS_ADMIN,
-  FP_ADMIN,
-  GENERAL_USER,
-} from "../../utils/user-roles/UserRoles";
+import {BUSINESS_ADMIN, FP_ADMIN, GENERAL_USER,} from "../../utils/user-roles/UserRoles";
 import DiscardConfirmModal from "../common/confirmDiscard";
 import {
-  defaultValues,
-  validateSchemaCreateBusinessAdmin,
-  validateSchemaCreateCompanyAdmin,
-  validateSchemaGeneralAdmin,
+    defaultValues,
+    validateSchemaCreateBusinessAdmin,
+    validateSchemaCreateCompanyAdmin,
+    validateSchemaGeneralAdmin,
 } from "./utils/helper";
-import { useCreateUserMutation } from "app/store/api/apiSlice";
+import {useCreateUserMutation} from "app/store/api/apiSlice";
 import UtilsServices from "../../data-access/utils/UtilsServices";
 import AuthService from "../../data-access/services/authService";
-import ProductService from "../../data-access/services/productsService/ProductService";
-import CategoryService from "../../data-access/services/categoryService/CategoryService";
-import { defaultValue } from "../products/utils/helper";
 
 export default function CreateUsers() {
   const { t } = useTranslation();
@@ -84,9 +77,11 @@ export default function CreateUsers() {
   const { isValid, dirtyFields, errors } = formState;
 
   useEffect(() => {
-    defaultValues.organization = info?.user_data?.organization?.uuid
-      ? info?.user_data?.organization?.uuid
-      : "";
+    defaultValues.organization =
+      info?.user_data?.user_role?.slug !== FP_ADMIN &&
+      info?.user_data?.organization?.uuid
+        ? info?.user_data?.organization?.uuid
+        : "";
     reset({ ...defaultValues });
 
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
@@ -268,7 +263,11 @@ export default function CreateUsers() {
                             type="email"
                             autoComplete="off"
                             error={!!errors.email}
-                            helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
+                            helperText={
+                              errors?.email?.message
+                                ? t(`helperText:${errors?.email?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -285,7 +284,11 @@ export default function CreateUsers() {
                             type="text"
                             autoComplete="off"
                             error={!!errors.fullName}
-                            helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
+                            helperText={
+                              errors?.fullName?.message
+                                ? t(`helperText:${errors?.fullName?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -316,49 +319,53 @@ export default function CreateUsers() {
                               onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.phoneNumber?.message ? t(`helperText:${errors?.phoneNumber?.message}`) : ""}
+                              {errors?.phoneNumber?.message
+                                ? t(
+                                    `helperText:${errors?.phoneNumber?.message}`
+                                  )
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
                       />
                       {(type === BUSINESS_ADMIN || type === GENERAL_USER) && (
-                          <Controller
-                              name="organization"
-                              control={control}
-                              render={({ field }) => (
-                                  <FormControl
-                                      error={!!errors.organization}
-                                      required
-                                      fullWidth
-                                  >
-                                    <InputLabel id="demo-simple-select-label-role">
-                                      {t("label:organization")}
-                                    </InputLabel>
-                                    <Select
-                                        {...field}
-                                        labelId="demo-simple-select-label-role"
-                                        id="demo-simple-select"
-                                        label={t("label:organization")}
-                                        placeholder={t("label:organization")}
-                                        disabled={
-                                            user.role[0] === BUSINESS_ADMIN ||
-                                            user.role[0] === GENERAL_USER
-                                        }
-                                    >
-                                      {organizationsList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.uuid}>
-                                              {item.name}
-                                            </MenuItem>
-                                        );
-                                      })}
-                                    </Select>
-                                    <FormHelperText>
-                                      {errors.organization?.message}
-                                    </FormHelperText>
-                                  </FormControl>
-                              )}
-                          />
+                        <Controller
+                          name="organization"
+                          control={control}
+                          render={({ field }) => (
+                            <FormControl
+                              error={!!errors.organization}
+                              required
+                              fullWidth
+                            >
+                              <InputLabel id="demo-simple-select-label-role">
+                                {t("label:organization")}
+                              </InputLabel>
+                              <Select
+                                {...field}
+                                labelId="demo-simple-select-label-role"
+                                id="demo-simple-select"
+                                label={t("label:organization")}
+                                placeholder={t("label:organization")}
+                                disabled={
+                                  user.role[0] === BUSINESS_ADMIN ||
+                                  user.role[0] === GENERAL_USER
+                                }
+                              >
+                                {organizationsList.map((item, index) => {
+                                  return (
+                                    <MenuItem key={index} value={item.uuid}>
+                                      {item.name}
+                                    </MenuItem>
+                                  );
+                                })}
+                              </Select>
+                              <FormHelperText>
+                                {errors.organization?.message}
+                              </FormHelperText>
+                            </FormControl>
+                          )}
+                        />
                       )}
                       <Controller
                         name="designation"
@@ -370,7 +377,13 @@ export default function CreateUsers() {
                             type="text"
                             autoComplete="off"
                             error={!!errors.designation}
-                            helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
+                            helperText={
+                              errors?.designation?.message
+                                ? t(
+                                    `helperText:${errors?.designation?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                           />
@@ -452,7 +465,11 @@ export default function CreateUsers() {
                           type={!hide ? "text" : "password"}
                           autoComplete="off"
                           error={!!errors.password}
-                          helperText={errors?.password?.message ? t(`helperText:${errors?.password?.message}`) : ""}
+                          helperText={
+                            errors?.password?.message
+                              ? t(`helperText:${errors?.password?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -482,7 +499,13 @@ export default function CreateUsers() {
                           type={!hide ? "text" : "password"}
                           autoComplete="off"
                           error={!!errors.confirmpassword}
-                          helperText={errors?.confirmpassword?.message ? t(`helperText:${errors?.confirmpassword?.message}`) : ""}
+                          helperText={
+                            errors?.confirmpassword?.message
+                              ? t(
+                                  `helperText:${errors?.confirmpassword?.message}`
+                                )
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth

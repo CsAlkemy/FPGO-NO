@@ -2,22 +2,20 @@ import TableCell from "@mui/material/TableCell";
 import OverviewStatus from "../status/OverviewStatus";
 import {
   approvalListOverviewFPAdmin,
+  businessAdminUsersOverview,
   categoriesListOverview,
+  clientOrdersListOverview,
   clientsListOverview,
   creditChecksListOverview,
-  customersListOverview,
-  userListOverview,
-  productsListOverview,
-  fpAdminUsersOverview,
-  businessAdminUsersOverview,
-  organizationWiseUsersOverview,
-  ordersListOverview,
   customerOrdersListOverview,
+  customersListOverview,
+  fpAdminUsersOverview,
+  ordersListOverview,
+  organizationWiseUsersOverview,
+  productsListOverview,
   refundRequestsOverview,
-  clientOrdersListOverview,
+  userListOverview,
 } from "./TablesName";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import StoreIcon from "@mui/icons-material/Store";
 import Skeleton from "@mui/material/Skeleton";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import PersonIcon from "@mui/icons-material/Person";
@@ -27,20 +25,18 @@ import UndoIcon from "@mui/icons-material/Undo";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Tooltip from "@mui/material/Tooltip";
 import Zoom from "@mui/material/Zoom";
-import Fade from "@mui/material/Fade";
-import { withStyles } from "@mui/styles";
-import { useState } from "react";
-import { ClickAwayListener } from "@mui/base";
+import {withStyles} from "@mui/styles";
+import {useState} from "react";
+import {ClickAwayListener} from "@mui/base";
 import Box from "@mui/material/Box";
 import OrderModal from "../../salesManagement/order/popupModal/orderModal";
-import { useSelector } from "react-redux";
-import { selectUser } from "app/store/userSlice";
-import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-import { DoneAll, UTurnLeft } from "@mui/icons-material";
-import { defaultValueCreateClient } from "../../clientManagement/utils/helper";
+import {useSelector} from "react-redux";
+import {selectUser} from "app/store/userSlice";
+import {FP_ADMIN} from "../../../utils/user-roles/UserRoles";
+import {DoneAll} from "@mui/icons-material";
 import DiscardConfirmModal from "../../common/confirmDiscard";
-import { useTranslation } from "react-i18next";
-import { CharCont } from "../../../utils/helperFunctions";
+import {useTranslation} from "react-i18next";
+import {ThousandSeparator} from "../../../utils/helperFunctions";
 
 export default function OverViewMainTableBody(props) {
   const { t } = useTranslation();
@@ -377,7 +373,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else if (rdt === "refundResend") {
@@ -1062,7 +1058,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else if (rdt === "approveAction") {
@@ -1341,7 +1337,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else {

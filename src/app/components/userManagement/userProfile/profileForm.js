@@ -1,34 +1,17 @@
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, {useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 import PhoneInput from "react-phone-input-2";
-import {
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
-import {
-  schemaUserProfileFpAdmin,
-  schemaUserProfileFpAdminSubClient,
-  schemaUserProfile,
-} from "../utils/helper";
+import {FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField,} from "@mui/material";
+import {useSnackbar} from "notistack";
+import {useNavigate} from "react-router-dom";
+import {schemaUserProfile, schemaUserProfileFpAdmin,} from "../utils/helper";
 import UserService from "../../../data-access/services/userService/UserService";
-import { defaultValue } from "../../clientManagement/utils/helper";
-import { useSelector } from "react-redux";
-import { selectUser } from "app/store/userSlice";
-import {
-  BUSINESS_ADMIN,
-  FP_ADMIN,
-  GENERAL_USER,
-} from "../../../utils/user-roles/UserRoles";
-import * as yup from "yup";
-import { useTranslation } from "react-i18next";
-import { useUpdateUserMutation } from "app/store/api/apiSlice";
+import {useSelector} from "react-redux";
+import {selectUser} from "app/store/userSlice";
+import {BUSINESS_ADMIN, FP_ADMIN,} from "../../../utils/user-roles/UserRoles";
+import {useTranslation} from "react-i18next";
+import {useUpdateUserMutation} from "app/store/api/apiSlice";
 import AuthService from "../../../data-access/services/authService";
 
 const defaultValues = {
@@ -63,7 +46,6 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
 
   const schema =
     isUserID === true ? schemaUserProfile : schemaUserProfileFpAdmin;
-  const userID = "1039826589";
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
   };

@@ -113,7 +113,7 @@ const index = () => {
                         </div>
                       </div>
                     )}
-                    <div className="flex gap-10 w-full justify-between sm:w-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full items-center sm:w-auto">
                       {role === 0 && (
                         <Button
                           color="secondary"
