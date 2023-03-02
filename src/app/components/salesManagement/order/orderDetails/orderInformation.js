@@ -820,15 +820,15 @@ const OrderInformation = ({ info }) => {
                             />
                           )}
                         />
-                        <Tooltip
-                          placement="bottom"
-                          title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                        >
-                          <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                            <ErrorIcon className="icon-size-14 my-auto " />
-                            {t("label:whatIsThis")}
-                          </div>
-                        </Tooltip>
+                        {/*<Tooltip*/}
+                        {/*  placement="bottom"*/}
+                        {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                        {/*>*/}
+                        {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                        {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                        {/*    {t("label:whatIsThis")}*/}
+                        {/*  </div>*/}
+                        {/*</Tooltip>*/}
                       </div>
                       <div className="flex flex-col gap-5">
                         <Controller
@@ -960,15 +960,15 @@ const OrderInformation = ({ info }) => {
                             </ClickAwayListener>
                           )}
                         />
-                        <Tooltip
-                          placement="bottom"
-                          title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                        >
-                          <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                            <ErrorIcon className="icon-size-14 my-auto " />
-                            {t("label:whatIsThis")}
-                          </div>
-                        </Tooltip>
+                        {/*<Tooltip*/}
+                        {/*  placement="bottom"*/}
+                        {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                        {/*>*/}
+                        {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                        {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                        {/*    {t("label:whatIsThis")}*/}
+                        {/*  </div>*/}
+                        {/*</Tooltip>*/}
                       </div>
                       <div className="flex flex-col gap-5"></div>
                     </div>
