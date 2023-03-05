@@ -150,7 +150,13 @@ export default function OverViewMainTableBody(props) {
               <OverviewStatus name="Inactive" />
             </TableCell>
           );
-        } else {
+        } else if(rdt === "pricePerUnit") {
+          return (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }else {
           return (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
               {props.row ? props.row[rdt] : <Skeleton variant="text" />}
