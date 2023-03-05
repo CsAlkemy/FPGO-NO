@@ -30,7 +30,7 @@ const orderReceipt = () => {
       })
       .catch((e) => {
         setIsLoading(false);
-        enqueueSnackbar(e, { variant: "error" });
+        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
       });
   }, [isLoading]);
 

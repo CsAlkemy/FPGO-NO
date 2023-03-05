@@ -286,7 +286,7 @@ const CreateClient = () => {
         navigate("/clients/clients-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });

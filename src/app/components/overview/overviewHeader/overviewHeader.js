@@ -125,7 +125,7 @@ export default function OverviewHeader(props) {
           writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
         })
         .catch((e) => {
-          enqueueSnackbar(e, { variant: "error" });
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });
     }
   };

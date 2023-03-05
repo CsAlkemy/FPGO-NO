@@ -46,10 +46,10 @@ const confirmDiscard = (props) => {
 
       refundRequestDecision(params).then((response) => {
         if (response?.data?.status_code === 202) {
-          enqueueSnackbar(response?.data?.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
           setApiLoading(false);
         } else if (response?.error) {
-          enqueueSnackbar(response?.error?.data?.message, {
+          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
             variant: "error",
           });
           setApiLoading(false);

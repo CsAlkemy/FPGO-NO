@@ -120,7 +120,7 @@ const ClientDetails = () => {
           setIsLoading(false);
         })
         .catch((error) => {
-          enqueueSnackbar(error, { variant: "error" });
+          enqueueSnackbar(t(`message:${error}`), { variant: "error" });
           setIsLoading(false);
         });
 
@@ -138,7 +138,7 @@ const ClientDetails = () => {
         })
         .catch((e) => {
           navigate("/clients/clients-list");
-          enqueueSnackbar(e, { variant: "error" });
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });
     }
   }, [isLoading]);
@@ -391,7 +391,7 @@ const ClientDetails = () => {
         });
         navigate("/clients/clients-list");
       } else
-        enqueueSnackbar(response?.error?.data?.message, {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
@@ -405,7 +405,7 @@ const ClientDetails = () => {
     //       });
     //       navigate("/clients/clients-list");
     //     } else
-    //       enqueueSnackbar(`Something went wrong`, {
+    //       enqueueSnackbar(`somethingWentWrong`, {
     //         variant: "error",
     //         autoHideDuration: 3000,
     //       });
@@ -621,7 +621,7 @@ const ClientDetails = () => {
         navigate("/clients/clients-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });

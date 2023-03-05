@@ -64,7 +64,7 @@ function ResetPasswordPage() {
         }
       })
       .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
+        enqueueSnackbar(t(`message:${error}`), { variant: "error" });
       });
     reset(defaultValues);
     // setIsSend(true)

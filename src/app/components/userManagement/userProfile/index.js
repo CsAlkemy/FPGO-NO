@@ -64,10 +64,10 @@ const index = () => {
   const changeUserStatus = () => {
     updateUserStatus(userId).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate(-1);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
   };

@@ -22,7 +22,7 @@ class UserService {
               !response.data.is_data
             ) {
               resolve([]);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             reject(e?.response?.data?.message);
@@ -44,15 +44,15 @@ class UserService {
                     !response.data.is_data
                   ) {
                     resolve([]);
-                  } else reject("Something went wrong");
+                  } else reject("somethingWentWrong");
                 })
                 .catch((e) => {
                   reject(e?.response?.data?.message);
                 });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
-            reject("Something went wrong");
+            reject("somethingWentWrong");
           });
       }
     });
@@ -67,7 +67,7 @@ class UserService {
           .then((response) => {
             if (response?.data?.status_code === 200) {
               resolve(response.data);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             reject(e?.response?.data?.message);
@@ -81,15 +81,15 @@ class UserService {
                 .then((response) => {
                   if (response?.data?.status_code === 200) {
                     resolve(response.data);
-                  } else reject("Something went wrong");
+                  } else reject("somethingWentWrong");
                 })
                 .catch((e) => {
                   reject(e?.response?.data?.message);
                 });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
-            reject("Something went wrong");
+            reject("somethingWentWrong");
           });
       }
     });
@@ -147,17 +147,17 @@ class UserService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -215,7 +215,7 @@ class UserService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 // if (e.code === "ERR_NETWORK") return { status_code: 500 };
@@ -224,10 +224,10 @@ class UserService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -299,7 +299,7 @@ class UserService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
                 // return response.data;
               })
               .catch((e) => {
@@ -307,10 +307,10 @@ class UserService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -370,7 +370,7 @@ class UserService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
                 // return response.data;
               })
               .catch((e) => {
@@ -378,10 +378,10 @@ class UserService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -400,15 +400,15 @@ class UserService {
                   response?.data?.is_data
                 ) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -424,15 +424,15 @@ class UserService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -448,15 +448,15 @@ class UserService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -532,16 +532,16 @@ class UserService {
               .then((response) => {
                 if (response?.data?.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
                 resolve(response.data);
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -557,16 +557,16 @@ class UserService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
           }
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };

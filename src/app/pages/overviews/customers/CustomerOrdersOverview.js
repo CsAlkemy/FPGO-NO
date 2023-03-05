@@ -94,7 +94,7 @@ export default function CustomerOrdersOverview() {
         }
       })
       .catch((e) => {
-        if (isLoading) enqueueSnackbar(e, { variant: "error" });
+        if (isLoading) enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setIsLoading(false);
         dispatch(setOverviewMainTableDataSlice([]));
       });

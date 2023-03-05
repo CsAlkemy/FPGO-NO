@@ -73,14 +73,14 @@ const createCategory = (onSubmit = () => {}) => {
     );
     updateCategory(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(`Updated Successfully`, {
+        enqueueSnackbar(t(`message:updatedSuccessfully`), {
           variant: "success",
           autoHideDuration: 3000,
         });
         navigate("/categories/categories-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // CategoryService.updateCategoryByUUID(info.uuid, values)
@@ -140,7 +140,7 @@ const createCategory = (onSubmit = () => {}) => {
           })
           .catch((error) => {
             navigate("/categories/categories-list");
-            enqueueSnackbar(error, { variant: "error" });
+            enqueueSnackbar(t(`message:${error}`), { variant: "error" });
             setIsLoading(false);
           });
       });

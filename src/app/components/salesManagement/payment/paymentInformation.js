@@ -140,7 +140,7 @@ const paymentInformation = () => {
         }
       })
       .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
+        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setOpen(false);
       });
     // setTimeout(()=>{

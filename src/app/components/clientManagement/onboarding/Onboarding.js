@@ -94,7 +94,7 @@ const Onboarding = () => {
         })
         .catch((error) => {
           navigate("/clients/approval-list");
-          enqueueSnackbar(error, { variant: "error" });
+          enqueueSnackbar(t(`message:${error}`), { variant: "error" });
           setIsLoading(false);
         });
       ClientService.organizationTypeList()
@@ -357,7 +357,7 @@ const Onboarding = () => {
         });
         navigate("/clients/clients-list");
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // ClientService.clientOnboard(onBoardingData, params.uuid)

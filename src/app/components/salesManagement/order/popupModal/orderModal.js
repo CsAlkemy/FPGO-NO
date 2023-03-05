@@ -119,10 +119,10 @@ const OrderModal = (props) => {
       };
       requestRefundApproval(payload).then((response) => {
         if (response?.data?.status_code === 201) {
-          enqueueSnackbar(response?.data?.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
           // setApiLoading(false);
         } else if (response?.error) {
-          enqueueSnackbar(response?.error?.data?.message, {
+          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
             variant: "error",
           });
           // setApiLoading(false);
@@ -170,7 +170,7 @@ const OrderModal = (props) => {
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
           if (response?.data?.status_code === 202) {
-            enqueueSnackbar(response?.data?.message, { variant: "success" });
+            enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
             setOpen(false);
             window.location.pathname.includes("/create-order/details/")
               ? navigate(-1)
@@ -186,7 +186,7 @@ const OrderModal = (props) => {
               }
               setFlagMessage(response?.error?.data?.message);
               setFlag(true);
-              // enqueueSnackbar(response?.error?.data?.message, {
+              // enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
               //   variant: "error",
               // });
             } else setOpen(false);
@@ -206,9 +206,9 @@ const OrderModal = (props) => {
       setApiLoading(true);
       refundRequestDecision(params).then((response) => {
         if (response?.data?.status_code === 202) {
-          enqueueSnackbar(response?.data?.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         } else if (response?.error) {
-          enqueueSnackbar(response?.error?.data?.message, {
+          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
             variant: "error",
           });
         }

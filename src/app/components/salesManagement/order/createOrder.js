@@ -249,10 +249,10 @@ const createOrder = () => {
     createOrder(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate(`/sales/orders-list`);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // .then((response) => {

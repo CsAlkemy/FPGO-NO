@@ -89,7 +89,7 @@ function ClassicSignUpPage() {
       if (response?.data?.status_code === 201) {
         navigate("/under-review");
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // AuthService.userRegistration(values)

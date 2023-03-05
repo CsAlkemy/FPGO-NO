@@ -84,10 +84,10 @@ const createProducts = () => {
     setLoading(true);
     updateProduct(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/products/products-list");
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
       setLoading(false);
     });
@@ -122,7 +122,7 @@ const createProducts = () => {
           })
           .catch((error) => {
             navigate("/products/products-list");
-            enqueueSnackbar(error, { variant: "error" });
+            enqueueSnackbar(t(`message:${error}`), { variant: "error" });
             setIsLoading(false);
           });
         if (info?.user_data?.organization?.uuid) {
@@ -187,10 +187,10 @@ const createProducts = () => {
   const changeProductStatus = async () => {
     updateProductStatus(info.uuid).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/products/products-list");
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
   };

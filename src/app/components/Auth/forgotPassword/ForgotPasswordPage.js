@@ -54,7 +54,7 @@ function ForgotPasswordPage() {
       })
       .catch((error) => {
         setLoading(false);
-        enqueueSnackbar(error, { variant: "error" });
+        enqueueSnackbar(t(`message:${error}`), { variant: "error" });
       });
     reset(defaultValues);
   };

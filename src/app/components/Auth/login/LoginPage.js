@@ -104,7 +104,7 @@ const LoginPage = () => {
       })
       .catch((e) => {
         setLoading(false);
-        enqueueSnackbar(e, { variant: "error" });
+        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
       });
   };
 
@@ -122,7 +122,7 @@ const LoginPage = () => {
         }
       })
       .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
+        enqueueSnackbar(t(`message:${error}`), { variant: "error" });
         setLoading(false);
       });
   };
