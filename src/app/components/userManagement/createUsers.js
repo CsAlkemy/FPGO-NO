@@ -128,7 +128,7 @@ export default function CreateUsers() {
     );
     createUser(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar("User Created Successfully", {
+        enqueueSnackbar(t(`message:userCreatedSuccessfully`), {
           variant: "success",
           autoHideDuration: 5000,
           anchorOrigin: {
@@ -141,7 +141,7 @@ export default function CreateUsers() {
         navigate(-1);
       } else {
         setLoading(false);
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // UserService.createUserByRole(values, type)

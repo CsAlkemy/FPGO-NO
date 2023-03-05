@@ -47,7 +47,7 @@ export default function ConfirmModal({
           navigate("/categories/categories-list");
           setOpen(true);
         } else {
-          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         }
       });
       // CategoryService.deleteCategoryByUUID(uuid)
@@ -61,7 +61,7 @@ export default function ConfirmModal({
       //       navigate("/categories/categories-list");
       //       setOpen(true);
       //     } else {
-      //       enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+      //       enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       //     }
       //     // enqueueSnackbar(`Deleted Successfully`, {
       //     //   variant: "success",
@@ -85,7 +85,7 @@ export default function ConfirmModal({
             });
             navigate("/clients/approval-list");
           } else {
-            enqueueSnackbar(response?.error?.data?.message, {
+            enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
               variant: "error",
               autoHideDuration: 3000,
             });

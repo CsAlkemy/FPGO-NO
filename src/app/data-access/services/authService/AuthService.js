@@ -204,7 +204,7 @@ class AuthService extends FuseUtils.EventEmitter {
         })
         .then((res) => {
           if (res.data.status_code === 201) resolve(res.data);
-          else reject("Something went wrong");
+          else reject("somethingWentWrong");
         })
         .catch((e) => {
           reject(e?.response?.data?.message);
@@ -367,7 +367,7 @@ class AuthService extends FuseUtils.EventEmitter {
                 console.warn("OTP : ", res.data.otp);
                 resolve([response.data, res.data.otp]);
               });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((error) => {
             reject(error.response.data.message);
@@ -378,7 +378,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           if (response?.data?.status_code === 201) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
           resolve(response.data);
         })
         .catch((error) => {
@@ -395,7 +395,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           // if (response?.data?.status_code === 200) {
           //   resolve(response.data);
-          // } else reject("Something went wrong");
+          // } else reject("somethingWentWrong");
           resolve(response.data);
         })
         .catch((error) => {
@@ -415,7 +415,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           if (response?.data?.status_code === 201) {
             resolve(response);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((error) => {
           reject(error.response.data.message);
@@ -434,7 +434,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           if (response?.data?.status_code === 202) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((error) => {
           reject(error.response.data.message);

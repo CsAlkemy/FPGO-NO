@@ -63,11 +63,11 @@ const createProducts = (onSubmit = () => {}) => {
     const preparedPaload = ProductService.prepareCreateProductPayload(values);
     createProduct(preparedPaload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/products/products-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // ProductService.createProduct(values)

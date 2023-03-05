@@ -68,7 +68,7 @@ const createOrder = () => {
         })
         .catch((error) => {
           if (error) navigate("/sales/orders-list");
-          enqueueSnackbar(error, { variant: "error" });
+          enqueueSnackbar(t(`message:${error}`), { variant: "error" });
           setIsLoading(false);
         });
     }

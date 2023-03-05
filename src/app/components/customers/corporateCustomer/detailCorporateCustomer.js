@@ -226,7 +226,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
       })
       .catch((e)=> {
         navigate("/customers/customers-list")
-        enqueueSnackbar(e, {variant: "error"})
+        enqueueSnackbar(t(`message:${e}`), {variant: "error"})
       })
     return ()=> {
       reset({ ...CorporateDetailsDefaultValue })
@@ -263,11 +263,11 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
       );
     updateCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });
@@ -290,10 +290,10 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   const handleMakeInactive = () => {
     updateCustomerStatus(info.uuid).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate(`/customers/customers-list`);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // CustomersService.makeInactiveCustomerByUUID(info.uuid)

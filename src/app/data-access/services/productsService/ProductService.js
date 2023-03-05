@@ -49,17 +49,17 @@ class ProductService {
                     !response.data.is_data
                   ) {
                     resolve([]);
-                  } else reject("Something went wrong");
+                  } else reject("somethingWentWrong");
                 })
                 .catch((e) => {
                   if (e?.response?.data?.status_code === 404)
                     resolve(e.response.data);
                   reject(e?.response?.data?.message);
                 });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
-            reject("Something went wrong");
+            reject("somethingWentWrong");
           });
       } else {
         const URL = `${EnvVariable.BASEURL}/products/list`;
@@ -98,7 +98,7 @@ class ProductService {
               !response.data.is_data
             ) {
               resolve([]);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             if (e?.response?.data?.status_code === 404)
@@ -197,15 +197,15 @@ class ProductService {
               .then((response) => {
                 if (response?.data?.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -222,7 +222,7 @@ class ProductService {
               response?.data?.is_data
             ) {
               resolve(response.data);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             reject(e?.response?.data?.message);
@@ -239,15 +239,15 @@ class ProductService {
                     response?.data?.is_data
                   ) {
                     resolve(response.data);
-                  } else reject("Something went wrong");
+                  } else reject("somethingWentWrong");
                 })
                 .catch((e) => {
                   reject(e?.response?.data?.message);
                 });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
-            reject("Something went wrong");
+            reject("somethingWentWrong");
           });
       }
     });
@@ -313,15 +313,15 @@ class ProductService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -337,15 +337,15 @@ class ProductService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };

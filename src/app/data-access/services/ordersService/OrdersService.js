@@ -59,7 +59,7 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 // reject(e?.response?.data?.message)
@@ -67,10 +67,10 @@ class OrdersService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -419,7 +419,7 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
@@ -427,7 +427,7 @@ class OrdersService {
           } else reject([]);
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -486,7 +486,7 @@ class OrdersService {
           // if (response?.data?.status_code === 202) {
           if (response?.data?.status_code === 202) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
           // reject(e?.response?.data?.message)
@@ -534,15 +534,15 @@ class OrdersService {
                   response?.data?.is_data
                 ) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -566,7 +566,7 @@ class OrdersService {
               response?.data?.is_data
             ) {
               resolve(response.data);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             reject(e?.response?.data?.message);
@@ -591,7 +591,7 @@ class OrdersService {
           .then((response) => {
             if (response?.data?.status_code === 202) {
               resolve(response.data);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             if (e?.response?.data?.status_code === 111)
@@ -626,15 +626,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -656,15 +656,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -686,15 +686,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -748,15 +748,15 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -780,7 +780,7 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 // reject(e?.response?.data?.message)
@@ -788,10 +788,10 @@ class OrdersService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -853,7 +853,7 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 // reject(e?.response?.data?.message)
@@ -861,10 +861,10 @@ class OrdersService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -880,15 +880,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -909,15 +909,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
