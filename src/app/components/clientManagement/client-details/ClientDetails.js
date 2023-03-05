@@ -108,15 +108,236 @@ const ClientDetails = () => {
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
-  useEffect(() => {
-      window.scrollTo(0, 0);
-  }, []);
 
   useEffect(() => {
     if (isLoading) {
       ClientService.clientDetails(params.uuid)
         .then((res) => {
           setInfo(res.data);
+          const info = res?.data;
+          const planValue = parseInt(
+            info?.contractDetails?.planTag?.split(" ")[1]
+          );
+          if (planValue) {
+            if (planValue === 1) {
+              plan1.current.click();
+            } else if (planValue === 2) {
+              plan2.current.click();
+            } else if (planValue === 3) {
+              plan3.current.click();
+            }
+          }
+
+          if (
+            info?.addresses &&
+            info?.addresses["billing"]?.email ===
+              info?.addresses["shipping"]?.email &&
+            info?.addresses["billing"]?.street ===
+              info?.addresses["shipping"]?.street &&
+            info?.addresses["billing"]?.zip ===
+              info?.addresses["shipping"]?.zip &&
+            info?.addresses["billing"]?.city ===
+              info?.addresses["shipping"]?.city &&
+            info?.addresses["billing"]?.country ===
+              info?.addresses["shipping"]?.country
+          ) {
+            setSameAddress(true);
+          } else setSameAddress(false);
+          defaultValue.id = info?.organizationDetails?.id
+            ? info.organizationDetails.id
+            : "";
+          defaultValue.clientName = info?.organizationDetails?.name
+            ? info.organizationDetails.name
+            : "";
+          defaultValue.organizationType = info?.organizationDetails?.type
+            ? info.organizationDetails?.type
+            : "";
+          defaultValue.fullName = info?.primaryContactDetails?.name
+            ? info.primaryContactDetails?.name
+            : "";
+          defaultValue.primaryPhoneNumber =
+            info?.primaryContactDetails?.countryCode &&
+            info.primaryContactDetails?.msisdn
+              ? info.primaryContactDetails?.countryCode +
+                info.primaryContactDetails?.msisdn
+              : "";
+          defaultValue.designation = info?.primaryContactDetails?.designation
+            ? info.primaryContactDetails?.designation
+            : "";
+          defaultValue.email = info?.primaryContactDetails?.email
+            ? info.primaryContactDetails?.email
+            : "";
+          defaultValue.contactEndDate = info?.contractDetails?.endDate
+            ? info.contractDetails.endDate
+            : "";
+          defaultValue.commision = info?.contractDetails?.commissionRate
+            ? info.contractDetails.commissionRate
+            : "";
+          defaultValue.smsCost = info?.contractDetails?.smsCost
+            ? info.contractDetails.smsCost
+            : "";
+          defaultValue.emailCost = info?.contractDetails?.emailCost
+            ? info.contractDetails.emailCost
+            : "";
+          defaultValue.creditCheckCost = info?.contractDetails?.creditCheckCost
+            ? info.contractDetails.creditCheckCost
+            : "";
+          defaultValue.ehfCost = info?.contractDetails?.ehfCost
+            ? info.contractDetails.ehfCost
+            : "";
+          if (!!info.addresses) {
+            defaultValue.billingPhoneNumber =
+              info?.addresses["billing"]?.countryCode &&
+              info.addresses["billing"].msisdn
+                ? info.addresses["billing"].countryCode +
+                  info.addresses["billing"].msisdn
+                : "";
+            defaultValue.billingEmail = info?.addresses["billing"]?.email
+              ? info.addresses["billing"].email
+              : "";
+            defaultValue.billingAddress = info?.addresses["billing"]?.street
+              ? info.addresses["billing"].street
+              : "";
+            defaultValue.zip = info?.addresses["billing"]?.zip
+              ? info.addresses["billing"].zip
+              : "";
+            defaultValue.city = info?.addresses["billing"]?.city
+              ? info.addresses["billing"].city
+              : "";
+            defaultValue.country = info?.addresses["billing"]?.country
+              ? info.addresses["billing"].country
+              : "";
+          }
+          if (!!info.addresses && !!info.addresses["shipping"]) {
+            defaultValue.shippingPhoneNumber =
+              info?.addresses["shipping"]?.countryCode &&
+              info?.addresses["shipping"]?.msisdn
+                ? info.addresses["shipping"].countryCode +
+                  info.addresses["shipping"].msisdn
+                : "";
+            defaultValue.shippingEmail = info?.addresses["shipping"]?.email
+              ? info.addresses["shipping"].email
+              : "";
+            defaultValue.shippingAddress = info?.addresses["shipping"]?.street
+              ? info.addresses["shipping"].street
+              : "";
+            defaultValue.shippingZip = info?.addresses["shipping"]?.zip
+              ? info.addresses["shipping"].zip
+              : "";
+            defaultValue.shippingCity = info?.addresses["shipping"]?.city
+              ? info.addresses["shipping"].city
+              : "";
+            defaultValue.shippingCountry = info?.addresses["shipping"]?.country
+              ? info.addresses["shipping"].country
+              : "";
+          }
+          defaultValue.bankName = info?.bankInformation?.name
+            ? info?.bankInformation?.name
+            : "";
+          defaultValue.accountNumber = info?.bankInformation?.accountNumber
+            ? info?.bankInformation?.accountNumber
+            : "";
+          defaultValue.IBAN = info?.bankInformation?.iban
+            ? info?.bankInformation?.iban
+            : "";
+          defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
+            ? info?.bankInformation?.swiftCode
+            : "";
+          defaultValue.APTICuserName = info?.apticInformation?.username
+            ? info?.apticInformation?.username
+            : "";
+          defaultValue.APTICpassword = info?.apticInformation?.password
+            ? info?.apticInformation?.password
+            : "";
+          defaultValue.name = info?.apticInformation?.name
+            ? info?.apticInformation?.name
+            : "";
+          defaultValue.costLimitforCustomer = info?.apticInformation
+            ?.costLimitForCustomer
+            ? info?.apticInformation?.costLimitForCustomer
+            : "";
+          defaultValue.costLimitforOrder = info?.apticInformation
+            ?.costLimitForOrder
+            ? info?.apticInformation?.costLimitForOrder
+            : "";
+          defaultValue.invoicewithRegress = info?.apticInformation
+            ?.invoiceWithRegress
+            ? info?.apticInformation?.invoiceWithRegress
+            : "";
+          defaultValue.invoicewithoutRegress = info?.apticInformation
+            ?.invoiceWithoutRegress
+            ? info?.apticInformation?.invoiceWithoutRegress
+            : "";
+          defaultValue.APTIEngineCuserName = info?.apticInformation
+            ?.backOfficeUsername
+            ? info?.apticInformation?.backOfficeUsername
+            : "";
+          defaultValue.APTIEnginePassword = info?.apticInformation
+            ?.backOfficePassword
+            ? info?.apticInformation?.backOfficePassword
+            : "";
+          defaultValue.fpReference = info?.apticInformation?.fpReference
+            ? info?.apticInformation?.fpReference
+            : "";
+          defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
+            ? info?.apticInformation?.creditLimit
+            : "";
+          defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
+            ? info?.apticInformation?.b2bInvoiceFee
+            : "";
+          defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
+            ? info?.apticInformation?.b2cInvoiceFee
+            : "";
+
+          if (
+            info?.settings &&
+            info?.settings?.vatRates &&
+            info?.settings?.vatRates.length >= 2
+          ) {
+            setAddVatIndex(
+              addVatIndex.filter(
+                (item, index) => item <= info?.settings?.vatRates.length - 1
+              )
+            );
+          } else {
+            setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
+          }
+
+          if (info?.settings?.currency && info?.settings?.currency.length) {
+            setCurrency({
+              code: info?.settings?.currency[0].code,
+              currency:
+                info?.settings?.currency[0].code === "NOK"
+                  ? "Norwegian Krone"
+                  : info?.settings?.currency[0].code === "SEK"
+                  ? "Swedish Krona"
+                  : info?.settings?.currency[0].code === "DKK"
+                  ? "Danish Krone"
+                  : "European Euro",
+            });
+          }
+
+          reset({ ...defaultValue });
+          if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
+            for (let i = 0; i < info?.settings?.vatRates.length; i++) {
+              setValue(
+                `vat[${i}].vatName`,
+                info?.settings?.vatRates[`${i}`].name
+              );
+              setValue(
+                `vat[${i}].vatValue`,
+                info?.settings?.vatRates[`${i}`].value
+              );
+              setValue(
+                `vat[${i}].bookKeepingReference`,
+                info?.settings?.vatRates[`${i}`].bookKeepingReference
+              );
+              setValue(
+                `vat[${i}].vatActive`,
+                info?.settings?.vatRates[`${i}`].status === "Active"
+              );
+            }
+          }
           setIsLoading(false);
         })
         .catch((error) => {
@@ -141,238 +362,21 @@ const ClientDetails = () => {
           enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });
     }
+    return () => {
+      (defaultValue.billingPhoneNumber = "47"),
+        (defaultValue.billingEmail = ""),
+        (defaultValue.billingAddress = ""),
+        (defaultValue.zip = ""),
+        (defaultValue.city = ""),
+        (defaultValue.country = ""),
+        (defaultValue.shippingPhoneNumber = "47"),
+        (defaultValue.shippingEmail = ""),
+        (defaultValue.shippingAddress = ""),
+        (defaultValue.shippingZip = ""),
+        (defaultValue.shippingCity = ""),
+        (defaultValue.shippingCountry = "");
+    };
   }, [isLoading]);
-
-  useEffect(() => {
-    if (!!info) {
-      if (
-        billingPhoneNumber === shippingPhoneNumber &&
-        billingEmail === shippingEmail &&
-        billingAddress === shippingAddress &&
-        zip === shippingZip &&
-        city === shippingCity &&
-        country === shippingCountry
-      ) {
-        sameAddressRef?.current?.click();
-      }
-      const planValue = parseInt(info?.contractDetails?.planTag?.split(" ")[1]);
-      if (planValue) {
-        if (planValue === 1) {
-          plan1.current.click();
-        } else if (planValue === 2) {
-          plan2.current.click();
-        } else if (planValue === 3) {
-          plan3.current.click();
-        }
-      }
-
-      if (
-        info?.addresses &&
-        info?.addresses["billing"]?.email ===
-          info?.addresses["shipping"]?.email &&
-        info?.addresses["billing"]?.street ===
-          info?.addresses["shipping"]?.street &&
-        info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
-        info?.addresses["billing"]?.city ===
-          info?.addresses["shipping"]?.city &&
-        info?.addresses["billing"]?.country ===
-          info?.addresses["shipping"]?.country
-      ) {
-        setSameAddress(true);
-      } else setSameAddress(false);
-      defaultValue.id = info?.organizationDetails?.id
-        ? info.organizationDetails.id
-        : "";
-      defaultValue.clientName = info?.organizationDetails?.name
-        ? info.organizationDetails.name
-        : "";
-      defaultValue.organizationType = info?.organizationDetails?.type
-        ? info.organizationDetails?.type
-        : "";
-      defaultValue.fullName = info?.primaryContactDetails?.name
-        ? info.primaryContactDetails?.name
-        : "";
-      defaultValue.primaryPhoneNumber =
-        info?.primaryContactDetails?.countryCode &&
-        info.primaryContactDetails?.msisdn
-          ? info.primaryContactDetails?.countryCode +
-            info.primaryContactDetails?.msisdn
-          : "";
-      defaultValue.designation = info?.primaryContactDetails?.designation
-        ? info.primaryContactDetails?.designation
-        : "";
-      defaultValue.email = info?.primaryContactDetails?.email
-        ? info.primaryContactDetails?.email
-        : "";
-      defaultValue.contactEndDate = info?.contractDetails?.endDate
-        ? info.contractDetails.endDate
-        : "";
-      defaultValue.commision = info?.contractDetails?.commissionRate
-        ? info.contractDetails.commissionRate
-        : "";
-      defaultValue.smsCost = info?.contractDetails?.smsCost
-        ? info.contractDetails.smsCost
-        : "";
-      defaultValue.emailCost = info?.contractDetails?.emailCost
-        ? info.contractDetails.emailCost
-        : "";
-      defaultValue.creditCheckCost = info?.contractDetails?.creditCheckCost
-        ? info.contractDetails.creditCheckCost
-        : "";
-      defaultValue.ehfCost = info?.contractDetails?.ehfCost
-        ? info.contractDetails.ehfCost
-        : "";
-      if (info.addresses) {
-        defaultValue.billingPhoneNumber =
-          info?.addresses["billing"]?.countryCode &&
-          info.addresses["billing"].msisdn
-            ? info.addresses["billing"].countryCode +
-              info.addresses["billing"].msisdn
-            : "";
-        defaultValue.billingEmail = info?.addresses["billing"]?.email
-          ? info.addresses["billing"].email
-          : "";
-        defaultValue.billingAddress = info?.addresses["billing"]?.street
-          ? info.addresses["billing"].street
-          : "";
-        defaultValue.zip = info?.addresses["billing"]?.zip
-          ? info.addresses["billing"].zip
-          : "";
-        defaultValue.city = info?.addresses["billing"]?.city
-          ? info.addresses["billing"].city
-          : "";
-        defaultValue.country = info?.addresses["billing"]?.country
-          ? info.addresses["billing"].country
-          : "";
-      }
-      if (info.addresses && info.addresses["shipping"]) {
-        defaultValue.shippingPhoneNumber =
-          info?.addresses["shipping"]?.countryCode &&
-          info?.addresses["shipping"]?.msisdn
-            ? info.addresses["shipping"].countryCode +
-              info.addresses["shipping"].msisdn
-            : "";
-        defaultValue.shippingEmail = info?.addresses["shipping"]?.email
-          ? info.addresses["shipping"].email
-          : "";
-        defaultValue.shippingAddress = info?.addresses["shipping"]?.street
-          ? info.addresses["shipping"].street
-          : "";
-        defaultValue.shippingZip = info?.addresses["shipping"]?.zip
-          ? info.addresses["shipping"].zip
-          : "";
-        defaultValue.shippingCity = info?.addresses["shipping"]?.city
-          ? info.addresses["shipping"].city
-          : "";
-        defaultValue.shippingCountry = info?.addresses["shipping"]?.country
-          ? info.addresses["shipping"].country
-          : "";
-      }
-      defaultValue.bankName = info?.bankInformation?.name
-        ? info?.bankInformation?.name
-        : "";
-      defaultValue.accountNumber = info?.bankInformation?.accountNumber
-        ? info?.bankInformation?.accountNumber
-        : "";
-      defaultValue.IBAN = info?.bankInformation?.iban
-        ? info?.bankInformation?.iban
-        : "";
-      defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
-        ? info?.bankInformation?.swiftCode
-        : "";
-      defaultValue.APTICuserName = info?.apticInformation?.username
-        ? info?.apticInformation?.username
-        : "";
-      defaultValue.APTICpassword = info?.apticInformation?.password
-        ? info?.apticInformation?.password
-        : "";
-      defaultValue.name = info?.apticInformation?.name
-        ? info?.apticInformation?.name
-        : "";
-      defaultValue.costLimitforCustomer = info?.apticInformation
-        ?.costLimitForCustomer
-        ? info?.apticInformation?.costLimitForCustomer
-        : "";
-      defaultValue.costLimitforOrder = info?.apticInformation?.costLimitForOrder
-        ? info?.apticInformation?.costLimitForOrder
-        : "";
-      defaultValue.invoicewithRegress = info?.apticInformation
-        ?.invoiceWithRegress
-        ? info?.apticInformation?.invoiceWithRegress
-        : "";
-      defaultValue.invoicewithoutRegress = info?.apticInformation
-        ?.invoiceWithoutRegress
-        ? info?.apticInformation?.invoiceWithoutRegress
-        : "";
-      defaultValue.APTIEngineCuserName = info?.apticInformation
-        ?.backOfficeUsername
-        ? info?.apticInformation?.backOfficeUsername
-        : "";
-      defaultValue.APTIEnginePassword = info?.apticInformation
-        ?.backOfficePassword
-        ? info?.apticInformation?.backOfficePassword
-        : "";
-      defaultValue.fpReference = info?.apticInformation?.fpReference
-        ? info?.apticInformation?.fpReference
-        : "";
-      defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
-        ? info?.apticInformation?.creditLimit
-        : "";
-      defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
-        ? info?.apticInformation?.b2bInvoiceFee
-        : "";
-      defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
-        ? info?.apticInformation?.b2cInvoiceFee
-        : "";
-
-      if (
-        info?.settings &&
-        info?.settings?.vatRates &&
-        info?.settings?.vatRates.length >= 2
-      ) {
-        setAddVatIndex(
-          addVatIndex.filter(
-            (item, index) => item <= info?.settings?.vatRates.length - 1
-          )
-        );
-      } else {
-        setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
-      }
-
-      if (info?.settings?.currency && info?.settings?.currency.length) {
-        setCurrency({
-          code: info?.settings?.currency[0].code,
-          currency:
-            info?.settings?.currency[0].code === "NOK"
-              ? "Norwegian Krone"
-              : info?.settings?.currency[0].code === "SEK"
-              ? "Swedish Krona"
-              : info?.settings?.currency[0].code === "DKK"
-              ? "Danish Krone"
-              : "European Euro",
-        });
-      }
-
-      reset({ ...defaultValue });
-      if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
-        for (let i = 0; i < info?.settings?.vatRates.length; i++) {
-          setValue(`vat[${i}].vatName`, info?.settings?.vatRates[`${i}`].name);
-          setValue(
-            `vat[${i}].vatValue`,
-            info?.settings?.vatRates[`${i}`].value
-          );
-          setValue(
-            `vat[${i}].bookKeepingReference`,
-            info?.settings?.vatRates[`${i}`].bookKeepingReference
-          );
-          setValue(
-            `vat[${i}].vatActive`,
-            info?.settings?.vatRates[`${i}`].status === "Active"
-          );
-        }
-      }
-    }
-  }, [info]);
 
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
@@ -658,7 +662,7 @@ const ClientDetails = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      {!isLoading && !!info && (
+      {!isLoading && (
         <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
           <div className="flex-auto p-20 sm:p-0 w-full mx-auto bg-white">
             <div className="rounded-sm bg-white p-0 md:px-20">
@@ -1333,6 +1337,12 @@ const ClientDetails = () => {
                                       label={t("label:email")}
                                       type="email"
                                       autoComplete="off"
+                                      defaultValue={
+                                        info?.addresses &&
+                                        info?.addresses["billing"]?.email
+                                          ? info.addresses["billing"].email
+                                          : ""
+                                      }
                                       error={!!errors.billingEmail}
                                       helperText={errors?.billingEmail?.message}
                                       variant="outlined"
@@ -1479,6 +1489,7 @@ const ClientDetails = () => {
                                       name="jason"
                                       color="secondary"
                                       ref={sameAddressRef}
+                                      checked={sameAddress}
                                     />
                                   }
                                   label={t("label:sameAsBillingAddress")}
@@ -2374,149 +2385,149 @@ const ClientDetails = () => {
                             {/*    </Button>*/}
                             {/*  </div>*/}
                             {/*</Hidden>*/}
-                              <div className="px-16">
-                                <div className="product-list">
-                                  <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
-                                    <div className="my-auto text-MonochromeGray-500 col-span-4">
-                                      {t("label:name")}
+                            <div className="px-16">
+                              <div className="product-list">
+                                <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
+                                  <div className="my-auto text-MonochromeGray-500 col-span-4">
+                                    {t("label:name")}
+                                  </div>
+                                  <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
+                                    {"Value (%)"}
+                                  </div>
+                                  <div className="my-auto text-MonochromeGray-500 col-span-4">
+                                    {t("label:bookKeepingReference")}
+                                  </div>
+                                  <div className="my-auto col-span-1 text-MonochromeGray-500">
+                                    {" "}
+                                  </div>
+                                </div>
+
+                                {addVatIndex.map((index) => (
+                                  <div
+                                    key={index}
+                                    className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
+                                  >
+                                    <div className="my-auto col-span-4">
+                                      <Controller
+                                        name={`vat[${index}].vatName`}
+                                        control={control}
+                                        render={({ field }) => (
+                                          <TextField
+                                            {...field}
+                                            type="text"
+                                            value={field.value || ""}
+                                            autoComplete="off"
+                                            className="bg-white custom-input-height"
+                                            error={!!errors.vatName}
+                                            helperText={
+                                              errors?.vatName?.message
+                                            }
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                          />
+                                        )}
+                                      />
                                     </div>
-                                    <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
-                                      {"Value (%)"}
+                                    <div className="my-auto text-right col-span-3">
+                                      <Controller
+                                        name={`vat[${index}].vatValue`}
+                                        control={control}
+                                        render={({ field }) => (
+                                          <TextField
+                                            {...field}
+                                            type="number"
+                                            value={field.value || ""}
+                                            className="text-right  custom-input-height"
+                                            autoComplete="off"
+                                            error={!!errors.vatValue}
+                                            helperText={
+                                              errors?.vatValue?.message
+                                            }
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            inputProps={{
+                                              style: { textAlign: "right" },
+                                            }}
+                                          />
+                                        )}
+                                      />
                                     </div>
-                                    <div className="my-auto text-MonochromeGray-500 col-span-4">
-                                      {t("label:bookKeepingReference")}
+                                    <div className="my-auto col-span-4">
+                                      <Controller
+                                        name={`vat[${index}].bookKeepingReference`}
+                                        control={control}
+                                        render={({ field }) => (
+                                          <TextField
+                                            {...field}
+                                            type="text"
+                                            value={field.value || ""}
+                                            className="bg-white custom-input-height"
+                                            autoComplete="off"
+                                            error={
+                                              !!errors?.vat?.[index]
+                                                ?.bookKeepingReference
+                                            }
+                                            helperText={
+                                              errors?.bookKeepingReference
+                                                ?.message
+                                            }
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                          />
+                                        )}
+                                      />
                                     </div>
-                                    <div className="my-auto col-span-1 text-MonochromeGray-500">
-                                      {" "}
+                                    <div className="my-auto col-span-1 text-right">
+                                      <Controller
+                                        name={`vat[${index}].vatActive`}
+                                        type="checkbox"
+                                        control={control}
+                                        render={({
+                                          field: {
+                                            onChange,
+                                            value,
+                                            ref,
+                                            onBlur,
+                                          },
+                                        }) => (
+                                          <FormControl
+                                            required
+                                            error={!!errors.Switch}
+                                          >
+                                            <Switch
+                                              color="secondary"
+                                              checked={value}
+                                              onBlur={onBlur}
+                                              onChange={(ev) =>
+                                                onChange(ev.target.checked)
+                                              }
+                                              inputRef={ref}
+                                              required
+                                            />
+                                            <FormHelperText>
+                                              {errors?.Switch?.message}
+                                            </FormHelperText>
+                                          </FormControl>
+                                        )}
+                                      />
                                     </div>
                                   </div>
-
-                                  {addVatIndex.map((index) => (
-                                    <div
-                                      key={index}
-                                      className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
-                                    >
-                                      <div className="my-auto col-span-4">
-                                        <Controller
-                                          name={`vat[${index}].vatName`}
-                                          control={control}
-                                          render={({ field }) => (
-                                            <TextField
-                                              {...field}
-                                              type="text"
-                                              value={field.value || ""}
-                                              autoComplete="off"
-                                              className="bg-white custom-input-height"
-                                              error={!!errors.vatName}
-                                              helperText={
-                                                errors?.vatName?.message
-                                              }
-                                              variant="outlined"
-                                              required
-                                              fullWidth
-                                            />
-                                          )}
-                                        />
-                                      </div>
-                                      <div className="my-auto text-right col-span-3">
-                                        <Controller
-                                          name={`vat[${index}].vatValue`}
-                                          control={control}
-                                          render={({ field }) => (
-                                            <TextField
-                                              {...field}
-                                              type="number"
-                                              value={field.value || ""}
-                                              className="text-right  custom-input-height"
-                                              autoComplete="off"
-                                              error={!!errors.vatValue}
-                                              helperText={
-                                                errors?.vatValue?.message
-                                              }
-                                              variant="outlined"
-                                              required
-                                              fullWidth
-                                              inputProps={{
-                                                style: { textAlign: "right" },
-                                              }}
-                                            />
-                                          )}
-                                        />
-                                      </div>
-                                      <div className="my-auto col-span-4">
-                                        <Controller
-                                          name={`vat[${index}].bookKeepingReference`}
-                                          control={control}
-                                          render={({ field }) => (
-                                            <TextField
-                                              {...field}
-                                              type="text"
-                                              value={field.value || ""}
-                                              className="bg-white custom-input-height"
-                                              autoComplete="off"
-                                              error={
-                                                !!errors?.vat?.[index]
-                                                  ?.bookKeepingReference
-                                              }
-                                              helperText={
-                                                errors?.bookKeepingReference
-                                                  ?.message
-                                              }
-                                              variant="outlined"
-                                              required
-                                              fullWidth
-                                            />
-                                          )}
-                                        />
-                                      </div>
-                                      <div className="my-auto col-span-1 text-right">
-                                        <Controller
-                                          name={`vat[${index}].vatActive`}
-                                          type="checkbox"
-                                          control={control}
-                                          render={({
-                                            field: {
-                                              onChange,
-                                              value,
-                                              ref,
-                                              onBlur,
-                                            },
-                                          }) => (
-                                            <FormControl
-                                              required
-                                              error={!!errors.Switch}
-                                            >
-                                              <Switch
-                                                color="secondary"
-                                                checked={value}
-                                                onBlur={onBlur}
-                                                onChange={(ev) =>
-                                                  onChange(ev.target.checked)
-                                                }
-                                                inputRef={ref}
-                                                required
-                                              />
-                                              <FormHelperText>
-                                                {errors?.Switch?.message}
-                                              </FormHelperText>
-                                            </FormControl>
-                                          )}
-                                        />
-                                      </div>
-                                    </div>
-                                  ))}
-                                  <Button
-                                    className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
-                                    startIcon={<AddIcon />}
-                                    onClick={() => addNewVat()}
-                                    disabled={
-                                      addVatIndex.length >= 4 ? true : false
-                                    }
-                                  >
-                                    {t("label:addItem")}
-                                  </Button>
-                                </div>
+                                ))}
+                                <Button
+                                  className="mt-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
+                                  startIcon={<AddIcon />}
+                                  onClick={() => addNewVat()}
+                                  disabled={
+                                    addVatIndex.length >= 4 ? true : false
+                                  }
+                                >
+                                  {t("label:addItem")}
+                                </Button>
                               </div>
+                            </div>
                           </div>
                         </div>
                         <div className="Invoice Fee Category">

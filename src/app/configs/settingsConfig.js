@@ -10,7 +10,7 @@ const settingsConfig = {
       containerWidth: 1570,
       navbar: {
         display: true,
-        style: 'style-2',
+        style: 'style-1',
         folded: false,
         position: 'left',
       },
