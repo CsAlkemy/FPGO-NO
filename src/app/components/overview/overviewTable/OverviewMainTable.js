@@ -612,6 +612,7 @@ export default function OverviewMainTable(props) {
 
   const handleChangePage = (event, value) => {
     setPage(value);
+    localStorage.setItem("tableName", `${props.tableName}`);
     localStorage.setItem("pageNo", `${value}`);
   };
 

@@ -10,6 +10,7 @@ export const validateSchemaProductCreate = yup.object().shape({
   productName: yup.string() .required('youMustEnterProductName'),
   price: yup
     .string()
+    .matches(/^[0-9,]+$/)
     .required('youMustEnterPrice'),
   tax: yup.string() .required('youMustSelectTax'),
   unit: yup.string().matches(/^[a-zA-Z ]*$/,`productUnitCanTBeNumber`)

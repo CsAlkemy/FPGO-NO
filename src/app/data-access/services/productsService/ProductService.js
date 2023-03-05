@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 class ProductService {
   productsList = async (isSkipIsAuthenticated) => {
@@ -141,6 +142,13 @@ class ProductService {
         })
       : null;
 
+    const pricePerUnit = params.price;
+    const splitedPrice = pricePerUnit.toString().includes(",") ? pricePerUnit.toString().split(",") : pricePerUnit;
+    const dotFormatPrice =
+      typeof splitedPrice === "object"
+        ? `${splitedPrice[0]}.${splitedPrice[1]}`
+        : splitedPrice;
+    const floatPrice = parseFloat(dotFormatPrice);
     return {
       // type: type === 1 ? "Good" : "Service",
       type: "Good",
@@ -148,7 +156,7 @@ class ProductService {
       name: params.productName,
       description: params.description,
       unit: params.unit,
-      price: params.price,
+      price: floatPrice,
       manufacturerId: params?.manufacturer ? params?.manufacturer : null,
       categoryUuids,
       taxRate: params.tax,
@@ -252,6 +260,14 @@ class ProductService {
         })
       : null;
 
+    const pricePerUnit = params.price;
+    const splitedPrice = pricePerUnit.toString().includes(",") ? pricePerUnit.toString().split(",") : pricePerUnit;
+    const dotFormatPrice =
+      typeof splitedPrice === "object"
+        ? `${splitedPrice[0]}.${splitedPrice[1]}`
+        : splitedPrice;
+    const floatPrice = parseFloat(dotFormatPrice);
+
     return {
       uuid,
       type: type === 1 ? "Good" : "Service",
@@ -259,7 +275,7 @@ class ProductService {
       name: params.productName,
       description: params.description,
       unit: params.unit,
-      price: params.price,
+      price: floatPrice,
       manufacturerId: type === 1 ? params.manufacturer : "Test",
       categoryUuids,
       taxRate: params.tax,

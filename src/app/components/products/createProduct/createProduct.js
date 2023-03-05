@@ -260,7 +260,6 @@ const createProducts = (onSubmit = () => {}) => {
                         {...field}
                         label={t("label:pricePerUnit")}
                         className="bg-white"
-                        type="number"
                         autoComplete="off"
                         error={!!errors.price}
                         helperText={errors?.price?.message}
