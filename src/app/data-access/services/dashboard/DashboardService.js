@@ -23,16 +23,16 @@ class DashboardService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404) resolve(e.response.data)
                 reject(e?.response?.data?.message)
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          return reject("Something went wrong");
+          return reject("somethingWentWrong");
         });
     });
   };

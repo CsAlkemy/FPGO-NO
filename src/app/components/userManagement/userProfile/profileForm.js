@@ -82,10 +82,10 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     };
     updateUser(userData).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate(-1);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
   }
@@ -125,7 +125,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
             } else if (response?.is_data === false) {
               setRoleList([]);
             } else {
-              enqueueSnackbar("No role found", { variant: "warning" });
+              enqueueSnackbar(t(`message:noRoleFound`), { variant: "warning" });
             }
           })
           .catch((error) => {});
@@ -138,7 +138,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
             } else if (response?.is_data === false) {
               setOrganizationsList([]);
             } else {
-              enqueueSnackbar("No Organization found", { variant: "warning" });
+              enqueueSnackbar(t(`message:noOrganizationFound`),{ variant: "warning" });
             }
           })
           .catch((error) => {});

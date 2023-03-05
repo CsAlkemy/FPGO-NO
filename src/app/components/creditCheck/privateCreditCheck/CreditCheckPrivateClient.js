@@ -76,12 +76,12 @@ export default function CreditCheckPrivateClient() {
           })
         );
         response?.data?.message
-          ? enqueueSnackbar(response?.data?.message, { variant: "success" })
+          ? enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" })
           : "";
         setLoading(false);
         setIsSuccess(true);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });

@@ -79,11 +79,11 @@ const createCorporateCustomer = () => {
       CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress);
     createCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });
@@ -124,12 +124,12 @@ const createCorporateCustomer = () => {
             CreateCorporateDefaultValue.billingZip =
               response.data.billingAddress.zip;
             reset({ ...CreateCorporateDefaultValue })
-            enqueueSnackbar(response.message, { variant: "success" });
+            enqueueSnackbar(t(`message:${response?.message}`), { variant: "success" });
             setLoadingfind(false)
           }
         })
         .catch((error) => {
-          enqueueSnackbar("Data Retrieve Failed", { variant: "error" });
+          enqueueSnackbar(t(`message:dataRetrieveFailed`), { variant: "error" });
           reset();
           setLoadingfind(false)
         });

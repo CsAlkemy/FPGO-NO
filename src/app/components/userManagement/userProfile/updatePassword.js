@@ -38,7 +38,7 @@ const updatePassword = ({role, userProfile}) => {
     )
       .then((res) => {
       if (res.status_code === 202) {
-        enqueueSnackbar(res.message, {
+        enqueueSnackbar(t(`message:${res?.message}`), {
           variant: "success",
         });
         if (
@@ -50,7 +50,7 @@ const updatePassword = ({role, userProfile}) => {
       }else enqueueSnackbar(res, { variant: "error" });
     })
       .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
+        enqueueSnackbar(t(`message:${error}`), { variant: "error" });
       });
 
     reset(defaultValues);
