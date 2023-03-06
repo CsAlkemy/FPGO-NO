@@ -1,7 +1,7 @@
-import React, { lazy, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "app/store/userSlice";
+import React, {lazy, useState} from "react";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {selectUser} from "app/store/userSlice";
 import {
   BRAND_MANAGER,
   BUSINESS_ADMIN,
@@ -9,11 +9,11 @@ import {
   GENERAL_USER,
   GROUP_MANAGER,
 } from "../../../utils/user-roles/UserRoles";
-import { Backdrop, Button, CircularProgress } from "@mui/material";
+import {Backdrop, Button, CircularProgress} from "@mui/material";
 import UserService from "../../../data-access/services/userService/UserService";
-import { useSnackbar } from "notistack";
-import { useTranslation } from "react-i18next";
-import { useUpdateUserStatusMutation } from "app/store/api/apiSlice";
+import {useSnackbar} from "notistack";
+import {useTranslation} from "react-i18next";
+import {useUpdateUserStatusMutation} from "app/store/api/apiSlice";
 
 const ProfileForm = lazy(() => import("./profileForm"));
 const UpdatePassword = lazy(() => import("./updatePassword"));
@@ -34,6 +34,7 @@ const index = () => {
   const [updateUserStatus] = useUpdateUserStatusMutation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isDirty, setIsDirty] = useState(false);
 
   React.useEffect(() => {
     if (isLoading) {
@@ -64,10 +65,14 @@ const index = () => {
   const changeUserStatus = () => {
     updateUserStatus(userId).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate(-1);
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
   };
@@ -130,6 +135,7 @@ const index = () => {
                         color="secondary"
                         type="submit"
                         variant="contained"
+                        disabled={!isDirty}
                         className={`font-semibold rounded-4 px-40 ${
                           role === 0 ? "w-auto" : "w-full"
                         }`}
@@ -147,6 +153,7 @@ const index = () => {
                     )}
                     {role === 0 && (
                       <ProfileForm
+                        setIsDirty={setIsDirty}
                         submitRef={submitRef}
                         role={0}
                         userProfile={userProfile}
@@ -154,6 +161,7 @@ const index = () => {
                     )}
                     {role === 1 && (
                       <ProfileForm
+                        setIsDirty={setIsDirty}
                         submitRef={submitRef}
                         role={1}
                         userProfile={userProfile}
@@ -161,6 +169,7 @@ const index = () => {
                     )}
                     {role === 2 && (
                       <ProfileForm
+                        setIsDirty={setIsDirty}
                         submitRef={submitRef}
                         role={2}
                         userProfile={userProfile}
@@ -168,6 +177,7 @@ const index = () => {
                     )}
                     {role === 3 && (
                       <ProfileForm
+                        setIsDirty={setIsDirty}
                         submitRef={submitRef}
                         role={3}
                         userProfile={userProfile}
@@ -175,6 +185,7 @@ const index = () => {
                     )}
                     {role === 4 && (
                       <ProfileForm
+                        setIsDirty={setIsDirty}
                         submitRef={submitRef}
                         role={4}
                         userProfile={userProfile}
@@ -182,6 +193,7 @@ const index = () => {
                     )}
                     {role === 5 && (
                       <ProfileForm
+                        setIsDirty={setIsDirty}
                         submitRef={submitRef}
                         role={5}
                         userProfile={userProfile}
@@ -191,7 +203,7 @@ const index = () => {
                 </div>
               </div>
               <div className="col-span-1 bg-white border-1 border-MonochromeGray-50">
-                <UpdatePassword role={role} userProfile={userProfile}/>
+                <UpdatePassword role={role} userProfile={userProfile} />
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import PhoneInput from "react-phone-input-2";
@@ -27,7 +27,7 @@ const defaultValues = {
   preferredLanguage: "",
 };
 
-const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
+const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
   const { t } = useTranslation();
   const [roleList, setRoleList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -56,7 +56,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     resolver: yupResolver(schema),
   });
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
+
+  useEffect(()=>{
+      setIsDirty(isDirty)
+  },[isDirty])
   function onSubmit(values) {
     const phoneNumber = values?.phoneNumber
       ? values.phoneNumber.split("+")

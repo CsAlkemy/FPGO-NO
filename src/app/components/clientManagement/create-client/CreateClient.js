@@ -650,6 +650,17 @@ const CreateClient = () => {
                           value={value}
                           required
                           onChange={onChange}
+                          PopperProps={{
+                            sx: {
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                borderRadius: '8px',
+                                "&.Mui-selected": {
+                                  backgroundColor: "#c9eee7",
+                                  color: "#323434",
+                                }
+                              }
+                            }
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
