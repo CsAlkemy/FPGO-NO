@@ -118,7 +118,7 @@ const index = () => {
                         </div>
                       </div>
                     )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full items-center sm:w-auto">
+                    <div className={`${role === 0 ? 'grid grid-cols-1 sm:grid-cols-2 gap-10 w-full items-center sm:w-auto':'flex w-full sm:w-auto'} `}>
                       {role === 0 && (
                         <Button
                           color="secondary"
