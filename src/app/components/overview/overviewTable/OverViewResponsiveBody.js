@@ -846,16 +846,22 @@ export default function OverViewResponsiveBody(props) {
               </div>
             </div>
           ) : (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <div className="flex gap-7 items-center">
-                <LocationCityIcon className="text-[#50C9B1]" />
-                {props.row ? (
-                  CharCont(props.row[rdt.id], 10)
-                ) : (
-                  <Skeleton variant="text" />
-                )}
+            <div className="grid grid-cols-2 gap-4 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
               </div>
-            </TableCell>
+              <div className="body3 text-MonochromeGray-700">
+                <div className="flex gap-7 items-center">
+                  <LocationCityIcon className="text-[#50C9B1]" />
+                  {props.row ? (
+                    CharCont(props.row[rdt.id], 10)
+                  ) : (
+                    <Skeleton variant="text" />
+                  )}
+                </div>
+              </div>
+            </div>
           );
         } else {
           return (
