@@ -1372,7 +1372,17 @@ const createOrder = () => {
                               disabled={disableRowIndexes.includes(index)}
                               fullWidth
                             />
-                          )}
+                          )}  PopperProps={{
+                          sx: {
+                            "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                              borderRadius: '8px',
+                              "&.Mui-selected": {
+                                backgroundColor: "#c9eee7",
+                                color: "#323434",
+                              }
+                            }
+                          }
+                        }}
                         />
                       )}
                     </div>
@@ -1424,6 +1434,17 @@ const createOrder = () => {
                           maxDate={new Date().setDate(
                             new Date().getDate() + 30
                           )}
+                          PopperProps={{
+                            sx: {
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                borderRadius: '8px',
+                                "&.Mui-selected": {
+                                  backgroundColor: "#c9eee7",
+                                  color: "#323434",
+                                }
+                              }
+                            }
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -1469,6 +1490,17 @@ const createOrder = () => {
                               inputFormat="dd.MM.yyyy HH:mm"
                               autoFocus
                               ampm={false}
+                              PopperProps={{
+                                sx: {
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                    borderRadius: '8px',
+                                    "&.Mui-selected": {
+                                      backgroundColor: "#c9eee7",
+                                      color: "#323434",
+                                    }
+                                  }
+                                }
+                              }}
                               disableOpenPicker
                               value={
                                 !value

@@ -25,7 +25,7 @@ const updatePassword = ({role, userProfile}) => {
     resolver: yupResolver(schema),
   });
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   function onSubmit(values) {
     const param = {
       currentPassword: role === 0 ? null : values.currentPassword,
@@ -167,7 +167,7 @@ const updatePassword = ({role, userProfile}) => {
               />
             )}
           />
-          <Button type="submit" color="secondary" variant="contained" className="button2 rounded-4 w-full ">
+          <Button type="submit" color="secondary" disabled={!isDirty} variant="contained" className="button2 rounded-4 w-full ">
             {t("label:updatePassword")}
           </Button>
         </div>
