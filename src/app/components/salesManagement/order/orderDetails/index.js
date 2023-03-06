@@ -17,6 +17,7 @@ import OrderInformation from "../orderDetails/orderInformation";
 
 const OrderLog = lazy(() => import("../orderDetails/orderLog"));
 const OrderReceipt = lazy(() => import("../orderDetails/orderReceipt"));
+import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -242,7 +243,7 @@ const createOrder = () => {
             headerTitle={headerTitle}
             orderId={info.orderUuid}
             orderName={info.customerDetails.name}
-            orderAmount={info.orderSummary.grandTotal}
+            orderAmount={ ThousandSeparator(info.orderSummary.grandTotal) }
             customerPhone={
               info.customerDetails.countryCode && info.customerDetails.msisdn
                 ? info.customerDetails.countryCode + info.customerDetails.msisdn
