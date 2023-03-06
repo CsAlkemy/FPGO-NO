@@ -789,6 +789,17 @@ const OrderInformation = ({ info }) => {
                               inputFormat="dd.MM.yyyy"
                               // inputFormat="dd.MMM.yyyy"
                               // value={!value ? new Date() : value}
+                              PopperProps={{
+                                sx: {
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                    borderRadius: '8px',
+                                    "&.Mui-selected": {
+                                      backgroundColor: "#c9eee7",
+                                      color: "#323434",
+                                    }
+                                  }
+                                }
+                              }}
                               value={
                                 info?.orderDate
                                   ? prepareOrderDate(info?.orderDate)
@@ -842,6 +853,17 @@ const OrderInformation = ({ info }) => {
                                 <DesktopDateTimePicker
                                   label={t("label:dueDateForPaymentLink")}
                                   inputFormat="dd.MM.yyyy HH:mm"
+                                  PopperProps={{
+                                    sx: {
+                                      "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                        borderRadius: '8px',
+                                        "&.Mui-selected": {
+                                          backgroundColor: "#c9eee7",
+                                          color: "#323434",
+                                        }
+                                      }
+                                    }
+                                  }}
                                   // inputFormat="dd.MMM.yyyy"
                                   value={
                                     info?.paymentLinkDueDate

@@ -1063,6 +1063,17 @@ const ClientDetails = () => {
                                     inputFormat="dd.MM.yyyy"
                                     value={value}
                                     onChange={onChange}
+                                    PopperProps={{
+                                      sx: {
+                                        "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                          borderRadius: '8px',
+                                          "&.Mui-selected": {
+                                            backgroundColor: "#c9eee7",
+                                            color: "#323434",
+                                          }
+                                        }
+                                      }
+                                    }}
                                     renderInput={(params) => (
                                       <TextField
                                         {...params}
