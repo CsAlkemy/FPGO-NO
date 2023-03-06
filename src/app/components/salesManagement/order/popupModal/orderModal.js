@@ -138,7 +138,7 @@ const OrderModal = (props) => {
         if (res?.data?.status_code === 202) {
           enqueueSnackbar(res?.data?.message, { variant: "success" });
           // setApiLoading(false);
-        }
+        } else enqueueSnackbar(res?.error?.data?.message, { variant: "error" });
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
         // else window.location.reload();
