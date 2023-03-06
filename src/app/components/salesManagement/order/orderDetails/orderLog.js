@@ -23,7 +23,7 @@ const orderLog = ({ info }) => {
       .then((res) => {
         let orderData = [];
         let data = res?.data;
-        let checkExpired = data.findIndex(item => item.slug === 'order-expired');
+        let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
 
         if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
           orderData.push({
