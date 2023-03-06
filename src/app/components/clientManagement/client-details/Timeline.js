@@ -137,7 +137,7 @@ const TimelineLog = () => {
         >
           {logs.map((log, index) => {
             return (
-              <TimelineItem>
+              <TimelineItem key={index}>
                 <TimelineSeparator>
                   {log.slug === "order-sent-by-ehf" ||
                   log.slug === "order-sent-by-invoice" ||

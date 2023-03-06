@@ -730,7 +730,7 @@ const createOrder = () => {
                       </Button>
                     </div>
                     {addOrderIndex.map((index) => (
-                      <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
+                      <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
                         <Controller
                           control={control}
                           required
@@ -757,7 +757,7 @@ const createOrder = () => {
                               autoSelect
                               onBlur={pnameOnBlur}
                               options={productsList}
-                              forcePopupIcon={<Search />}
+                              // forcePopupIcon={<Search />}
                               getOptionLabel={(option) =>
                                 option?.name
                                   ? option.name
@@ -1123,7 +1123,7 @@ const createOrder = () => {
                             autoSelect
                             options={productsList}
                             onBlur={pnameOnBlur}
-                            forcePopupIcon={<Search />}
+                            // forcePopupIcon={<Search />}
                             getOptionLabel={(option) =>
                               option?.name ? option.name : option ? option : ""
                             }
@@ -1423,6 +1423,7 @@ const createOrder = () => {
                       render={({ field: { onChange, value, onBlur } }) => (
                         <DesktopDatePicker
                           label={t("label:orderDate")}
+                          mask=""
                           inputFormat="dd.MM.yyyy"
                           value={!value ? new Date() : value}
                           required
@@ -1487,6 +1488,7 @@ const createOrder = () => {
                             <DesktopDateTimePicker
                               label={t("label:dueDateForPaymentLink")}
                               // inputFormat="dd MMM, yyyy HH:mm"
+                              mask=""
                               inputFormat="dd.MM.yyyy HH:mm"
                               autoFocus
                               ampm={false}
@@ -2035,7 +2037,7 @@ const createOrder = () => {
                               <Autocomplete
                                 freeSolo
                                 options={customersList}
-                                forcePopupIcon={<Search />}
+                                // forcePopupIcon={<Search />}
                                 getOptionLabel={(option) => option.searchString}
                                 className="custom-input-height"
                                 fullWidth

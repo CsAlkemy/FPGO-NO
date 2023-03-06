@@ -62,7 +62,7 @@ const orderLog = ({ info }) => {
           {logs &&
             logs.map((log, index) => {
               return (
-                <TimelineItem>
+                <TimelineItem key={index}>
                   <TimelineSeparator>
                     {log.slug === "order-created" ||
                     log.slug === "order-sent" ||

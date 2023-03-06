@@ -120,6 +120,7 @@ export default function Dashboard() {
                   control={control}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <DesktopDatePicker
+                      mask=""
                       // label='Check In'
                       inputFormat="dd.MM.yyyy"
                       value={value || new Date(defaultStartDate)}
@@ -153,6 +154,7 @@ export default function Dashboard() {
                   render={({ field: { onChange, value, onBlur } }) => (
                     <DesktopDatePicker
                       // label='Check Out'
+                      mask=""
                       inputFormat="dd.MM.yyyy"
                       value={value || new Date(defaultEndDate)}
                       // onChange={onChange}
