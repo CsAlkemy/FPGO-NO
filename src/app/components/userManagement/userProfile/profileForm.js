@@ -429,7 +429,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                     })}
                   </Select>
                   <FormHelperText>
-                    {errors.preferredLanguage?.message}
+                    {errors.preferredLanguage?.message ? t(`helperText:${errors.preferredLanguage?.message}`) : ""}
                   </FormHelperText>
                 </FormControl>
               )}

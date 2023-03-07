@@ -357,7 +357,9 @@ const Onboarding = () => {
         });
         navigate("/clients/clients-list");
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
     // ClientService.clientOnboard(onBoardingData, params.uuid)
@@ -804,14 +806,15 @@ const Onboarding = () => {
                               onChange={onChange}
                               PopperProps={{
                                 sx: {
-                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                    borderRadius: '8px',
-                                    "&.Mui-selected": {
-                                      backgroundColor: "#c9eee7",
-                                      color: "#323434",
-                                    }
-                                  }
-                                }
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                    {
+                                      borderRadius: "8px",
+                                      "&.Mui-selected": {
+                                        backgroundColor: "#c9eee7",
+                                        color: "#323434",
+                                      },
+                                    },
+                                },
                               }}
                               renderInput={(params) => (
                                 <TextField
@@ -1070,7 +1073,11 @@ const Onboarding = () => {
                                   onBlur={handleOnBlurGetDialCode}
                                 />
                                 <FormHelperText>
-                                  {errors?.billingPhoneNumber?.message}
+                                  {errors?.billingPhoneNumber?.message
+                                    ? t(
+                                        `helperText:${errors?.billingPhoneNumber?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -1196,7 +1203,11 @@ const Onboarding = () => {
                                   <MenuItem value="sweden">Sweden</MenuItem>
                                 </Select>
                                 <FormHelperText>
-                                  {errors?.country?.message}
+                                  {errors?.country?.message
+                                    ? t(
+                                        `helperText:${errors?.country?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -1286,7 +1297,11 @@ const Onboarding = () => {
                                       onBlur={handleOnBlurGetDialCode}
                                     />
                                     <FormHelperText>
-                                      {errors?.shippingPhoneNumber?.message}
+                                      {errors?.shippingPhoneNumber?.message
+                                        ? t(
+                                            `helperText:${errors?.shippingPhoneNumber?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -1302,7 +1317,13 @@ const Onboarding = () => {
                                     autoComplete="off"
                                     disabled={sameAddress}
                                     error={!!errors.shippingEmail}
-                                    helperText={errors?.shippingEmail?.message}
+                                    helperText={
+                                      errors?.shippingEmail?.message
+                                        ? t(
+                                            `helperText:${errors?.shippingEmail?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     // required
                                     fullWidth
@@ -1325,6 +1346,10 @@ const Onboarding = () => {
                                       error={!!errors.shippingAddress}
                                       helperText={
                                         errors?.shippingAddress?.message
+                                          ? t(
+                                              `helperText:${errors?.shippingAddress?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       // required
@@ -1346,7 +1371,13 @@ const Onboarding = () => {
                                       autoComplete="off"
                                       disabled={sameAddress}
                                       error={!!errors.shippingZip}
-                                      helperText={errors?.shippingZip?.message}
+                                      helperText={
+                                        errors?.shippingZip?.message
+                                          ? t(
+                                              `helperText:${errors?.shippingZip?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       // required
                                       fullWidth
@@ -1367,7 +1398,13 @@ const Onboarding = () => {
                                     autoComplete="off"
                                     disabled={sameAddress}
                                     error={!!errors.shippingCity}
-                                    helperText={errors?.shippingCity?.message}
+                                    helperText={
+                                      errors?.shippingCity?.message
+                                        ? t(
+                                            `helperText:${errors?.shippingCity?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     // required
                                     fullWidth
@@ -1402,7 +1439,11 @@ const Onboarding = () => {
                                       <MenuItem value="sweden">Sweden</MenuItem>
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.shippingCountry?.message}
+                                      {errors?.shippingCountry?.message
+                                        ? t(
+                                            `helperText:${errors?.shippingCountry?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -1437,7 +1478,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.bankName}
-                                helperText={errors?.bankName?.message}
+                                helperText={
+                                  errors?.bankName?.message
+                                    ? t(
+                                        `helperText:${errors?.bankName?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1463,7 +1510,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.accountNumber}
-                                helperText={errors?.accountNumber?.message}
+                                helperText={
+                                  errors?.accountNumber?.message
+                                    ? t(
+                                        `helperText:${errors?.accountNumber?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1480,7 +1533,11 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.IBAN}
-                                helperText={errors?.IBAN?.message}
+                                helperText={
+                                  errors?.IBAN?.message
+                                    ? t(`helperText:${errors?.IBAN?.message}`)
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1497,7 +1554,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.SWIFTCode}
-                                helperText={errors?.SWIFTCode?.message}
+                                helperText={
+                                  errors?.SWIFTCode?.message
+                                    ? t(
+                                        `helperText:${errors?.SWIFTCode?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1533,7 +1596,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.APTICuserName}
-                                helperText={errors?.APTICuserName?.message}
+                                helperText={
+                                  errors?.APTICuserName?.message
+                                    ? t(
+                                        `helperText:${errors?.APTICuserName?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1550,7 +1619,13 @@ const Onboarding = () => {
                                 type={!hide ? "text" : "password"}
                                 autoComplete="off"
                                 error={!!errors.APTICpassword}
-                                helperText={errors?.APTICpassword?.message}
+                                helperText={
+                                  errors?.APTICpassword?.message
+                                    ? t(
+                                        `helperText:${errors?.APTICpassword?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 required
@@ -1586,7 +1661,11 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.name}
-                                helperText={errors?.name?.message}
+                                helperText={
+                                  errors?.name?.message
+                                    ? t(`helperText:${errors?.name?.message}`)
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1603,7 +1682,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.fpReference}
-                                helperText={errors?.fpReference?.message}
+                                helperText={
+                                  errors?.fpReference?.message
+                                    ? t(
+                                        `helperText:${errors?.fpReference?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1625,6 +1710,10 @@ const Onboarding = () => {
                                 error={!!errors.creditLimitCustomer}
                                 helperText={
                                   errors?.creditLimitCustomer?.message
+                                    ? t(
+                                        `helperText:${errors?.creditLimitCustomer?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 required
@@ -1651,6 +1740,10 @@ const Onboarding = () => {
                                 error={!!errors.costLimitforCustomer}
                                 helperText={
                                   errors?.costLimitforCustomer?.message
+                                    ? t(
+                                        `helperText:${errors?.costLimitforCustomer?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 fullWidth
@@ -1674,7 +1767,13 @@ const Onboarding = () => {
                                 type="number"
                                 autoComplete="off"
                                 error={!!errors.costLimitforOrder}
-                                helperText={errors?.costLimitforOrder?.message}
+                                helperText={
+                                  errors?.costLimitforOrder?.message
+                                    ? t(
+                                        `helperText:${errors?.costLimitforOrder?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 InputProps={{
@@ -1696,8 +1795,14 @@ const Onboarding = () => {
                                 label={t("label:invoiceWithRegress")}
                                 type="number"
                                 autoComplete="off"
-                                error={!!errors.nvoicewithRegress}
-                                helperText={errors?.nvoicewithRegress?.message}
+                                error={!!errors.invoicewithRegress}
+                                helperText={
+                                  errors?.invoicewithRegress?.message
+                                    ? t(
+                                        `helperText:${errors?.invoicewithRegress?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 InputProps={{
@@ -1722,6 +1827,10 @@ const Onboarding = () => {
                                 error={!!errors.invoicewithoutRegress}
                                 helperText={
                                   errors?.invoicewithoutRegress?.message
+                                    ? t(
+                                        `helperText:${errors?.invoicewithoutRegress?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 s
@@ -1764,6 +1873,10 @@ const Onboarding = () => {
                                 error={!!errors.APTIEngineCuserName}
                                 helperText={
                                   errors?.APTIEngineCuserName?.message
+                                    ? t(
+                                        `helperText:${errors?.APTIEngineCuserName?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 required
@@ -1781,7 +1894,13 @@ const Onboarding = () => {
                                 type={!hide ? "text" : "password"}
                                 autoComplete="off"
                                 error={!!errors.APTIEnginePassword}
-                                helperText={errors?.APTIEnginePassword?.message}
+                                helperText={
+                                  errors?.APTIEnginePassword?.message
+                                    ? t(
+                                        `helperText:${errors?.APTIEnginePassword?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 required
@@ -2100,7 +2219,13 @@ const Onboarding = () => {
                                 type="number"
                                 autoComplete="off"
                                 error={!!errors.fakturaB2B}
-                                helperText={errors?.fakturaB2B?.message}
+                                helperText={
+                                  errors?.fakturaB2B?.message
+                                    ? t(
+                                        `helperText:${errors?.fakturaB2B?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -2124,7 +2249,13 @@ const Onboarding = () => {
                                 type="number"
                                 autoComplete="off"
                                 error={!!errors.fakturaB2C}
-                                helperText={errors?.fakturaB2C?.message}
+                                helperText={
+                                  errors?.fakturaB2C?.message
+                                    ? t(
+                                        `helperText:${errors?.fakturaB2C?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
