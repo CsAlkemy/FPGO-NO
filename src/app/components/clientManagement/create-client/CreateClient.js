@@ -413,7 +413,11 @@ const CreateClient = () => {
                           type="number"
                           autoComplete="off"
                           error={!!errors.id}
-                          helperText={errors?.id?.message}
+                          helperText={
+                            errors?.id?.message
+                              ? t(`helperText:${errors?.id?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -430,7 +434,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.clientName}
-                          helperText={errors?.clientName?.message}
+                          helperText={
+                            errors?.clientName?.message
+                              ? t(`helperText:${errors?.clientName?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -481,7 +489,11 @@ const CreateClient = () => {
                             })}
                           </Select>
                           <FormHelperText>
-                            {errors?.organizationType?.message}
+                            {errors?.organizationType?.message
+                              ? t(
+                                  `helperText:${errors?.organizationType?.message}`
+                                )
+                              : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -514,7 +526,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.fullName}
-                          helperText={errors?.fullName?.message}
+                          helperText={
+                            errors?.fullName?.message
+                              ? t(`helperText:${errors?.fullName?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -545,7 +561,11 @@ const CreateClient = () => {
                             onBlur={handleOnBlurGetDialCode}
                           />
                           <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message}
+                            {errors?.primaryPhoneNumber?.message
+                              ? t(
+                                  `helperText:${errors?.primaryPhoneNumber?.message}`
+                                )
+                              : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -560,7 +580,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.designation}
-                          helperText={errors?.designation?.message}
+                          helperText={
+                            errors?.designation?.message
+                              ? t(`helperText:${errors?.designation?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           fullWidth
                         />
@@ -576,7 +600,11 @@ const CreateClient = () => {
                           type="email"
                           autoComplete="off"
                           error={!!errors.email}
-                          helperText={errors?.email?.message}
+                          helperText={
+                            errors?.email?.message
+                              ? t(`helperText:${errors?.email?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -653,14 +681,15 @@ const CreateClient = () => {
                           onChange={onChange}
                           PopperProps={{
                             sx: {
-                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                borderRadius: '8px',
-                                "&.Mui-selected": {
-                                  backgroundColor: "#c9eee7",
-                                  color: "#323434",
-                                }
-                              }
-                            }
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                {
+                                  borderRadius: "8px",
+                                  "&.Mui-selected": {
+                                    backgroundColor: "#c9eee7",
+                                    color: "#323434",
+                                  },
+                                },
+                            },
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -669,7 +698,13 @@ const CreateClient = () => {
                               type="date"
                               required
                               error={!!errors.contactEndDate}
-                              helperText={errors?.contactEndDate?.message}
+                              helperText={
+                                errors?.contactEndDate?.message
+                                  ? t(
+                                      `helperText:${errors?.contactEndDate?.message}`
+                                    )
+                                  : ""
+                              }
                             />
                           )}
                         />
@@ -685,7 +720,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.commision}
-                          helperText={errors?.commision?.message}
+                          helperText={
+                            errors?.commision?.message
+                              ? t(`helperText:${errors?.commision?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -709,7 +748,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.smsCost}
-                          helperText={errors?.smsCost?.message}
+                          helperText={
+                            errors?.smsCost?.message
+                              ? t(`helperText:${errors?.smsCost?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -733,7 +776,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.emailCost}
-                          helperText={errors?.emailCost?.message}
+                          helperText={
+                            errors?.emailCost?.message
+                              ? t(`helperText:${errors?.emailCost?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -757,7 +804,13 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.creditCheckCost}
-                          helperText={errors?.creditCheckCost?.message}
+                          helperText={
+                            errors?.creditCheckCost?.message
+                              ? t(
+                                  `helperText:${errors?.creditCheckCost?.message}`
+                                )
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -781,7 +834,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.ehfCost}
-                          helperText={errors?.ehfCost?.message}
+                          helperText={
+                            errors?.ehfCost?.message
+                              ? t(`helperText:${errors?.ehfCost?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -887,7 +944,11 @@ const CreateClient = () => {
                               onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.billingPhoneNumber?.message}
+                              {errors?.billingPhoneNumber?.message
+                                ? t(
+                                    `helperText:${errors?.billingPhoneNumber?.message}`
+                                  )
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -902,7 +963,13 @@ const CreateClient = () => {
                             type="email"
                             autoComplete="off"
                             error={!!errors.billingEmail}
-                            helperText={errors?.billingEmail?.message}
+                            helperText={
+                              errors?.billingEmail?.message
+                                ? t(
+                                    `helperText:${errors?.billingEmail?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -922,7 +989,13 @@ const CreateClient = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.billingAddress}
-                              helperText={errors?.billingAddress?.message}
+                              helperText={
+                                errors?.billingAddress?.message
+                                  ? t(
+                                      `helperText:${errors?.billingAddress?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -942,7 +1015,11 @@ const CreateClient = () => {
                               type="number"
                               autoComplete="off"
                               error={!!errors.zip}
-                              helperText={errors?.zip?.message}
+                              helperText={
+                                errors?.zip?.message
+                                  ? t(`helperText:${errors?.zip?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -962,7 +1039,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.city}
-                            helperText={errors?.city?.message}
+                            helperText={
+                              errors?.city?.message
+                                ? t(`helperText:${errors?.city?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -993,7 +1074,9 @@ const CreateClient = () => {
                               <MenuItem value="sweden">Sweden</MenuItem>
                             </Select>
                             <FormHelperText>
-                              {errors?.country?.message}
+                              {errors?.country?.message
+                                ? t(`helperText:${errors?.country?.message}`)
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -1083,7 +1166,11 @@ const CreateClient = () => {
                                   onBlur={handleOnBlurGetDialCode}
                                 />
                                 <FormHelperText>
-                                  {errors?.shippingPhoneNumber?.message}
+                                  {errors?.shippingPhoneNumber?.message
+                                    ? t(
+                                        `helperText:${errors?.shippingPhoneNumber?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -1099,7 +1186,13 @@ const CreateClient = () => {
                                 autoComplete="off"
                                 disabled={sameAddress}
                                 error={!!errors.shippingEmail}
-                                helperText={errors?.shippingEmail?.message}
+                                helperText={
+                                  errors?.shippingEmail?.message
+                                    ? t(
+                                        `helperText:${errors?.shippingEmail?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 // required
                                 fullWidth
@@ -1120,7 +1213,13 @@ const CreateClient = () => {
                                   autoComplete="off"
                                   disabled={sameAddress}
                                   error={!!errors.shippingAddress}
-                                  helperText={errors?.shippingAddress?.message}
+                                  helperText={
+                                    errors?.shippingAddress?.message
+                                      ? t(
+                                          `helperText:${errors?.shippingAddress?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   // required
                                   fullWidth
@@ -1141,7 +1240,13 @@ const CreateClient = () => {
                                   autoComplete="off"
                                   disabled={sameAddress}
                                   error={!!errors.shippingZip}
-                                  helperText={errors?.shippingZip?.message}
+                                  helperText={
+                                    errors?.shippingZip?.message
+                                      ? t(
+                                          `helperText:${errors?.shippingZip?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   // required
                                   fullWidth
@@ -1162,7 +1267,13 @@ const CreateClient = () => {
                                 autoComplete="off"
                                 disabled={sameAddress}
                                 error={!!errors.shippingCity}
-                                helperText={errors?.shippingCity?.message}
+                                helperText={
+                                  errors?.shippingCity?.message
+                                    ? t(
+                                        `helperText:${errors?.shippingCity?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 // required
                                 fullWidth
@@ -1195,7 +1306,11 @@ const CreateClient = () => {
                                   <MenuItem value="sweden">Sweden</MenuItem>
                                 </Select>
                                 <FormHelperText>
-                                  {errors?.shippingCountry?.message}
+                                  {errors?.shippingCountry?.message
+                                    ? t(
+                                        `helperText:${errors?.shippingCountry?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -1230,7 +1345,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.bankName}
-                            helperText={errors?.bankName?.message}
+                            helperText={
+                              errors?.bankName?.message
+                                ? t(`helperText:${errors?.bankName?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1256,7 +1375,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.accountNumber}
-                            helperText={errors?.accountNumber?.message}
+                            helperText={
+                              errors?.accountNumber?.message
+                                ? t(
+                                    `helperText:${errors?.accountNumber?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1273,7 +1398,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.IBAN}
-                            helperText={errors?.IBAN?.message}
+                            helperText={
+                              errors?.IBAN?.message
+                                ? t(`helperText:${errors?.IBAN?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1290,7 +1419,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.SWIFTCode}
-                            helperText={errors?.SWIFTCode?.message}
+                            helperText={
+                              errors?.SWIFTCode?.message
+                                ? t(`helperText:${errors?.SWIFTCode?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1326,7 +1459,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.APTICuserName}
-                            helperText={errors?.APTICuserName?.message}
+                            helperText={
+                              errors?.APTICuserName?.message
+                                ? t(
+                                    `helperText:${errors?.APTICuserName?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1343,7 +1482,13 @@ const CreateClient = () => {
                             type={!hide ? "text" : "password"}
                             autoComplete="off"
                             error={!!errors.APTICpassword}
-                            helperText={errors?.APTICpassword?.message}
+                            helperText={
+                              errors?.APTICpassword?.message
+                                ? t(
+                                    `helperText:${errors?.APTICpassword?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -1375,7 +1520,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.name}
-                            helperText={errors?.name?.message}
+                            helperText={
+                              errors?.name?.message
+                                ? t(`helperText:${errors?.name?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1392,7 +1541,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.fpReference}
-                            helperText={errors?.fpReference?.message}
+                            helperText={
+                              errors?.fpReference?.message
+                                ? t(
+                                    `helperText:${errors?.fpReference?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1412,7 +1567,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.creditLimitCustomer}
-                            helperText={errors?.creditLimitCustomer?.message}
+                            helperText={
+                              errors?.creditLimitCustomer?.message
+                                ? t(
+                                    `helperText:${errors?.creditLimitCustomer?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1436,7 +1597,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.costLimitforCustomer}
-                            helperText={errors?.costLimitforCustomer?.message}
+                            helperText={
+                              errors?.costLimitforCustomer?.message
+                                ? t(
+                                    `helperText:${errors?.costLimitforCustomer?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             InputProps={{
@@ -1459,7 +1626,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.costLimitforOrder}
-                            helperText={errors?.costLimitforOrder?.message}
+                            helperText={
+                              errors?.costLimitforOrder?.message
+                                ? t(
+                                    `helperText:${errors?.costLimitforOrder?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             InputProps={{
@@ -1481,8 +1654,14 @@ const CreateClient = () => {
                             label={t("label:invoiceWithRegress")}
                             type="number"
                             autoComplete="off"
-                            error={!!errors.nvoicewithRegress}
-                            helperText={errors?.nvoicewithRegress?.message}
+                            error={!!errors.invoicewithRegress}
+                            helperText={
+                              errors?.invoicewithRegress?.message
+                                ? t(
+                                    `helperText:${errors?.invoicewithRegress?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             InputProps={{
@@ -1505,7 +1684,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.invoicewithoutRegress}
-                            helperText={errors?.invoicewithoutRegress?.message}
+                            helperText={
+                              errors?.invoicewithoutRegress?.message
+                                ? t(
+                                    `helperText:${errors?.invoicewithoutRegress?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             s
                             fullWidth
@@ -1546,7 +1731,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.APTIEngineCuserName}
-                            helperText={errors?.APTIEngineCuserName?.message}
+                            helperText={
+                              errors?.APTIEngineCuserName?.message
+                                ? t(
+                                    `helperText:${errors?.APTIEngineCuserName?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1563,7 +1754,13 @@ const CreateClient = () => {
                             type={!hide ? "text" : "password"}
                             autoComplete="off"
                             error={!!errors.APTIEnginePassword}
-                            helperText={errors?.APTIEnginePassword?.message}
+                            helperText={
+                              errors?.APTIEnginePassword?.message
+                                ? t(
+                                    `helperText:${errors?.APTIEnginePassword?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -1988,7 +2185,11 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.fakturaB2B}
-                            helperText={errors?.fakturaB2B?.message}
+                            hhelperText={
+                              errors?.fakturaB2B?.message
+                                ? t(`helperText:${errors?.fakturaB2B?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -2012,7 +2213,11 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.fakturaB2C}
-                            helperText={errors?.fakturaB2C?.message}
+                            helperText={
+                              errors?.fakturaB2C?.message
+                                ? t(`helperText:${errors?.fakturaB2C?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth

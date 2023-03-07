@@ -361,7 +361,7 @@ export default function CreateUsers() {
                                 })}
                               </Select>
                               <FormHelperText>
-                                {errors.organization?.message}
+                                {errors.organization?.message ? t(`helperText:${errors.organization?.message}`) : ""}
                               </FormHelperText>
                             </FormControl>
                           )}
@@ -416,7 +416,7 @@ export default function CreateUsers() {
                               })}
                             </Select>
                             <FormHelperText>
-                              {errors.preferredLanguage?.message}
+                              {errors.preferredLanguage?.message ? t(`helperText:${errors.preferredLanguage?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
