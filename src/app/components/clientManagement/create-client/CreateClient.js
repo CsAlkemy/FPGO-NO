@@ -646,6 +646,7 @@ const CreateClient = () => {
                       render={({ field: { onChange, value, onBlur } }) => (
                         <DesktopDatePicker
                           label={t("label:contractEndDate")}
+                          mask=""
                           inputFormat="dd.MM.yyyy"
                           value={value}
                           required
