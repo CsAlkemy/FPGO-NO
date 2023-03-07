@@ -24,10 +24,12 @@ export const ThousandSeparator = (number) => {
     if (decimalIndex === -1) {
       decimalIndex = arr.length;
     }
-    for (let i = decimalIndex - 1, j = 0; i >= 0; i--, j++) {
+    for (let i = decimalIndex - 1, j = 1; i >= 0; i--, j++) {
       result.unshift(arr[i]);
-      if (j % 3 === 2 && i !== 0) {
-        result.unshift(".");
+      if (j !== 1 && j % 4 === 0 && i !== 0) {
+        result.splice(1, 0, ".");
+        j++;
+        // result.unshift(".");
       }
     }
     if (decimalIndex !== arr.length) {

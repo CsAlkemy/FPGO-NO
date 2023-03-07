@@ -2449,7 +2449,7 @@ const ClientDetails = () => {
                                           <TextField
                                             {...field}
                                             type="number"
-                                            value={field.value || ""}
+                                            value={field.value === 0 ? 0 : field.value || ""}
                                             className="text-right  custom-input-height"
                                             autoComplete="off"
                                             error={!!errors.vatValue}
