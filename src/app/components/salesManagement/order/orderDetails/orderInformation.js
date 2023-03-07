@@ -380,7 +380,7 @@ const OrderInformation = ({ info }) => {
                     </AccordionSummary>
                     <AccordionDetails className="bg-white px-0">
                       {addOrderIndex.map((index) => (
-                        <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
+                        <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
                           <Controller
                             name={`order[${index}].productName`}
                             control={control}
@@ -786,6 +786,7 @@ const OrderInformation = ({ info }) => {
                             <DesktopDatePicker
                               label={t("label:orderDate")}
                               // inputFormat="mm.dd.yyyy"
+                              mask=""
                               inputFormat="dd.MM.yyyy"
                               // inputFormat="dd.MMM.yyyy"
                               // value={!value ? new Date() : value}
@@ -1146,7 +1147,7 @@ const OrderInformation = ({ info }) => {
                                   <Autocomplete
                                     freeSolo
                                     options={customersList}
-                                    forcePopupIcon={<Search />}
+                                    // forcePopupIcon={<Search />}
                                     getOptionLabel={(option) => option.name}
                                     className="custom-input-height"
                                     disabled

@@ -17,7 +17,7 @@ import AuthService from "../../../data-access/services/authService";
 const defaultValues = {
   email: "",
   fullName: "",
-  phoneNumber: "",
+  phoneNumber: "47",
   designation: "",
   role: "",
   organization: "",
@@ -100,7 +100,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
     defaultValues.phoneNumber =
       userProfile?.countryCode && userProfile?.msisdn
         ? userProfile.countryCode + userProfile.msisdn
-        : "";
+        : "47";
     defaultValues.designation = userProfile?.designation
       ? userProfile?.designation
       : "";
@@ -312,7 +312,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                     }
                     variant="outlined"
                     fullWidth
-                    defaultValue={"Front Payment AS"}
+                    // defaultValue={"Front Payment AS"}
                     disabled
                   />
                 )}
