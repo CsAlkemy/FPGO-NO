@@ -153,8 +153,8 @@ export default function OverViewResponsiveBody(props) {
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
               </div>
-              <div className="body3 text-MonochromeGray-700">
-                {CharCont(props.row[rdt.id], 20)}
+              <div className="body3 text-MonochromeGray-700 truncate">
+                {props.row[rdt.id]}
               </div>
             </div>
           );
@@ -181,8 +181,8 @@ export default function OverViewResponsiveBody(props) {
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
               </div>
-              <div className="body3 text-MonochromeGray-700">
-                {CharCont(props.row[rdt.id], 20)}
+              <div className="body3 text-MonochromeGray-700 truncate">
+                {props.row[rdt.id]}
               </div>
             </div>
           );
@@ -321,8 +321,8 @@ export default function OverViewResponsiveBody(props) {
                   {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                   {rdt.label}
                 </div>
-                <div className="body3 text-MonochromeGray-700">
-                  {CharCont(props.row[rdt.id], 20)}
+                <div className="body3 text-MonochromeGray-700 truncate">
+                    {props.row[rdt.id]}
                 </div>
               </div>
             );
@@ -909,8 +909,8 @@ export default function OverViewResponsiveBody(props) {
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
               </div>
-              <div className="body3 text-MonochromeGray-700">
-                {CharCont(props.row[rdt.id], 20)}
+              <div className="body3 text-MonochromeGray-700 truncate">
+                  {props.row[rdt.id]}
               </div>
             </div>
           );
@@ -960,8 +960,8 @@ export default function OverViewResponsiveBody(props) {
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
               </div>
-              <div className="body3 text-MonochromeGray-700">
-                {CharCont(props.row[rdt.id], 20)}
+              <div className="body3 text-MonochromeGray-700 truncate">
+                  {props.row[rdt.id]}
               </div>
             </div>
           );
@@ -1011,8 +1011,8 @@ export default function OverViewResponsiveBody(props) {
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
               </div>
-              <div className="body3 text-MonochromeGray-700">
-                {CharCont(props.row[rdt.id], 20)}
+              <div className="body3 text-MonochromeGray-700 truncate ">
+                  {props.row[rdt.id]}
               </div>
             </div>
           );
