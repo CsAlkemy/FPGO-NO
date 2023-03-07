@@ -73,7 +73,8 @@ const TimelineLog = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} type="date" />}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
         />
       </div>
       {logs?.length > 0 ? (
