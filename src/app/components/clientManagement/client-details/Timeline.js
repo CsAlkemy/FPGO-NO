@@ -8,12 +8,12 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import {Hidden, Skeleton, TextField} from "@mui/material";
+import { Hidden, Skeleton, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
-import {CharCont} from "../../../utils/helperFunctions";
+import { CharCont } from "../../../utils/helperFunctions";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
@@ -38,15 +38,15 @@ const TimelineLog = () => {
     // setSelectedDate(date);
     const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
     setSelectedDate(prepareSelectedDate);
-    ClientService.getClientTimelineByUUID(
-      queryParams.uuid,
-      timeStamp
-    )
+    ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp)
       .then((res) => {
-        const summary = res?.data.filter((d) => d?.summary);
-        setSummary(summary[0].summary);
-        const filteredLogs = res?.data.filter((d) => !d?.summary);
-        setLogs(filteredLogs);
+        // const summary = res?.data.filter((d) => d?.summary);
+        // setSummary(summary[0].summary);
+        // const filteredLogs = res?.data.filter((d) => !d?.summary);
+        // console.log("filteredLogs : ",filteredLogs);
+        // setLogs(filteredLogs);
+        setSummary(res?.data?.summary ? res?.data?.summary : []);
+        setLogs(res?.data?.timeline ? res?.data?.timeline : []);
         setIsFetching(false);
       })
       .catch((e) => {
@@ -62,10 +62,7 @@ const TimelineLog = () => {
       }.09.${new Date().getFullYear()} 00:00:00`;
       // setSelectedDate(date);
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-      ClientService.getClientTimelineByUUID(
-        queryParams.uuid,
-        timeStamp
-      )
+      ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp)
         .then((res) => {
           setSummary(res?.data?.summary ? res?.data?.summary : []);
           setLogs(res?.data?.timeline ? res?.data?.timeline : []);
@@ -127,7 +124,7 @@ const TimelineLog = () => {
         </div>
       </div>
 
-      {logs?.length > 0 ? (
+      {!isFetching && logs?.length > 0 ? (
         <Timeline
           sx={{
             "& .MuiTimelineItem-root:before": {
@@ -280,8 +277,8 @@ const TimelineLog = () => {
             );
           })}
         </Timeline>
-      ) : (
-        <div className='p-10'>
+      ) : isFetching ? (
+        <div className="p-10">
           <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
@@ -299,6 +296,8 @@ const TimelineLog = () => {
             </div>
           </div>
         </div>
+      ) : (
+        ""
       )}
     </div>
   );

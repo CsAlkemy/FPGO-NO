@@ -76,7 +76,7 @@ const TimelineLog = () => {
           disableFuture
         />
       </div>
-      {logs?.length > 0 ? (
+      {!isFetching && logs?.length > 0 ? (
         <Timeline
           sx={{
             "& .MuiTimelineItem-root:before": {
@@ -232,7 +232,7 @@ const TimelineLog = () => {
             );
           })}
         </Timeline>
-      ) : (
+      ) : isFetching ? (
         <div>
           <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
@@ -251,6 +251,8 @@ const TimelineLog = () => {
             </div>
           </div>
         </div>
+      ) : (
+        ""
       )}
     </div>
   );
