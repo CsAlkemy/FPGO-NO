@@ -30,9 +30,9 @@ const TopCustomers = (props) => {
           </div>
         </div>
         <div className="flex flex-col gap-16 p-10 body3 mt-5">
-          {topCustomers.map((customer) => {
+          {topCustomers.map((customer, i) => {
             return (
-              <div className="grid grid-cols-5 justify-between gap-10">
+              <div className="grid grid-cols-5 justify-between gap-10" key={i}>
                 <Hidden smDown>
                   <div className="self-start col-span-2"> {customer.name}</div>
                 </Hidden>
