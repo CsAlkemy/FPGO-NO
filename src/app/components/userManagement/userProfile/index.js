@@ -1,4 +1,4 @@
-import React, {lazy, useState} from "react";
+import React, {useState} from "react";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {selectUser} from "app/store/userSlice";
@@ -14,9 +14,8 @@ import UserService from "../../../data-access/services/userService/UserService";
 import {useSnackbar} from "notistack";
 import {useTranslation} from "react-i18next";
 import {useUpdateUserStatusMutation} from "app/store/api/apiSlice";
-
-const ProfileForm = lazy(() => import("./profileForm"));
-const UpdatePassword = lazy(() => import("./updatePassword"));
+import ProfileForm from './profileForm'
+import UpdatePassword from './updatePassword'
 
 const index = () => {
   const { t } = useTranslation();

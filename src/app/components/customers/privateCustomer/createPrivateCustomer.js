@@ -365,7 +365,7 @@ const createPrivateCustomer = () => {
                                     color="secondary"
                                   />
                                 }
-                                label={t("label:sameAsbillingAddress")}
+                                label={t("label:sameAsBillingAddress")}
                                 labelPlacement="start"
                                 disabled={
                                   !(
