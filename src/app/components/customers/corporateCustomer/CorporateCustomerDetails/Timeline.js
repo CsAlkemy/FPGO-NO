@@ -72,10 +72,11 @@ const TimelineLog = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} type="date" />}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
         />
       </div>
-      {logs?.length > 0 ? (
+      {!isFetching && logs?.length > 0 ? (
         <Timeline
           sx={{
             "& .MuiTimelineItem-root:before": {
@@ -231,7 +232,7 @@ const TimelineLog = () => {
             );
           })}
         </Timeline>
-      ) : (
+      ) : isFetching ? (
         <div>
           <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
@@ -250,6 +251,8 @@ const TimelineLog = () => {
             </div>
           </div>
         </div>
+      ) : (
+        ""
       )}
     </div>
   );
