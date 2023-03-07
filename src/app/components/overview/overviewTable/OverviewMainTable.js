@@ -975,7 +975,7 @@ export default function OverviewMainTable(props) {
                             align="center"
                           >
                             <Typography className="subtitle3">
-                              Data Not Found!
+                              {t("label:dataNotFound")}
                             </Typography>
                           </TableCell>
                         </TableRow>

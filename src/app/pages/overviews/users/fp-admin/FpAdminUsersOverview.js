@@ -25,7 +25,7 @@ export default function FpAdminUsersOverview() {
   ];
   const tabs = [0, 1, 2];
   // const headerSubtitle = t("label:usersAllFpAdmis");
-  const headerSubtitle = t("navigation:fpAdminUsers");
+  const headerSubtitle = t("label:fpAdminUsers");
   const headerButtonLabel = t("label:createUser");
   const dispatch = useDispatch();
   const fpAdminUsers = useSelector(selectOverviewMainTableData);
