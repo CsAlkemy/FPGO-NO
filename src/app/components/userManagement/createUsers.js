@@ -32,6 +32,7 @@ import {
 import {useCreateUserMutation} from "app/store/api/apiSlice";
 import UtilsServices from "../../data-access/utils/UtilsServices";
 import AuthService from "../../data-access/services/authService";
+import _ from "lodash";
 
 export default function CreateUsers() {
   const { t } = useTranslation();
@@ -141,7 +142,9 @@ export default function CreateUsers() {
         navigate(-1);
       } else {
         setLoading(false);
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
     // UserService.createUserByRole(values, type)
@@ -245,7 +248,7 @@ export default function CreateUsers() {
                               setType(role.slug);
                             }}
                           >
-                            {role.title}
+                            {t(`label:${_.camelCase(role?.title)}`)}
                           </button>
                         );
                       })}
@@ -361,7 +364,11 @@ export default function CreateUsers() {
                                 })}
                               </Select>
                               <FormHelperText>
-                                {errors.organization?.message ? t(`helperText:${errors.organization?.message}`) : ""}
+                                {errors.organization?.message
+                                  ? t(
+                                      `helperText:${errors.organization?.message}`
+                                    )
+                                  : ""}
                               </FormHelperText>
                             </FormControl>
                           )}
@@ -410,13 +417,17 @@ export default function CreateUsers() {
                               {languageList.map((item, index) => {
                                 return (
                                   <MenuItem key={index} value={item.value}>
-                                    {item.title}
+                                    {t(`label:${item?.title.toLowerCase()}`)}
                                   </MenuItem>
                                 );
                               })}
                             </Select>
                             <FormHelperText>
-                              {errors.preferredLanguage?.message ? t(`helperText:${errors.preferredLanguage?.message}`) : ""}
+                              {errors.preferredLanguage?.message
+                                ? t(
+                                    `helperText:${errors.preferredLanguage?.message}`
+                                  )
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}

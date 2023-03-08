@@ -2,13 +2,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import PersonIcon from "@mui/icons-material/Person";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import {
-  Drawer,
-  Hidden,
-  IconButton,
-  ListItem,
-  ListItemButton,
-} from "@mui/material";
+import {Drawer, Hidden, IconButton, ListItem, ListItemButton,} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -18,18 +12,19 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import { selectUser } from "app/store/userSlice";
-import { useSnackbar } from "notistack";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import {selectUser} from "app/store/userSlice";
+import {useSnackbar} from "notistack";
+import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 import AuthService from "../../data-access/services/authService";
-import UserService from "../../data-access/services/userService/UserService";
-import { changeLanguage, selectCurrentLanguageId } from "app/store/i18nSlice";
+import {changeLanguage, selectCurrentLanguageId} from "app/store/i18nSlice";
+import {useTranslation} from "react-i18next";
 
 function UserMenu(props) {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [userMenu, setUserMenu] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -136,7 +131,9 @@ function UserMenu(props) {
           >
             <ListItemButton>
               <ListItemIcon>{<img src={Language.src}></img>}</ListItemIcon>
-              <ListItemText primary={Language.label} />
+              <ListItemText>
+                {t(`label:${Language.label.toLowerCase()}`)}
+              </ListItemText>
             </ListItemButton>
           </ListItem>
         ))}

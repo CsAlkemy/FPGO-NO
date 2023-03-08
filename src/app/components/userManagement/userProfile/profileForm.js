@@ -423,7 +423,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                     {languageList.map((item, index) => {
                       return (
                         <MenuItem key={index} value={item.value}>
-                          {item.title}
+                            {t(`label:${item?.title.toLowerCase()}`)}
                         </MenuItem>
                       );
                     })}

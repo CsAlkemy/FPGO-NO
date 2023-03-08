@@ -3,10 +3,12 @@ import { Box, Hidden, MenuItem, Select, SvgIcon } from "@mui/material";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useDispatch } from "react-redux";
 import { changeLanguage } from "app/store/i18nSlice";
+import { useTranslation } from "react-i18next";
 
 const authMobileHeader = (props) => {
   const { isShow } = props;
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const languages = [
     {
       label: "English",
@@ -67,7 +69,7 @@ const authMobileHeader = (props) => {
                   value={option.label}
                   onClick={() => handleLanguageChange(option.value)}
                 >
-                  {option.label}
+                  {t(`label:${option.label.toLowerCase()}`)}
                 </MenuItem>
               ))}
             </Select>

@@ -1,16 +1,20 @@
-import Button from '@mui/material/Button';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MenuItem from '@mui/material/MenuItem';
-import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { changeLanguage, selectCurrentLanguage, selectLanguages } from 'app/store/i18nSlice';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import Button from "@mui/material/Button";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import MenuItem from "@mui/material/MenuItem";
+import Popover from "@mui/material/Popover";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changeLanguage,
+  selectCurrentLanguage,
+  selectLanguages,
+} from "app/store/i18nSlice";
+import { useTranslation } from "react-i18next";
 
 function LanguageSwitcher(props) {
+  const { t } = useTranslation();
   const currentLanguage = useSelector(selectCurrentLanguage);
   const languages = useSelector(selectLanguages);
   const [menu, setMenu] = useState(null);
@@ -33,8 +37,8 @@ function LanguageSwitcher(props) {
   return (
     <>
       {/*<Button className="h-40 max-w-112 rounded-4">*/}
-        {/* TODO: Allow multi language selection */}
-        <Button className="h-40 w-64" onClick={langMenuClick}>
+      {/* TODO: Allow multi language selection */}
+      <Button className="h-40 w-64" onClick={langMenuClick}>
         {/* <Button className="h-40 w-64" onClick={langMenuClick}> */}
         <img
           className="mx-4 max-w-20"
@@ -42,7 +46,10 @@ function LanguageSwitcher(props) {
           alt={currentLanguage.title}
         />
 
-        <Typography className="mx-4 font-semibold uppercase" color="text.secondary">
+        <Typography
+          className="mx-4 font-semibold uppercase"
+          color="text.secondary"
+        >
           {currentLanguage.id}
         </Typography>
       </Button>
@@ -52,16 +59,16 @@ function LanguageSwitcher(props) {
         anchorEl={menu}
         onClose={langMenuClose}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
+          vertical: "bottom",
+          horizontal: "center",
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
+          vertical: "top",
+          horizontal: "center",
         }}
         classes={{
           // paper: 'py-8 max-w-112',
-          paper: 'py-8 max-w-135',
+          paper: "py-8 max-w-135",
         }}
       >
         {languages.map((lng) => (
@@ -73,7 +80,7 @@ function LanguageSwitcher(props) {
                 alt={lng.title}
               />
             </ListItemIcon>
-            <ListItemText primary={lng.title} />
+            <ListItemText>{t(`label:${lng.title.toLowerCase()}`)}</ListItemText>
             {/*<FuseSvgIcon className="text-48" size={24} color="action">*/}
             {/*  material-outline:arrow_drop_down*/}
             {/*</FuseSvgIcon>*/}
