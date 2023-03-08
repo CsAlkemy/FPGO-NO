@@ -76,7 +76,7 @@ const AuthLayout = ({ children }) => {
                       value={option.label}
                       onClick={() => handleLanguageChange(option.value)}
                     >
-                      {option.label}
+                      {t(`label:${option.label.toLowerCase()}`)}
                     </MenuItem>
                   ))}
                 </Select>
