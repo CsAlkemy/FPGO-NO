@@ -240,10 +240,9 @@ const createProducts = () => {
                       onClick={() => changeProductStatus()}
                       disabled={user.role[0] === FP_ADMIN}
                     >
-                      {t("label:make")}{" "}
-                      {info.status === t("label:active")
-                        ? t("label:inactive")
-                        : t("label:active")}
+                      {info.status.toLowerCase() === "active"
+                        ? t("label:makeInactive")
+                        : t("label:makeActive")}
                     </Button>
                     <LoadingButton
                       variant="contained"
