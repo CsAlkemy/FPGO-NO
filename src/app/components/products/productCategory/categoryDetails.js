@@ -176,7 +176,7 @@ const createCategory = (onSubmit = () => {}) => {
               >
                 <div className=" header-click-to-action">
                   <div className="header-text header6">
-                    {t("label:createCategory")}
+                    {t("label:categoryDetails")}
                   </div>
                   <div className="button-container-product">
                     <Button

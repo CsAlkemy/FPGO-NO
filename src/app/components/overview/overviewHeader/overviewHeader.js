@@ -162,6 +162,8 @@ export default function OverviewHeader(props) {
         return t("label:searchByOrderIDNamePhoneNo");
       case productsListOverview:
         return t("label:searchByProductNameAndID");
+      case categoriesListOverview:
+        return t("label:searchByCategoryNameAndID");
       default:
         return t("label:searchByNameEmailPhoneNo");
     }
