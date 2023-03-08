@@ -163,7 +163,7 @@ export default function CreditCheckPrivateClient() {
                             label={t("label:personalId")}
                             type="text"
                             error={!!errors.personalId}
-                            helperText={errors?.personalId?.message ? t(`helperText:${errors?.personalId?.message}`) : ""}
+                            helperText={errors?.personalId?.message ? t(`validation:${errors?.personalId?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth
@@ -190,7 +190,7 @@ export default function CreditCheckPrivateClient() {
                               //onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.phoneNumber?.message ? t(`helperText:${errors?.phoneNumber?.message}`) : ""}
+                              {errors?.phoneNumber?.message ? t(`validation:${errors?.phoneNumber?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -228,7 +228,7 @@ export default function CreditCheckPrivateClient() {
                               }
                             />
                             <FormHelperText className='ml-32'>
-                              {errors?.trems?.message ? t(`helperText:${errors?.trems?.message}`) : ""}
+                              {errors?.trems?.message ? t(`validation:${errors?.trems?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}

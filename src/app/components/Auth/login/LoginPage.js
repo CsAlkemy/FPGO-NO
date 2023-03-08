@@ -177,7 +177,7 @@ const LoginPage = () => {
                 error={!!errors.email}
                 helperText={
                   errors?.email?.message
-                    ? t(`helperText:${errors?.email?.message}`)
+                    ? t(`validation:${errors?.email?.message}`)
                     : ""
                 }
                 variant="outlined"
@@ -186,7 +186,6 @@ const LoginPage = () => {
               />
             )}
           />
-
           <Controller
             name="password"
             control={control}

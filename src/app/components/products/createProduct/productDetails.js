@@ -316,7 +316,7 @@ const createProducts = () => {
                               helperText={
                                 errors?.productID?.message
                                   ? t(
-                                      `helperText:${errors?.productID?.message}`
+                                      `validation:${errors?.productID?.message}`
                                     )
                                   : ""
                               }
@@ -343,7 +343,7 @@ const createProducts = () => {
                               helperText={
                                 errors?.productName?.message
                                   ? t(
-                                      `helperText:${errors?.productName?.message}`
+                                      `validation:${errors?.productName?.message}`
                                     )
                                   : ""
                               }
@@ -369,7 +369,7 @@ const createProducts = () => {
                             error={!!errors.price}
                             helperText={
                               errors?.price?.message
-                                ? t(`helperText:${errors?.price?.message}`)
+                                ? t(`validation:${errors?.price?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -399,7 +399,7 @@ const createProducts = () => {
                             error={!!errors.unit}
                             helperText={
                               errors?.unit?.message
-                                ? t(`helperText:${errors?.unit?.message}`)
+                                ? t(`validation:${errors?.unit?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -422,7 +422,7 @@ const createProducts = () => {
                             helperText={
                               errors?.manufacturer?.message
                                 ? t(
-                                    `helperText:${errors?.manufacturer?.message}`
+                                    `validation:${errors?.manufacturer?.message}`
                                   )
                                 : ""
                             }
@@ -528,7 +528,7 @@ const createProducts = () => {
                               helperText={
                                 errors?.description?.message
                                   ? t(
-                                      `helperText:${errors?.description?.message}`
+                                      `validation:${errors?.description?.message}`
                                     )
                                   : ""
                               }
@@ -611,7 +611,7 @@ const createProducts = () => {
                               error={!!errors.cost}
                               helperText={
                                 errors?.cost?.message
-                                  ? t(`helperText:${errors?.cost?.message}`)
+                                  ? t(`validation:${errors?.cost?.message}`)
                                   : ""
                               }
                               variant="outlined"

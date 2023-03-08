@@ -268,7 +268,7 @@ export default function CreateUsers() {
                             error={!!errors.email}
                             helperText={
                               errors?.email?.message
-                                ? t(`helperText:${errors?.email?.message}`)
+                                ? t(`validation:${errors?.email?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -289,7 +289,7 @@ export default function CreateUsers() {
                             error={!!errors.fullName}
                             helperText={
                               errors?.fullName?.message
-                                ? t(`helperText:${errors?.fullName?.message}`)
+                                ? t(`validation:${errors?.fullName?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -324,7 +324,7 @@ export default function CreateUsers() {
                             <FormHelperText>
                               {errors?.phoneNumber?.message
                                 ? t(
-                                    `helperText:${errors?.phoneNumber?.message}`
+                                    `validation:${errors?.phoneNumber?.message}`
                                   )
                                 : ""}
                             </FormHelperText>
@@ -366,7 +366,7 @@ export default function CreateUsers() {
                               <FormHelperText>
                                 {errors.organization?.message
                                   ? t(
-                                      `helperText:${errors.organization?.message}`
+                                      `validation:${errors.organization?.message}`
                                     )
                                   : ""}
                               </FormHelperText>
@@ -387,7 +387,7 @@ export default function CreateUsers() {
                             helperText={
                               errors?.designation?.message
                                 ? t(
-                                    `helperText:${errors?.designation?.message}`
+                                    `validation:${errors?.designation?.message}`
                                   )
                                 : ""
                             }
@@ -425,7 +425,7 @@ export default function CreateUsers() {
                             <FormHelperText>
                               {errors.preferredLanguage?.message
                                 ? t(
-                                    `helperText:${errors.preferredLanguage?.message}`
+                                    `validation:${errors.preferredLanguage?.message}`
                                   )
                                 : ""}
                             </FormHelperText>
@@ -478,7 +478,7 @@ export default function CreateUsers() {
                           error={!!errors.password}
                           helperText={
                             errors?.password?.message
-                              ? t(`helperText:${errors?.password?.message}`)
+                              ? t(`validation:${errors?.password?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -513,7 +513,7 @@ export default function CreateUsers() {
                           helperText={
                             errors?.confirmpassword?.message
                               ? t(
-                                  `helperText:${errors?.confirmpassword?.message}`
+                                  `validation:${errors?.confirmpassword?.message}`
                                 )
                               : ""
                           }

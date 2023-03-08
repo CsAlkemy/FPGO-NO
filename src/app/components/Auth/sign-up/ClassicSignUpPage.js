@@ -195,7 +195,7 @@ function ClassicSignUpPage() {
                           label={t("label:organizationId")}
                           type="number"
                           error={!!errors.organizationid}
-                          helperText={errors?.organizationid?.message ? t(`helperText:${errors?.organizationid?.message}`) : ""}
+                          helperText={errors?.organizationid?.message ? t(`validation:${errors?.organizationid?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -212,7 +212,7 @@ function ClassicSignUpPage() {
                           label={t("label:companyName")}
                           type="companyname"
                           error={!!errors.companyname}
-                          helperText={errors?.companyname?.message ? t(`helperText:${errors?.companyname?.message}`) : ""}
+                          helperText={errors?.companyname?.message ? t(`validation:${errors?.companyname?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth

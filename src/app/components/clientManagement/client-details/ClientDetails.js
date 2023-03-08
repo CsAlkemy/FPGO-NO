@@ -765,7 +765,7 @@ const ClientDetails = () => {
                                     error={!!errors.id}
                                     helperText={
                                       errors?.id?.message
-                                        ? t(`helperText:${errors?.id?.message}`)
+                                        ? t(`validation:${errors?.id?.message}`)
                                         : ""
                                     }
                                     variant="outlined"
@@ -787,7 +787,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.clientName?.message
                                         ? t(
-                                            `helperText:${errors?.clientName?.message}`
+                                            `validation:${errors?.clientName?.message}`
                                           )
                                         : ""
                                     }
@@ -832,7 +832,7 @@ const ClientDetails = () => {
                                     <FormHelperText>
                                       {errors?.organizationType?.message
                                         ? t(
-                                            `helperText:${errors?.organizationType?.message}`
+                                            `validation:${errors?.organizationType?.message}`
                                           )
                                         : ""}
                                     </FormHelperText>
@@ -853,7 +853,7 @@ const ClientDetails = () => {
                                       helperText={
                                         errors?.parentClientName?.message
                                           ? t(
-                                              `helperText:${errors?.parentClientName?.message}`
+                                              `validation:${errors?.parentClientName?.message}`
                                             )
                                           : ""
                                       }
@@ -905,7 +905,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.fullName?.message
                                         ? t(
-                                            `helperText:${errors?.fullName?.message}`
+                                            `validation:${errors?.fullName?.message}`
                                           )
                                         : ""
                                     }
@@ -942,7 +942,7 @@ const ClientDetails = () => {
                                     <FormHelperText>
                                       {errors?.primaryPhoneNumber?.message
                                         ? t(
-                                            `helperText:${errors?.primaryPhoneNumber?.message}`
+                                            `validation:${errors?.primaryPhoneNumber?.message}`
                                           )
                                         : ""}
                                     </FormHelperText>
@@ -962,7 +962,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.designation?.message
                                         ? t(
-                                            `helperText:${errors?.designation?.message}`
+                                            `validation:${errors?.designation?.message}`
                                           )
                                         : ""
                                     }
@@ -985,7 +985,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.email?.message
                                         ? t(
-                                            `helperText:${errors?.email?.message}`
+                                            `validation:${errors?.email?.message}`
                                           )
                                         : ""
                                     }
@@ -1090,7 +1090,7 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.contactEndDate?.message
                                             ? t(
-                                                `helperText:${errors?.contactEndDate?.message}`
+                                                `validation:${errors?.contactEndDate?.message}`
                                               )
                                             : ""
                                         }
@@ -1112,7 +1112,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.commision?.message
                                         ? t(
-                                            `helperText:${errors?.commision?.message}`
+                                            `validation:${errors?.commision?.message}`
                                           )
                                         : ""
                                     }
@@ -1143,7 +1143,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.smsCost?.message
                                         ? t(
-                                            `helperText:${errors?.smsCost?.message}`
+                                            `validation:${errors?.smsCost?.message}`
                                           )
                                         : ""
                                     }
@@ -1174,7 +1174,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.emailCost?.message
                                         ? t(
-                                            `helperText:${errors?.emailCost?.message}`
+                                            `validation:${errors?.emailCost?.message}`
                                           )
                                         : ""
                                     }
@@ -1205,7 +1205,7 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.creditCheckCost?.message
                                         ? t(
-                                            `helperText:${errors?.creditCheckCost?.message}`
+                                            `validation:${errors?.creditCheckCost?.message}`
                                           )
                                         : ""
                                     }
