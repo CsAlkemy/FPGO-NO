@@ -672,16 +672,20 @@ const ClientDetails = () => {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div className=" header-click-to-action">
-                  <div className="header-text header6">
+                  <div className="header-text header6 flex gap-7">
                     Client Details ({info?.organizationDetails?.uuid})
-                    {info?.status === "Active" ? (
-                      <span className=" ml-5 bg-confirmed rounded-4 px-16 py-4 body3">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="bg-rejected ml-5 rounded-4 px-16 py-4 body3">
-                        Inactive
-                      </span>
+                    {info?.length !==0 && (
+                      <div>
+                        {info?.status === "Active" ? (
+                          <span className=" ml-5 bg-confirmed rounded-4 px-16 py-4 body3">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="bg-rejected ml-5 rounded-4 px-16 py-4 body3">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-2 gap-10 w-full justify-between sm:w-auto mb-5 sm:mb-0">
@@ -1066,14 +1070,15 @@ const ClientDetails = () => {
                                     onChange={onChange}
                                     PopperProps={{
                                       sx: {
-                                        "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                          borderRadius: '8px',
-                                          "&.Mui-selected": {
-                                            backgroundColor: "#c9eee7",
-                                            color: "#323434",
-                                          }
-                                        }
-                                      }
+                                        "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                          {
+                                            borderRadius: "8px",
+                                            "&.Mui-selected": {
+                                              backgroundColor: "#c9eee7",
+                                              color: "#323434",
+                                            },
+                                          },
+                                      },
                                     }}
                                     renderInput={(params) => (
                                       <TextField
@@ -2449,7 +2454,11 @@ const ClientDetails = () => {
                                           <TextField
                                             {...field}
                                             type="number"
-                                            value={field.value === 0 ? 0 : field.value || ""}
+                                            value={
+                                              field.value === 0
+                                                ? 0
+                                                : field.value || ""
+                                            }
                                             className="text-right  custom-input-height"
                                             autoComplete="off"
                                             error={!!errors.vatValue}
