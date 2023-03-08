@@ -415,7 +415,7 @@ const CreateClient = () => {
                           error={!!errors.id}
                           helperText={
                             errors?.id?.message
-                              ? t(`helperText:${errors?.id?.message}`)
+                              ? t(`validation:${errors?.id?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -436,7 +436,7 @@ const CreateClient = () => {
                           error={!!errors.clientName}
                           helperText={
                             errors?.clientName?.message
-                              ? t(`helperText:${errors?.clientName?.message}`)
+                              ? t(`validation:${errors?.clientName?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -491,7 +491,7 @@ const CreateClient = () => {
                           <FormHelperText>
                             {errors?.organizationType?.message
                               ? t(
-                                  `helperText:${errors?.organizationType?.message}`
+                                  `validation:${errors?.organizationType?.message}`
                                 )
                               : ""}
                           </FormHelperText>
@@ -528,7 +528,7 @@ const CreateClient = () => {
                           error={!!errors.fullName}
                           helperText={
                             errors?.fullName?.message
-                              ? t(`helperText:${errors?.fullName?.message}`)
+                              ? t(`validation:${errors?.fullName?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -563,7 +563,7 @@ const CreateClient = () => {
                           <FormHelperText>
                             {errors?.primaryPhoneNumber?.message
                               ? t(
-                                  `helperText:${errors?.primaryPhoneNumber?.message}`
+                                  `validation:${errors?.primaryPhoneNumber?.message}`
                                 )
                               : ""}
                           </FormHelperText>
@@ -582,7 +582,7 @@ const CreateClient = () => {
                           error={!!errors.designation}
                           helperText={
                             errors?.designation?.message
-                              ? t(`helperText:${errors?.designation?.message}`)
+                              ? t(`validation:${errors?.designation?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -602,7 +602,7 @@ const CreateClient = () => {
                           error={!!errors.email}
                           helperText={
                             errors?.email?.message
-                              ? t(`helperText:${errors?.email?.message}`)
+                              ? t(`validation:${errors?.email?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -701,7 +701,7 @@ const CreateClient = () => {
                               helperText={
                                 errors?.contactEndDate?.message
                                   ? t(
-                                      `helperText:${errors?.contactEndDate?.message}`
+                                      `validation:${errors?.contactEndDate?.message}`
                                     )
                                   : ""
                               }
@@ -722,7 +722,7 @@ const CreateClient = () => {
                           error={!!errors.commision}
                           helperText={
                             errors?.commision?.message
-                              ? t(`helperText:${errors?.commision?.message}`)
+                              ? t(`validation:${errors?.commision?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -750,7 +750,7 @@ const CreateClient = () => {
                           error={!!errors.smsCost}
                           helperText={
                             errors?.smsCost?.message
-                              ? t(`helperText:${errors?.smsCost?.message}`)
+                              ? t(`validation:${errors?.smsCost?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -778,7 +778,7 @@ const CreateClient = () => {
                           error={!!errors.emailCost}
                           helperText={
                             errors?.emailCost?.message
-                              ? t(`helperText:${errors?.emailCost?.message}`)
+                              ? t(`validation:${errors?.emailCost?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -807,7 +807,7 @@ const CreateClient = () => {
                           helperText={
                             errors?.creditCheckCost?.message
                               ? t(
-                                  `helperText:${errors?.creditCheckCost?.message}`
+                                  `validation:${errors?.creditCheckCost?.message}`
                                 )
                               : ""
                           }
@@ -836,7 +836,7 @@ const CreateClient = () => {
                           error={!!errors.ehfCost}
                           helperText={
                             errors?.ehfCost?.message
-                              ? t(`helperText:${errors?.ehfCost?.message}`)
+                              ? t(`validation:${errors?.ehfCost?.message}`)
                               : ""
                           }
                           variant="outlined"
@@ -946,7 +946,7 @@ const CreateClient = () => {
                             <FormHelperText>
                               {errors?.billingPhoneNumber?.message
                                 ? t(
-                                    `helperText:${errors?.billingPhoneNumber?.message}`
+                                    `validation:${errors?.billingPhoneNumber?.message}`
                                   )
                                 : ""}
                             </FormHelperText>
@@ -966,7 +966,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.billingEmail?.message
                                 ? t(
-                                    `helperText:${errors?.billingEmail?.message}`
+                                    `validation:${errors?.billingEmail?.message}`
                                   )
                                 : ""
                             }
@@ -992,7 +992,7 @@ const CreateClient = () => {
                               helperText={
                                 errors?.billingAddress?.message
                                   ? t(
-                                      `helperText:${errors?.billingAddress?.message}`
+                                      `validation:${errors?.billingAddress?.message}`
                                     )
                                   : ""
                               }
@@ -1017,7 +1017,7 @@ const CreateClient = () => {
                               error={!!errors.zip}
                               helperText={
                                 errors?.zip?.message
-                                  ? t(`helperText:${errors?.zip?.message}`)
+                                  ? t(`validation:${errors?.zip?.message}`)
                                   : ""
                               }
                               variant="outlined"
@@ -1041,7 +1041,7 @@ const CreateClient = () => {
                             error={!!errors.city}
                             helperText={
                               errors?.city?.message
-                                ? t(`helperText:${errors?.city?.message}`)
+                                ? t(`validation:${errors?.city?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -1075,7 +1075,7 @@ const CreateClient = () => {
                             </Select>
                             <FormHelperText>
                               {errors?.country?.message
-                                ? t(`helperText:${errors?.country?.message}`)
+                                ? t(`validation:${errors?.country?.message}`)
                                 : ""}
                             </FormHelperText>
                           </FormControl>
@@ -1168,7 +1168,7 @@ const CreateClient = () => {
                                 <FormHelperText>
                                   {errors?.shippingPhoneNumber?.message
                                     ? t(
-                                        `helperText:${errors?.shippingPhoneNumber?.message}`
+                                        `validation:${errors?.shippingPhoneNumber?.message}`
                                       )
                                     : ""}
                                 </FormHelperText>
@@ -1189,7 +1189,7 @@ const CreateClient = () => {
                                 helperText={
                                   errors?.shippingEmail?.message
                                     ? t(
-                                        `helperText:${errors?.shippingEmail?.message}`
+                                        `validation:${errors?.shippingEmail?.message}`
                                       )
                                     : ""
                                 }
@@ -1216,7 +1216,7 @@ const CreateClient = () => {
                                   helperText={
                                     errors?.shippingAddress?.message
                                       ? t(
-                                          `helperText:${errors?.shippingAddress?.message}`
+                                          `validation:${errors?.shippingAddress?.message}`
                                         )
                                       : ""
                                   }
@@ -1243,7 +1243,7 @@ const CreateClient = () => {
                                   helperText={
                                     errors?.shippingZip?.message
                                       ? t(
-                                          `helperText:${errors?.shippingZip?.message}`
+                                          `validation:${errors?.shippingZip?.message}`
                                         )
                                       : ""
                                   }
@@ -1270,7 +1270,7 @@ const CreateClient = () => {
                                 helperText={
                                   errors?.shippingCity?.message
                                     ? t(
-                                        `helperText:${errors?.shippingCity?.message}`
+                                        `validation:${errors?.shippingCity?.message}`
                                       )
                                     : ""
                                 }
@@ -1308,7 +1308,7 @@ const CreateClient = () => {
                                 <FormHelperText>
                                   {errors?.shippingCountry?.message
                                     ? t(
-                                        `helperText:${errors?.shippingCountry?.message}`
+                                        `validation:${errors?.shippingCountry?.message}`
                                       )
                                     : ""}
                                 </FormHelperText>
@@ -1347,7 +1347,7 @@ const CreateClient = () => {
                             error={!!errors.bankName}
                             helperText={
                               errors?.bankName?.message
-                                ? t(`helperText:${errors?.bankName?.message}`)
+                                ? t(`validation:${errors?.bankName?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -1378,7 +1378,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.accountNumber?.message
                                 ? t(
-                                    `helperText:${errors?.accountNumber?.message}`
+                                    `validation:${errors?.accountNumber?.message}`
                                   )
                                 : ""
                             }
@@ -1400,7 +1400,7 @@ const CreateClient = () => {
                             error={!!errors.IBAN}
                             helperText={
                               errors?.IBAN?.message
-                                ? t(`helperText:${errors?.IBAN?.message}`)
+                                ? t(`validation:${errors?.IBAN?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -1421,7 +1421,7 @@ const CreateClient = () => {
                             error={!!errors.SWIFTCode}
                             helperText={
                               errors?.SWIFTCode?.message
-                                ? t(`helperText:${errors?.SWIFTCode?.message}`)
+                                ? t(`validation:${errors?.SWIFTCode?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -1462,7 +1462,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.APTICuserName?.message
                                 ? t(
-                                    `helperText:${errors?.APTICuserName?.message}`
+                                    `validation:${errors?.APTICuserName?.message}`
                                   )
                                 : ""
                             }
@@ -1485,7 +1485,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.APTICpassword?.message
                                 ? t(
-                                    `helperText:${errors?.APTICpassword?.message}`
+                                    `validation:${errors?.APTICpassword?.message}`
                                   )
                                 : ""
                             }
@@ -1522,7 +1522,7 @@ const CreateClient = () => {
                             error={!!errors.name}
                             helperText={
                               errors?.name?.message
-                                ? t(`helperText:${errors?.name?.message}`)
+                                ? t(`validation:${errors?.name?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -1544,7 +1544,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.fpReference?.message
                                 ? t(
-                                    `helperText:${errors?.fpReference?.message}`
+                                    `validation:${errors?.fpReference?.message}`
                                   )
                                 : ""
                             }
@@ -1570,7 +1570,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.creditLimitCustomer?.message
                                 ? t(
-                                    `helperText:${errors?.creditLimitCustomer?.message}`
+                                    `validation:${errors?.creditLimitCustomer?.message}`
                                   )
                                 : ""
                             }
@@ -1600,7 +1600,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.costLimitforCustomer?.message
                                 ? t(
-                                    `helperText:${errors?.costLimitforCustomer?.message}`
+                                    `validation:${errors?.costLimitforCustomer?.message}`
                                   )
                                 : ""
                             }
@@ -1629,7 +1629,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.costLimitforOrder?.message
                                 ? t(
-                                    `helperText:${errors?.costLimitforOrder?.message}`
+                                    `validation:${errors?.costLimitforOrder?.message}`
                                   )
                                 : ""
                             }
@@ -1658,7 +1658,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.invoicewithRegress?.message
                                 ? t(
-                                    `helperText:${errors?.invoicewithRegress?.message}`
+                                    `validation:${errors?.invoicewithRegress?.message}`
                                   )
                                 : ""
                             }
@@ -1687,7 +1687,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.invoicewithoutRegress?.message
                                 ? t(
-                                    `helperText:${errors?.invoicewithoutRegress?.message}`
+                                    `validation:${errors?.invoicewithoutRegress?.message}`
                                   )
                                 : ""
                             }
@@ -1734,7 +1734,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.APTIEngineCuserName?.message
                                 ? t(
-                                    `helperText:${errors?.APTIEngineCuserName?.message}`
+                                    `validation:${errors?.APTIEngineCuserName?.message}`
                                   )
                                 : ""
                             }
@@ -1757,7 +1757,7 @@ const CreateClient = () => {
                             helperText={
                               errors?.APTIEnginePassword?.message
                                 ? t(
-                                    `helperText:${errors?.APTIEnginePassword?.message}`
+                                    `validation:${errors?.APTIEnginePassword?.message}`
                                   )
                                 : ""
                             }
@@ -2187,7 +2187,7 @@ const CreateClient = () => {
                             error={!!errors.fakturaB2B}
                             hhelperText={
                               errors?.fakturaB2B?.message
-                                ? t(`helperText:${errors?.fakturaB2B?.message}`)
+                                ? t(`validation:${errors?.fakturaB2B?.message}`)
                                 : ""
                             }
                             variant="outlined"
@@ -2215,7 +2215,7 @@ const CreateClient = () => {
                             error={!!errors.fakturaB2C}
                             helperText={
                               errors?.fakturaB2C?.message
-                                ? t(`helperText:${errors?.fakturaB2C?.message}`)
+                                ? t(`validation:${errors?.fakturaB2C?.message}`)
                                 : ""
                             }
                             variant="outlined"

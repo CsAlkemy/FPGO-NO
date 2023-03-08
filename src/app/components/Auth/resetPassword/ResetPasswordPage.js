@@ -101,7 +101,7 @@ function ResetPasswordPage() {
                   label={t("label:password")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.password}
-                  helperText={errors?.password?.message ? t(`helperText:${errors?.password?.message}`) : ""}
+                  helperText={errors?.password?.message ? t(`validation:${errors?.password?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -131,7 +131,7 @@ function ResetPasswordPage() {
                   label={t("label:confirmPassword")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.confirmpassword}
-                  helperText={errors?.confirmpassword?.message ? t(`helperText:${errors?.confirmpassword?.message}`) : ""}
+                  helperText={errors?.confirmpassword?.message ? t(`validation:${errors?.confirmpassword?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth

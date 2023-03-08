@@ -62,6 +62,7 @@ import AuthService from "../../../data-access/services/authService";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { es, nn, nb } from "date-fns/locale";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -2039,7 +2040,7 @@ const createOrder = () => {
                                 options={customersList}
                                 // forcePopupIcon={<Search />}
                                 getOptionLabel={(option) => option.searchString}
-                                className="custom-input-height"
+                                className=""
                                 fullWidth
                                 onChange={(_, data) => {
                                   if (data) {
