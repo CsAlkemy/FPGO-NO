@@ -196,7 +196,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                   error={!!errors.email}
                   helperText={
                     errors?.email?.message
-                      ? t(`helperText:${errors?.email?.message}`)
+                      ? t(`validation:${errors?.email?.message}`)
                       : ""
                   }
                   variant="outlined"
@@ -217,7 +217,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                   error={!!errors.fullName}
                   helperText={
                     errors?.fullName?.message
-                      ? t(`helperText:${errors?.fullName?.message}`)
+                      ? t(`validation:${errors?.fullName?.message}`)
                       : ""
                   }
                   variant="outlined"
@@ -247,7 +247,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                   />
                   <FormHelperText>
                     {errors?.phoneNumber?.message
-                      ? t(`helperText:${errors?.phoneNumber?.message}`)
+                      ? t(`validation:${errors?.phoneNumber?.message}`)
                       : ""}
                   </FormHelperText>
                 </FormControl>
@@ -307,7 +307,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                     error={!!errors.organization}
                     helperText={
                       errors?.organization?.message
-                        ? t(`helperText:${errors?.organization?.message}`)
+                        ? t(`validation:${errors?.organization?.message}`)
                         : ""
                     }
                     variant="outlined"
@@ -331,7 +331,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                   error={!!errors.designation}
                   helperText={
                     errors?.designation?.message
-                      ? t(`helperText:${errors?.designation?.message}`)
+                      ? t(`validation:${errors?.designation?.message}`)
                       : ""
                   }
                   variant="outlined"
@@ -396,7 +396,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                   </Select>
                   <FormHelperText>
                     {errors?.role?.message
-                      ? t(`helperText:${errors?.role?.message}`)
+                      ? t(`validation:${errors?.role?.message}`)
                       : ""}
                   </FormHelperText>
                 </FormControl>
@@ -429,7 +429,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
                     })}
                   </Select>
                   <FormHelperText>
-                    {errors.preferredLanguage?.message ? t(`helperText:${errors.preferredLanguage?.message}`) : ""}
+                    {errors.preferredLanguage?.message ? t(`validation:${errors.preferredLanguage?.message}`) : ""}
                   </FormHelperText>
                 </FormControl>
               )}

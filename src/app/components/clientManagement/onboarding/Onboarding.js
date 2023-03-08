@@ -492,7 +492,7 @@ const Onboarding = () => {
                               error={!!errors.id}
                               helperText={
                                 errors?.id?.message
-                                  ? t(`helperText:${errors?.id?.message}`)
+                                  ? t(`validation:${errors?.id?.message}`)
                                   : ""
                               }
                               variant="outlined"
@@ -514,7 +514,7 @@ const Onboarding = () => {
                               helperText={
                                 errors?.clientName?.message
                                   ? t(
-                                      `helperText:${errors?.clientName?.message}`
+                                      `validation:${errors?.clientName?.message}`
                                     )
                                   : ""
                               }
@@ -564,7 +564,7 @@ const Onboarding = () => {
                               <FormHelperText>
                                 {errors?.organizationType?.message
                                   ? t(
-                                      `helperText:${errors?.organizationType?.message}`
+                                      `validation:${errors?.organizationType?.message}`
                                     )
                                   : ""}
                               </FormHelperText>
@@ -602,7 +602,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.parentClientName?.message
                                     ? t(
-                                        `helperText:${errors?.parentClientName?.message}`
+                                        `validation:${errors?.parentClientName?.message}`
                                       )
                                     : ""
                                 }
@@ -652,7 +652,7 @@ const Onboarding = () => {
                               error={!!errors.fullName}
                               helperText={
                                 errors?.fullName?.message
-                                  ? t(`helperText:${errors?.fullName?.message}`)
+                                  ? t(`validation:${errors?.fullName?.message}`)
                                   : ""
                               }
                               variant="outlined"
@@ -687,7 +687,7 @@ const Onboarding = () => {
                               <FormHelperText>
                                 {errors?.primaryPhoneNumber?.message
                                   ? t(
-                                      `helperText:${errors?.primaryPhoneNumber?.message}`
+                                      `validation:${errors?.primaryPhoneNumber?.message}`
                                     )
                                   : ""}
                               </FormHelperText>
@@ -707,7 +707,7 @@ const Onboarding = () => {
                               helperText={
                                 errors?.designation?.message
                                   ? t(
-                                      `helperText:${errors?.designation?.message}`
+                                      `validation:${errors?.designation?.message}`
                                     )
                                   : ""
                               }
@@ -728,7 +728,7 @@ const Onboarding = () => {
                               error={!!errors.email}
                               helperText={
                                 errors?.email?.message
-                                  ? t(`helperText:${errors?.email?.message}`)
+                                  ? t(`validation:${errors?.email?.message}`)
                                   : ""
                               }
                               variant="outlined"
@@ -826,7 +826,7 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.contactEndDate?.message
                                       ? t(
-                                          `helperText:${errors?.contactEndDate?.message}`
+                                          `validation:${errors?.contactEndDate?.message}`
                                         )
                                       : ""
                                   }
@@ -848,7 +848,7 @@ const Onboarding = () => {
                               helperText={
                                 errors?.commision?.message
                                   ? t(
-                                      `helperText:${errors?.commision?.message}`
+                                      `validation:${errors?.commision?.message}`
                                     )
                                   : ""
                               }
@@ -877,7 +877,7 @@ const Onboarding = () => {
                               error={!!errors.smsCost}
                               helperText={
                                 errors?.smsCost?.message
-                                  ? t(`helperText:${errors?.smsCost?.message}`)
+                                  ? t(`validation:${errors?.smsCost?.message}`)
                                   : ""
                               }
                               variant="outlined"
@@ -906,7 +906,7 @@ const Onboarding = () => {
                               helperText={
                                 errors?.emailCost?.message
                                   ? t(
-                                      `helperText:${errors?.emailCost?.message}`
+                                      `validation:${errors?.emailCost?.message}`
                                     )
                                   : ""
                               }
@@ -936,7 +936,7 @@ const Onboarding = () => {
                               helperText={
                                 errors?.creditCheckCost?.message
                                   ? t(
-                                      `helperText:${errors?.creditCheckCost?.message}`
+                                      `validation:${errors?.creditCheckCost?.message}`
                                     )
                                   : ""
                               }
@@ -965,7 +965,7 @@ const Onboarding = () => {
                               error={!!errors.ehfCost}
                               helperText={
                                 errors?.ehfCost?.message
-                                  ? t(`helperText:${errors?.ehfCost?.message}`)
+                                  ? t(`validation:${errors?.ehfCost?.message}`)
                                   : ""
                               }
                               variant="outlined"
@@ -1075,7 +1075,7 @@ const Onboarding = () => {
                                 <FormHelperText>
                                   {errors?.billingPhoneNumber?.message
                                     ? t(
-                                        `helperText:${errors?.billingPhoneNumber?.message}`
+                                        `validation:${errors?.billingPhoneNumber?.message}`
                                       )
                                     : ""}
                                 </FormHelperText>
@@ -1095,7 +1095,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.billingEmail?.message
                                     ? t(
-                                        `helperText:${errors?.billingEmail?.message}`
+                                        `validation:${errors?.billingEmail?.message}`
                                       )
                                     : ""
                                 }
@@ -1121,7 +1121,7 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.billingAddress?.message
                                       ? t(
-                                          `helperText:${errors?.billingAddress?.message}`
+                                          `validation:${errors?.billingAddress?.message}`
                                         )
                                       : ""
                                   }
@@ -1146,7 +1146,7 @@ const Onboarding = () => {
                                   error={!!errors.zip}
                                   helperText={
                                     errors?.zip?.message
-                                      ? t(`helperText:${errors?.zip?.message}`)
+                                      ? t(`validation:${errors?.zip?.message}`)
                                       : ""
                                   }
                                   variant="outlined"
@@ -1170,7 +1170,7 @@ const Onboarding = () => {
                                 error={!!errors.city}
                                 helperText={
                                   errors?.city?.message
-                                    ? t(`helperText:${errors?.city?.message}`)
+                                    ? t(`validation:${errors?.city?.message}`)
                                     : ""
                                 }
                                 variant="outlined"
@@ -1205,7 +1205,7 @@ const Onboarding = () => {
                                 <FormHelperText>
                                   {errors?.country?.message
                                     ? t(
-                                        `helperText:${errors?.country?.message}`
+                                        `validation:${errors?.country?.message}`
                                       )
                                     : ""}
                                 </FormHelperText>
@@ -1299,7 +1299,7 @@ const Onboarding = () => {
                                     <FormHelperText>
                                       {errors?.shippingPhoneNumber?.message
                                         ? t(
-                                            `helperText:${errors?.shippingPhoneNumber?.message}`
+                                            `validation:${errors?.shippingPhoneNumber?.message}`
                                           )
                                         : ""}
                                     </FormHelperText>
@@ -1320,7 +1320,7 @@ const Onboarding = () => {
                                     helperText={
                                       errors?.shippingEmail?.message
                                         ? t(
-                                            `helperText:${errors?.shippingEmail?.message}`
+                                            `validation:${errors?.shippingEmail?.message}`
                                           )
                                         : ""
                                     }
@@ -1347,7 +1347,7 @@ const Onboarding = () => {
                                       helperText={
                                         errors?.shippingAddress?.message
                                           ? t(
-                                              `helperText:${errors?.shippingAddress?.message}`
+                                              `validation:${errors?.shippingAddress?.message}`
                                             )
                                           : ""
                                       }
@@ -1374,7 +1374,7 @@ const Onboarding = () => {
                                       helperText={
                                         errors?.shippingZip?.message
                                           ? t(
-                                              `helperText:${errors?.shippingZip?.message}`
+                                              `validation:${errors?.shippingZip?.message}`
                                             )
                                           : ""
                                       }
@@ -1401,7 +1401,7 @@ const Onboarding = () => {
                                     helperText={
                                       errors?.shippingCity?.message
                                         ? t(
-                                            `helperText:${errors?.shippingCity?.message}`
+                                            `validation:${errors?.shippingCity?.message}`
                                           )
                                         : ""
                                     }
@@ -1441,7 +1441,7 @@ const Onboarding = () => {
                                     <FormHelperText>
                                       {errors?.shippingCountry?.message
                                         ? t(
-                                            `helperText:${errors?.shippingCountry?.message}`
+                                            `validation:${errors?.shippingCountry?.message}`
                                           )
                                         : ""}
                                     </FormHelperText>
@@ -1481,7 +1481,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.bankName?.message
                                     ? t(
-                                        `helperText:${errors?.bankName?.message}`
+                                        `validation:${errors?.bankName?.message}`
                                       )
                                     : ""
                                 }
@@ -1513,7 +1513,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.accountNumber?.message
                                     ? t(
-                                        `helperText:${errors?.accountNumber?.message}`
+                                        `validation:${errors?.accountNumber?.message}`
                                       )
                                     : ""
                                 }
@@ -1535,7 +1535,7 @@ const Onboarding = () => {
                                 error={!!errors.IBAN}
                                 helperText={
                                   errors?.IBAN?.message
-                                    ? t(`helperText:${errors?.IBAN?.message}`)
+                                    ? t(`validation:${errors?.IBAN?.message}`)
                                     : ""
                                 }
                                 variant="outlined"
@@ -1557,7 +1557,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.SWIFTCode?.message
                                     ? t(
-                                        `helperText:${errors?.SWIFTCode?.message}`
+                                        `validation:${errors?.SWIFTCode?.message}`
                                       )
                                     : ""
                                 }
@@ -1599,7 +1599,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.APTICuserName?.message
                                     ? t(
-                                        `helperText:${errors?.APTICuserName?.message}`
+                                        `validation:${errors?.APTICuserName?.message}`
                                       )
                                     : ""
                                 }
@@ -1622,7 +1622,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.APTICpassword?.message
                                     ? t(
-                                        `helperText:${errors?.APTICpassword?.message}`
+                                        `validation:${errors?.APTICpassword?.message}`
                                       )
                                     : ""
                                 }
@@ -1663,7 +1663,7 @@ const Onboarding = () => {
                                 error={!!errors.name}
                                 helperText={
                                   errors?.name?.message
-                                    ? t(`helperText:${errors?.name?.message}`)
+                                    ? t(`validation:${errors?.name?.message}`)
                                     : ""
                                 }
                                 variant="outlined"
@@ -1685,7 +1685,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.fpReference?.message
                                     ? t(
-                                        `helperText:${errors?.fpReference?.message}`
+                                        `validation:${errors?.fpReference?.message}`
                                       )
                                     : ""
                                 }
@@ -1711,7 +1711,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.creditLimitCustomer?.message
                                     ? t(
-                                        `helperText:${errors?.creditLimitCustomer?.message}`
+                                        `validation:${errors?.creditLimitCustomer?.message}`
                                       )
                                     : ""
                                 }
@@ -1741,7 +1741,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.costLimitforCustomer?.message
                                     ? t(
-                                        `helperText:${errors?.costLimitforCustomer?.message}`
+                                        `validation:${errors?.costLimitforCustomer?.message}`
                                       )
                                     : ""
                                 }
@@ -1770,7 +1770,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.costLimitforOrder?.message
                                     ? t(
-                                        `helperText:${errors?.costLimitforOrder?.message}`
+                                        `validation:${errors?.costLimitforOrder?.message}`
                                       )
                                     : ""
                                 }
@@ -1799,7 +1799,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.invoicewithRegress?.message
                                     ? t(
-                                        `helperText:${errors?.invoicewithRegress?.message}`
+                                        `validation:${errors?.invoicewithRegress?.message}`
                                       )
                                     : ""
                                 }
@@ -1828,7 +1828,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.invoicewithoutRegress?.message
                                     ? t(
-                                        `helperText:${errors?.invoicewithoutRegress?.message}`
+                                        `validation:${errors?.invoicewithoutRegress?.message}`
                                       )
                                     : ""
                                 }
@@ -1874,7 +1874,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.APTIEngineCuserName?.message
                                     ? t(
-                                        `helperText:${errors?.APTIEngineCuserName?.message}`
+                                        `validation:${errors?.APTIEngineCuserName?.message}`
                                       )
                                     : ""
                                 }
@@ -1897,7 +1897,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.APTIEnginePassword?.message
                                     ? t(
-                                        `helperText:${errors?.APTIEnginePassword?.message}`
+                                        `validation:${errors?.APTIEnginePassword?.message}`
                                       )
                                     : ""
                                 }
@@ -2222,7 +2222,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.fakturaB2B?.message
                                     ? t(
-                                        `helperText:${errors?.fakturaB2B?.message}`
+                                        `validation:${errors?.fakturaB2B?.message}`
                                       )
                                     : ""
                                 }
@@ -2252,7 +2252,7 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.fakturaB2C?.message
                                     ? t(
-                                        `helperText:${errors?.fakturaB2C?.message}`
+                                        `validation:${errors?.fakturaB2C?.message}`
                                       )
                                     : ""
                                 }

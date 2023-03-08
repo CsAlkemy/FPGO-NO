@@ -206,7 +206,7 @@ const createCorporateCustomer = () => {
                           type="number"
                           autoComplete="off"
                           error={!!errors.organizationID}
-                          helperText={errors?.organizationID?.message ? t(`helperText:${errors?.organizationID?.message}`) : ""}
+                          helperText={errors?.organizationID?.message ? t(`validation:${errors?.organizationID?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -246,7 +246,7 @@ const createCorporateCustomer = () => {
                         type='text'
                         autoComplete='off'
                         error={!!errors.OrganizationName}
-                        helperText={errors?.OrganizationName?.message ? t(`helperText:${errors?.OrganizationName?.message}`) : ""}
+                        helperText={errors?.OrganizationName?.message ? t(`validation:${errors?.OrganizationName?.message}`) : ""}
                         variant='outlined'
                         fullWidth
                         required
@@ -269,7 +269,7 @@ const createCorporateCustomer = () => {
                         type={t("label:email")}
                         autoComplete="off"
                         error={!!errors.orgEmail}
-                        helperText={errors?.orgEmail?.message ? t(`helperText:${errors?.orgEmail?.message}`) : ""}
+                        helperText={errors?.orgEmail?.message ? t(`validation:${errors?.orgEmail?.message}`) : ""}
                         variant="outlined"
                         required
                         value={field.value || ''}
@@ -304,7 +304,7 @@ const createCorporateCustomer = () => {
 
                           />
                           <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message ? t(`helperText:${errors?.primaryPhoneNumber?.message}`) : ""}
+                            {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -323,7 +323,7 @@ const createCorporateCustomer = () => {
                           type='text'
                           autoComplete='off'
                           error={!!errors.billingAddress}
-                          helperText={errors?.billingAddress?.message ? t(`helperText:${errors?.billingAddress?.message}`) : ""}
+                          helperText={errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""}
                           variant='outlined'
                           fullWidth
                           required
@@ -345,7 +345,7 @@ const createCorporateCustomer = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.billingZip}
-                          helperText={errors?.billingZip?.message ? t(`helperText:${errors?.billingZip?.message}`) : ""}
+                          helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
                           variant="outlined"
                           fullWidth
                           required
@@ -366,7 +366,7 @@ const createCorporateCustomer = () => {
                         type='text'
                         autoComplete='off'
                         error={!!errors.billingCity}
-                        helperText={errors?.billingCity?.message ? t(`helperText:${errors?.billingCity?.message}`) : ""}
+                        helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
                         variant='outlined'
                         fullWidth
                         required
@@ -413,7 +413,7 @@ const createCorporateCustomer = () => {
                           )}
                         </Select>
                         <FormHelperText>
-                          {errors?.billingCountry?.message ? t(`helperText:${errors?.billingCountry?.message}`) : ""}
+                          {errors?.billingCountry?.message ? t(`validation:${errors?.billingCountry?.message}`) : ""}
                         </FormHelperText>
                       </FormControl>
                     )}
@@ -513,7 +513,7 @@ const createCorporateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingAddress}
                                           helperText={
-                                            errors?.shippingAddress?.message ? t(`helperText:${errors?.shippingAddress?.message}`) : ""
+                                            errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -540,7 +540,7 @@ const createCorporateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingZip}
                                           helperText={
-                                            errors?.shippingZip?.message ? t(`helperText:${errors?.shippingZip?.message}`) : ""
+                                            errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -567,7 +567,7 @@ const createCorporateCustomer = () => {
                                         disabled={sameAddress}
                                         error={!!errors.shippingCity}
                                         helperText={
-                                          errors?.shippingCity?.message ? t(`helperText:${errors?.shippingCity?.message}`) : ""
+                                          errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -612,7 +612,7 @@ const createCorporateCustomer = () => {
                                           ))}
                                         </Select>
                                         <FormHelperText>
-                                          {errors?.shippingCountry?.message ? t(`helperText:${errors?.shippingCountry?.message}`) : ""}
+                                          {errors?.shippingCountry?.message ? t(`validation:${errors?.shippingCountry?.message}`) : ""}
                                         </FormHelperText>
                                       </FormControl>
                                     )}
@@ -680,7 +680,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.fullName}
-                                  helperText={errors?.fullName?.message ? t(`helperText:${errors?.fullName?.message}`) : ""}
+                                  helperText={errors?.fullName?.message ? t(`validation:${errors?.fullName?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -700,7 +700,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.designation}
-                                  helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
+                                  helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -752,7 +752,7 @@ const createCorporateCustomer = () => {
                                   type="email"
                                   autoComplete="off"
                                   error={!!errors.email}
-                                  helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
+                                  helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -776,7 +776,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.notes}
-                                  helperText={errors?.notes?.message ? t(`helperText:${errors?.notes?.message}`) : ""}
+                                  helperText={errors?.notes?.message ? t(`validation:${errors?.notes?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -824,7 +824,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.fullName}
-                                      helperText={errors?.fullName ? t(`helperText:${errors?.fullName}`) : ""}
+                                      helperText={errors?.fullName ? t(`validation:${errors?.fullName}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{
@@ -845,7 +845,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.designation}
-                                      helperText={errors?.designation?.message ? t(`helperText:${errors?.designation?.message}`) : ""}
+                                      helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{
@@ -927,7 +927,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.notes}
-                                      helperText={errors?.message ? t(`helperText:${errors?.message}`) : ""}
+                                      helperText={errors?.message ? t(`validation:${errors?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{

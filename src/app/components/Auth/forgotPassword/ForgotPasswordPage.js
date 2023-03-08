@@ -94,7 +94,7 @@ function ForgotPasswordPage() {
                   label={t("label:email")}
                   type="email"
                   error={!!errors.email}
-                  helperText={errors?.email?.message ? t(`helperText:${errors?.email?.message}`) : ""}
+                  helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth

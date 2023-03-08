@@ -161,7 +161,7 @@ export default function CreditCheckCorporateClient() {
                             label={t("label:organizationId")}
                             type="number"
                             error={!!errors.organizationId}
-                            helperText={errors?.organizationId?.message ? t(`helperText:${errors?.organizationId?.message}`) : ""}
+                            helperText={errors?.organizationId?.message ? t(`validation:${errors?.organizationId?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth
