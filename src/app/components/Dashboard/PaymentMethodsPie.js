@@ -38,10 +38,10 @@ function NewVsReturningWidget(props) {
       : Math.ceil((series[3] / series.reduce((a, b) => a + b, 0)) * 100),
   ]);
   const [labels] = useState([
-    t("label:vipps"),
-    t("label:visa"),
-    t("label:mastercard"),
-    t("label:invoice"),
+    "vipps",
+    "visa",
+    "mastercard",
+    "invoice",
   ]);
 
   const chartOptions = {
@@ -96,7 +96,7 @@ function NewVsReturningWidget(props) {
       custom: ({ seriesIndex, w }) =>
         `<div class="flex items-center h-32 min-h-32 max-h-23 px-12">
             <div class="w-12 h-12 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-             <div class="ml-8 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
+             <div class="ml-8 text-md leading-none"> ${t(`label:${w.config.labels[seriesIndex]}`)}:</div>
             <div class="ml-8 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
         </div>`,
     },
@@ -151,7 +151,7 @@ function NewVsReturningWidget(props) {
                     sx={{ backgroundColor: chartOptions.colors[i] }}
                   />
                   <Typography className="ml-12 truncate">
-                    {labels[i]}
+                    {t(`label:${labels[i]}`)}
                   </Typography>
                 </div>
                 <Typography className="font-medium text-right">

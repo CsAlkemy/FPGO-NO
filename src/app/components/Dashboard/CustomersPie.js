@@ -12,19 +12,30 @@ function Customers(props) {
   const [awaitRender, setAwaitRender] = useState(true);
   const theme = useTheme();
   const { dayCount, customers } = props.datas;
-  const [series] = useState([
-    customers?.new ? customers?.new : 0,
-    customers?.returning ? customers?.returning : 0,
-  ]);
-  const [chartSeries] = useState([
-    series[0] === 0
-      ? 0
-      : Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
-    series[1] === 0
-      ? 0
-      : Math.ceil((series[1] / series.reduce((a, b) => a + b, 0)) * 100),
-  ]);
-  const [labels] = useState([t("label:new"), t("label:returning"), " ", " "]);
+
+
+  const keys = Object.keys(customers);
+  const values = Object.values(customers);
+
+  const sortedIndexes = values.map((_, index) => index).sort((a, b) => values[b] - values[a]);
+  const sortedKeys = sortedIndexes.map(index => keys[index]);
+  const sortedValues = sortedIndexes.map(index => values[index]);
+
+  const sum = sortedValues.reduce((acc, val) => acc + val, 0);
+  const percentages = sortedValues.map((val) => (val / sum) * 100);
+
+  const [labels] = useState(sortedKeys);
+  const [series] = useState(percentages);
+
+  //
+  // const [chartSeries] = useState([
+  //   series[0] === 0
+  //     ? 0
+  //     : Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
+  //   series[1] === 0
+  //     ? 0
+  //     : Math.ceil((series[1] / series.reduce((a, b) => a + b, 0)) * 100),
+  // ]);
 
   const chartOptions = {
     chart: {
@@ -43,10 +54,7 @@ function Customers(props) {
       },
     },
     colors: ["#2E7D6D", "#81C7B9"],
-    labels:
-      chartSeries.sort().toString() === [0, 0].sort().toString()
-        ? [t("label:notFound")]
-        : labels,
+    labels: labels,
     plotOptions: {
       pie: {
         customScale: 0.9,
@@ -77,9 +85,15 @@ function Customers(props) {
       theme: "dark",
       custom: ({ seriesIndex, w }) =>
         `<div class="flex items-center h-32 min-h-32 max-h-23 px-12">
-            <div class="w-12 h-12 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-             <div class="ml-8 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-            <div class="ml-8 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
+            <div class="w-12 h-12 rounded-full" style="background-color: ${
+              w.config.colors[seriesIndex]
+            };"></div>
+             <div class="ml-8 text-md leading-none">${t(
+               `label:${w.config.labels[seriesIndex]}`
+             )}:</div>
+            <div class="ml-8 text-md font-bold leading-none">${
+              w.config.series[seriesIndex]
+            }%</div>
         </div>`,
     },
   };
@@ -111,11 +125,7 @@ function Customers(props) {
           className="flex flex-auto items-center justify-center w-full h-full"
           options={chartOptions}
           // series={series}
-          series={
-            chartSeries.sort().toString() === [0, 0].sort().toString()
-              ? [100]
-              : chartSeries
-          }
+          series={percentages}
           type={chartOptions.chart.type}
           height={chartOptions.chart.height}
         />
@@ -129,7 +139,9 @@ function Customers(props) {
                   className="flex-0 w-8 h-8 rounded-full"
                   sx={{ backgroundColor: chartOptions.colors[i] }}
                 />
-                <Typography className="ml-12 truncate">{labels[i]}</Typography>
+                <Typography className="ml-12 truncate">
+                  {t(`label:${labels[i]}`)}
+                </Typography>
               </div>
               <Typography className="font-medium text-right">
                 {/* {((uniqueVisitors * dataset) / 100).toLocaleString('en-US')} */}
