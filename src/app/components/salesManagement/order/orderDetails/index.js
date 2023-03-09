@@ -247,7 +247,7 @@ const createOrder = () => {
             headerTitle={headerTitle}
             orderId={info.orderUuid}
             orderName={info.customerDetails.name}
-            orderAmount={ ThousandSeparator(info.orderSummary.grandTotal) }
+            orderAmount={ info.orderSummary.grandTotal }
             customerPhone={
               info.customerDetails.countryCode && info.customerDetails.msisdn
                 ? info.customerDetails.countryCode + info.customerDetails.msisdn

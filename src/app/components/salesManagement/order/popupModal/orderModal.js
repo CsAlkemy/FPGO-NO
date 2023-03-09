@@ -34,6 +34,7 @@ import {
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
+import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -250,7 +251,7 @@ const OrderModal = (props) => {
                       </div>
                     </div>
                     <div className="header6 text-MonochromeGray-700">
-                      {t("label:nok")} {orderAmount ? orderAmount : "-"}
+                      {t("label:nok")} {orderAmount ? ThousandSeparator(orderAmount) : "-"}
                     </div>
                   </div>
                 )}
