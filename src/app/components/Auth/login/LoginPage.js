@@ -52,7 +52,7 @@ const LoginPage = () => {
       .string()
       .email("youMustEnterAValidEmail")
       .required("youMustEnterAEmail"),
-    password: yup.string().required("pleaseEnterYourPassword."),
+    password: yup.string().required("pleaseEnterYourPassword"),
   });
 
   // default form values
@@ -196,7 +196,11 @@ const LoginPage = () => {
                 label={t("label:password")}
                 type={data.showPassword ? "text" : "password"}
                 error={!!errors.password}
-                helperText={errors?.password?.message}
+                helperText={
+                  errors?.password?.message
+                      ? t(`validation:${errors?.password?.message}`)
+                      : ""
+                }
                 variant="outlined"
                 required
                 autoComplete="off"
