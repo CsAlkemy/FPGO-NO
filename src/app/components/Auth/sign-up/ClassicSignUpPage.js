@@ -44,7 +44,7 @@ const schema = yup.object().shape({
     .required("youMustEnterAEmail"),
   // password: yup
   //   .string()
-  //   .required("pleaseEnterYourPassword.")
+  //   .required("pleaseEnterYourPassword")
   //   .min(8, "Password is too short - should be 8 chars minimum."),
   // passwordConfirm: yup
   //   .string()
@@ -248,7 +248,7 @@ function ClassicSignUpPage() {
                             })}
                           </Select>
                           <FormHelperText>
-                            {errors?.organizationtype?.message}
+                            {errors?.organizationtype?.message ? t(`validation:${errors?.organizationtype?.message}`) : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -269,7 +269,7 @@ function ClassicSignUpPage() {
                         label={t("label:fullName")}
                         type="name"
                         error={!!errors.name}
-                        helperText={errors?.name?.message}
+                        helperText={errors?.name?.message ? t(`validation:${errors?.name?.message}`) : ""}
                         variant="outlined"
                         required
                         fullWidth
@@ -287,7 +287,7 @@ function ClassicSignUpPage() {
                         value={value}
                         onChange={onChange}
                         error={!!errors.phonenumber}
-                        helperText={errors?.phonenumber?.message}
+                        helperText={errors?.phonenumber?.message ? t(`validation:${errors?.phonenumber?.message}`) : ""}
                         variant="outlined"
                         id="phonenumber"
                         countryCodeEditable={false}
@@ -307,7 +307,7 @@ function ClassicSignUpPage() {
                         label={t("label:email")}
                         type="email"
                         error={!!errors.email}
-                        helperText={errors?.email?.message}
+                        helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                         variant="outlined"
                         required
                         fullWidth
@@ -324,7 +324,7 @@ function ClassicSignUpPage() {
                         label={t("label:designation")}
                         type="designation"
                         error={!!errors.designation}
-                        helperText={errors?.designation?.message}
+                        helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                       />
@@ -353,7 +353,7 @@ function ClassicSignUpPage() {
                         control={<Checkbox size="small" {...field} />}
                       />
                       <FormHelperText>
-                        {errors?.acceptTermsConditions?.message}
+                        {errors?.acceptTermsConditions?.message ? t(`validation:${errors?.acceptTermsConditions?.message}`) : ""}
                       </FormHelperText>
                     </FormControl>
                   )}
@@ -381,24 +381,6 @@ function ClassicSignUpPage() {
                 </div>
               </form>
             </div>
-            {/*<div className="col-span-1 md:col-span-2">*/}
-            {/*  <div className="border-1 border-MonochromeGray-50 rounded-2">*/}
-            {/*    <div className="subtitle2 bg-primary-25 p-16 ">*/}
-            {/*      {t("label:howMuchItCost")} ?*/}
-            {/*    </div>*/}
-            {/*    <Typography className="px-32 py-10 body2">*/}
-            {/*      {t("label:howMuchItCostMessage")}*/}
-            {/*      /!*Arcu ultrices vel ullamcorper ipsum vitae in in massa.*!/*/}
-            {/*      /!*Habitasse quisque amet, metus, donec risus, molestie ipsum,*!/*/}
-            {/*      /!*sed tristique. Egestas vitae dignissim lectus mauris.*!/*/}
-            {/*      /!*Facilisis non ante id nisl amet, nunc. Quis felis nisi,*!/*/}
-            {/*      /!*dignissim lacus, consectetur egestas id lectus nunc. Malesuada*!/*/}
-            {/*      /!*elementum maecenas scelerisque porttitor purus diam*!/*/}
-            {/*      /!*condimentum pretium neque. Consequat nunc pulvinar neque,*!/*/}
-            {/*      /!*velit facilisis quam mi vel.*!/*/}
-            {/*    </Typography>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
           </div>
         </div>
       </div>
