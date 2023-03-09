@@ -73,7 +73,9 @@ const TimelineLog = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          renderInput={(params) => (
+            <TextField {...params} error={false} type="date" />
+          )}
           disableFuture
         />
       </div>
@@ -93,7 +95,7 @@ const TimelineLog = () => {
                   {log.slug === "order-created" ||
                   log.slug === "credit-check-performed" ||
                   log.slug === "customer-information-updated" ||
-                  log.slug === "order-was-resent" ||
+                  log.slug === "order-was-sent" ||
                   log.slug === "order-was-resent" ||
                   log.slug === "payment-link-opened" ||
                   log.slug === "refund-sent" ||
