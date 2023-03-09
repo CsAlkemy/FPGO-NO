@@ -60,7 +60,7 @@ const createOrder = () => {
           const splitedDates = splitedTimeAndDate[1].split(".");
           const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
           const dueDateTimeStamp = new Date(formatedDate).getTime();
-          const currentTimeStamp = new Date().getTime();
+          const currentTimeStamp = new Date(new Date().toLocaleString('no-NO', {timeZone: "Europe/Oslo"})).getTime();
           const isExpired = info.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
           info.status = isExpired ? 'Expired' : info.status;
           
@@ -170,13 +170,17 @@ const createOrder = () => {
                       allowScrollButtonsMobile
                     >
                       <Tab
-                        label="Order Information"
+                        label={ t("label:orderInformation") }
                         className="subtitle3"
                         value="1"
                       />
-                      <Tab label="Order Log" className="subtitle3" value="2" />
+                      <Tab 
+                        label={ t("label:orderLog") } 
+                        className="subtitle3" 
+                        value="2" 
+                      />
                       <Tab
-                        label="Order Receipt"
+                        label={ t("label:orderReceipt") }
                         className="subtitle3"
                         value="3"
                       />

@@ -729,12 +729,20 @@ const ClientDetails = () => {
                         allowScrollButtonsMobile
                       >
                         <Tab
-                          label="Client Information"
+                          label={ t("label:clientInformation") }
                           className="subtitle3"
                           value="1"
                         />
-                        <Tab label="Timeline" className="subtitle3" value="2" />
-                        <Tab label="Orders" className="subtitle3" value="3" />
+                        <Tab 
+                          label={ t("label:clientTimeline") } 
+                          className="subtitle3" 
+                          value="2" 
+                        />
+                        <Tab 
+                          label={ t("label:clientOrders") } 
+                          className="subtitle3" 
+                          value="3" 
+                        />
                       </TabList>
                     </Box>
                     <TabPanel value="1" className="py-20 px-10">
