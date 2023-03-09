@@ -11,7 +11,7 @@ export const validateSchema = yup.object().shape({
   role: yup.string().required('You must select your role'),
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .min(8, 'Password is too short - must be at least 8 chars.'),
   currentPassword: yup
     .string()
@@ -32,7 +32,7 @@ export const validateSchemaCreateBranchAdmin = yup.object().shape({
   // designation: yup.string().required("You must enter your designation"),
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .min(8, 'Password is too short - must be at least 8 chars.'),
   confirmpassword: yup.string().when('password', {
     is: (val) => !!(val && val.length > 0),
@@ -46,10 +46,10 @@ export const validateSchemaCreateCompanyAdmin = yup.object().shape({
   preferredLanguage: yup.string().required("youMustSelectYourPreferredLanguage"),
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .matches(
       /^(?=.*\d)[A-Za-z\d@$!%*?&~]{8,}$/,
-      'passwordCombinationRules.'
+      'passwordCombinationRules'
     ),
   confirmpassword: yup.string().when('password', {
     is: (val) => !!(val && val.length > 0),
@@ -68,10 +68,10 @@ export const validateSchemaCreateBusinessAdmin = yup.object().shape({
   preferredLanguage: yup.string().required("youMustSelectYourPreferredLanguage"),
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .matches(
       /^(?=.*\d)[A-Za-z\d@$!%*?&~]{8,}$/,
-      'passwordCombinationRules.'
+      'passwordCombinationRules'
     ),
   confirmpassword: yup.string().when('password', {
     is: (val) => !!(val && val.length > 0),
@@ -87,10 +87,10 @@ export const validateSchemaGeneralAdmin = yup.object().shape({
   preferredLanguage: yup.string().required("youMustSelectYourPreferredLanguage"),
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .matches(
       /^(?=.*\d)[A-Za-z\d@$!%*?&~]{8,}$/,
-      'passwordCombinationRules.'
+      'passwordCombinationRules'
     ),
   confirmpassword: yup.string().when('password', {
     is: (val) => !!(val && val.length > 0),
@@ -108,7 +108,7 @@ export const schemaSubClientCreateBranch = yup.object().shape({
   branch: yup.string().required('You must select your branch'),
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .min(8, 'Password is too short - must be at least 8 chars.'),
   confirmpassword: yup.string().when('password', {
     is: (val) => !!(val && val.length > 0),
@@ -122,7 +122,7 @@ export const schemaSubClientCreateGeneralUser = yup.object().shape({
   branch: yup.string(), // .required('You must select your branch'),
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .min(8, 'Password is too short - must be at least 8 chars.'),
   confirmpassword: yup.string().when('password', {
     is: (val) => !!(val && val.length > 0),
@@ -167,10 +167,10 @@ export const schemaUserProfileFpAdminSubClient = yup.object().shape({
 export const schemaUserProfileResetPass = yup.object().shape({
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .matches(
       /^(?=.*\d)[A-Za-z\d@$!%*?&~]{8,}$/,
-      'passwordCombinationRules.'
+      'passwordCombinationRules'
     ),
   currentPassword: yup.string().required('pleaseEnterYourCurrentPassword'),
   confirmpassword: yup.string().when('password', {
@@ -182,10 +182,10 @@ export const schemaUserProfileResetPass = yup.object().shape({
 export const schemaUserProfileResetPassUserDetails = yup.object().shape({
   password: yup
     .string()
-    .required('pleaseEnterYourPassword.')
+    .required('pleaseEnterYourPassword')
     .matches(
       /^(?=.*\d)[A-Za-z\d@$!%*?&~]{8,}$/,
-      'passwordCombinationRules.'
+      'passwordCombinationRules'
     ),
   confirmpassword: yup.string().when('password', {
     is: (val) => !!(val && val.length > 0),

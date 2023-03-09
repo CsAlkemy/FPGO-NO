@@ -6,7 +6,7 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import { DesktopDatePicker } from "@mui/lab";
+import {DesktopDatePicker, LoadingButton} from "@mui/lab";
 import {
   Backdrop,
   Button,
@@ -48,6 +48,7 @@ const Onboarding = () => {
   const [uploadDocuments, setUploadDocuments] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [ownerRef, setOwnerRef] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const params = useParams();
   const [plan, setPlan] = React.useState(1);
   const [currency, setCurrency] = React.useState({
@@ -176,7 +177,7 @@ const Onboarding = () => {
     }
   };
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const onSubmit = (values) => {
     const primaryPhoneNumber = values?.primaryPhoneNumber
@@ -347,6 +348,7 @@ const Onboarding = () => {
       onBoardingData.contractDetails.planTag = "Plan 3";
       onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
+    setLoading(true)
 
     onboardClient(onBoardingData).then((response) => {
       // if (res?.status_code === 201) {
@@ -356,29 +358,14 @@ const Onboarding = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
+        setLoading(false)
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
         });
       }
+      setLoading(false)
     });
-    // ClientService.clientOnboard(onBoardingData, params.uuid)
-    //   .then((res) => {
-    //     // if (res?.status_code === 201) {
-    //     if (res?.status_code === 202) {
-    //       enqueueSnackbar(`${params.uuid} Onboarded Successfully`, {
-    //         variant: "success",
-    //         autoHideDuration: 3000,
-    //       });
-    //       navigate("/clients/clients-list");
-    //     } else {
-    //       enqueueSnackbar(res, { variant: "error" });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     enqueueSnackbar(error, { variant: "error" });
-    //   });
-    // console.log(uploadDocuments);
   };
   // end form
 
@@ -441,17 +428,33 @@ const Onboarding = () => {
                     {t("label:registrationRequest")} ( {params?.uuid} )
                   </div>
                   <div className="flex gap-10 w-full justify-between sm:w-auto">
-                    <Button
-                      color="secondary"
-                      type="submit"
-                      variant="contained"
-                      startIcon={
-                        <RiCheckDoubleLine className="icon-size-20 mr-0 md:mr-5" />
-                      }
-                      className="font-semibold rounded-4"
+                    <LoadingButton
+                        variant="contained"
+                        color="secondary"
+                        className="rounded-4 button2"
+                        aria-label="Confirm"
+                        size="large"
+                        type="submit"
+                        startIcon={
+                          <RiCheckDoubleLine className="icon-size-20 mr-0 md:mr-5" />
+                        }
+                        loading={loading}
+                        loadingPosition="center"
+                        disabled={!isDirty}
                     >
                       {t("label:approveClient")}
-                    </Button>
+                    </LoadingButton>
+                    {/*<Button*/}
+                    {/*  color="secondary"*/}
+                    {/*  type="submit"*/}
+                    {/*  variant="contained"*/}
+                    {/*  startIcon={*/}
+                    {/*    <RiCheckDoubleLine className="icon-size-20 mr-0 md:mr-5" />*/}
+                    {/*  }*/}
+                    {/*  className="font-semibold rounded-4"*/}
+                    {/*>*/}
+                    {/*  {t("label:approveClient")}*/}
+                    {/*</Button>*/}
                     <Button
                       color="secondary"
                       onClick={() => setOpen(true)}
@@ -726,11 +729,7 @@ const Onboarding = () => {
                               type="email"
                               autoComplete="off"
                               error={!!errors.email}
-                              helperText={
-                                errors?.email?.message
-                                  ? t(`validation:${errors?.email?.message}`)
-                                  : ""
-                              }
+                              helperText={errors?.email?.message? t(`validation:${errors?.email?.message}`): ""}
                               variant="outlined"
                               required
                               fullWidth

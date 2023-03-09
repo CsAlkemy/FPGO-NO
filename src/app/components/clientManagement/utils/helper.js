@@ -8,7 +8,7 @@ export const validateSchema = yup.object().shape({
   fullName: yup.string().required("youMustEnterYourName"),
   primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
   designation: yup.string(),
-  email: yup.string().required('You must enter your email').email('Please enter a valid email'),
+  email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
   password: yup.string().required('You must enter your password'),
 
   contactEndDate: yup.string().required('youMustEnterYourContactEndDate').typeError("pleaseEnterValidDate"),
@@ -47,7 +47,7 @@ export const validateSchema = yup.object().shape({
   bankName: yup.string().required('youMustEnterYourBankName'),
   accountNumber: yup.string()
     .required('youMustEnterYourAccountNumber')
-    .matches(/^(\S+$)/g, 'This field cannot contain blankspaces'),
+    .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
   IBAN: yup.string().required('youMustEnterYourIban'),
   SWIFTCode: yup.string().required('youMustEnterYourSwiftCode'),
 
@@ -57,7 +57,7 @@ export const validateSchema = yup.object().shape({
   name: yup.string().required('youMustEnterYourName'),
   creditLimitCustomer: yup.string().required('youMustEnterYourCreditLimitForCustomer'),
   APTIEngineCuserName: yup.string().required('youMustEnterUsername'),
-  APTIEnginePassword: yup.string().required('You must enter password'),
+  APTIEnginePassword: yup.string().required('youMustEnterPassword'),
   fakturaB2B: yup.string().required('youMustEnterFakturaBTwoB'),
   fakturaB2C: yup.string().required('youMustEnterFakturaBTwoC'),
 });
@@ -70,7 +70,7 @@ export const validateSchemaOnBoard = yup.object().shape({
   fullName: yup.string().required("youMustEnterYourName"),
   primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
   designation: yup.string(),
-  email: yup.string().required('You must enter your email').email('Please enter a valid email'),
+  email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
   // password: yup.string().required('You must enter your password'),
 
   contactEndDate: yup.string().required('youMustEnterYourContactEndDate') .typeError('youMustEnterYourContactEndDate'),
@@ -91,7 +91,7 @@ export const validateSchemaOnBoard = yup.object().shape({
   bankName: yup.string().required('youMustEnterYourBankName'),
   accountNumber: yup.string()
     .required('youMustEnterYourAccountNumber')
-    .matches(/^(\S+$)/g, 'This field cannot contain blankspaces'),
+    .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
   IBAN: yup.string().required('youMustEnterYourIban'),
   SWIFTCode: yup.string().required('youMustEnterYourSwiftCode'),
 
@@ -102,7 +102,7 @@ export const validateSchemaOnBoard = yup.object().shape({
   name: yup.string().required('youMustEnterYourName'),
   creditLimitCustomer: yup.string().required('youMustEnterYourCreditLimitForCustomer'),
   APTIEngineCuserName: yup.string().required('youMustEnterUsername'),
-  APTIEnginePassword: yup.string().required('You must enter password'),
+  APTIEnginePassword: yup.string().required('youMustEnterPassword'),
   fakturaB2B: yup.string().required('youMustEnterFakturaBTwoB'),
   fakturaB2C: yup.string().required('youMustEnterFakturaBTwoC'),
 });
@@ -114,7 +114,7 @@ export const validateSchemaCreateClient = yup.object().shape({
   fullName: yup.string().required("youMustEnterYourName"),
   primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
   designation: yup.string(),
-  email: yup.string().required('You must enter your email').email('Please enter a valid email'),
+  email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
 
   contactEndDate: yup.string().required('youMustEnterYourContactEndDate').typeError("pleaseEnterValidDate"),
   commision: yup.string().required('youMustEnterYourCommission'),
@@ -132,7 +132,7 @@ export const validateSchemaCreateClient = yup.object().shape({
   bankName: yup.string().required('youMustEnterYourBankName'),
   accountNumber: yup.string()
     .required('youMustEnterYourAccountNumber')
-    .matches(/^(\S+$)/g, 'This field cannot contain blankspaces'),
+    .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
   SWIFTCode: yup.string().required('youMustEnterYourSwiftCode'),
   IBAN: yup.string().required('youMustEnterYourIban'),
   

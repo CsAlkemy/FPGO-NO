@@ -13,16 +13,15 @@ import AuthLayout from "../Layout/layout";
 import AuthMobileHeader from "../Layout/authMobileHeader";
 import { useTranslation } from 'react-i18next';
 
-
 /**
  * Form Validation Schema
  */
 const schema = Yup.object().shape({
   password: Yup.string()
-    .required("pleaseEnterYourPassword.")
+    .required("pleaseEnterYourPassword")
     .matches(
       /^(?=.*[a-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-      "passwordCombinationRules."
+      "passwordCombinationRules"
     ),
   confirmpassword: Yup.string().when("password", {
     is: (val) => !!(val && val.length > 0),

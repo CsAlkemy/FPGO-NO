@@ -1454,7 +1454,11 @@ const createOrder = () => {
                               required
                               type="date"
                               error={!!errors.orderDate}
-                              helperText={errors?.orderDate?.message}
+                              helperText={
+                                errors?.orderDate?.message
+                                    ? t(`validation:${errors?.orderDate?.message}`)
+                                    : ""
+                              }
                               sx={{
                                 svg: { color: "#69C77E" },
                               }}
@@ -1546,6 +1550,8 @@ const createOrder = () => {
                                   error={!!errors.dueDatePaymentLink}
                                   helperText={
                                     errors?.dueDatePaymentLink?.message
+                                        ? t(`validation:${errors?.dueDatePaymentLink?.message}`)
+                                        : ""
                                   }
                                   sx={{
                                     svg: {
@@ -2214,7 +2220,11 @@ const createOrder = () => {
                                     value={field.value || ""}
                                   />
                                   <FormHelperText>
-                                    {errors?.primaryPhoneNumber?.message}
+                                    {
+                                    errors?.email?.message
+                                        ? t(`validation:${errors?.email?.message}`)
+                                        : ""
+                                  }
                                   </FormHelperText>
                                 </FormControl>
                               )}
@@ -2229,7 +2239,11 @@ const createOrder = () => {
                                   type="email"
                                   autoComplete="off"
                                   error={!!errors.email}
-                                  helperText={errors?.email?.message}
+                                  helperText={
+                                    errors?.email?.message
+                                        ? t(`validation:${errors?.email?.message}`)
+                                        : ""
+                                  }
                                   variant="outlined"
                                   fullWidth
                                   required={
@@ -2253,7 +2267,11 @@ const createOrder = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.customerName}
-                                    helperText={errors?.customerName?.message}
+                                    helperText={
+                                      errors?.customerName?.message
+                                          ? t(`validation:${errors?.customerName?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     required
@@ -2278,7 +2296,11 @@ const createOrder = () => {
                                     required={
                                       customData.customerType === "corporate"
                                     }
-                                    helperText={errors?.orgorPID?.message}
+                                    helperText={
+                                      errors?.orgorPID?.message
+                                          ? t(`validation:${errors?.orgorPID?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -2302,7 +2324,10 @@ const createOrder = () => {
                                       error={!!errors.billingAddress}
                                       helperText={
                                         errors?.billingAddress?.message
+                                            ? t(`validation:${errors?.billingAddress?.message}`)
+                                            : ""
                                       }
+
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2330,7 +2355,11 @@ const createOrder = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.billingZip}
-                                      helperText={errors?.billingZip?.message}
+                                      helperText={
+                                        errors?.billingZip?.message
+                                            ? t(`validation:${errors?.billingZip?.message}`)
+                                            : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2358,7 +2387,11 @@ const createOrder = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.billingCity}
-                                    helperText={errors?.billingCity?.message}
+                                    helperText={
+                                      errors?.billingCity?.message
+                                          ? t(`validation:${errors?.billingCity?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     inputlabelprops={{
@@ -2413,6 +2446,11 @@ const createOrder = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
+                                      {
+                                      errors?.billingCity?.message
+                                          ? t(`validation:${errors?.billingCity?.message}`)
+                                          : ""
+                                    }
                                       {errors?.billingCountry?.message}
                                     </FormHelperText>
                                   </FormControl>
@@ -2481,6 +2519,8 @@ const createOrder = () => {
                                       error={!!errors.referenceNumber}
                                       helperText={
                                         errors?.referenceNumber?.message
+                                            ? t(`validation:${errors?.referenceNumber?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2505,6 +2545,8 @@ const createOrder = () => {
                                       error={!!errors.customerReference}
                                       helperText={
                                         errors?.customerReference?.message
+                                            ? t(`validation:${errors?.customerReference?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2526,7 +2568,11 @@ const createOrder = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.receiptNo}
-                                      helperText={errors?.receiptNo?.message}
+                                      helperText={
+                                        errors?.receiptNo?.message
+                                            ? t(`validation:${errors?.receiptNo?.message}`)
+                                            : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2553,6 +2599,8 @@ const createOrder = () => {
                                       error={!!errors.customerNotes}
                                       helperText={
                                         errors?.customerNotes?.message
+                                            ? t(`validation:${errors?.customerNotes?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2573,7 +2621,10 @@ const createOrder = () => {
                                       error={!!errors.termsConditions}
                                       helperText={
                                         errors?.termsConditions?.message
+                                            ? t(`validation:${errors?.termsConditions?.message}`)
+                                            : ""
                                       }
+
                                       variant="outlined"
                                       fullWidth
                                     />
@@ -2640,6 +2691,8 @@ const createOrder = () => {
                                       error={!!errors.internalReferenceNo}
                                       helperText={
                                         errors?.internalReferenceNo?.message
+                                            ? t(`validation:${errors?.internalReferenceNo?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2665,6 +2718,8 @@ const createOrder = () => {
                                       error={!!errors.customerNotesInternal}
                                       helperText={
                                         errors?.customerNotesInternal?.message
+                                            ? t(`validation:${errors?.customerNotesInternal?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth

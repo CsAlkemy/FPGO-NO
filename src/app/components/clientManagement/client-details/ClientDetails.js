@@ -695,10 +695,9 @@ const ClientDetails = () => {
                       variant="outlined"
                       className="font-semibold rounded-4"
                     >
-                      {t("label:make")}{" "}
-                      {info.status === t("label:inactive")
-                        ? t("label:active")
-                        : t("label:inactive")}
+                      {info.status ==="Inactive"
+                        ? t("label:makeActive")
+                        : t("label:makeInactive")}
                     </Button>
                     <LoadingButton
                       variant="contained"
