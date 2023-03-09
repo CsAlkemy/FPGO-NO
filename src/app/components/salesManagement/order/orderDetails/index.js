@@ -54,15 +54,15 @@ const createOrder = () => {
         .then((res) => {
           let info = res?.data;
 
-           //On the fly get the order is expired or not
-          const dueDate = info.paymentLinkDueDate;
-          const splitedTimeAndDate = dueDate.split(", ");
-          const splitedDates = splitedTimeAndDate[1].split(".");
-          const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
-          const dueDateTimeStamp = new Date(formatedDate).getTime();
-          const currentTimeStamp = new Date(new Date().toLocaleString('no-NO', {timeZone: "Europe/Oslo"})).getTime();
-          const isExpired = info.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
-          info.status = isExpired ? 'Expired' : info.status;
+          //  //On the fly get the order is expired or not
+          // const dueDate = info.paymentLinkDueDate;
+          // const splitedTimeAndDate = dueDate.split(", ");
+          // const splitedDates = splitedTimeAndDate[1].split(".");
+          // const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+          // const dueDateTimeStamp = new Date(formatedDate).getTime();
+          // const currentTimeStamp = new Date(new Date().toLocaleString('no-NO', {timeZone: "Europe/Oslo"})).getTime();
+          // const isExpired = info.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
+          // info.status = isExpired ? 'Expired' : info.status;
           
           setInfo(info);
           setIsLoading(false);
