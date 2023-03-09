@@ -83,15 +83,15 @@ class OrdersService {
       const phone = preparePhone ? preparePhone.split("+") : null;
 
       //On the fly get the order is expired or not
-      const dueDate = row.paymentLinkDueDate;
-      const splitedTimeAndDate = dueDate.split(", ");
-      const splitedDates = splitedTimeAndDate[1].split(".");
-      const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
-      const dueDateTimeStamp = new Date(formatedDate).getTime();
-      const currentTimeStamp = new Date().getTime();
-      const isExpired =
-        row.status.toLowerCase() === "sent" &&
-        dueDateTimeStamp < currentTimeStamp;
+      // const dueDate = row.paymentLinkDueDate;
+      // const splitedTimeAndDate = dueDate.split(", ");
+      // const splitedDates = splitedTimeAndDate[1].split(".");
+      // const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+      // const dueDateTimeStamp = new Date(formatedDate).getTime();
+      // const currentTimeStamp = new Date().getTime();
+      // const isExpired =
+      //   row.status.toLowerCase() === "sent" &&
+      //   dueDateTimeStamp < currentTimeStamp;
 
       return {
         uuid: row.orderUuid,
@@ -102,15 +102,24 @@ class OrdersService {
         phone: phone ? "+" + phone[phone.length - 1] : null,
         email: row?.email ? row?.email : null,
         amount: ThousandSeparator(row.amount),
-        stage: row?.status
-          ? isExpired
-            ? "expired"
-            : row.status.toLowerCase()
-          : null,
+        stage: row?.status ? row.status.toLowerCase() : null,
+        // stage: row?.status
+        //   ? isExpired
+        //     ? "expired"
+        //     : row.status.toLowerCase()
+        //   : null,
         // stage: "Partial Refunded",
-        refundResend: isExpired
-          ? null
-          : row.status.toLowerCase() === "sent"
+        // refundResend: isExpired
+        //   ? null
+        //   : row.status.toLowerCase() === "sent"
+        //   ? "Resend"
+        //   : row.status.toLowerCase() === "paid" ||
+        //     row.status.toLowerCase() === "partial refunded" ||
+        //     row.status.toLowerCase() === "refund pending"
+        //   ? // || row.status.toLowerCase() === "invoiced"
+        //     "Refund"
+        //   : null,
+        refundResend: row.status.toLowerCase() === "sent"
           ? "Resend"
           : row.status.toLowerCase() === "paid" ||
             row.status.toLowerCase() === "partial refunded" ||
@@ -118,7 +127,8 @@ class OrdersService {
           ? // || row.status.toLowerCase() === "invoiced"
             "Refund"
           : null,
-        isCancel: !isExpired && row.status.toLowerCase() === "sent",
+        // isCancel: !isExpired && row.status.toLowerCase() === "sent",
+        isCancel: row.status.toLowerCase() === "sent",
         // refundResend: "Resend",
         // isCancel: true,
       };
