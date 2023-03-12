@@ -141,7 +141,7 @@ const en = {
     areYouSureThatYouWouldLikeToDiscardTheProcess:
       "Are You Sure That You Would Like To Discard The Process?",
     onceConfirmedThisActionCannotBeReverted:
-      "Once Confirmed, This Action Cannot Be Reverted.",
+      "Once confirmed, this action cannot be reverted.",
     cancel: "Cancel",
     confirm: "Confirm",
     productId: "Product ID",
@@ -380,7 +380,7 @@ const en = {
     orderStatus: "Order Status",
     debtCollection: "Debt Collection",
     areYouSureYouWantToApproveThisRefund:
-      "Are you sure you want to approve this refund",
+      "Are you sure you want to approve this refund?",
     refundRequests: "Refund Requests",
     dateRequested: "Date Requested",
     pending: "Pending",
@@ -425,6 +425,8 @@ const en = {
     clientTimeline: "Timeline",
     clientOrders: "Orders",
     orderExpiredAndWasNotPaid: "Order expired and was not paid",
+    requestForRefundApproval: "Request for Refund Approval",
+    sendRefund: "Send Refund",
   },
   message: {
     clientNotFound: "Client not Found",
@@ -525,7 +527,7 @@ const en = {
     refundRejectionForOutOfRunwayParam:
       "Order refunds greater than available amount of NOK",
     refundRejectionForRefundRequestGreaterThanOrderAmount:
-      "Order Refunds Greater Than Order Amount",
+      "Order refunds greater than order amount",
     customerStatusUpdatedFailed: "Customer Status Updated Failed",
     customersRetrievedSuccessfully: "Customers Retrieved Successfully",
     refundRejectionForRefundedCancelledInvoicedOrderParam:
