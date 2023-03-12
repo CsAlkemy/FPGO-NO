@@ -873,7 +873,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else if (rdt === "refundResend") {
