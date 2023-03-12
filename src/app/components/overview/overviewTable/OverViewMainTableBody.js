@@ -222,7 +222,7 @@ export default function OverViewMainTableBody(props) {
           case "lastOrderAmount":
             return (
               <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+                {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
               </TableCell>
             );
           default:
