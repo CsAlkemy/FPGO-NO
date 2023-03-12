@@ -137,9 +137,9 @@ const OrderModal = (props) => {
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
         if (res?.data?.status_code === 202) {
-          enqueueSnackbar(res?.data?.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${res?.data?.message}`), { variant: "success" });
           // setApiLoading(false);
-        } else enqueueSnackbar(res?.error?.data?.message, { variant: "error" });
+        } else enqueueSnackbar(t(`message:${res?.error?.data?.message}`), { variant: "error" });
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
         // else window.location.reload();
@@ -152,7 +152,7 @@ const OrderModal = (props) => {
       setApiLoading(true);
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
-          enqueueSnackbar(res?.data?.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${res?.data?.message}`), { variant: "success" });
           // setApiLoading(false);
         }
         if (window.location.pathname === "/create-order/details")
@@ -419,7 +419,7 @@ const OrderModal = (props) => {
                 {/*    Further refunds have to be approved by the FP Admin.*/}
                 {/*  </div>*/}
                 {/*)}*/}
-                {flag && <div>{flagMessage}</div>}
+                {flag && <div>{t(`message:${flagMessage}`)}</div>}
                 <div className="flex justify-end items-center gap-32 mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
                   <Button
                     onClick={handleClose}
