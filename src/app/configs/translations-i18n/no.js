@@ -352,7 +352,7 @@ const no = {
     updateCategory: "Oppdater kategori",
     informationForCreditCheck: "Informasjon for kredittsjekk",
     areYouSureYouWantToApproveThisRefund:
-      "Er du sikker på at du vil godkjenne denne refusjonen",
+      "Er du sikker på at du vil godkjenne denne refusjonen?",
     refundRequests: "Refusjonsforespørsler",
     dateRequested: "Forespurt dato",
     pending: "Avventer",
@@ -418,6 +418,8 @@ const no = {
     new: "Ny",
     returning: "Returnering",
     orderExpiredAndWasNotPaid: "Ordren utløpt og ikke betalt",
+    requestForRefundApproval: "Anmodning om godkjenning av refusjon",
+    sendRefund: "Send refusjon",
   },
   message: {
     clientNotFound: "Klient ikke funnet",
