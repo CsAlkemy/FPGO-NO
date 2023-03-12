@@ -4,13 +4,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useSnackbar } from "notistack";
+import {useSnackbar} from "notistack";
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import CategoryService from "../../data-access/services/categoryService/CategoryService";
-import ClientService from "../../data-access/services/clientsService/ClientService";
-import { useTranslation } from "react-i18next";
-import { useDeleteCategoryMutation, useDeleteClientMutation } from 'app/store/api/apiSlice';
+import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useDeleteCategoryMutation, useDeleteClientMutation} from 'app/store/api/apiSlice';
+import _ from "lodash";
 
 export default function ConfirmModal({
   open,
@@ -120,14 +119,14 @@ export default function ConfirmModal({
       >
         <div className="p-16">
           <DialogTitle id="alert-dialog-title" className="modeal-header">
-            {header}
+            {t(`label:${_.camelCase(header)}`)}
           </DialogTitle>
           <DialogContent>
             <DialogContentText
               id="alert-dialog-description"
               className="modeal-text"
             >
-              {subText}
+              {t(`label:${_.camelCase(subText)}`)}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

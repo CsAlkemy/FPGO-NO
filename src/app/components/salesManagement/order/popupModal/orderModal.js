@@ -35,6 +35,7 @@ import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
+import _ from "lodash";
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -61,6 +62,8 @@ const OrderModal = (props) => {
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
+
+  const newString = flagMessage.split(":");
 
   const label = { inputProps: { "aria-label": "Checkbox" } };
   const { enqueueSnackbar } = useSnackbar();
@@ -120,7 +123,9 @@ const OrderModal = (props) => {
       };
       requestRefundApproval(payload).then((response) => {
         if (response?.data?.status_code === 201) {
-          enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+          enqueueSnackbar(t(`message:${response?.data?.message}`), {
+            variant: "success",
+          });
           // setApiLoading(false);
         } else if (response?.error) {
           enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
@@ -137,9 +142,14 @@ const OrderModal = (props) => {
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
         if (res?.data?.status_code === 202) {
-          enqueueSnackbar(t(`message:${res?.data?.message}`), { variant: "success" });
+          enqueueSnackbar(t(`message:${res?.data?.message}`), {
+            variant: "success",
+          });
           // setApiLoading(false);
-        } else enqueueSnackbar(t(`message:${res?.error?.data?.message}`), { variant: "error" });
+        } else
+          enqueueSnackbar(t(`message:${res?.error?.data?.message}`), {
+            variant: "error",
+          });
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
         // else window.location.reload();
@@ -152,7 +162,9 @@ const OrderModal = (props) => {
       setApiLoading(true);
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
-          enqueueSnackbar(t(`message:${res?.data?.message}`), { variant: "success" });
+          enqueueSnackbar(t(`message:${res?.data?.message}`), {
+            variant: "success",
+          });
           // setApiLoading(false);
         }
         if (window.location.pathname === "/create-order/details")
@@ -171,7 +183,9 @@ const OrderModal = (props) => {
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
           if (response?.data?.status_code === 202) {
-            enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
             setOpen(false);
             window.location.pathname.includes("/create-order/details/")
               ? navigate(-1)
@@ -181,7 +195,12 @@ const OrderModal = (props) => {
             if (response?.error?.data?.status_code === 400) {
               if (
                 // !response?.error?.data?.message.toLowerCase().includes("admin")
-                !(response?.error?.data?.message === "refundRejectionForWeeklyThresholdExceed" || response?.error?.data?.message === "refundRejectionForRequestAmountThresholdExceed")
+                !(
+                  response?.error?.data?.message ===
+                    "refundRejectionForWeeklyThresholdExceed" ||
+                  response?.error?.data?.message ===
+                    "refundRejectionForRequestAmountThresholdExceed"
+                )
               ) {
                 setIsDisableRefundRequest(true);
               }
@@ -207,7 +226,9 @@ const OrderModal = (props) => {
       setApiLoading(true);
       refundRequestDecision(params).then((response) => {
         if (response?.data?.status_code === 202) {
-          enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+          enqueueSnackbar(t(`message:${response?.data?.message}`), {
+            variant: "success",
+          });
         } else if (response?.error) {
           enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
             variant: "error",
@@ -219,7 +240,10 @@ const OrderModal = (props) => {
       });
     }
   };
-
+  const headerTitleText =
+    headerTitle === "moreThanThreeRefundAttempts" || flag
+      ? "requestForRefundApproval"
+      : headerTitle;
   return (
     <div>
       <Dialog
@@ -232,9 +256,7 @@ const OrderModal = (props) => {
       >
         <div className="p-10 w-full md:min-w-sm rounded-4">
           <div className="p-16 subtitle1 m-10 bg-primary-50 rounded-6 text-primary-800">
-            {headerTitle === "moreThanThreeRefundAttempts" || flag
-              ? "Request for Refund Approval"
-              : headerTitle}
+            {t(`label:${_.camelCase(headerTitleText)}`)}
           </div>
           <DialogContent className="p-5 sm:p-10">
             <div className="modeal-text">
@@ -251,7 +273,8 @@ const OrderModal = (props) => {
                       </div>
                     </div>
                     <div className="header6 text-MonochromeGray-700">
-                      {t("label:nok")} {orderAmount ? ThousandSeparator(orderAmount) : "-"}
+                      {t("label:nok")}{" "}
+                      {orderAmount ? ThousandSeparator(orderAmount) : "-"}
                     </div>
                   </div>
                 )}
@@ -419,7 +442,11 @@ const OrderModal = (props) => {
                 {/*    Further refunds have to be approved by the FP Admin.*/}
                 {/*  </div>*/}
                 {/*)}*/}
-                {flag && <div>{t(`message:${flagMessage}`)}</div>}
+                {flag && (
+                  <div>
+                    {t(`message:${newString[0]}`)} {newString[1] || ""}
+                  </div>
+                )}
                 <div className="flex justify-end items-center gap-32 mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
                   <Button
                     onClick={handleClose}

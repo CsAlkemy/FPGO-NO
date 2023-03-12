@@ -5,6 +5,7 @@ import {useTranslation} from "react-i18next";
 import {useSnackbar} from "notistack";
 import {useRefundRequestDecisionMutation} from "app/store/api/apiSlice";
 import {LoadingButton} from "@mui/lab";
+import _ from "lodash";
 
 const confirmDiscard = (props) => {
   const navigate = useNavigate();
@@ -46,7 +47,9 @@ const confirmDiscard = (props) => {
 
       refundRequestDecision(params).then((response) => {
         if (response?.data?.status_code === 202) {
-          enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+          enqueueSnackbar(t(`message:${response?.data?.message}`), {
+            variant: "success",
+          });
           setApiLoading(false);
         } else if (response?.error) {
           enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
@@ -73,14 +76,14 @@ const confirmDiscard = (props) => {
       >
         <div className="p-16">
           <DialogTitle id="alert-dialog-title" className="modeal-header">
-            {title}
+            {t(`label:${_.camelCase(title)}`)}
           </DialogTitle>
           <DialogContent>
             <DialogContentText
               id="alert-dialog-description"
               className="modeal-text"
             >
-              {subTitle}
+              {t(`label:${_.camelCase(subTitle)}`)}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
