@@ -47,7 +47,7 @@ function OrderStatus(props) {
     },
     colors: ["#3D388B", "#7067F0", "#524AC9", "#C6C2FF"],
     labels:
-      chartSeries.sort().toString() === [0, 0, 0, 0].sort().toString()
+      chartSeries.toString() === [0, 0, 0, 0].toString()
         ? [t("label:notFound")]
         : labels,
     plotOptions: {
@@ -80,9 +80,15 @@ function OrderStatus(props) {
       theme: "dark",
       custom: ({ seriesIndex, w }) =>
         `<div class="flex items-center h-32 min-h-32 max-h-23 px-12">
-            <div class="w-12 h-12 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-             <div class="ml-8 text-md leading-none">${t(`label:${w.config.labels[seriesIndex]}`)}:</div>
-            <div class="ml-8 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
+            <div class="w-12 h-12 rounded-full" style="background-color: ${
+              w.config.colors[seriesIndex]
+            };"></div>
+             <div class="ml-8 text-md leading-none">${t(
+               `label:${w.config.labels[seriesIndex]}`
+             )}:</div>
+            <div class="ml-8 text-md font-bold leading-none">${
+              w.config.series[seriesIndex]
+            }%</div>
         </div>`,
     },
   };
@@ -114,7 +120,7 @@ function OrderStatus(props) {
           className="flex flex-auto items-center justify-center w-full h-full"
           options={chartOptions}
           series={
-            chartSeries.sort().toString() === [0, 0, 0, 0].sort().toString()
+            chartSeries.toString() === [0, 0, 0, 0].toString()
               ? [100]
               : chartSeries
           }
