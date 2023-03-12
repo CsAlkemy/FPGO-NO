@@ -289,13 +289,13 @@ const no = {
     categoryDetails: "Kategoridetaljer",
     cancellationNote: "Kanselleringsmerknad",
     paymentSuccessfulMessage:
-      "Takk for din bestilling. Vi vil bekrefte deg innen kort tid",
+      "En ordrekvittering vil bli sendt til deg med fullstendig bestillingsinformasjon.",
     companyInformation: "Bedriftsinformasjon",
     pleaseTypeInYourEmailToHetPasswordResetLink:
       "Vennligst skriv inn e-posten din for å sende lenke til tilbakestilling av passord",
     registration: "Registrering",
     howMuchItCostMessage: "Kostnadsmelding ved registrering",
-    paymentSuccessful: "Betaling Vellykket",
+    paymentSuccessful: "Takk for din bestilling",
     redirectingYouToThePaymentGateway: "Omdirigerer deg til betalingssiden",
     payNow: "Betal nå",
     backToOrderDetails: "Tilbake til ordredetaljer",
@@ -543,6 +543,12 @@ const no = {
     ambiguousRequestExistsWithSameParameters:
       "Tvetydig forespørsel finnes med samme parametere",
     creditCheckRequestedSuccessful: "Kredittsjekk forespurt vellykket",
+    dataRetrieveFailed: "Datahenting mislyktes",
+    dataRetrievedSuccessfully: "Vellykket innhenting av data",
+    personCurrentStatusIsWrong: "Personens nåværende status er feil",
+    creditCheckHistoryRetrievedSuccessfully:
+      "Kredittkontrollhistorikk hentet med hell",
+    creditCheckHistoryNotFound: "Kredittsjekkhistorikk ikke funnet",
   },
   validation: {
     youMustEnterAValidEmail: "Du må oppgi en gyldig e-postadresse",
