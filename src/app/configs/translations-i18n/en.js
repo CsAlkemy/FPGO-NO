@@ -545,6 +545,7 @@ const en = {
     orderRetrievedSuccessfully: "Order Retrieved Successfully",
     ambiguousRequestExistsWithSameParameters:
       "Ambiguous Request Exists with Same Parameters",
+    creditCheckRequestedSuccessful: "Credit check requested successful",
   },
   validation: {
     youMustEnterAValidEmail: "You must enter a valid email",
@@ -630,6 +631,13 @@ const en = {
     enterZIP: "Enter ZIP",
     youMustEnterYourAddress: "You must enter your address",
     "  youMustSelectYourCountry": "You must select your country",
+    youMustEnterOrganizationID: "You must enter organization ID",
+    youMustEnterPhoneNumberAsSelectedOrderBySMS:
+      "You must enter phone number as selected Order by SMS",
+    enterValidID: "Enter valid ID",
+    youMustEnterTheCancellationNote: "You must enter the Cancellation Note",
+    youMustSelectYourRole: "You must select your role",
+    youMustSelectYourBranch: "You must select your branch",
   },
 };
 export default en;

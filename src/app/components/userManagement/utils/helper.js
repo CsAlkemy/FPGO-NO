@@ -137,7 +137,7 @@ export const schemaUserProfile = yup.object().shape({
   fullName: yup.string().required('youMustEnterYourName'),
   email: yup.string().email('youMustEnterAValidEmail').required('youMustEnterAEmail'),
   phoneNumber : yup.string().required('youMustEnterYourPhoneNumber'),
-  organization : yup.string().required('You must enter your organization'),
+  organization : yup.string().required('youMustEnterYourOrganizationName'),
   role : yup.string().required('youMustEnterYourRole'),
   // preferredLanguage : yup.string().required('youMustSelectYourPreferredLanguage'),
 });
@@ -149,8 +149,8 @@ export const schemaUserProfileFpAdmin = yup.object().shape({
   organization: yup.string().required('youMustEnterOrganization'),
   //organization: yup.string().required('You must enter your organization'),
   // designation: yup.string().required("You must enter your designation"),
-  role: yup.string().required('You must select your role'),
-  branch: yup.string().required('You must select your branch'),
+  role: yup.string().required('youMustSelectYourRole'),
+  branch: yup.string().required('youMustSelectYourBranch'),
   // preferredLanguage : yup.string().required('youMustSelectYourPreferredLanguage'),
 });
 export const schemaUserProfileFpAdminSubClient = yup.object().shape({

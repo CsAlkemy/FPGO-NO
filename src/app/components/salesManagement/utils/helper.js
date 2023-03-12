@@ -5,7 +5,7 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
     .string()
     .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  primaryPhoneNumber: yup.string().required("You must enter phone number"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
   // dueDatePaymentLink: yup.string()
   //   .when( "orderDate",
   //     (orderDate, field)=> orderDate ? field.required() : field
@@ -80,8 +80,8 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
     .string()
     .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  primaryPhoneNumber: yup.string().required("You must enter phone number"),
-  email: yup.string().required("You must enter email address"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  email: yup.string().email("youMustEnterAValidEmail").required("youMustEnterAEmail"),
   orgorPID: yup
     .string()
     .matches(/^[0-9]+$/, {
@@ -155,7 +155,7 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
       message: "Must be number",
       excludeEmptyString: true,
     })
-    .required("You must enter organization id")
+    .required("youMustEnterOrganizationID")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
     .min(9, "pNumberMustBeNumber")
@@ -226,7 +226,7 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
       message: "Must be number",
       excludeEmptyString: true,
     })
-    .required("You must enter Organization ID")
+    .required("youMustEnterOrganizationID")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
     .min(9, "pNumberMustBeNumber")
@@ -234,11 +234,11 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
   customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup
     .string()
-    .required("You must enter email address")
+    .required("youMustEnterAEmail")
     .email("mustBeValidEmail"),
   primaryPhoneNumber: yup
     .string()
-    .required("You must enter phone number as selected Order by SMS"),
+    .required("youMustEnterPhoneNumberAsSelectedOrderBySMS"),
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
@@ -293,18 +293,18 @@ export const CreateOrderDefaultValue = {
 };
 
 export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
-  phone: yup.string().required("You must enter phone"),
+  phone: yup.string().required("youMustEnterYourPhoneNumber"),
   email: yup
     .string()
-    .required("You must enter email address")
+    .required("youMustEnterAEmail")
     .email("mustBeValidEmail"),
   orgIdOrPNumber: yup
     .string()
     .matches(/^[0-9]+$/, {
-      message: "org number must be number",
+      message: "organizationIdMustBeNumber",
       excludeEmptyString: true,
     })
-    .required("You must enter organization id")
+    .required("youMustEnterOrganizationID")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
     .min(9, "pNumberMustBeNumber")
@@ -315,10 +315,10 @@ export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
   billingCountry: yup.string().required("youMustEnterYourCountry"),
 });
 export const validateSchemaPaymentCheckout = yup.object().shape({
-  phone: yup.string().required("You must enter phone"),
+  phone: yup.string().required("youMustEnterYourPhoneNumber"),
   email: yup
     .string()
-    .required("You must enter email address")
+    .required("youMustEnterAEmail")
     .email("mustBeValidEmail"),
   orgIdOrPNumber: yup
     .string()
@@ -343,11 +343,11 @@ export const validateSchemaCreditCheckForCheckout = yup.object().shape({
       message: "Must be number",
       excludeEmptyString: true,
     })
-      .typeError("Enter valid id")
+      .typeError("enterValidID")
     .required("youMustEnterTheCreditCheckId")
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "Enter valid id")
-    .max(11, "Enter valid id"),
+    .min(9, "enterValidID")
+    .max(11, "enterValidID"),
 });
 
 export const PaymentDefaultValue = {
@@ -369,13 +369,13 @@ export const OrderModalDefaultValue = {
 };
 
 export const validateSchemaOrderResendModal = yup.object().shape({
-  phone: yup.string().required("You must enter the phone"),
+  phone: yup.string().required("youMustEnterYourPhoneNumber"),
 });
 export const validateSchemaOrderCancelModal = yup.object().shape({
   cancellationNote: yup
     .string()
     .max(200, "cancellationNoteRules")
-    .required("You must enter the Cancellation Note"),
+    .required("youMustEnterTheCancellationNote"),
 });
 export const validateSchemaOrderRefundModal = yup.object().shape({
   refundAmount: yup.string().required("youMustEnterTheRefundAmount"),

@@ -168,7 +168,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
     CustomersService.makeInactiveCustomerByUUID(queryParams.id)
       .then((res) => {
         if (res?.status_code === 202) {
-          enqueueSnackbar(res.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${res?.message}`), { variant: "success" });
           navigate(`/customers/customers-list`);
         }
       })
