@@ -9,7 +9,7 @@ export const validateSchema = yup.object().shape({
   primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
   designation: yup.string(),
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
-  password: yup.string().required('You must enter your password'),
+  password: yup.string().required('youMustEnterPassword'),
 
   contactEndDate: yup.string().required('youMustEnterYourContactEndDate').typeError("pleaseEnterValidDate"),
   commision: yup.string().required('youMustEnterYourCommission'),

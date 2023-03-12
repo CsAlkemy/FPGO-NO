@@ -244,7 +244,7 @@ export default function CreditCheckPrivateClient() {
                 <div className="flex justify-center items-center bg-MonochromeGray-25 rounded-8 p-20 w-full my-20 min-h-200">
                   <div className="flex flex-col justify-center items-center gap-20 my-32">
                     <div className="text-center header5">
-                      {t("label:requestSuccessful")}
+                      {t("label:requestSuccess")}
                     </div>
                     <div className="text-center body2 w-auto sm:w-2/3">
                       {`${t("label:yourCreditCheckRequestFor")} ${t(

@@ -542,6 +542,7 @@ const no = {
     orderRetrievedSuccessfully: "Bestilling hentet vellykket",
     ambiguousRequestExistsWithSameParameters:
       "Tvetydig forespørsel finnes med samme parametere",
+    creditCheckRequestedSuccessful: "Kredittsjekk forespurt vellykket",
   },
   validation: {
     youMustEnterAValidEmail: "Du må oppgi en gyldig e-postadresse",
@@ -630,6 +631,13 @@ const no = {
     enterZIP: "Skriv inn ZIP",
     youMustEnterYourAddress: "Du må oppgi adressen din",
     "  youMustSelectYourCountry": "Du må velge land",
+    youMustEnterOrganizationID: "Du må oppgi organisasjons-ID",
+    youMustEnterPhoneNumberAsSelectedOrderBySMS:
+      "Du må oppgi telefonnummer som valgt Bestill via SMS",
+    enterValidID: "Oppgi gyldig ID",
+    youMustEnterTheCancellationNote: "Du må oppgi avbestillingsnotatet",
+    youMustSelectYourRole: "Du må velge din rolle",
+    youMustSelectYourBranch: "Du må velge filial",
   },
 };
 export default no;
