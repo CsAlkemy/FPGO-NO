@@ -300,8 +300,9 @@ const en = {
     payNow: "Pay Now",
     redirectingYouToThePaymentGateway: "Redirecting You To The Payment Gateway",
     thisWillOnlyTakeAMoment: "This Will Only Take A Moment",
-    paymentSuccessful: "Payment Successful",
-    paymentSuccessfulMessage: "Payment Successful Message confirmation",
+    paymentSuccessful: "Thank you for your order",
+    paymentSuccessfulMessage:
+      "An order receipt will be sent to you with your complete order details.",
     login: "Login",
     togglePasswordVisibility: "Toggle Password Visibility",
     rememberMe: "Remember Me",
@@ -545,7 +546,13 @@ const en = {
     orderRetrievedSuccessfully: "Order Retrieved Successfully",
     ambiguousRequestExistsWithSameParameters:
       "Ambiguous Request Exists with Same Parameters",
-    creditCheckRequestedSuccessful: "Credit check requested successful",
+    creditCheckRequestedSuccessful: "Credit Check Requested Successful",
+    dataRetrieveFailed: "Data Retrieve Failed",
+    dataRetrievedSuccessfully: "Data Retrieved Successfully",
+    personCurrentStatusIsWrong: "Person Current Status Is Wrong",
+    creditCheckHistoryRetrievedSuccessfully:
+      "Credit Check History Retrieved Successfully",
+    creditCheckHistoryNotFound: "Credit Check History not Found",
   },
   validation: {
     youMustEnterAValidEmail: "You must enter a valid email",
