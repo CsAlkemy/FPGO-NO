@@ -3,7 +3,6 @@ import axios from "axios";
 import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 class OrdersService {
   //Not using - Shifted RTK-Query
@@ -101,7 +100,7 @@ class OrdersService {
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
         email: row?.email ? row?.email : null,
-        amount: ThousandSeparator(row.amount),
+        amount: row.amount,
         stage: row?.status ? row.status.toLowerCase() : null,
         // stage: row?.status
         //   ? isExpired
@@ -814,8 +813,8 @@ class OrdersService {
         id: row.orderId,
         clientName: row.clientName,
         customerName: row.customerName,
-        orderAmount: ThousandSeparator(row.orderAmount),
-        refundAmount: ThousandSeparator(row.refundAmount),
+        orderAmount: row.orderAmount,
+        refundAmount: row.refundAmount,
         stage: row?.status ? row?.status.toLowerCase() : null,
         approveAction: row?.status ? row?.status.toLowerCase() : null,
         isCancel: row?.status.toLowerCase() === "refund pending",

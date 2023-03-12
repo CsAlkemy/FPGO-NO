@@ -12,6 +12,8 @@ export const CharCont = (str, length) => {
 
 export const ThousandSeparator = (number) => {
   if (!!number) {
+    return Number(number).toLocaleString('ro-RO');
+
     let str = number.toString();
     let arr = str.split("");
     let result = [];
