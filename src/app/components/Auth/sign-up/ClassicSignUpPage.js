@@ -1,14 +1,6 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 import LanguageIcon from "@mui/icons-material/Language";
-import {
-  Box,
-  Hidden,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  SvgIcon,
-} from "@mui/material";
+import {Box, Hidden, InputLabel, MenuItem, Select, SvgIcon,} from "@mui/material";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
@@ -16,20 +8,20 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { changeLanguage } from "app/store/i18nSlice";
+import {changeLanguage} from "app/store/i18nSlice";
 import MuiPhoneNumber from "material-ui-phone-number";
-import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import {useSnackbar} from "notistack";
+import {useEffect, useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
+import {useDispatch} from "react-redux";
+import {Link, useNavigate} from "react-router-dom";
 import * as yup from "yup";
 import "../../../../styles/colors.css";
 import AuthService from "../../../data-access/services/authService";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import { useCreateRegistrationRequestMutation } from "app/store/api/apiSlice";
+import {useCreateRegistrationRequestMutation} from "app/store/api/apiSlice";
 
 /**
  * Form Validation Schema
@@ -38,28 +30,28 @@ const schema = yup.object().shape({
   organizationid: yup
     .string()
     .matches(/\b\d{9}\b/, {
-      message: "Must be 9 digits",
+      message: "mustBeNineDigits",
       excludeEmptyString: true,
     })
-    .required("You must enter your Organization ID"),
-  companyname: yup.string().required("You must enter your Company Name"),
-  name: yup.string().required("You must enter your name"),
-  phonenumber: yup.string().required("You must enter your Phone Number"),
-  organizationtype: yup.string().required("You must select type"),
+    .required("youMustEnterYourOrganizationId"),
+  companyname: yup.string().required("youMustEnterYourCompanyName"),
+  name: yup.string().required("youMustEnterYourName"),
+  phonenumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  organizationtype: yup.string().required("youMustSelectType"),
   email: yup
     .string()
-    .email("You must enter a valid email")
-    .required("You must enter a email"),
+    .email("youMustEnterAValidEmail")
+    .required("youMustEnterAEmail"),
   // password: yup
   //   .string()
-  //   .required("Please enter your password.")
+  //   .required("pleaseEnterYourPassword")
   //   .min(8, "Password is too short - should be 8 chars minimum."),
   // passwordConfirm: yup
   //   .string()
   //   .oneOf([yup.ref("password"), null], "Passwords must match"),
   acceptTermsConditions: yup
     .boolean()
-    .oneOf([true], "The terms and conditions must be accepted."),
+    .oneOf([true], "theTermsAndConditionsMustBeAccepted"),
 });
 
 const defaultValues = {
@@ -97,7 +89,7 @@ function ClassicSignUpPage() {
       if (response?.data?.status_code === 201) {
         navigate("/under-review");
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // AuthService.userRegistration(values)
@@ -138,19 +130,18 @@ function ClassicSignUpPage() {
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
   };
-
   return (
-    <div className="flex flex-col flex-auto items-center justify-around sm:justify-center md:p-32 bg-ccc">
-      <Paper className="flex w-11/12 md:w-auto min-h-auto rounded-xl sm:rounded-2xl custom-drop-shadow overflow-hidden max-w-screen-lg">
-        <div className="w-full md:w-auto py-32 pb-60 md:pb-auto p-16 sm:p-56 md:p-48 ltr:border-r-1 rtl:border-l-1">
+    <div className="bg-ccc h-auto md:h-screen my-auto flex flex-col justify-center">
+      <div className="w-full p-20 sm:p-0 md:w-2/4 bg-white mx-auto my-auto rounded-0 sm:rounded-xl">
+        <div className="p-16 sm:p-56 md:p-48">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-32">
-            <div className="col-span-1 md:col-span-4">
+            <div className="col-span-1 md:col-span-6">
               <AuthMobileHeader isShow={true} />
               <div className="flex justify-between items-center">
-                <div className="header4 mt-32 sm:mt-0">
+                <div className="header4 mt-32 sm:mt-10">
                   {t("label:registration")}
                 </div>
-                <Hidden smDown>
+                <Hidden mdDown>
                   <Select
                     sx={{ height: 36 }}
                     defaultValue="English"
@@ -175,7 +166,7 @@ function ClassicSignUpPage() {
                         value={option.label}
                         onClick={() => handleLanguageChange(option.value)}
                       >
-                        {option.label}
+                        {t(`label:${option.label.toLowerCase()}`)}
                       </MenuItem>
                     ))}
                   </Select>
@@ -204,7 +195,7 @@ function ClassicSignUpPage() {
                           label={t("label:organizationId")}
                           type="number"
                           error={!!errors.organizationid}
-                          helperText={errors?.organizationid?.message}
+                          helperText={errors?.organizationid?.message ? t(`validation:${errors?.organizationid?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -221,7 +212,7 @@ function ClassicSignUpPage() {
                           label={t("label:companyName")}
                           type="companyname"
                           error={!!errors.companyname}
-                          helperText={errors?.companyname?.message}
+                          helperText={errors?.companyname?.message ? t(`validation:${errors?.companyname?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -257,7 +248,7 @@ function ClassicSignUpPage() {
                             })}
                           </Select>
                           <FormHelperText>
-                            {errors?.organizationtype?.message}
+                            {errors?.organizationtype?.message ? t(`validation:${errors?.organizationtype?.message}`) : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -278,7 +269,7 @@ function ClassicSignUpPage() {
                         label={t("label:fullName")}
                         type="name"
                         error={!!errors.name}
-                        helperText={errors?.name?.message}
+                        helperText={errors?.name?.message ? t(`validation:${errors?.name?.message}`) : ""}
                         variant="outlined"
                         required
                         fullWidth
@@ -296,7 +287,7 @@ function ClassicSignUpPage() {
                         value={value}
                         onChange={onChange}
                         error={!!errors.phonenumber}
-                        helperText={errors?.phonenumber?.message}
+                        helperText={errors?.phonenumber?.message ? t(`validation:${errors?.phonenumber?.message}`) : ""}
                         variant="outlined"
                         id="phonenumber"
                         countryCodeEditable={false}
@@ -316,7 +307,7 @@ function ClassicSignUpPage() {
                         label={t("label:email")}
                         type="email"
                         error={!!errors.email}
-                        helperText={errors?.email?.message}
+                        helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                         variant="outlined"
                         required
                         fullWidth
@@ -333,7 +324,7 @@ function ClassicSignUpPage() {
                         label={t("label:designation")}
                         type="designation"
                         error={!!errors.designation}
-                        helperText={errors?.designation?.message}
+                        helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                       />
@@ -350,18 +341,19 @@ function ClassicSignUpPage() {
                     >
                       <FormControlLabel
                         label={
-                          <p>
+                          <p className="mt-[.25rem]">
                             {t("label:iAcceptThe")}{" "}
                             <span className="text-primary-500">
                               {t("label:tnc")}
                             </span>{" "}
-                            {t("label:ofFrontPaymentGo")}
+                            {t("label:of")} {" "}
+                            {t("label:frontGo")}
                           </p>
                         }
                         control={<Checkbox size="small" {...field} />}
                       />
                       <FormHelperText>
-                        {errors?.acceptTermsConditions?.message}
+                        {errors?.acceptTermsConditions?.message ? t(`validation:${errors?.acceptTermsConditions?.message}`) : ""}
                       </FormHelperText>
                     </FormControl>
                   )}
@@ -389,27 +381,9 @@ function ClassicSignUpPage() {
                 </div>
               </form>
             </div>
-            <div className="col-span-1 md:col-span-2">
-              <div className="border-1 border-MonochromeGray-50 rounded-2">
-                <div className="subtitle2 bg-primary-25 p-16 ">
-                  {t("label:howMuchItCost")} ?
-                </div>
-                <Typography className="px-32 py-10 body2">
-                  {t("label:howMuchItCostMessage")}
-                  {/*Arcu ultrices vel ullamcorper ipsum vitae in in massa.*/}
-                  {/*Habitasse quisque amet, metus, donec risus, molestie ipsum,*/}
-                  {/*sed tristique. Egestas vitae dignissim lectus mauris.*/}
-                  {/*Facilisis non ante id nisl amet, nunc. Quis felis nisi,*/}
-                  {/*dignissim lacus, consectetur egestas id lectus nunc. Malesuada*/}
-                  {/*elementum maecenas scelerisque porttitor purus diam*/}
-                  {/*condimentum pretium neque. Consequat nunc pulvinar neque,*/}
-                  {/*velit facilisis quam mi vel.*/}
-                </Typography>
-              </div>
-            </div>
           </div>
         </div>
-      </Paper>
+      </div>
     </div>
   );
 }

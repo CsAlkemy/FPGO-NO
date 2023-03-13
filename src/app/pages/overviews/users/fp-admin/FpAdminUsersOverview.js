@@ -13,6 +13,7 @@ import {
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useGetFPAdminUsersListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function FpAdminUsersOverview() {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ export default function FpAdminUsersOverview() {
   ];
   const tabs = [0, 1, 2];
   // const headerSubtitle = t("label:usersAllFpAdmis");
-  const headerSubtitle = t("navigation:fpAdminUsers");
+  const headerSubtitle = t("label:fpAdminUsers");
   const headerButtonLabel = t("label:createUser");
   const dispatch = useDispatch();
   const fpAdminUsers = useSelector(selectOverviewMainTableData);
@@ -78,18 +79,39 @@ export default function FpAdminUsersOverview() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={fpAdminUsersOverview}
-      headerRows={fpAdminUsersListOverviewHeaderRows}
-      // tableData={fpAdminUsers}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={fpAdminUsersRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={fpAdminUsersOverview}
+          headerRows={fpAdminUsersListOverviewHeaderRows}
+          // tableData={fpAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={fpAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={fpAdminUsersOverview}
+          headerRows={fpAdminUsersListOverviewHeaderRows}
+          // tableData={fpAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={fpAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

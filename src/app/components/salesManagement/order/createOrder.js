@@ -20,7 +20,9 @@ import {
   AccordionDetails,
   AccordionSummary,
   Autocomplete,
+  Backdrop,
   Button,
+  CircularProgress,
   FormControl,
   FormHelperText,
   Hidden,
@@ -56,9 +58,11 @@ import ClientService from "../../../data-access/services/clientsService/ClientSe
 import { useCreateOrderMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from "../../../data-access/services/authService";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import {es, nn, nb} from 'date-fns/locale'
+// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { es, nn, nb } from "date-fns/locale";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -75,6 +79,7 @@ const createOrder = () => {
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [itemLoader, setItemLoader] = useState(false);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createOrder, response] = useCreateOrderMutation();
@@ -245,10 +250,10 @@ const createOrder = () => {
     createOrder(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate(`/sales/orders-list`);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // .then((response) => {
@@ -312,12 +317,21 @@ const createOrder = () => {
     //Amount : (Rate * Qty) - discount
     //Discount : Sum of discounts
     //Grand Total : Sum of amounts
+    let rate, splitedRate, dotFormatRate, floatRate;
+    if (!!watchRate) {
+      rate = watchRate;
+      splitedRate = rate.toString().includes(",") ? rate.split(",") : rate;
+      dotFormatRate =
+        typeof splitedRate === "object"
+          ? `${splitedRate[0]}.${splitedRate[1]}`
+          : splitedRate;
+      floatRate = parseFloat(dotFormatRate);
+    }
+
     const total =
-      parseInt(watchQuantity) * parseFloat(watchRate) -
-      parseFloat(watchDiscount);
+      parseInt(watchQuantity) * floatRate - parseFloat(watchDiscount);
     const subTotalCalculation =
-      (parseInt(watchQuantity) * parseFloat(watchRate)) /
-      ((100 + watchTax) / 100);
+      (parseInt(watchQuantity) * floatRate) / ((100 + watchTax) / 100);
     const totalTaxCalculation = subTotalCalculation
       ? (subTotalCalculation * (watchTax / 100)) / 2
       : 0;
@@ -330,12 +344,13 @@ const createOrder = () => {
       totalDiscount = totalDiscount + parseFloat(watchDiscount);
     if (total) grandTotal = grandTotal + total;
     if (total > 0) {
-      return ` ${total.toFixed(2)}`;
+      return ` ${total}`;
     }
   };
 
   const addNewOrder = () => {
     // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
+    setItemLoader(true);
     setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
     setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
@@ -343,8 +358,12 @@ const createOrder = () => {
     setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
   };
   const onDelete = (index) => {
+    setItemLoader(true);
     //resetField(``)
     setValue(`order[${index}].productName`, "");
     setValue(`order[${index}].productID`, "");
@@ -356,6 +375,9 @@ const createOrder = () => {
     addOrderIndex.length > 1
       ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
       : setAddOrderIndex([...addOrderIndex]);
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
   };
   const onSameRowAction = (index) => {
     setValue(`order[${index}].productName`, "");
@@ -603,17 +625,18 @@ const createOrder = () => {
     );
   };
 
-  const getUTCTime = (d)=> {
-    let convertedDate = new Date(d)
-    if(!!d) {
-      let utc = (convertedDate.getTime() + 3600000) + (convertedDate.getTimezoneOffset() * 60000);
-      let nd = new Date(utc + (3600000*(new Date().getTimezoneOffset())));
-      return nd
-    }
-  }
-
   return (
     <div className="create-product-container">
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 2,
+          color: "#0088AE",
+          background: "white",
+        }}
+        open={itemLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div className="inside-div-product">
         <div className="rounded-sm bg-white p-0 md:px-20">
           <form
@@ -663,366 +686,384 @@ const createOrder = () => {
               </Hidden>
             </div>
             <Hidden smUp>
-              <Accordion
-                defaultExpanded={true}
-                className={`${
-                  !expandedPanelOrder ? "bg-primary-25" : "bg-primary-700"
-                } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
-              >
-                <AccordionSummary
-                  expandIcon={
-                    !expandedPanelOrder ? (
-                      <IoMdAdd className="icon-size-20" />
-                    ) : (
-                      <FiMinus
-                        className={`icon-size-20 ${
-                          !expandedPanelOrder ? "" : "text-white"
-                        }`}
-                      />
-                    )
-                  }
-                  onClick={() => setExpandedPanelOrder(!expandedPanelOrder)}
-                  id="panel2a-header"
+              <div className="px-10">
+                <Accordion
+                  defaultExpanded={true}
+                  className={`${
+                    !expandedPanelOrder ? "bg-primary-25" : "bg-primary-700"
+                  } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
                 >
-                  <div
-                    className={`subtitle3  flex gap-10 my-auto ${
-                      !expandedPanelOrder
-                        ? "text-MonochromeGray-700"
-                        : "text-white"
-                    }`}
+                  <AccordionSummary
+                    expandIcon={
+                      !expandedPanelOrder ? (
+                        <IoMdAdd className="icon-size-20" />
+                      ) : (
+                        <FiMinus
+                          className={`icon-size-20 ${
+                            !expandedPanelOrder ? "" : "text-white"
+                          }`}
+                        />
+                      )
+                    }
+                    onClick={() => setExpandedPanelOrder(!expandedPanelOrder)}
+                    id="panel2a-header"
                   >
-                    {t("label:orderDetails")}
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails className="bg-white px-0">
-                  <div className="sticky top-28 z-9999">
-                    <Button
-                      className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
-                      startIcon={<AddIcon className="text-main" />}
-                      variant="contained"
-                      onClick={() => addNewOrder()}
-                      disabled={addOrderIndex.length >= 20 ? true : false}
+                    <div
+                      className={`subtitle3  flex gap-10 my-auto ${
+                        !expandedPanelOrder
+                          ? "text-MonochromeGray-700"
+                          : "text-white"
+                      }`}
                     >
-                      Add Item
-                    </Button>
-                  </div>
-                  {addOrderIndex.map((index) => (
-                    <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
-                      <Controller
-                        control={control}
-                        required
-                        name={`order[${index}].productName`}
-                        render={({ field: { ref, onChange, ...field } }) => (
-                          <Autocomplete
-                            disabled={
-                              index === 0 ||
-                              index === Math.min(...addOrderIndex)
-                                ? false
-                                : !watch(
-                                    `order[${
-                                      index -
-                                      (addOrderIndex[
-                                        addOrderIndex.indexOf(index)
-                                      ] -
-                                        addOrderIndex[
-                                          addOrderIndex.indexOf(index - 1)
-                                        ])
-                                    }].productName`
-                                  )
-                              // !watch(
-                              //   `order[${index -
-                              //   (index -
-                              //     addOrderIndex[
-                              //     addOrderIndex.indexOf(index - 1)
-                              //     ])
-                              //   }].productName`
-                              // )
-                            }
-                            freeSolo
-                            autoSelect
-                            onBlur={pnameOnBlur}
-                            options={productsList}
-                            forcePopupIcon={<Search />}
-                            getOptionLabel={(option) =>
-                              option?.name ? option.name : option ? option : ""
-                            }
-                            size="small"
-                            //className="custom-input-height"
-                            onChange={(_, data) => {
-                              if (data) {
-                                if (data?.name) {
-                                  setValue(
-                                    `order[${index}].productName`,
-                                    data.name
-                                  );
-                                  setValue(
-                                    `order[${index}].productID`,
-                                    data.id
-                                  );
-                                  setValue(`order[${index}].rate`, data.price);
-                                  setValue(`order[${index}].tax`, data.tax);
-                                  disableCurrentProductRow(index);
-
-                                  const watchRate = watch(
-                                    `order[${index}].rate`
-                                  );
-                                  const watchTax = watch(`order[${index}].tax`);
-                                  const watchName = watch(
-                                    `order[${index}].productName`
-                                  );
-                                  const watchId = watch(
-                                    `order[${index}].productID`
-                                  );
-
-                                  for (
-                                    let i = 0;
-                                    i < addOrderIndex.length;
-                                    i++
-                                  ) {
-                                    if (
-                                      watchName &&
-                                      watchId &&
-                                      watchRate &&
-                                      watchTax &&
-                                      i !== index &&
-                                      watchName ===
-                                        watch(`order[${i}].productName`) &&
-                                      watchId ===
-                                        watch(`order[${i}].productID`) &&
-                                      watchRate === watch(`order[${i}].rate`) &&
-                                      watchTax === watch(`order[${i}].tax`)
-                                    ) {
-                                      let quantityNum = isNaN(
-                                        parseInt(watch(`order[${i}].quantity`))
-                                      )
-                                        ? 1
-                                        : parseInt(
-                                            watch(`order[${i}].quantity`)
-                                          );
-                                      setValue(
-                                        `order[${i}].quantity`,
-                                        quantityNum + 1
-                                      );
-                                      // onDelete(index);
-                                      onSameRowAction(index);
-                                      enqueueSnackbar(
-                                        `Same product found in Row ${
-                                          i + 1
-                                        } and ${index + 1}, merged together!`,
-                                        { variant: "success" }
-                                      );
-                                    }
-                                  }
-                                } else
-                                  setValue(
-                                    `order[${index}].productName`,
-                                    data ? data : ""
-                                  );
-                              } else {
-                                setValue(`order[${index}].productName`, "");
-                                setValue(`order[${index}].productID`, "");
-                                setValue(`order[${index}].rate`, "");
-                                setValue(`order[${index}].tax`, "");
-                                enableCurrentProductRow(index);
-                              }
-                              return onChange(data);
-                            }}
-                            renderOption={(props, option, { selected }) => (
-                              <MenuItem
-                                {...props}
-                                key={option.uuid}
-                              >{`${option.name}`}</MenuItem>
-                            )}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                placeholder="Product Name"
-                                {...field}
-                                className="custom-input-height"
-                                inputRef={ref}
-                              />
-                            )}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name={`order[${index}].productID`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="Product ID"
-                            className="bg-white custom-input-height"
-                            type="text"
-                            autoComplete="off"
-                            error={!!errors.productID}
-                            helperText={errors?.productID?.message}
-                            variant="outlined"
-                            fullWidth
-                            disabled={disableRowIndexes.includes(index)}
-                          />
-                        )}
-                      />
-                      <div className="grid grid-cols-3 gap-20">
+                      {t("label:orderDetails")}
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails className="bg-white px-0">
+                    <div className="sticky top-28 z-40">
+                      <Button
+                        className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
+                        startIcon={<AddIcon className="text-main" />}
+                        variant="contained"
+                        onClick={() => addNewOrder()}
+                        disabled={addOrderIndex.length >= 20 ? true : false}
+                      >
+                        Add Item
+                      </Button>
+                    </div>
+                    {addOrderIndex.map((index) => (
+                      <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
                         <Controller
-                          name={`order[${index}].quantity`}
                           control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label="Qty"
-                              className="bg-white custom-input-height col-span-2"
-                              type="number"
-                              required
-                              autoComplete="off"
-                              error={!!errors?.order?.[index]?.quantity}
-                              // helperText={
-                              //   errors?.order?.[index]?.quantity?.message
-                              // }
-                              // error={!!errors.quantity}
-                              // helperText={errors?.quantity?.message}
-                              variant="outlined"
-                              fullWidth
+                          required
+                          name={`order[${index}].productName`}
+                          render={({ field: { ref, onChange, ...field } }) => (
+                            <Autocomplete
+                              disabled={
+                                index === 0 ||
+                                index === Math.min(...addOrderIndex)
+                                  ? false
+                                  : !watch(
+                                      `order[${
+                                        index -
+                                        (addOrderIndex[
+                                          addOrderIndex.indexOf(index)
+                                        ] -
+                                          addOrderIndex[
+                                            addOrderIndex.indexOf(index) - 1
+                                          ])
+                                      }].productName`
+                                    )
+                              }
+                              freeSolo
+                              autoSelect
+                              onBlur={pnameOnBlur}
+                              options={productsList}
+                              // forcePopupIcon={<Search />}
+                              getOptionLabel={(option) =>
+                                option?.name
+                                  ? option.name
+                                  : option
+                                  ? option
+                                  : ""
+                              }
+                              size="small"
+                              //className="custom-input-height"
+                              onChange={(_, data) => {
+                                if (data) {
+                                  if (data?.name) {
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data.name
+                                    );
+                                    setValue(
+                                      `order[${index}].productID`,
+                                      data.id
+                                    );
+                                    setValue(
+                                      `order[${index}].rate`,
+                                      data.price
+                                    );
+                                    setValue(`order[${index}].tax`, data.tax);
+                                    disableCurrentProductRow(index);
+
+                                    const watchRate = watch(
+                                      `order[${index}].rate`
+                                    );
+                                    const watchTax = watch(
+                                      `order[${index}].tax`
+                                    );
+                                    const watchName = watch(
+                                      `order[${index}].productName`
+                                    );
+                                    const watchId = watch(
+                                      `order[${index}].productID`
+                                    );
+
+                                    for (
+                                      let i = 0;
+                                      i < addOrderIndex.length;
+                                      i++
+                                    ) {
+                                      if (
+                                        watchName &&
+                                        watchId &&
+                                        watchRate &&
+                                        watchTax &&
+                                        i !== index &&
+                                        watchName ===
+                                          watch(`order[${i}].productName`) &&
+                                        watchId ===
+                                          watch(`order[${i}].productID`) &&
+                                        watchRate ===
+                                          watch(`order[${i}].rate`) &&
+                                        watchTax === watch(`order[${i}].tax`)
+                                      ) {
+                                        let quantityNum = isNaN(
+                                          parseInt(
+                                            watch(`order[${i}].quantity`)
+                                          )
+                                        )
+                                          ? 1
+                                          : parseInt(
+                                              watch(`order[${i}].quantity`)
+                                            );
+                                        setValue(
+                                          `order[${i}].quantity`,
+                                          quantityNum + 1
+                                        );
+                                        // onDelete(index);
+                                        onSameRowAction(index);
+                                        enqueueSnackbar(
+                                          `Same product found in Row ${
+                                            i + 1
+                                          } and ${index + 1}, merged together!`,
+                                          { variant: "success" }
+                                        );
+                                      }
+                                    }
+                                  } else
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data ? data : ""
+                                    );
+                                } else {
+                                  setValue(`order[${index}].productName`, "");
+                                  setValue(`order[${index}].productID`, "");
+                                  setValue(`order[${index}].rate`, "");
+                                  setValue(`order[${index}].tax`, "");
+                                  enableCurrentProductRow(index);
+                                }
+                                return onChange(data);
+                              }}
+                              renderOption={(props, option, { selected }) => (
+                                <MenuItem
+                                  {...props}
+                                  key={option.uuid}
+                                >{`${option.name}`}</MenuItem>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  placeholder="Product Name"
+                                  {...field}
+                                  className="custom-input-height"
+                                  inputRef={ref}
+                                />
+                              )}
                             />
                           )}
                         />
                         <Controller
-                          name={`order[${index}].rate`}
+                          name={`order[${index}].productID`}
                           control={control}
                           render={({ field }) => (
                             <TextField
                               {...field}
-                              label="Rate"
-                              className="bg-white custom-input-height col-span-1"
-                              type="number"
+                              label="Product ID"
+                              className="bg-white custom-input-height"
+                              type="text"
                               autoComplete="off"
-                              error={!!errors?.order?.[index]?.rate}
-                              // helperText={errors?.order?.[index]?.rate?.message}
+                              error={!!errors.productID}
+                              helperText={errors?.productID?.message}
                               variant="outlined"
-                              required
                               fullWidth
+                              value={field.value || ""}
                               disabled={disableRowIndexes.includes(index)}
                             />
                           )}
                         />
-                      </div>
-                      <div className="grid grid-cols-3 gap-20">
-                        <Controller
-                          name={`order[${index}].discount`}
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label="Discount"
-                              className="bg-white custom-input-height col-span-2"
-                              type="number"
-                              autoComplete="off"
-                              error={!!errors.discount}
-                              helperText={errors?.discount?.message}
-                              variant="outlined"
-                              fullWidth
-                            />
-                          )}
-                        />
-                        {!disableRowIndexes.includes(index) ? (
+                        <div className="grid grid-cols-3 gap-20">
                           <Controller
-                            name={`order[${index}].tax`}
-                            control={control}
-                            render={({ field }) => (
-                              <FormControl
-                                error={!!errors?.order?.[index]?.tax}
-                                required
-                                fullWidth
-                              >
-                                <InputLabel id="demo-simple-select-outlined-label-type">
-                                  Tax
-                                </InputLabel>
-                                <Select
-                                  {...field}
-                                  labelId="demo-simple-select-outlined-label-type"
-                                  id="demo-simple-select-outlined"
-                                  label="Tax"
-                                  defaultValue={defaultTaxValue}
-                                  className="col-span-1"
-                                  disabled={disableRowIndexes.includes(index)}
-                                  inputlabelprops={{
-                                    shrink: !!field.value || touchedFields.tax,
-                                  }}
-                                >
-                                  {taxes && taxes.length ? (
-                                    taxes.map((tax, index) =>
-                                      tax.status === "Active" ? (
-                                        <MenuItem key={index} value={tax.value}>
-                                          {tax.value}
-                                        </MenuItem>
-                                      ) : (
-                                        <MenuItem
-                                          key={index}
-                                          value={tax.value}
-                                          disabled
-                                        >
-                                          {tax.value}
-                                        </MenuItem>
-                                      )
-                                    )
-                                  ) : (
-                                    <MenuItem key={0} value={0}>
-                                      0
-                                    </MenuItem>
-                                  )}
-                                </Select>
-                                <FormHelperText>
-                                  {errors?.order?.[index]?.tax?.message}
-                                </FormHelperText>
-                              </FormControl>
-                            )}
-                          />
-                        ) : (
-                          <Controller
-                            name={`order[${index}].tax`}
+                            name={`order[${index}].quantity`}
                             control={control}
                             render={({ field }) => (
                               <TextField
                                 {...field}
-                                label="Tax"
-                                className="bg-white custom-input-height"
+                                label="Qty"
+                                className="bg-white custom-input-height col-span-2"
                                 type="number"
-                                autoComplete="off"
-                                error={!!errors?.order?.[index]?.tax}
-                                helperText={
-                                  errors?.order?.[index]?.tax?.message
-                                }
-                                variant="outlined"
                                 required
-                                placeholder="Tax"
-                                disabled={disableRowIndexes.includes(index)}
+                                value={field.value || ""}
+                                autoComplete="off"
+                                error={!!errors?.order?.[index]?.quantity}
+                                // helperText={
+                                //   errors?.order?.[index]?.quantity?.message
+                                // }
+                                // error={!!errors.quantity}
+                                // helperText={errors?.quantity?.message}
+                                variant="outlined"
                                 fullWidth
                               />
                             )}
                           />
-                        )}
-                      </div>
-                      <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
-                        <div>{t("label:total")}</div>
-                        <div>
-                          {t("label:nok")} {productWiseTotal(index)}
+                          <Controller
+                            name={`order[${index}].rate`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Rate"
+                                className="bg-white custom-input-height col-span-1"
+                                autoComplete="off"
+                                error={!!errors?.order?.[index]?.rate}
+                                // helperText={errors?.order?.[index]?.rate?.message}
+                                variant="outlined"
+                                required
+                                value={field.value || ""}
+                                fullWidth
+                                disabled={disableRowIndexes.includes(index)}
+                              />
+                            )}
+                          />
                         </div>
+                        <div className="grid grid-cols-3 gap-20">
+                          <Controller
+                            name={`order[${index}].discount`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Discount"
+                                className="bg-white custom-input-height col-span-2"
+                                type="number"
+                                autoComplete="off"
+                                value={field.value || ""}
+                                error={!!errors.discount}
+                                helperText={errors?.discount?.message}
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                          />
+                          {!disableRowIndexes.includes(index) ? (
+                            <Controller
+                              name={`order[${index}].tax`}
+                              control={control}
+                              render={({ field }) => (
+                                <FormControl
+                                  error={!!errors?.order?.[index]?.tax}
+                                  required
+                                  fullWidth
+                                >
+                                  <InputLabel id="demo-simple-select-outlined-label-type">
+                                    Tax
+                                  </InputLabel>
+                                  <Select
+                                    {...field}
+                                    labelId="demo-simple-select-outlined-label-type"
+                                    id="demo-simple-select-outlined"
+                                    label="Tax"
+                                    value={field.value || ""}
+                                    defaultValue={defaultTaxValue}
+                                    className="col-span-1"
+                                    disabled={disableRowIndexes.includes(index)}
+                                    inputlabelprops={{
+                                      shrink:
+                                        !!field.value || touchedFields.tax,
+                                    }}
+                                  >
+                                    {!!taxes && taxes.length ? (
+                                      taxes.map((tax, index) =>
+                                        tax.status === "Active" ? (
+                                          <MenuItem
+                                            key={index}
+                                            value={tax.value}
+                                          >
+                                            {tax.value}
+                                          </MenuItem>
+                                        ) : (
+                                          <MenuItem
+                                            key={index}
+                                            value={tax.value}
+                                            disabled
+                                          >
+                                            {tax.value}
+                                          </MenuItem>
+                                        )
+                                      )
+                                    ) : (
+                                      <MenuItem key={0} value={0}>
+                                        0
+                                      </MenuItem>
+                                    )}
+                                  </Select>
+                                  <FormHelperText>
+                                    {errors?.order?.[index]?.tax?.message}
+                                  </FormHelperText>
+                                </FormControl>
+                              )}
+                            />
+                          ) : (
+                            <Controller
+                              name={`order[${index}].tax`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label="Tax"
+                                  className="bg-white custom-input-height"
+                                  type="number"
+                                  autoComplete="off"
+                                  error={!!errors?.order?.[index]?.tax}
+                                  helperText={
+                                    errors?.order?.[index]?.tax?.message
+                                  }
+                                  variant="outlined"
+                                  required
+                                  placeholder="Tax"
+                                  disabled={disableRowIndexes.includes(index)}
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          )}
+                        </div>
+                        <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
+                          <div>{t("label:total")}</div>
+                          <div>
+                            {t("label:nok")} {productWiseTotal(index)}
+                          </div>
+                        </div>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                          startIcon={
+                            <RemoveCircleOutlineIcon className="text-red-400" />
+                          }
+                          onClick={() => onDelete(index)}
+                        >
+                          Remove Item
+                        </Button>
                       </div>
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
-                        startIcon={
-                          <RemoveCircleOutlineIcon className="text-red-400" />
-                        }
-                        onClick={() => onDelete(index)}
-                      >
-                        Remove Item
-                      </Button>
+                    ))}
+                    <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                      {/*TODO: joni vai please add grandtotal here*/}
+                      {t("label:grandTotal")} : {t("label:nok")} {grandTotal}
                     </div>
-                  ))}
-                </AccordionDetails>
-              </Accordion>
+                  </AccordionDetails>
+                </Accordion>
+              </div>
             </Hidden>
 
             <Hidden smDown>
@@ -1074,7 +1115,7 @@ const createOrder = () => {
                                         addOrderIndex.indexOf(index)
                                       ] -
                                         addOrderIndex[
-                                          addOrderIndex.indexOf(index - 1)
+                                          addOrderIndex.indexOf(index) - 1
                                         ])
                                     }].productName`
                                   )
@@ -1083,7 +1124,7 @@ const createOrder = () => {
                             autoSelect
                             options={productsList}
                             onBlur={pnameOnBlur}
-                            forcePopupIcon={<Search />}
+                            // forcePopupIcon={<Search />}
                             getOptionLabel={(option) =>
                               option?.name ? option.name : option ? option : ""
                             }
@@ -1236,7 +1277,6 @@ const createOrder = () => {
                             {...field}
                             //label="Rate"
                             className="bg-white custom-input-height"
-                            type="number"
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
@@ -1333,13 +1373,24 @@ const createOrder = () => {
                               disabled={disableRowIndexes.includes(index)}
                               fullWidth
                             />
-                          )}
+                          )}  PopperProps={{
+                          sx: {
+                            "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                              borderRadius: '8px',
+                              "&.Mui-selected": {
+                                backgroundColor: "#c9eee7",
+                                color: "#323434",
+                              }
+                            }
+                          }
+                        }}
                         />
                       )}
                     </div>
                     <div className="my-auto">
                       <div className="body3 text-right">
-                        NOK {productWiseTotal(index)}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(productWiseTotal(index))}
                       </div>
                     </div>
                     <div className="my-auto">
@@ -1373,6 +1424,7 @@ const createOrder = () => {
                       render={({ field: { onChange, value, onBlur } }) => (
                         <DesktopDatePicker
                           label={t("label:orderDate")}
+                          mask=""
                           inputFormat="dd.MM.yyyy"
                           value={!value ? new Date() : value}
                           required
@@ -1384,6 +1436,17 @@ const createOrder = () => {
                           maxDate={new Date().setDate(
                             new Date().getDate() + 30
                           )}
+                          PopperProps={{
+                            sx: {
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                borderRadius: '8px',
+                                "&.Mui-selected": {
+                                  backgroundColor: "#c9eee7",
+                                  color: "#323434",
+                                }
+                              }
+                            }
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -1391,7 +1454,11 @@ const createOrder = () => {
                               required
                               type="date"
                               error={!!errors.orderDate}
-                              helperText={errors?.orderDate?.message}
+                              helperText={
+                                errors?.orderDate?.message
+                                    ? t(`validation:${errors?.orderDate?.message}`)
+                                    : ""
+                              }
                               sx={{
                                 svg: { color: "#69C77E" },
                               }}
@@ -1400,15 +1467,15 @@ const createOrder = () => {
                         />
                       )}
                     />
-                    <Tooltip
-                      placement="bottom"
-                      title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                    >
-                      <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                        <ErrorIcon className="icon-size-14 my-auto " />
-                        {t("label:whatIsThis")}
-                      </div>
-                    </Tooltip>
+                    {/*<Tooltip*/}
+                    {/*  placement="bottom"*/}
+                    {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                    {/*>*/}
+                    {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                    {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                    {/*    {t("label:whatIsThis")}*/}
+                    {/*  </div>*/}
+                    {/*</Tooltip>*/}
                   </div>
                   <div className="flex flex-col gap-5">
                     <Controller
@@ -1423,76 +1490,90 @@ const createOrder = () => {
                           }
                         >
                           <div className="create-order-due-date w-full">
-                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={nb}>
-                              <DesktopDateTimePicker
-                                label={t("label:dueDateForPaymentLink")}
-                                // inputFormat="dd MMM, yyyy HH:mm"
-                                inputFormat="dd.MM.yyyy HH:mm"
-                                autoFocus
-                                ampm={false}
-                                disableOpenPicker
-                                value={
-                                  !value
-                                    ? new Date().setDate(new Date().getDate() + 1)
-                                    : getUTCTime(value)
+                            <DesktopDateTimePicker
+                              label={t("label:dueDateForPaymentLink")}
+                              // inputFormat="dd MMM, yyyy HH:mm"
+                              mask=""
+                              inputFormat="dd.MM.yyyy HH:mm"
+                              autoFocus
+                              ampm={false}
+                              PopperProps={{
+                                sx: {
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                    borderRadius: '8px',
+                                    "&.Mui-selected": {
+                                      backgroundColor: "#c9eee7",
+                                      color: "#323434",
+                                    }
+                                  }
                                 }
-                                required
-                                open={datePickerOpen}
-                                disabled={!watchOrderDate}
-                                minDate={
-                                  watchOrderDate
-                                    ? new Date().setDate(
+                              }}
+                              disableOpenPicker
+                              value={
+                                !value
+                                  ? new Date().setDate(new Date().getDate() + 1)
+                                  : value
+                                // : value
+                              }
+                              required
+                              open={datePickerOpen}
+                              disabled={!watchOrderDate}
+                              minDate={
+                                watchOrderDate
+                                  ? new Date().setDate(
                                       watchOrderDate.getDate() + 1
                                     )
-                                    : new Date().setDate(
+                                  : new Date().setDate(
                                       new Date().getDate() - 30
                                     )
-                                }
-                                disablePast={true}
-                                onChange={(_)=>{
-                                  console.log("On Change Fired" , _);
-                                  let utc = _.getTime() + (_.getTimezoneOffset() * 60000);
-                                  let nd = new Date(utc + (3000000*(new Date().getTimezoneOffset())));
-                                  console.log("nd :",nd);
-                                  return onChange(_)
-                                  // return onChange(nd)
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    onBlur={onBlur}
-                                    type="date"
-                                    required
-                                    fullWidth
-                                    onFocus={() =>
-                                      setCustomDateDropDown(!customDateDropDown)
-                                    }
-                                    error={!!errors.dueDatePaymentLink}
-                                    helperText={
-                                      errors?.dueDatePaymentLink?.message
-                                    }
-                                    sx={{
-                                      svg: {
-                                        color: "#E7AB52",
-                                        cursor: "pointer",
-                                      },
-                                    }}
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment
-                                          position="end"
-                                          onClick={() =>
-                                            setCustomDateDropDown(true)
-                                          }
-                                        >
-                                          <EventIcon />
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                )}
-                              />
-                            </LocalizationProvider>
+                              }
+                              disablePast={true}
+                              onChange={(_) => {
+                                let utc =
+                                  _.getTime() + _.getTimezoneOffset() * 60000;
+                                let nd = new Date(
+                                  utc + 3000000 * new Date().getTimezoneOffset()
+                                );
+                                return onChange(_);
+                                // return onChange(nd)
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  onBlur={onBlur}
+                                  type="date"
+                                  required
+                                  fullWidth
+                                  onFocus={() =>
+                                    setCustomDateDropDown(!customDateDropDown)
+                                  }
+                                  error={!!errors.dueDatePaymentLink}
+                                  helperText={
+                                    errors?.dueDatePaymentLink?.message
+                                        ? t(`validation:${errors?.dueDatePaymentLink?.message}`)
+                                        : ""
+                                  }
+                                  sx={{
+                                    svg: {
+                                      color: "#E7AB52",
+                                      cursor: "pointer",
+                                    },
+                                  }}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <InputAdornment
+                                        position="end"
+                                        onClick={() =>
+                                          setCustomDateDropDown(true)
+                                        }
+                                      >
+                                        <EventIcon />
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                />
+                              )}
+                            />
                             {customDateDropDown && (
                               <div
                                 className="absolute bg-white max-h-min rounded-4 shadow-4 w-9/12 z-999"
@@ -1567,15 +1648,15 @@ const createOrder = () => {
                         </ClickAwayListener>
                       )}
                     />
-                    <Tooltip
-                      placement="bottom"
-                      title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                    >
-                      <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                        <ErrorIcon className="icon-size-14 my-auto " />
-                        {t("label:whatIsThis")}
-                      </div>
-                    </Tooltip>
+                    {/*<Tooltip*/}
+                    {/*  placement="bottom"*/}
+                    {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                    {/*>*/}
+                    {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                    {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                    {/*    {t("label:whatIsThis")}*/}
+                    {/*  </div>*/}
+                    {/*</Tooltip>*/}
                   </div>
                   <div></div>
                 </div>
@@ -1856,7 +1937,7 @@ const createOrder = () => {
                     <div className="body3 text-MonochromeGray-300">
                       {t("label:creditCheckDetailsOrderPage")}
                     </div>
-                    <div className="send-order-credit-check mt-24 mb-16">
+                    <div className="send-order-credit-check">
                       <div className="flex gap-20 w-full md:w-3/4 my-32">
                         <Button
                           variant="outlined"
@@ -1922,25 +2003,29 @@ const createOrder = () => {
                         id="panel2a-header"
                       >
                         <div
-                          className={`subtitle3  flex gap-10 my-auto ${
+                          className={`subtitle3  flex gap-10 my-auto items-center ${
                             !expandedPanel2
                               ? "text-MonochromeGray-700"
                               : "text-white"
                           }`}
                         >
-                          {t("label:customerDetails")}
+                          <div className="my-auto mt-2">
+                            {t("label:customerDetails")}
+                          </div>
+
                           <span>
-                            {dirtyFields.primaryPhoneNumber &&
-                            dirtyFields.email &&
-                            dirtyFields.customerName &&
-                            dirtyFields.billingAddress &&
-                            dirtyFields.billingZip &&
-                            dirtyFields.billingCity &&
-                            dirtyFields.billingCountry &&
-                            dirtyFields.orgorPID ? (
-                              <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                            {(dirtyFields.primaryPhoneNumber &&
+                              dirtyFields.email &&
+                              dirtyFields.customerName &&
+                              dirtyFields.billingAddress &&
+                              dirtyFields.billingZip &&
+                              dirtyFields.billingCity &&
+                              dirtyFields.billingCountry &&
+                              dirtyFields.orgorPID) ||
+                            dirtyFields.searchCustomer ? (
+                              <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                             ) : (
-                              <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                              <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                             )}
                           </span>
                         </div>
@@ -1959,9 +2044,9 @@ const createOrder = () => {
                               <Autocomplete
                                 freeSolo
                                 options={customersList}
-                                forcePopupIcon={<Search />}
+                                // forcePopupIcon={<Search />}
                                 getOptionLabel={(option) => option.searchString}
-                                className="custom-input-height"
+                                className=""
                                 fullWidth
                                 onChange={(_, data) => {
                                   if (data) {
@@ -2135,7 +2220,11 @@ const createOrder = () => {
                                     value={field.value || ""}
                                   />
                                   <FormHelperText>
-                                    {errors?.primaryPhoneNumber?.message}
+                                    {
+                                    errors?.email?.message
+                                        ? t(`validation:${errors?.email?.message}`)
+                                        : ""
+                                  }
                                   </FormHelperText>
                                 </FormControl>
                               )}
@@ -2150,7 +2239,11 @@ const createOrder = () => {
                                   type="email"
                                   autoComplete="off"
                                   error={!!errors.email}
-                                  helperText={errors?.email?.message}
+                                  helperText={
+                                    errors?.email?.message
+                                        ? t(`validation:${errors?.email?.message}`)
+                                        : ""
+                                  }
                                   variant="outlined"
                                   fullWidth
                                   required={
@@ -2174,7 +2267,11 @@ const createOrder = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.customerName}
-                                    helperText={errors?.customerName?.message}
+                                    helperText={
+                                      errors?.customerName?.message
+                                          ? t(`validation:${errors?.customerName?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     required
@@ -2199,7 +2296,11 @@ const createOrder = () => {
                                     required={
                                       customData.customerType === "corporate"
                                     }
-                                    helperText={errors?.orgorPID?.message}
+                                    helperText={
+                                      errors?.orgorPID?.message
+                                          ? t(`validation:${errors?.orgorPID?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -2223,7 +2324,10 @@ const createOrder = () => {
                                       error={!!errors.billingAddress}
                                       helperText={
                                         errors?.billingAddress?.message
+                                            ? t(`validation:${errors?.billingAddress?.message}`)
+                                            : ""
                                       }
+
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2251,7 +2355,11 @@ const createOrder = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.billingZip}
-                                      helperText={errors?.billingZip?.message}
+                                      helperText={
+                                        errors?.billingZip?.message
+                                            ? t(`validation:${errors?.billingZip?.message}`)
+                                            : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2279,7 +2387,11 @@ const createOrder = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.billingCity}
-                                    helperText={errors?.billingCity?.message}
+                                    helperText={
+                                      errors?.billingCity?.message
+                                          ? t(`validation:${errors?.billingCity?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     inputlabelprops={{
@@ -2334,6 +2446,11 @@ const createOrder = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
+                                      {
+                                      errors?.billingCity?.message
+                                          ? t(`validation:${errors?.billingCity?.message}`)
+                                          : ""
+                                    }
                                       {errors?.billingCountry?.message}
                                     </FormHelperText>
                                   </FormControl>
@@ -2379,9 +2496,9 @@ const createOrder = () => {
                               dirtyFields.receiptNo &&
                               dirtyFields.customerNotes &&
                               dirtyFields.termsConditions ? (
-                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                               ) : (
-                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                               )}
                             </span>
                           </div>
@@ -2402,6 +2519,8 @@ const createOrder = () => {
                                       error={!!errors.referenceNumber}
                                       helperText={
                                         errors?.referenceNumber?.message
+                                            ? t(`validation:${errors?.referenceNumber?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2426,6 +2545,8 @@ const createOrder = () => {
                                       error={!!errors.customerReference}
                                       helperText={
                                         errors?.customerReference?.message
+                                            ? t(`validation:${errors?.customerReference?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2447,7 +2568,11 @@ const createOrder = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.receiptNo}
-                                      helperText={errors?.receiptNo?.message}
+                                      helperText={
+                                        errors?.receiptNo?.message
+                                            ? t(`validation:${errors?.receiptNo?.message}`)
+                                            : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2474,6 +2599,8 @@ const createOrder = () => {
                                       error={!!errors.customerNotes}
                                       helperText={
                                         errors?.customerNotes?.message
+                                            ? t(`validation:${errors?.customerNotes?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2494,7 +2621,10 @@ const createOrder = () => {
                                       error={!!errors.termsConditions}
                                       helperText={
                                         errors?.termsConditions?.message
+                                            ? t(`validation:${errors?.termsConditions?.message}`)
+                                            : ""
                                       }
+
                                       variant="outlined"
                                       fullWidth
                                     />
@@ -2538,9 +2668,9 @@ const createOrder = () => {
                             <span>
                               {dirtyFields.internalReferenceNo &&
                               dirtyFields.customerNotesInternal ? (
-                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                               ) : (
-                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                               )}
                             </span>
                           </div>
@@ -2561,6 +2691,8 @@ const createOrder = () => {
                                       error={!!errors.internalReferenceNo}
                                       helperText={
                                         errors?.internalReferenceNo?.message
+                                            ? t(`validation:${errors?.internalReferenceNo?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2586,6 +2718,8 @@ const createOrder = () => {
                                       error={!!errors.customerNotesInternal}
                                       helperText={
                                         errors?.customerNotesInternal?.message
+                                            ? t(`validation:${errors?.customerNotesInternal?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2639,7 +2773,8 @@ const createOrder = () => {
                         {t("label:subTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {subTotal.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(subTotal.toFixed(2) / 2)}
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2647,7 +2782,8 @@ const createOrder = () => {
                         {t("label:tax")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {totalTax.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(totalTax.toFixed(2) / 2)}
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2655,7 +2791,8 @@ const createOrder = () => {
                         {t("label:discount")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {totalDiscount.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(totalDiscount.toFixed(2) / 2)}
                       </div>
                     </div>
                   </div>
@@ -2665,7 +2802,8 @@ const createOrder = () => {
                         {t("label:grandTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {grandTotal.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(grandTotal.toFixed(2) / 2)}
                       </div>
                     </div>
                   </div>

@@ -12,6 +12,7 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
+  Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -54,6 +55,7 @@ const CreateClient = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
+  const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
@@ -101,19 +103,23 @@ const CreateClient = () => {
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);
+    changeVatRateIcon(Math.max(...addVatIndex) + 1);
   };
 
   const onDelete = (index) => {
     addVatIndex.length > 1
       ? setAddVatIndex(addVatIndex.filter((i) => i !== index))
       : setAddVatIndex([...addVatIndex]);
+
+    setValue(`vat[${index}].vatName`, "");
+    setValue(`vat[${index}].vatValue`, "");
+    setValue(`vat[${index}].bookKeepingReference`, "");
+    changeVatRateIcon(index, true);
   };
 
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = (values) => {
-    const info = JSON.parse(localStorage.getItem("tableRowDetails"));
-
     const primaryPhoneNumber = values?.primaryPhoneNumber
       ? values.primaryPhoneNumber.split("+")
       : null;
@@ -144,17 +150,19 @@ const CreateClient = () => {
       : null;
 
     const vatRates = values.vat.length
-      ? values.vat.filter((v)=> v.vatValue).map((vat) => {
-          return {
-            uuid: null,
-            name: vat?.vatName ? vat?.vatName : null,
-            value: parseFloat(vat.vatValue),
-            isActive: true,
-            bookKeepingReference: vat?.bookKeepingReference
-              ? vat.bookKeepingReference
-              : null,
-          };
-        })
+      ? values.vat
+          .filter((v) => v.vatValue)
+          .map((vat) => {
+            return {
+              uuid: null,
+              name: vat?.vatName ? vat?.vatName : null,
+              value: parseFloat(vat.vatValue),
+              isActive: true,
+              bookKeepingReference: vat?.bookKeepingReference
+                ? vat.bookKeepingReference
+                : null,
+            };
+          })
       : null;
 
     const createClientData = {
@@ -278,7 +286,7 @@ const CreateClient = () => {
         navigate("/clients/clients-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
@@ -315,6 +323,36 @@ const CreateClient = () => {
       .catch((e) => {});
   }, [isLoading]);
 
+  const changeVatRateIcon = (index, lessCheck = false) => {
+    const watchVateName = watch(`vat[${index}].vatName`) || null;
+    const watchVateValue = watch(`vat[${index}].vatValue`) || null;
+    if (!lessCheck) {
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    } else {
+      const watchVateName =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatName`
+        ) || null;
+      const watchVateValue =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatValue`
+        ) || null;
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    }
+  };
+
   return (
     <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
       <div className="flex-auto p-20 sm:p-0 w-full mx-auto bg-white">
@@ -326,7 +364,7 @@ const CreateClient = () => {
           >
             <div className=" header-click-to-action">
               <div className="header-text header6">Create New Client</div>
-              <div className="flex gap-10 w-full justify-between sm:w-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full justify-between sm:w-auto">
                 <Button
                   color="secondary"
                   onClick={() => setOpen(true)}
@@ -344,6 +382,7 @@ const CreateClient = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
+                  disabled={!isValid}
                 >
                   {t("label:createClient")}
                 </LoadingButton>
@@ -353,7 +392,7 @@ const CreateClient = () => {
               <div className="client-details">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:clientDetails")}
-                  {dirtyFields.organizationID &&
+                  {dirtyFields.id &&
                   dirtyFields.clientName &&
                   dirtyFields.organizationType ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
@@ -374,7 +413,11 @@ const CreateClient = () => {
                           type="number"
                           autoComplete="off"
                           error={!!errors.id}
-                          helperText={errors?.id?.message}
+                          helperText={
+                            errors?.id?.message
+                              ? t(`validation:${errors?.id?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -391,7 +434,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.clientName}
-                          helperText={errors?.clientName?.message}
+                          helperText={
+                            errors?.clientName?.message
+                              ? t(`validation:${errors?.clientName?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -442,7 +489,11 @@ const CreateClient = () => {
                             })}
                           </Select>
                           <FormHelperText>
-                            {errors?.organizationType?.message}
+                            {errors?.organizationType?.message
+                              ? t(
+                                  `validation:${errors?.organizationType?.message}`
+                                )
+                              : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -475,7 +526,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.fullName}
-                          helperText={errors?.fullName?.message}
+                          helperText={
+                            errors?.fullName?.message
+                              ? t(`validation:${errors?.fullName?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -506,7 +561,11 @@ const CreateClient = () => {
                             onBlur={handleOnBlurGetDialCode}
                           />
                           <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message}
+                            {errors?.primaryPhoneNumber?.message
+                              ? t(
+                                  `validation:${errors?.primaryPhoneNumber?.message}`
+                                )
+                              : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -521,7 +580,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.designation}
-                          helperText={errors?.designation?.message}
+                          helperText={
+                            errors?.designation?.message
+                              ? t(`validation:${errors?.designation?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           fullWidth
                         />
@@ -537,7 +600,11 @@ const CreateClient = () => {
                           type="email"
                           autoComplete="off"
                           error={!!errors.email}
-                          helperText={errors?.email?.message}
+                          helperText={
+                            errors?.email?.message
+                              ? t(`validation:${errors?.email?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -607,10 +674,23 @@ const CreateClient = () => {
                       render={({ field: { onChange, value, onBlur } }) => (
                         <DesktopDatePicker
                           label={t("label:contractEndDate")}
+                          mask=""
                           inputFormat="dd.MM.yyyy"
                           value={value}
                           required
                           onChange={onChange}
+                          PopperProps={{
+                            sx: {
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                {
+                                  borderRadius: "8px",
+                                  "&.Mui-selected": {
+                                    backgroundColor: "#c9eee7",
+                                    color: "#323434",
+                                  },
+                                },
+                            },
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -618,7 +698,13 @@ const CreateClient = () => {
                               type="date"
                               required
                               error={!!errors.contactEndDate}
-                              helperText={errors?.contactEndDate?.message}
+                              helperText={
+                                errors?.contactEndDate?.message
+                                  ? t(
+                                      `validation:${errors?.contactEndDate?.message}`
+                                    )
+                                  : ""
+                              }
                             />
                           )}
                         />
@@ -634,7 +720,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.commision}
-                          helperText={errors?.commision?.message}
+                          helperText={
+                            errors?.commision?.message
+                              ? t(`validation:${errors?.commision?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -658,7 +748,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.smsCost}
-                          helperText={errors?.smsCost?.message}
+                          helperText={
+                            errors?.smsCost?.message
+                              ? t(`validation:${errors?.smsCost?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -682,7 +776,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.emailCost}
-                          helperText={errors?.emailCost?.message}
+                          helperText={
+                            errors?.emailCost?.message
+                              ? t(`validation:${errors?.emailCost?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -706,7 +804,13 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.creditCheckCost}
-                          helperText={errors?.creditCheckCost?.message}
+                          helperText={
+                            errors?.creditCheckCost?.message
+                              ? t(
+                                  `validation:${errors?.creditCheckCost?.message}`
+                                )
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -730,7 +834,11 @@ const CreateClient = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.ehfCost}
-                          helperText={errors?.ehfCost?.message}
+                          helperText={
+                            errors?.ehfCost?.message
+                              ? t(`validation:${errors?.ehfCost?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -836,7 +944,11 @@ const CreateClient = () => {
                               onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.billingPhoneNumber?.message}
+                              {errors?.billingPhoneNumber?.message
+                                ? t(
+                                    `validation:${errors?.billingPhoneNumber?.message}`
+                                  )
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -851,7 +963,13 @@ const CreateClient = () => {
                             type="email"
                             autoComplete="off"
                             error={!!errors.billingEmail}
-                            helperText={errors?.billingEmail?.message}
+                            helperText={
+                              errors?.billingEmail?.message
+                                ? t(
+                                    `validation:${errors?.billingEmail?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -871,7 +989,13 @@ const CreateClient = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.billingAddress}
-                              helperText={errors?.billingAddress?.message}
+                              helperText={
+                                errors?.billingAddress?.message
+                                  ? t(
+                                      `validation:${errors?.billingAddress?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -891,7 +1015,11 @@ const CreateClient = () => {
                               type="number"
                               autoComplete="off"
                               error={!!errors.zip}
-                              helperText={errors?.zip?.message}
+                              helperText={
+                                errors?.zip?.message
+                                  ? t(`validation:${errors?.zip?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -911,7 +1039,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.city}
-                            helperText={errors?.city?.message}
+                            helperText={
+                              errors?.city?.message
+                                ? t(`validation:${errors?.city?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -942,7 +1074,9 @@ const CreateClient = () => {
                               <MenuItem value="sweden">Sweden</MenuItem>
                             </Select>
                             <FormHelperText>
-                              {errors?.country?.message}
+                              {errors?.country?.message
+                                ? t(`validation:${errors?.country?.message}`)
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -953,7 +1087,7 @@ const CreateClient = () => {
               </div>
               <div className="shipping-information">
                 <div className="p-10 w-full md:w-3/4">
-                  <div className="flex justify-between items-center billing-address-head">
+                  <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center">
                     <div className="billing-address-head">
                       {t("label:shippingAddress")}
                       {(dirtyFields.shippingPhoneNumber &&
@@ -1032,7 +1166,11 @@ const CreateClient = () => {
                                   onBlur={handleOnBlurGetDialCode}
                                 />
                                 <FormHelperText>
-                                  {errors?.shippingPhoneNumber?.message}
+                                  {errors?.shippingPhoneNumber?.message
+                                    ? t(
+                                        `validation:${errors?.shippingPhoneNumber?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -1048,7 +1186,13 @@ const CreateClient = () => {
                                 autoComplete="off"
                                 disabled={sameAddress}
                                 error={!!errors.shippingEmail}
-                                helperText={errors?.shippingEmail?.message}
+                                helperText={
+                                  errors?.shippingEmail?.message
+                                    ? t(
+                                        `validation:${errors?.shippingEmail?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 // required
                                 fullWidth
@@ -1069,7 +1213,13 @@ const CreateClient = () => {
                                   autoComplete="off"
                                   disabled={sameAddress}
                                   error={!!errors.shippingAddress}
-                                  helperText={errors?.shippingAddress?.message}
+                                  helperText={
+                                    errors?.shippingAddress?.message
+                                      ? t(
+                                          `validation:${errors?.shippingAddress?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   // required
                                   fullWidth
@@ -1090,7 +1240,13 @@ const CreateClient = () => {
                                   autoComplete="off"
                                   disabled={sameAddress}
                                   error={!!errors.shippingZip}
-                                  helperText={errors?.shippingZip?.message}
+                                  helperText={
+                                    errors?.shippingZip?.message
+                                      ? t(
+                                          `validation:${errors?.shippingZip?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   // required
                                   fullWidth
@@ -1111,7 +1267,13 @@ const CreateClient = () => {
                                 autoComplete="off"
                                 disabled={sameAddress}
                                 error={!!errors.shippingCity}
-                                helperText={errors?.shippingCity?.message}
+                                helperText={
+                                  errors?.shippingCity?.message
+                                    ? t(
+                                        `validation:${errors?.shippingCity?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 // required
                                 fullWidth
@@ -1144,7 +1306,11 @@ const CreateClient = () => {
                                   <MenuItem value="sweden">Sweden</MenuItem>
                                 </Select>
                                 <FormHelperText>
-                                  {errors?.shippingCountry?.message}
+                                  {errors?.shippingCountry?.message
+                                    ? t(
+                                        `validation:${errors?.shippingCountry?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -1179,7 +1345,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.bankName}
-                            helperText={errors?.bankName?.message}
+                            helperText={
+                              errors?.bankName?.message
+                                ? t(`validation:${errors?.bankName?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1205,7 +1375,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.accountNumber}
-                            helperText={errors?.accountNumber?.message}
+                            helperText={
+                              errors?.accountNumber?.message
+                                ? t(
+                                    `validation:${errors?.accountNumber?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1222,7 +1398,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.IBAN}
-                            helperText={errors?.IBAN?.message}
+                            helperText={
+                              errors?.IBAN?.message
+                                ? t(`validation:${errors?.IBAN?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1239,7 +1419,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.SWIFTCode}
-                            helperText={errors?.SWIFTCode?.message}
+                            helperText={
+                              errors?.SWIFTCode?.message
+                                ? t(`validation:${errors?.SWIFTCode?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1275,7 +1459,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.APTICuserName}
-                            helperText={errors?.APTICuserName?.message}
+                            helperText={
+                              errors?.APTICuserName?.message
+                                ? t(
+                                    `validation:${errors?.APTICuserName?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1292,7 +1482,13 @@ const CreateClient = () => {
                             type={!hide ? "text" : "password"}
                             autoComplete="off"
                             error={!!errors.APTICpassword}
-                            helperText={errors?.APTICpassword?.message}
+                            helperText={
+                              errors?.APTICpassword?.message
+                                ? t(
+                                    `validation:${errors?.APTICpassword?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -1324,7 +1520,11 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.name}
-                            helperText={errors?.name?.message}
+                            helperText={
+                              errors?.name?.message
+                                ? t(`validation:${errors?.name?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1341,7 +1541,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.fpReference}
-                            helperText={errors?.fpReference?.message}
+                            helperText={
+                              errors?.fpReference?.message
+                                ? t(
+                                    `validation:${errors?.fpReference?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1361,7 +1567,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.creditLimitCustomer}
-                            helperText={errors?.creditLimitCustomer?.message}
+                            helperText={
+                              errors?.creditLimitCustomer?.message
+                                ? t(
+                                    `validation:${errors?.creditLimitCustomer?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1385,7 +1597,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.costLimitforCustomer}
-                            helperText={errors?.costLimitforCustomer?.message}
+                            helperText={
+                              errors?.costLimitforCustomer?.message
+                                ? t(
+                                    `validation:${errors?.costLimitforCustomer?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             InputProps={{
@@ -1408,7 +1626,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.costLimitforOrder}
-                            helperText={errors?.costLimitforOrder?.message}
+                            helperText={
+                              errors?.costLimitforOrder?.message
+                                ? t(
+                                    `validation:${errors?.costLimitforOrder?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             InputProps={{
@@ -1430,8 +1654,14 @@ const CreateClient = () => {
                             label={t("label:invoiceWithRegress")}
                             type="number"
                             autoComplete="off"
-                            error={!!errors.nvoicewithRegress}
-                            helperText={errors?.nvoicewithRegress?.message}
+                            error={!!errors.invoicewithRegress}
+                            helperText={
+                              errors?.invoicewithRegress?.message
+                                ? t(
+                                    `validation:${errors?.invoicewithRegress?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             InputProps={{
@@ -1454,7 +1684,13 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.invoicewithoutRegress}
-                            helperText={errors?.invoicewithoutRegress?.message}
+                            helperText={
+                              errors?.invoicewithoutRegress?.message
+                                ? t(
+                                    `validation:${errors?.invoicewithoutRegress?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             s
                             fullWidth
@@ -1475,7 +1711,8 @@ const CreateClient = () => {
               <div className="Back Office Account for APTIC Engine">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:backOfficeAccountForApticEngine")}
-                  {dirtyFields.APTIEngineCuserName ? (
+                  {dirtyFields.APTIEngineCuserName &&
+                  dirtyFields.APTIEnginePassword ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -1494,7 +1731,13 @@ const CreateClient = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.APTIEngineCuserName}
-                            helperText={errors?.APTIEngineCuserName?.message}
+                            helperText={
+                              errors?.APTIEngineCuserName?.message
+                                ? t(
+                                    `validation:${errors?.APTIEngineCuserName?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1511,7 +1754,13 @@ const CreateClient = () => {
                             type={!hide ? "text" : "password"}
                             autoComplete="off"
                             error={!!errors.APTIEnginePassword}
-                            helperText={errors?.APTIEnginePassword?.message}
+                            helperText={
+                              errors?.APTIEnginePassword?.message
+                                ? t(
+                                    `validation:${errors?.APTIEnginePassword?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -1666,14 +1915,145 @@ const CreateClient = () => {
               <div className="vat rate">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:vatRate")}
-                  {defaultValueCreateClient.vat.length > 0 ? (
-                    //TODO: i am not sure how to active the check icon here.
+                  {defaultValueCreateClient.vat.length > 0 || isVatIconGreen ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
                   )}
                 </div>
                 <div className="p-10">
+                  {/*<Hidden mdUp>*/}
+                  {/*  <div className="px-16 shadow-md rounded-md">*/}
+                  {/*    {addVatIndex.map((index) => (*/}
+                  {/*        <div*/}
+                  {/*            key={index}*/}
+                  {/*            className="subtitle3 w-full md:w-3/4 mt-20"*/}
+                  {/*        >*/}
+                  {/*          <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].vatName`}*/}
+                  {/*                control={control}*/}
+                  {/*                render={({ field }) => (*/}
+                  {/*                    <TextField*/}
+                  {/*                        {...field}*/}
+                  {/*                        type="text"*/}
+                  {/*                        value={field.value || ""}*/}
+                  {/*                        autoComplete="off"*/}
+                  {/*                        placeholder={t("label:name")}*/}
+                  {/*                        className="bg-white"*/}
+                  {/*                        error={!!errors.vatName}*/}
+                  {/*                        helperText={*/}
+                  {/*                          errors?.vatName?.message*/}
+                  {/*                        }*/}
+                  {/*                        variant="outlined"*/}
+                  {/*                        required*/}
+                  {/*                        fullWidth*/}
+                  {/*                    />*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].vatValue`}*/}
+                  {/*                control={control}*/}
+                  {/*                render={({ field }) => (*/}
+                  {/*                    <TextField*/}
+                  {/*                        {...field}*/}
+                  {/*                        type="number"*/}
+                  {/*                        value={field.value || ""}*/}
+                  {/*                        className=""*/}
+                  {/*                        autoComplete="off"*/}
+                  {/*                        error={!!errors.vatValue}*/}
+                  {/*                        helperText={*/}
+                  {/*                          errors?.vatValue?.message*/}
+                  {/*                        }*/}
+                  {/*                        variant="outlined"*/}
+                  {/*                        placeholder={t(*/}
+                  {/*                            "label:valuePercentage"*/}
+                  {/*                        )}*/}
+                  {/*                        required*/}
+                  {/*                        fullWidth*/}
+                  {/*                    />*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*          </div>*/}
+
+                  {/*          <div className="my-20">*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].bookKeepingReference`}*/}
+                  {/*                control={control}*/}
+                  {/*                render={({ field }) => (*/}
+                  {/*                    <TextField*/}
+                  {/*                        {...field}*/}
+                  {/*                        type="text"*/}
+                  {/*                        value={field.value || ""}*/}
+                  {/*                        className="bg-white"*/}
+                  {/*                        autoComplete="off"*/}
+                  {/*                        placeholder={t(*/}
+                  {/*                            "label:bookKeepingReference"*/}
+                  {/*                        )}*/}
+                  {/*                        error={*/}
+                  {/*                          !!errors?.vat?.[index]*/}
+                  {/*                              ?.bookKeepingReference*/}
+                  {/*                        }*/}
+                  {/*                        helperText={*/}
+                  {/*                          errors?.bookKeepingReference*/}
+                  {/*                              ?.message*/}
+                  {/*                        }*/}
+                  {/*                        variant="outlined"*/}
+                  {/*                        required*/}
+                  {/*                        fullWidth*/}
+                  {/*                    />*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*          </div>*/}
+                  {/*          <div className="mt-20 mb-10">*/}
+                  {/*            <Controller*/}
+                  {/*                name={`vat[${index}].vatActive`}*/}
+                  {/*                type="checkbox"*/}
+                  {/*                control={control}*/}
+                  {/*                render={({*/}
+                  {/*                           field: {*/}
+                  {/*                             onChange,*/}
+                  {/*                             value,*/}
+                  {/*                             ref,*/}
+                  {/*                             onBlur,*/}
+                  {/*                           },*/}
+                  {/*                         }) => (*/}
+                  {/*                    <FormControl*/}
+                  {/*                        required*/}
+                  {/*                        error={!!errors.Switch}*/}
+                  {/*                        label={t("label:status")}*/}
+                  {/*                    >*/}
+                  {/*                      <Switch*/}
+                  {/*                          color="secondary"*/}
+                  {/*                          checked={value}*/}
+                  {/*                          onBlur={onBlur}*/}
+                  {/*                          onChange={(ev) =>*/}
+                  {/*                              onChange(ev.target.checked)*/}
+                  {/*                          }*/}
+                  {/*                          inputRef={ref}*/}
+                  {/*                          required*/}
+                  {/*                      />*/}
+                  {/*                      <FormHelperText>*/}
+                  {/*                        {errors?.Switch?.message}*/}
+                  {/*                      </FormHelperText>*/}
+                  {/*                    </FormControl>*/}
+                  {/*                )}*/}
+                  {/*            />*/}
+                  {/*          </div>*/}
+                  {/*        </div>*/}
+                  {/*    ))}*/}
+                  {/*    <Button*/}
+                  {/*        className="my-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"*/}
+                  {/*        startIcon={<AddIcon />}*/}
+                  {/*        onClick={() => addNewVat()}*/}
+                  {/*        disabled={*/}
+                  {/*          addVatIndex.length >= 4 ? true : false*/}
+                  {/*        }*/}
+                  {/*    >*/}
+                  {/*      {t("label:addItem")}*/}
+                  {/*    </Button>*/}
+                  {/*  </div>*/}
+                  {/*</Hidden>*/}
                   <div className="px-16">
                     <div className="product-list">
                       <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
@@ -1702,6 +2082,7 @@ const CreateClient = () => {
                               control={control}
                               render={({ field }) => (
                                 <TextField
+                                  onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="text"
                                   autoComplete="off"
@@ -1721,6 +2102,7 @@ const CreateClient = () => {
                               control={control}
                               render={({ field }) => (
                                 <TextField
+                                  onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="number"
                                   className="text-right  custom-input-height"
@@ -1762,6 +2144,7 @@ const CreateClient = () => {
                             <IconButton
                               aria-label="delete"
                               onClick={() => onDelete(index)}
+                              disabled={index === Math.min(...addVatIndex)}
                             >
                               <RemoveCircleOutline className="icon-size-20 text-red-500" />
                             </IconButton>
@@ -1802,7 +2185,11 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.fakturaB2B}
-                            helperText={errors?.fakturaB2B?.message}
+                            hhelperText={
+                              errors?.fakturaB2B?.message
+                                ? t(`validation:${errors?.fakturaB2B?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -1826,7 +2213,11 @@ const CreateClient = () => {
                             type="number"
                             autoComplete="off"
                             error={!!errors.fakturaB2C}
-                            helperText={errors?.fakturaB2C?.message}
+                            helperText={
+                              errors?.fakturaB2C?.message
+                                ? t(`validation:${errors?.fakturaB2C?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth

@@ -35,7 +35,8 @@ import {
   useUpdateProductStatusMutation,
 } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
-import AuthService from '../../../data-access/services/authService';
+import AuthService from "../../../data-access/services/authService";
+import { LoadingButton } from "@mui/lab";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -46,10 +47,10 @@ const createProducts = () => {
   const [productType, setProductType] = React.useState(1);
   const [categoriesList, setCategoriesList] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [defaultCategories, setDefaultCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = React.useState(false);
   const userInfo = UtilsServices.getFPUserData();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ const createProducts = () => {
     defaultValueCreateProduct,
     resolver: yupResolver(validateSchemaProductCreate),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   const onRawSubmit = (values) => {
     if (
       localStorage.getItem("defaultCategories") &&
@@ -80,70 +81,76 @@ const createProducts = () => {
       productType,
       values
     );
+    setLoading(true);
     updateProduct(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/products/products-list");
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
+      setLoading(false);
     });
   };
   // form end
 
   useEffect(() => {
     if (isLoading) {
-      AuthService.axiosRequestHelper()
-        .then((isAuthenticated)=> {
-          CategoryService.categoryList(true)
+      AuthService.axiosRequestHelper().then((isAuthenticated) => {
+        CategoryService.categoryList(true)
+          .then((res) => {
+            let data = [];
+            if (res?.status_code === 200) {
+              res.map((row) => {
+                return data.push({ uuid: row.uuid, name: row.name });
+              });
+            }
+            setCategoriesList(data);
+          })
+          .catch((e) => {});
+        ProductService.productDetailsByUUID(queryParams.id, true)
+          .then((response) => {
+            if (response.data.categories) {
+              let pL = [];
+              response.data.categories.map((row) => {
+                return pL.push({ uuid: row.uuid, name: row.name });
+              });
+              setDefaultCategories(pL);
+            } else setDefaultCategories([]);
+            setInfo(response?.data);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            navigate("/products/products-list");
+            enqueueSnackbar(t(`message:${error}`), { variant: "error" });
+            setIsLoading(false);
+          });
+        if (info?.user_data?.organization?.uuid) {
+          ClientService.vateRatesList(info?.user_data?.organization?.uuid, true)
             .then((res) => {
-              let data = [];
               if (res?.status_code === 200) {
-                res.map((row) => {
-                  return data.push({ uuid: row.uuid, name: row.name });
-                });
+                setTaxes(res?.data);
+              } else {
+                setTaxes([]);
               }
-              setCategoriesList(data);
             })
             .catch((e) => {
+              setTaxes([]);
             });
-          ProductService.productDetailsByUUID(queryParams.id, true)
-            .then((response) => {
-              if (response.data.categories) {
-                let pL = [];
-                response.data.categories.map((row) => {
-                  return pL.push({ uuid: row.uuid, name: row.name });
-                });
-                setDefaultCategories(pL);
-              } else setDefaultCategories([]);
-              setInfo(response?.data);
-              setIsLoading(false);
-            })
-            .catch((error) => {
-              navigate("/products/products-list")
-              enqueueSnackbar(error, { variant: "error" });
-              setIsLoading(false);
-            });
-          if (info?.user_data?.organization?.uuid) {
-            ClientService.vateRatesList(info?.user_data?.organization?.uuid, true)
-              .then((res) => {
-                if (res?.status_code === 200) {
-                  setTaxes(res?.data);
-                } else {
-                  setTaxes([]);
-                }
-              })
-              .catch((e) => {
-                setTaxes([]);
-              });
-          }
-        })
+        }
+      });
     }
     defaultValueCreateProduct.productID = info?.productId
       ? info?.productId
       : "";
     defaultValueCreateProduct.productName = info?.name ? info?.name : "";
-    defaultValueCreateProduct.price = info?.price ? info?.price : "";
+    defaultValueCreateProduct.price = info?.price
+      ? info?.price.toString().includes(".")
+        ? `${info?.price.toString().split(".")[0]},${
+            info?.price.toString().split(".")[1]
+          }`
+        : info?.price
+      : "";
     defaultValueCreateProduct.unit = info?.unit ? info?.unit : "";
     defaultValueCreateProduct.manufacturer = info?.manufacturerId
       ? info?.manufacturerId
@@ -154,7 +161,8 @@ const createProducts = () => {
     defaultValueCreateProduct.description = info?.description
       ? info?.description
       : "";
-    defaultValueCreateProduct.tax = info?.taxRate ? info?.taxRate : "";
+    defaultValueCreateProduct.tax =
+      info?.taxRate === 0 ? 0 : info?.taxRate ? info?.taxRate : "";
     defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
     reset({ ...defaultValueCreateProduct });
   }, [isLoading]);
@@ -179,10 +187,10 @@ const createProducts = () => {
   const changeProductStatus = async () => {
     updateProductStatus(info.uuid).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/products/products-list");
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
   };
@@ -232,20 +240,23 @@ const createProducts = () => {
                       onClick={() => changeProductStatus()}
                       disabled={user.role[0] === FP_ADMIN}
                     >
-                      {t("label:make")}{" "}
-                      {info.status === t("label:active")
-                        ? t("label:inactive")
-                        : t("label:active")}
+                      {info.status.toLowerCase() === "active"
+                        ? t("label:makeInactive")
+                        : t("label:makeActive")}
                     </Button>
-                    <Button
-                      color="secondary"
+                    <LoadingButton
                       variant="contained"
+                      color="secondary"
+                      className="rounded-4 button2 w-full sm:w-auto"
+                      aria-label="Confirm"
+                      size="large"
                       type="submit"
-                      className="font-semibold rounded-4 w-full sm:w-auto"
-                      disabled={user.role[0] === FP_ADMIN}
+                      loading={loading}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
+                      loadingPosition="center"
                     >
                       {t("label:updateProduct")}
-                    </Button>
+                    </LoadingButton>
                   </div>
                 </div>
                 <div className="main-layout-product">
@@ -302,7 +313,13 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.productID}
-                              helperText={errors?.productID?.message}
+                              helperText={
+                                errors?.productID?.message
+                                  ? t(
+                                      `validation:${errors?.productID?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -323,7 +340,13 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.productName}
-                              helperText={errors?.productName?.message}
+                              helperText={
+                                errors?.productName?.message
+                                  ? t(
+                                      `validation:${errors?.productName?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               fullWidth
                               required
@@ -342,10 +365,13 @@ const createProducts = () => {
                             {...field}
                             label={t("label:pricePerUnit")}
                             className="bg-white"
-                            type="number"
                             autoComplete="off"
                             error={!!errors.price}
-                            helperText={errors?.price?.message}
+                            helperText={
+                              errors?.price?.message
+                                ? t(`validation:${errors?.price?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -371,7 +397,11 @@ const createProducts = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.unit}
-                            helperText={errors?.unit?.message}
+                            helperText={
+                              errors?.unit?.message
+                                ? t(`validation:${errors?.unit?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             value={field.value || ""}
@@ -389,7 +419,13 @@ const createProducts = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.manufacturer}
-                            helperText={errors?.manufacturer?.message}
+                            helperText={
+                              errors?.manufacturer?.message
+                                ? t(
+                                    `validation:${errors?.manufacturer?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             disabled={productType === 2 ? true : false}
@@ -489,7 +525,13 @@ const createProducts = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.description}
-                              helperText={errors?.description?.message}
+                              helperText={
+                                errors?.description?.message
+                                  ? t(
+                                      `validation:${errors?.description?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               fullWidth
                               value={field.value || ""}
@@ -567,7 +609,11 @@ const createProducts = () => {
                               type="number"
                               autoComplete="off"
                               error={!!errors.cost}
-                              helperText={errors?.cost?.message}
+                              helperText={
+                                errors?.cost?.message
+                                  ? t(`validation:${errors?.cost?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               fullWidth
                               InputProps={{

@@ -17,6 +17,7 @@ import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import ClientService from '../../../data-access/services/clientsService/ClientService';
+import Hidden from '@mui/material/Hidden';
 
 export default function ClientOrdersOverview() {
   const { t } = useTranslation();
@@ -114,7 +115,7 @@ export default function ClientOrdersOverview() {
         }
       })
       .catch((e) => {
-        if (isLoading) enqueueSnackbar(e, { variant: "error" });
+        if (isLoading) enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setIsLoading(false);
         dispatch(setOverviewMainTableDataSlice([]));
       });
@@ -139,7 +140,7 @@ export default function ClientOrdersOverview() {
           }
         })
         .catch((e) => {
-          if (isLoading) enqueueSnackbar(e, { variant: "error" });
+          if (isLoading) enqueueSnackbar(t(`message:${e}`), { variant: "error" });
           setIsLoading(false);
           dispatch(setOverviewMainTableDataSlice([]));
         });
@@ -147,19 +148,41 @@ export default function ClientOrdersOverview() {
   }, [isLoading]);
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={clientOrdersListOverview}
-      headerRows={clientOrdersListHeaderRows}
-      tableData={clientOrdersList.tableData}
-      rowDataFields={clientOrdersListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      isLoading={isLoading}
-      changeDate={handleDateChange}
-      selectedDate={selectedDate}
-      setSelectedDate={setSelectedDate}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={clientOrdersListOverview}
+          headerRows={clientOrdersListHeaderRows}
+          tableData={clientOrdersList.tableData}
+          rowDataFields={clientOrdersListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isLoading}
+          changeDate={handleDateChange}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={clientOrdersListOverview}
+          headerRows={clientOrdersListHeaderRows}
+          tableData={clientOrdersList.tableData}
+          rowDataFields={clientOrdersListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isLoading}
+          changeDate={handleDateChange}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 class ProductService {
   productsList = async (isSkipIsAuthenticated) => {
@@ -48,17 +49,17 @@ class ProductService {
                     !response.data.is_data
                   ) {
                     resolve([]);
-                  } else reject("Something went wrong");
+                  } else reject("somethingWentWrong");
                 })
                 .catch((e) => {
                   if (e?.response?.data?.status_code === 404)
                     resolve(e.response.data);
                   reject(e?.response?.data?.message);
                 });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
-            reject("Something went wrong");
+            reject("somethingWentWrong");
           });
       } else {
         const URL = `${EnvVariable.BASEURL}/products/list`;
@@ -97,7 +98,7 @@ class ProductService {
               !response.data.is_data
             ) {
               resolve([]);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             if (e?.response?.data?.status_code === 404)
@@ -141,6 +142,13 @@ class ProductService {
         })
       : null;
 
+    const pricePerUnit = params.price;
+    const splitedPrice = pricePerUnit.toString().includes(",") ? pricePerUnit.toString().split(",") : pricePerUnit;
+    const dotFormatPrice =
+      typeof splitedPrice === "object"
+        ? `${splitedPrice[0]}.${splitedPrice[1]}`
+        : splitedPrice;
+    const floatPrice = parseFloat(dotFormatPrice);
     return {
       // type: type === 1 ? "Good" : "Service",
       type: "Good",
@@ -148,7 +156,7 @@ class ProductService {
       name: params.productName,
       description: params.description,
       unit: params.unit,
-      price: params.price,
+      price: floatPrice,
       manufacturerId: params?.manufacturer ? params?.manufacturer : null,
       categoryUuids,
       taxRate: params.tax,
@@ -189,15 +197,15 @@ class ProductService {
               .then((response) => {
                 if (response?.data?.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -214,7 +222,7 @@ class ProductService {
               response?.data?.is_data
             ) {
               resolve(response.data);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             reject(e?.response?.data?.message);
@@ -231,15 +239,15 @@ class ProductService {
                     response?.data?.is_data
                   ) {
                     resolve(response.data);
-                  } else reject("Something went wrong");
+                  } else reject("somethingWentWrong");
                 })
                 .catch((e) => {
                   reject(e?.response?.data?.message);
                 });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
-            reject("Something went wrong");
+            reject("somethingWentWrong");
           });
       }
     });
@@ -252,6 +260,14 @@ class ProductService {
         })
       : null;
 
+    const pricePerUnit = params.price;
+    const splitedPrice = pricePerUnit.toString().includes(",") ? pricePerUnit.toString().split(",") : pricePerUnit;
+    const dotFormatPrice =
+      typeof splitedPrice === "object"
+        ? `${splitedPrice[0]}.${splitedPrice[1]}`
+        : splitedPrice;
+    const floatPrice = parseFloat(dotFormatPrice);
+
     return {
       uuid,
       type: type === 1 ? "Good" : "Service",
@@ -259,7 +275,7 @@ class ProductService {
       name: params.productName,
       description: params.description,
       unit: params.unit,
-      price: params.price,
+      price: floatPrice,
       manufacturerId: type === 1 ? params.manufacturer : "Test",
       categoryUuids,
       taxRate: params.tax,
@@ -297,15 +313,15 @@ class ProductService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -321,15 +337,15 @@ class ProductService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };

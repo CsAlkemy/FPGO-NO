@@ -1,7 +1,13 @@
-import {yupResolver} from "@hookform/resolvers/yup";
-import {Search, Visibility, VisibilityOff} from "@mui/icons-material";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Search, Visibility, VisibilityOff } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import {DesktopDatePicker, LoadingButton, TabContext, TabList, TabPanel,} from "@mui/lab";
+import {
+  DesktopDatePicker,
+  LoadingButton,
+  TabContext,
+  TabList,
+  TabPanel,
+} from "@mui/lab";
 import {
   Backdrop,
   Box,
@@ -10,6 +16,7 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
+  Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -19,19 +26,22 @@ import {
   Tab,
   TextField,
 } from "@mui/material";
-import {useSnackbar} from "notistack";
-import React, {useEffect, useRef, useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {useTranslation} from "react-i18next";
-import {BsFillCheckCircleFill} from "react-icons/bs";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 import PhoneInput from "react-phone-input-2";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import ConfirmModal from "../../common/confirmmationDialog";
-import {defaultValue, validateSchema} from "../utils/helper";
+import { defaultValue, validateSchema } from "../utils/helper";
 import Orders from "./Orders";
 import Timeline from "./Timeline";
-import {useUpdateClientMutation, useUpdateClientStatusMutation,} from "app/store/api/apiSlice";
+import {
+  useUpdateClientMutation,
+  useUpdateClientStatusMutation,
+} from "app/store/api/apiSlice";
 
 const ClientDetails = () => {
   const { t } = useTranslation();
@@ -53,7 +63,6 @@ const ClientDetails = () => {
   const plan2 = useRef(null);
   const plan3 = useRef(null);
   const sameAddressRef = useRef(null);
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [tabValue, setTabValue] = React.useState("1");
   const [addVatIndex, setAddVatIndex] = React.useState([0, 1, 2, 3, 4]);
@@ -105,10 +114,234 @@ const ClientDetails = () => {
       ClientService.clientDetails(params.uuid)
         .then((res) => {
           setInfo(res.data);
+          const info = res?.data;
+          const planValue = parseInt(
+            info?.contractDetails?.planTag?.split(" ")[1]
+          );
+          if (planValue) {
+            if (planValue === 1) {
+              plan1.current.click();
+            } else if (planValue === 2) {
+              plan2.current.click();
+            } else if (planValue === 3) {
+              plan3.current.click();
+            }
+          }
+
+          if (
+            info?.addresses &&
+            info?.addresses["billing"]?.email ===
+              info?.addresses["shipping"]?.email &&
+            info?.addresses["billing"]?.street ===
+              info?.addresses["shipping"]?.street &&
+            info?.addresses["billing"]?.zip ===
+              info?.addresses["shipping"]?.zip &&
+            info?.addresses["billing"]?.city ===
+              info?.addresses["shipping"]?.city &&
+            info?.addresses["billing"]?.country ===
+              info?.addresses["shipping"]?.country
+          ) {
+            setSameAddress(true);
+          } else setSameAddress(false);
+          defaultValue.id = info?.organizationDetails?.id
+            ? info.organizationDetails.id
+            : "";
+          defaultValue.clientName = info?.organizationDetails?.name
+            ? info.organizationDetails.name
+            : "";
+          defaultValue.organizationType = info?.organizationDetails?.type
+            ? info.organizationDetails?.type
+            : "";
+          defaultValue.fullName = info?.primaryContactDetails?.name
+            ? info.primaryContactDetails?.name
+            : "";
+          defaultValue.primaryPhoneNumber =
+            info?.primaryContactDetails?.countryCode &&
+            info.primaryContactDetails?.msisdn
+              ? info.primaryContactDetails?.countryCode +
+                info.primaryContactDetails?.msisdn
+              : "";
+          defaultValue.designation = info?.primaryContactDetails?.designation
+            ? info.primaryContactDetails?.designation
+            : "";
+          defaultValue.email = info?.primaryContactDetails?.email
+            ? info.primaryContactDetails?.email
+            : "";
+          defaultValue.contactEndDate = info?.contractDetails?.endDate
+            ? info.contractDetails.endDate
+            : "";
+          defaultValue.commision = info?.contractDetails?.commissionRate
+            ? info.contractDetails.commissionRate
+            : "";
+          defaultValue.smsCost = info?.contractDetails?.smsCost
+            ? info.contractDetails.smsCost
+            : "";
+          defaultValue.emailCost = info?.contractDetails?.emailCost
+            ? info.contractDetails.emailCost
+            : "";
+          defaultValue.creditCheckCost = info?.contractDetails?.creditCheckCost
+            ? info.contractDetails.creditCheckCost
+            : "";
+          defaultValue.ehfCost = info?.contractDetails?.ehfCost
+            ? info.contractDetails.ehfCost
+            : "";
+          if (!!info.addresses) {
+            defaultValue.billingPhoneNumber =
+              info?.addresses["billing"]?.countryCode &&
+              info.addresses["billing"].msisdn
+                ? info.addresses["billing"].countryCode +
+                  info.addresses["billing"].msisdn
+                : "";
+            defaultValue.billingEmail = info?.addresses["billing"]?.email
+              ? info.addresses["billing"].email
+              : "";
+            defaultValue.billingAddress = info?.addresses["billing"]?.street
+              ? info.addresses["billing"].street
+              : "";
+            defaultValue.zip = info?.addresses["billing"]?.zip
+              ? info.addresses["billing"].zip
+              : "";
+            defaultValue.city = info?.addresses["billing"]?.city
+              ? info.addresses["billing"].city
+              : "";
+            defaultValue.country = info?.addresses["billing"]?.country
+              ? info.addresses["billing"].country
+              : "";
+          }
+          if (!!info.addresses && !!info.addresses["shipping"]) {
+            defaultValue.shippingPhoneNumber =
+              info?.addresses["shipping"]?.countryCode &&
+              info?.addresses["shipping"]?.msisdn
+                ? info.addresses["shipping"].countryCode +
+                  info.addresses["shipping"].msisdn
+                : "";
+            defaultValue.shippingEmail = info?.addresses["shipping"]?.email
+              ? info.addresses["shipping"].email
+              : "";
+            defaultValue.shippingAddress = info?.addresses["shipping"]?.street
+              ? info.addresses["shipping"].street
+              : "";
+            defaultValue.shippingZip = info?.addresses["shipping"]?.zip
+              ? info.addresses["shipping"].zip
+              : "";
+            defaultValue.shippingCity = info?.addresses["shipping"]?.city
+              ? info.addresses["shipping"].city
+              : "";
+            defaultValue.shippingCountry = info?.addresses["shipping"]?.country
+              ? info.addresses["shipping"].country
+              : "";
+          }
+          defaultValue.bankName = info?.bankInformation?.name
+            ? info?.bankInformation?.name
+            : "";
+          defaultValue.accountNumber = info?.bankInformation?.accountNumber
+            ? info?.bankInformation?.accountNumber
+            : "";
+          defaultValue.IBAN = info?.bankInformation?.iban
+            ? info?.bankInformation?.iban
+            : "";
+          defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
+            ? info?.bankInformation?.swiftCode
+            : "";
+          defaultValue.APTICuserName = info?.apticInformation?.username
+            ? info?.apticInformation?.username
+            : "";
+          defaultValue.APTICpassword = info?.apticInformation?.password
+            ? info?.apticInformation?.password
+            : "";
+          defaultValue.name = info?.apticInformation?.name
+            ? info?.apticInformation?.name
+            : "";
+          defaultValue.costLimitforCustomer = info?.apticInformation
+            ?.costLimitForCustomer
+            ? info?.apticInformation?.costLimitForCustomer
+            : "";
+          defaultValue.costLimitforOrder = info?.apticInformation
+            ?.costLimitForOrder
+            ? info?.apticInformation?.costLimitForOrder
+            : "";
+          defaultValue.invoicewithRegress = info?.apticInformation
+            ?.invoiceWithRegress
+            ? info?.apticInformation?.invoiceWithRegress
+            : "";
+          defaultValue.invoicewithoutRegress = info?.apticInformation
+            ?.invoiceWithoutRegress
+            ? info?.apticInformation?.invoiceWithoutRegress
+            : "";
+          defaultValue.APTIEngineCuserName = info?.apticInformation
+            ?.backOfficeUsername
+            ? info?.apticInformation?.backOfficeUsername
+            : "";
+          defaultValue.APTIEnginePassword = info?.apticInformation
+            ?.backOfficePassword
+            ? info?.apticInformation?.backOfficePassword
+            : "";
+          defaultValue.fpReference = info?.apticInformation?.fpReference
+            ? info?.apticInformation?.fpReference
+            : "";
+          defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
+            ? info?.apticInformation?.creditLimit
+            : "";
+          defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
+            ? info?.apticInformation?.b2bInvoiceFee
+            : "";
+          defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
+            ? info?.apticInformation?.b2cInvoiceFee
+            : "";
+
+          if (
+            info?.settings &&
+            info?.settings?.vatRates &&
+            info?.settings?.vatRates.length >= 2
+          ) {
+            setAddVatIndex(
+              addVatIndex.filter(
+                (item, index) => item <= info?.settings?.vatRates.length - 1
+              )
+            );
+          } else {
+            setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
+          }
+
+          if (info?.settings?.currency && info?.settings?.currency.length) {
+            setCurrency({
+              code: info?.settings?.currency[0].code,
+              currency:
+                info?.settings?.currency[0].code === "NOK"
+                  ? "Norwegian Krone"
+                  : info?.settings?.currency[0].code === "SEK"
+                  ? "Swedish Krona"
+                  : info?.settings?.currency[0].code === "DKK"
+                  ? "Danish Krone"
+                  : "European Euro",
+            });
+          }
+
+          reset({ ...defaultValue });
+          if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
+            for (let i = 0; i < info?.settings?.vatRates.length; i++) {
+              setValue(
+                `vat[${i}].vatName`,
+                info?.settings?.vatRates[`${i}`].name
+              );
+              setValue(
+                `vat[${i}].vatValue`,
+                info?.settings?.vatRates[`${i}`].value
+              );
+              setValue(
+                `vat[${i}].bookKeepingReference`,
+                info?.settings?.vatRates[`${i}`].bookKeepingReference
+              );
+              setValue(
+                `vat[${i}].vatActive`,
+                info?.settings?.vatRates[`${i}`].status === "Active"
+              );
+            }
+          }
           setIsLoading(false);
         })
         .catch((error) => {
-          enqueueSnackbar(error, { variant: "error" });
+          enqueueSnackbar(t(`message:${error}`), { variant: "error" });
           setIsLoading(false);
         });
 
@@ -125,242 +358,25 @@ const ClientDetails = () => {
           }
         })
         .catch((e) => {
-          navigate("/clients/clients-list")
-          enqueueSnackbar(e, {variant:"error"})
+          navigate("/clients/clients-list");
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });
     }
+    return () => {
+      (defaultValue.billingPhoneNumber = "47"),
+        (defaultValue.billingEmail = ""),
+        (defaultValue.billingAddress = ""),
+        (defaultValue.zip = ""),
+        (defaultValue.city = ""),
+        (defaultValue.country = ""),
+        (defaultValue.shippingPhoneNumber = "47"),
+        (defaultValue.shippingEmail = ""),
+        (defaultValue.shippingAddress = ""),
+        (defaultValue.shippingZip = ""),
+        (defaultValue.shippingCity = ""),
+        (defaultValue.shippingCountry = "");
+    };
   }, [isLoading]);
-
-  useEffect(() => {
-    if (!!info) {
-      if (
-        billingPhoneNumber === shippingPhoneNumber &&
-        billingEmail === shippingEmail &&
-        billingAddress === shippingAddress &&
-        zip === shippingZip &&
-        city === shippingCity &&
-        country === shippingCountry
-      ) {
-        sameAddressRef?.current?.click();
-      }
-      const planValue = parseInt(info?.contractDetails?.planTag?.split(" ")[1]);
-      if (planValue) {
-        if (planValue === 1) {
-          plan1.current.click();
-        } else if (planValue === 2) {
-          plan2.current.click();
-        } else if (planValue === 3) {
-          plan3.current.click();
-        }
-      }
-
-      if (
-        info?.addresses &&
-        info?.addresses["billing"]?.email ===
-        info?.addresses["shipping"]?.email &&
-        info?.addresses["billing"]?.street ===
-        info?.addresses["shipping"]?.street &&
-        info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
-        info?.addresses["billing"]?.city ===
-        info?.addresses["shipping"]?.city &&
-        info?.addresses["billing"]?.country ===
-        info?.addresses["shipping"]?.country
-      ) {
-        setSameAddress(true);
-      } else setSameAddress(false);
-      defaultValue.id = info?.organizationDetails?.id
-        ? info.organizationDetails.id
-        : "";
-      defaultValue.clientName = info?.organizationDetails?.name
-        ? info.organizationDetails.name
-        : "";
-      defaultValue.organizationType = info?.organizationDetails?.type
-        ? info.organizationDetails?.type
-        : "";
-      defaultValue.fullName = info?.primaryContactDetails?.name
-        ? info.primaryContactDetails?.name
-        : "";
-      defaultValue.primaryPhoneNumber =
-        info?.primaryContactDetails?.countryCode &&
-        info.primaryContactDetails?.msisdn
-          ? info.primaryContactDetails?.countryCode +
-          info.primaryContactDetails?.msisdn
-          : "";
-      defaultValue.designation = info?.primaryContactDetails?.designation
-        ? info.primaryContactDetails?.designation
-        : "";
-      defaultValue.email = info?.primaryContactDetails?.email
-        ? info.primaryContactDetails?.email
-        : "";
-      defaultValue.contactEndDate = info?.contractDetails?.endDate
-        ? info.contractDetails.endDate
-        : "";
-      defaultValue.commision = info?.contractDetails?.commissionRate
-        ? info.contractDetails.commissionRate
-        : "";
-      defaultValue.smsCost = info?.contractDetails?.smsCost
-        ? info.contractDetails.smsCost
-        : "";
-      defaultValue.emailCost = info?.contractDetails?.emailCost
-        ? info.contractDetails.emailCost
-        : "";
-      defaultValue.creditCheckCost = info?.contractDetails?.creditCheckCost
-        ? info.contractDetails.creditCheckCost
-        : "";
-      defaultValue.ehfCost = info?.contractDetails?.ehfCost
-        ? info.contractDetails.ehfCost
-        : "";
-      if (info.addresses) {
-        defaultValue.billingPhoneNumber =
-          info?.addresses["billing"]?.countryCode &&
-          info.addresses["billing"].msisdn
-            ? info.addresses["billing"].countryCode +
-            info.addresses["billing"].msisdn
-            : "";
-        defaultValue.billingEmail = info?.addresses["billing"]?.email
-          ? info.addresses["billing"].email
-          : "";
-        defaultValue.billingAddress = info?.addresses["billing"]?.street
-          ? info.addresses["billing"].street
-          : "";
-        defaultValue.zip = info?.addresses["billing"]?.zip
-          ? info.addresses["billing"].zip
-          : "";
-        defaultValue.city = info?.addresses["billing"]?.city
-          ? info.addresses["billing"].city
-          : "";
-        defaultValue.country = info?.addresses["billing"]?.country
-          ? info.addresses["billing"].country
-          : "";
-      }
-      if (info.addresses && info.addresses["shipping"]) {
-        defaultValue.shippingPhoneNumber =
-          info?.addresses["shipping"]?.countryCode &&
-          info?.addresses["shipping"]?.msisdn
-            ? info.addresses["shipping"].countryCode +
-            info.addresses["shipping"].msisdn
-            : "";
-        defaultValue.shippingEmail = info?.addresses["shipping"]?.email
-          ? info.addresses["shipping"].email
-          : "";
-        defaultValue.shippingAddress = info?.addresses["shipping"]?.street
-          ? info.addresses["shipping"].street
-          : "";
-        defaultValue.shippingZip = info?.addresses["shipping"]?.zip
-          ? info.addresses["shipping"].zip
-          : "";
-        defaultValue.shippingCity = info?.addresses["shipping"]?.city
-          ? info.addresses["shipping"].city
-          : "";
-        defaultValue.shippingCountry = info?.addresses["shipping"]?.country
-          ? info.addresses["shipping"].country
-          : "";
-      }
-      defaultValue.bankName = info?.bankInformation?.name
-        ? info?.bankInformation?.name
-        : "";
-      defaultValue.accountNumber = info?.bankInformation?.accountNumber
-        ? info?.bankInformation?.accountNumber
-        : "";
-      defaultValue.IBAN = info?.bankInformation?.iban
-        ? info?.bankInformation?.iban
-        : "";
-      defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
-        ? info?.bankInformation?.swiftCode
-        : "";
-      defaultValue.APTICuserName = info?.apticInformation?.username
-        ? info?.apticInformation?.username
-        : "";
-      defaultValue.APTICpassword = info?.apticInformation?.password
-        ? info?.apticInformation?.password
-        : "";
-      defaultValue.name = info?.apticInformation?.name
-        ? info?.apticInformation?.name
-        : "";
-      defaultValue.costLimitforCustomer = info?.apticInformation
-        ?.costLimitForCustomer
-        ? info?.apticInformation?.costLimitForCustomer
-        : "";
-      defaultValue.costLimitforOrder = info?.apticInformation?.costLimitForOrder
-        ? info?.apticInformation?.costLimitForOrder
-        : "";
-      defaultValue.invoicewithRegress = info?.apticInformation
-        ?.invoiceWithRegress
-        ? info?.apticInformation?.invoiceWithRegress
-        : "";
-      defaultValue.invoicewithoutRegress = info?.apticInformation
-        ?.invoiceWithoutRegress
-        ? info?.apticInformation?.invoiceWithoutRegress
-        : "";
-      defaultValue.APTIEngineCuserName = info?.apticInformation
-        ?.backOfficeUsername
-        ? info?.apticInformation?.backOfficeUsername
-        : "";
-      defaultValue.APTIEnginePassword = info?.apticInformation
-        ?.backOfficePassword
-        ? info?.apticInformation?.backOfficePassword
-        : "";
-      defaultValue.fpReference = info?.apticInformation?.fpReference
-        ? info?.apticInformation?.fpReference
-        : "";
-      defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
-        ? info?.apticInformation?.creditLimit
-        : "";
-      defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
-        ? info?.apticInformation?.b2bInvoiceFee
-        : "";
-      defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
-        ? info?.apticInformation?.b2cInvoiceFee
-        : "";
-
-      if (
-        info?.settings &&
-        info?.settings?.vatRates &&
-        info?.settings?.vatRates.length >= 2
-      ) {
-        setAddVatIndex(
-          addVatIndex.filter(
-            (item, index) => item <= info?.settings?.vatRates.length - 1
-          )
-        );
-      } else {
-        setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
-      }
-
-      if (info?.settings?.currency && info?.settings?.currency.length) {
-        setCurrency({
-          code: info?.settings?.currency[0].code,
-          currency:
-            info?.settings?.currency[0].code === "NOK"
-              ? "Norwegian Krone"
-              : info?.settings?.currency[0].code === "SEK"
-                ? "Swedish Krona"
-                : info?.settings?.currency[0].code === "DKK"
-                  ? "Danish Krone"
-                  : "European Euro",
-        });
-      }
-
-      reset({ ...defaultValue });
-      if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
-        for (let i = 0; i < info?.settings?.vatRates.length; i++) {
-          setValue(`vat[${i}].vatName`, info?.settings?.vatRates[`${i}`].name);
-          setValue(
-            `vat[${i}].vatValue`,
-            info?.settings?.vatRates[`${i}`].value
-          );
-          setValue(
-            `vat[${i}].bookKeepingReference`,
-            info?.settings?.vatRates[`${i}`].bookKeepingReference
-          );
-          setValue(
-            `vat[${i}].vatActive`,
-            info?.settings?.vatRates[`${i}`].status === "Active"
-          );
-        }
-      }
-    }
-  }, [info]);
 
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
@@ -379,7 +395,7 @@ const ClientDetails = () => {
         });
         navigate("/clients/clients-list");
       } else
-        enqueueSnackbar(response?.error?.data?.message, {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
@@ -393,7 +409,7 @@ const ClientDetails = () => {
     //       });
     //       navigate("/clients/clients-list");
     //     } else
-    //       enqueueSnackbar(`Something went wrong`, {
+    //       enqueueSnackbar(`somethingWentWrong`, {
     //         variant: "error",
     //         autoHideDuration: 3000,
     //       });
@@ -425,12 +441,10 @@ const ClientDetails = () => {
     }
   };
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   // TODO : turn on the flag based on the input field or we can omit that as it got validation
 
   const onSubmit = (values) => {
-    const info = JSON.parse(localStorage.getItem("tableRowDetails"));
-
     const primaryPhoneNumber = values?.primaryPhoneNumber
       ? values.primaryPhoneNumber.split("+")
       : null;
@@ -462,22 +476,22 @@ const ClientDetails = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-        .filter((v) => v.vatValue)
-        .map((vat, index) => {
-          return {
-            uuid:
-              info?.settings?.vatRates &&
-              info?.settings?.vatRates[index]?.uuid
-                ? info?.settings?.vatRates[index]?.uuid
+          .filter((v) => v.vatValue)
+          .map((vat, index) => {
+            return {
+              uuid:
+                info?.settings?.vatRates &&
+                info?.settings?.vatRates[index]?.uuid
+                  ? info?.settings?.vatRates[index]?.uuid
+                  : null,
+              name: vat.vatName ? vat?.vatName : null,
+              value: parseFloat(vat.vatValue),
+              isActive: vat?.vatActive ? vat.vatActive : false,
+              bookKeepingReference: vat?.bookKeepingReference
+                ? vat.bookKeepingReference
                 : null,
-            name: vat.vatName ? vat?.vatName : null,
-            value: parseFloat(vat.vatValue),
-            isActive: vat?.vatActive ? vat.vatActive : false,
-            bookKeepingReference: vat?.bookKeepingReference
-              ? vat.bookKeepingReference
-              : null,
-          };
-        })
+            };
+          })
       : null;
 
     const clientUpdatedData = {
@@ -611,7 +625,7 @@ const ClientDetails = () => {
         navigate("/clients/clients-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
@@ -648,7 +662,7 @@ const ClientDetails = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      {!isLoading && !!info && (
+      {!isLoading && (
         <div className="flex flex-col flex-auto min-w-0 bg-MonochromeGray-25 max-w-screen-xl">
           <div className="flex-auto p-20 sm:p-0 w-full mx-auto bg-white">
             <div className="rounded-sm bg-white p-0 md:px-20">
@@ -658,29 +672,32 @@ const ClientDetails = () => {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div className=" header-click-to-action">
-                  <div className="header-text header6">
+                  <div className="header-text header6 flex gap-7">
                     Client Details ({info?.organizationDetails?.uuid})
-                    {info?.status === "Active" ? (
-                      <span className="bg-confirmed rounded-4 px-16 py-4 body3">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="bg-rejected rounded-4 px-16 py-4 body3">
-                        Inactive
-                      </span>
+                    {info?.length !==0 && (
+                      <div>
+                        {info?.status === "Active" ? (
+                          <span className=" ml-5 bg-confirmed rounded-4 px-16 py-4 body3">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="bg-rejected ml-5 rounded-4 px-16 py-4 body3">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
-                  <div className="flex gap-10 w-full justify-between sm:w-auto">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-10 w-full justify-between sm:w-auto mb-5 sm:mb-0">
                     <Button
                       color="secondary"
                       onClick={() => changeClientStatus()}
                       variant="outlined"
                       className="font-semibold rounded-4"
                     >
-                      {t("label:make")}{" "}
-                      {info.status === t("label:inactive")
-                        ? t("label:active")
-                        : t("label:inactive")}
+                      {info.status ==="Inactive"
+                        ? t("label:makeActive")
+                        : t("label:makeInactive")}
                     </Button>
                     <LoadingButton
                       variant="contained"
@@ -691,6 +708,7 @@ const ClientDetails = () => {
                       type="submit"
                       loading={loading}
                       loadingPosition="center"
+                      disabled={!isDirty}
                     >
                       {t("label:update")}
                     </LoadingButton>
@@ -710,12 +728,20 @@ const ClientDetails = () => {
                         allowScrollButtonsMobile
                       >
                         <Tab
-                          label="Client Information"
+                          label={ t("label:clientInformation") }
                           className="subtitle3"
                           value="1"
                         />
-                        <Tab label="Timeline" className="subtitle3" value="2" />
-                        <Tab label="Orders" className="subtitle3" value="3" />
+                        <Tab 
+                          label={ t("label:clientTimeline") } 
+                          className="subtitle3" 
+                          value="2" 
+                        />
+                        <Tab 
+                          label={ t("label:clientOrders") } 
+                          className="subtitle3" 
+                          value="3" 
+                        />
                       </TabList>
                     </Box>
                     <TabPanel value="1" className="py-20 px-10">
@@ -744,7 +770,11 @@ const ClientDetails = () => {
                                     type="number"
                                     autoComplete="off"
                                     error={!!errors.id}
-                                    helperText={errors?.id?.message}
+                                    helperText={
+                                      errors?.id?.message
+                                        ? t(`validation:${errors?.id?.message}`)
+                                        : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -761,7 +791,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.clientName}
-                                    helperText={errors?.clientName?.message}
+                                    helperText={
+                                      errors?.clientName?.message
+                                        ? t(
+                                            `validation:${errors?.clientName?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -801,7 +837,11 @@ const ClientDetails = () => {
                                       })}
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.organizationType?.message}
+                                      {errors?.organizationType?.message
+                                        ? t(
+                                            `validation:${errors?.organizationType?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -819,6 +859,10 @@ const ClientDetails = () => {
                                       error={!!errors.parentClientName}
                                       helperText={
                                         errors?.parentClientName?.message
+                                          ? t(
+                                              `validation:${errors?.parentClientName?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -865,7 +909,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.fullName}
-                                    helperText={errors?.fullName?.message}
+                                    helperText={
+                                      errors?.fullName?.message
+                                        ? t(
+                                            `validation:${errors?.fullName?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -897,7 +947,11 @@ const ClientDetails = () => {
                                       onBlur={handleOnBlurGetDialCode}
                                     />
                                     <FormHelperText>
-                                      {errors?.primaryPhoneNumber?.message}
+                                      {errors?.primaryPhoneNumber?.message
+                                        ? t(
+                                            `validation:${errors?.primaryPhoneNumber?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -912,7 +966,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.designation}
-                                    helperText={errors?.designation?.message}
+                                    helperText={
+                                      errors?.designation?.message
+                                        ? t(
+                                            `validation:${errors?.designation?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -929,7 +989,13 @@ const ClientDetails = () => {
                                     type="email"
                                     autoComplete="off"
                                     error={!!errors.email}
-                                    helperText={errors?.email?.message}
+                                    helperText={
+                                      errors?.email?.message
+                                        ? t(
+                                            `validation:${errors?.email?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1001,13 +1067,26 @@ const ClientDetails = () => {
                                 name="contactEndDate"
                                 control={control}
                                 render={({
-                                           field: { onChange, value, onBlur },
-                                         }) => (
+                                  field: { onChange, value, onBlur },
+                                }) => (
                                   <DesktopDatePicker
                                     label={t("label:contractEndDate")}
+                                    mask=""
                                     inputFormat="dd.MM.yyyy"
                                     value={value}
                                     onChange={onChange}
+                                    PopperProps={{
+                                      sx: {
+                                        "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                          {
+                                            borderRadius: "8px",
+                                            "&.Mui-selected": {
+                                              backgroundColor: "#c9eee7",
+                                              color: "#323434",
+                                            },
+                                          },
+                                      },
+                                    }}
                                     renderInput={(params) => (
                                       <TextField
                                         {...params}
@@ -1017,6 +1096,10 @@ const ClientDetails = () => {
                                         error={!!errors.contactEndDate}
                                         helperText={
                                           errors?.contactEndDate?.message
+                                            ? t(
+                                                `validation:${errors?.contactEndDate?.message}`
+                                              )
+                                            : ""
                                         }
                                       />
                                     )}
@@ -1033,7 +1116,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.commision}
-                                    helperText={errors?.commision?.message}
+                                    helperText={
+                                      errors?.commision?.message
+                                        ? t(
+                                            `validation:${errors?.commision?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1058,7 +1147,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.smsCost}
-                                    helperText={errors?.smsCost?.message}
+                                    helperText={
+                                      errors?.smsCost?.message
+                                        ? t(
+                                            `validation:${errors?.smsCost?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1083,7 +1178,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.emailCost}
-                                    helperText={errors?.emailCost?.message}
+                                    helperText={
+                                      errors?.emailCost?.message
+                                        ? t(
+                                            `validation:${errors?.emailCost?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     value={field.value || ""}
@@ -1110,6 +1211,10 @@ const ClientDetails = () => {
                                     error={!!errors.creditCheckCost}
                                     helperText={
                                       errors?.creditCheckCost?.message
+                                        ? t(
+                                            `validation:${errors?.creditCheckCost?.message}`
+                                          )
+                                        : ""
                                     }
                                     variant="outlined"
                                     required
@@ -1256,6 +1361,12 @@ const ClientDetails = () => {
                                       label={t("label:email")}
                                       type="email"
                                       autoComplete="off"
+                                      defaultValue={
+                                        info?.addresses &&
+                                        info?.addresses["billing"]?.email
+                                          ? info.addresses["billing"].email
+                                          : ""
+                                      }
                                       error={!!errors.billingEmail}
                                       helperText={errors?.billingEmail?.message}
                                       variant="outlined"
@@ -1376,7 +1487,7 @@ const ClientDetails = () => {
                         </div>
                         <div className="shipping-information">
                           <div className="p-10 w-full md:w-3/4">
-                            <div className="flex justify-between items-center billing-address-head">
+                            <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center">
                               <div className="billing-address-head">
                                 {t("label:shippingAddress")}
                                 {(shippingPhoneNumber &&
@@ -1402,6 +1513,7 @@ const ClientDetails = () => {
                                       name="jason"
                                       color="secondary"
                                       ref={sameAddressRef}
+                                      checked={sameAddress}
                                     />
                                   }
                                   label={t("label:sameAsBillingAddress")}
@@ -1419,11 +1531,11 @@ const ClientDetails = () => {
                             </div>
                             {!sameAddress &&
                               ((billingPhoneNumber &&
-                                  billingEmail &&
-                                  billingAddress &&
-                                  zip &&
-                                  city &&
-                                  country) ||
+                                billingEmail &&
+                                billingAddress &&
+                                zip &&
+                                city &&
+                                country) ||
                                 shippingPhoneNumber ||
                                 shippingEmail ||
                                 shippingAddress ||
@@ -1576,7 +1688,7 @@ const ClientDetails = () => {
                                               info?.addresses["shipping"]
                                                 ?.country
                                                 ? info.addresses["shipping"]
-                                                  .country
+                                                    .country
                                                 : ""
                                             }
                                           >
@@ -2165,6 +2277,138 @@ const ClientDetails = () => {
                             )}
                           </div>
                           <div className="p-10">
+                            {/*<Hidden mdUp>*/}
+                            {/*  <div className="px-16 shadow-md rounded-md">*/}
+                            {/*    {addVatIndex.map((index) => (*/}
+                            {/*      <div*/}
+                            {/*        key={index}*/}
+                            {/*        className="subtitle3 w-full md:w-3/4 mt-20"*/}
+                            {/*      >*/}
+                            {/*        <div className="grid grid-cols-1 sm:grid-cols-2 gap-20">*/}
+                            {/*          <Controller*/}
+                            {/*            name={`vat[${index}].vatName`}*/}
+                            {/*            control={control}*/}
+                            {/*            render={({ field }) => (*/}
+                            {/*              <TextField*/}
+                            {/*                {...field}*/}
+                            {/*                type="text"*/}
+                            {/*                value={field.value || ""}*/}
+                            {/*                autoComplete="off"*/}
+                            {/*                placeholder={t("label:name")}*/}
+                            {/*                className="bg-white"*/}
+                            {/*                error={!!errors.vatName}*/}
+                            {/*                helperText={*/}
+                            {/*                  errors?.vatName?.message*/}
+                            {/*                }*/}
+                            {/*                variant="outlined"*/}
+                            {/*                required*/}
+                            {/*                fullWidth*/}
+                            {/*              />*/}
+                            {/*            )}*/}
+                            {/*          />*/}
+                            {/*          <Controller*/}
+                            {/*            name={`vat[${index}].vatValue`}*/}
+                            {/*            control={control}*/}
+                            {/*            render={({ field }) => (*/}
+                            {/*              <TextField*/}
+                            {/*                {...field}*/}
+                            {/*                type="number"*/}
+                            {/*                value={field.value || ""}*/}
+                            {/*                className=""*/}
+                            {/*                autoComplete="off"*/}
+                            {/*                error={!!errors.vatValue}*/}
+                            {/*                helperText={*/}
+                            {/*                  errors?.vatValue?.message*/}
+                            {/*                }*/}
+                            {/*                variant="outlined"*/}
+                            {/*                placeholder={t(*/}
+                            {/*                  "label:valuePercentage"*/}
+                            {/*                )}*/}
+                            {/*                required*/}
+                            {/*                fullWidth*/}
+                            {/*              />*/}
+                            {/*            )}*/}
+                            {/*          />*/}
+                            {/*        </div>*/}
+
+                            {/*        <div className="my-20">*/}
+                            {/*          <Controller*/}
+                            {/*            name={`vat[${index}].bookKeepingReference`}*/}
+                            {/*            control={control}*/}
+                            {/*            render={({ field }) => (*/}
+                            {/*              <TextField*/}
+                            {/*                {...field}*/}
+                            {/*                type="text"*/}
+                            {/*                value={field.value || ""}*/}
+                            {/*                className="bg-white"*/}
+                            {/*                autoComplete="off"*/}
+                            {/*                placeholder={t(*/}
+                            {/*                  "label:bookKeepingReference"*/}
+                            {/*                )}*/}
+                            {/*                error={*/}
+                            {/*                  !!errors?.vat?.[index]*/}
+                            {/*                    ?.bookKeepingReference*/}
+                            {/*                }*/}
+                            {/*                helperText={*/}
+                            {/*                  errors?.bookKeepingReference*/}
+                            {/*                    ?.message*/}
+                            {/*                }*/}
+                            {/*                variant="outlined"*/}
+                            {/*                required*/}
+                            {/*                fullWidth*/}
+                            {/*              />*/}
+                            {/*            )}*/}
+                            {/*          />*/}
+                            {/*        </div>*/}
+                            {/*        <div className="mt-20 mb-10">*/}
+                            {/*          <Controller*/}
+                            {/*            name={`vat[${index}].vatActive`}*/}
+                            {/*            type="checkbox"*/}
+                            {/*            control={control}*/}
+                            {/*            render={({*/}
+                            {/*              field: {*/}
+                            {/*                onChange,*/}
+                            {/*                value,*/}
+                            {/*                ref,*/}
+                            {/*                onBlur,*/}
+                            {/*              },*/}
+                            {/*            }) => (*/}
+                            {/*              <FormControl*/}
+                            {/*                required*/}
+                            {/*                error={!!errors.Switch}*/}
+                            {/*                label={t("label:status")}*/}
+                            {/*              >*/}
+                            {/*                <Switch*/}
+                            {/*                  color="secondary"*/}
+                            {/*                  checked={value}*/}
+                            {/*                  onBlur={onBlur}*/}
+                            {/*                  onChange={(ev) =>*/}
+                            {/*                    onChange(ev.target.checked)*/}
+                            {/*                  }*/}
+                            {/*                  inputRef={ref}*/}
+                            {/*                  required*/}
+                            {/*                />*/}
+                            {/*                <FormHelperText>*/}
+                            {/*                  {errors?.Switch?.message}*/}
+                            {/*                </FormHelperText>*/}
+                            {/*              </FormControl>*/}
+                            {/*            )}*/}
+                            {/*          />*/}
+                            {/*        </div>*/}
+                            {/*      </div>*/}
+                            {/*    ))}*/}
+                            {/*    <Button*/}
+                            {/*      className="my-10 px-10 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"*/}
+                            {/*      startIcon={<AddIcon />}*/}
+                            {/*      onClick={() => addNewVat()}*/}
+                            {/*      disabled={*/}
+                            {/*        addVatIndex.length >= 4 ? true : false*/}
+                            {/*      }*/}
+                            {/*    >*/}
+                            {/*      {t("label:addItem")}*/}
+                            {/*    </Button>*/}
+                            {/*  </div>*/}
+                            {/*</Hidden>*/}
                             <div className="px-16">
                               <div className="product-list">
                                 <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
@@ -2172,7 +2416,7 @@ const ClientDetails = () => {
                                     {t("label:name")}
                                   </div>
                                   <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
-                                    {`Value (%)`}
+                                    {"Value (%)"}
                                   </div>
                                   <div className="my-auto text-MonochromeGray-500 col-span-4">
                                     {t("label:bookKeepingReference")}
@@ -2181,6 +2425,7 @@ const ClientDetails = () => {
                                     {" "}
                                   </div>
                                 </div>
+
                                 {addVatIndex.map((index) => (
                                   <div
                                     key={index}
@@ -2216,7 +2461,11 @@ const ClientDetails = () => {
                                           <TextField
                                             {...field}
                                             type="number"
-                                            value={field.value || ""}
+                                            value={
+                                              field.value === 0
+                                                ? 0
+                                                : field.value || ""
+                                            }
                                             className="text-right  custom-input-height"
                                             autoComplete="off"
                                             error={!!errors.vatValue}
@@ -2265,13 +2514,13 @@ const ClientDetails = () => {
                                         type="checkbox"
                                         control={control}
                                         render={({
-                                                   field: {
-                                                     onChange,
-                                                     value,
-                                                     ref,
-                                                     onBlur,
-                                                   },
-                                                 }) => (
+                                          field: {
+                                            onChange,
+                                            value,
+                                            ref,
+                                            onBlur,
+                                          },
+                                        }) => (
                                           <FormControl
                                             required
                                             error={!!errors.Switch}

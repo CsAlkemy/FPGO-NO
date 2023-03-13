@@ -2,22 +2,20 @@ import TableCell from "@mui/material/TableCell";
 import OverviewStatus from "../status/OverviewStatus";
 import {
   approvalListOverviewFPAdmin,
+  businessAdminUsersOverview,
   categoriesListOverview,
+  clientOrdersListOverview,
   clientsListOverview,
   creditChecksListOverview,
-  customersListOverview,
-  userListOverview,
-  productsListOverview,
-  fpAdminUsersOverview,
-  businessAdminUsersOverview,
-  organizationWiseUsersOverview,
-  ordersListOverview,
   customerOrdersListOverview,
+  customersListOverview,
+  fpAdminUsersOverview,
+  ordersListOverview,
+  organizationWiseUsersOverview,
+  productsListOverview,
   refundRequestsOverview,
-  clientOrdersListOverview,
+  userListOverview,
 } from "./TablesName";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import StoreIcon from "@mui/icons-material/Store";
 import Skeleton from "@mui/material/Skeleton";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import PersonIcon from "@mui/icons-material/Person";
@@ -27,19 +25,18 @@ import UndoIcon from "@mui/icons-material/Undo";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Tooltip from "@mui/material/Tooltip";
 import Zoom from "@mui/material/Zoom";
-import Fade from "@mui/material/Fade";
-import { withStyles } from "@mui/styles";
-import { useState } from "react";
-import { ClickAwayListener } from "@mui/base";
+import {withStyles} from "@mui/styles";
+import {useState} from "react";
+import {ClickAwayListener} from "@mui/base";
 import Box from "@mui/material/Box";
 import OrderModal from "../../salesManagement/order/popupModal/orderModal";
-import { useSelector } from "react-redux";
-import { selectUser } from "app/store/userSlice";
-import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-import { DoneAll, UTurnLeft } from "@mui/icons-material";
-import { defaultValueCreateClient } from "../../clientManagement/utils/helper";
+import {useSelector} from "react-redux";
+import {selectUser} from "app/store/userSlice";
+import {FP_ADMIN} from "../../../utils/user-roles/UserRoles";
+import {DoneAll} from "@mui/icons-material";
 import DiscardConfirmModal from "../../common/confirmDiscard";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
+import {ThousandSeparator} from "../../../utils/helperFunctions";
 
 export default function OverViewMainTableBody(props) {
   const { t } = useTranslation();
@@ -153,7 +150,13 @@ export default function OverViewMainTableBody(props) {
               <OverviewStatus name="Inactive" />
             </TableCell>
           );
-        } else {
+        } else if(rdt === "pricePerUnit") {
+          return (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }else {
           return (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
               {props.row ? props.row[rdt] : <Skeleton variant="text" />}
@@ -180,35 +183,46 @@ export default function OverViewMainTableBody(props) {
             if (props.row.status === "Active") {
               return props.row.type === "Corporate" ? (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <LocationCityIcon className="mr-12 text-[#50C9B1]" />
-                  {props.row[rdt]}
+                  <div className='flex items-center gap-7'>
+                    <LocationCityIcon className=" text-[#50C9B1]" />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               ) : (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <PersonIcon className="mr-12 text-[#68C7E7]" />
-                  {props.row[rdt]}
+                  <div className='flex items-center gap-7'>
+                    <PersonIcon className="text-[#68C7E7]" />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               );
             } else {
               return props.row.type === "Corporate" ? (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <LocationCityIcon
-                    className="mr-12"
-                    style={{ color: "#C6C7C7" }}
-                  />
-                  {props.row[rdt]}
+                  <div className='flex items-center gap-7'>
+                    <LocationCityIcon
+                        style={{ color: "#C6C7C7" }}
+                    />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               ) : (
                 <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                  <PersonIcon className="mr-12" style={{ color: "#C6C7C7" }} />
-                  {props.row[rdt]}
+                  <div className='flex items-center gap-7'>
+                    <PersonIcon className="" style={{ color: "#C6C7C7" }} />
+                    {props.row[rdt]}
+                  </div>
+
                 </TableCell>
               );
             }
           case "lastOrderAmount":
             return (
               <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+                {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
               </TableCell>
             );
           default:
@@ -365,7 +379,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else if (rdt === "refundResend") {
@@ -569,13 +583,19 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "customerName") {
           return props.row.type === "Private" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <PersonIcon className="mr-12" color="secondary" />
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              <div className='flex gap-7 items-center'>
+                <PersonIcon className='text-[#68C7E7]' />
+                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              </div>
+
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <LocationCityIcon className="mr-12" color="secondary" />
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              <div className='flex gap-7 items-center'>
+                <LocationCityIcon  className='text-[#50C9B1]' />
+                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              </div>
+
             </TableCell>
           );
         } else {
@@ -853,7 +873,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else if (rdt === "refundResend") {
@@ -1044,7 +1064,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else if (rdt === "approveAction") {
@@ -1149,7 +1169,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else {
@@ -1323,7 +1343,7 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              {props.row ? ThousandSeparator(props.row[rdt]) : <Skeleton variant="text" />}
             </TableCell>
           );
         } else {

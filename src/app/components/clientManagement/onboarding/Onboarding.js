@@ -6,7 +6,7 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import { DesktopDatePicker } from "@mui/lab";
+import {DesktopDatePicker, LoadingButton} from "@mui/lab";
 import {
   Backdrop,
   Button,
@@ -48,12 +48,14 @@ const Onboarding = () => {
   const [uploadDocuments, setUploadDocuments] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [ownerRef, setOwnerRef] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const params = useParams();
   const [plan, setPlan] = React.useState(1);
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
     code: "NOK",
   });
+  const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
@@ -62,7 +64,7 @@ const Onboarding = () => {
   const [onboardClient] = useOnboardClientMutation();
 
   // form
-  const { control, formState, handleSubmit, reset, setValue } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
     mode: "onChange",
     defaultValueOnBoard,
     resolver: yupResolver(validateSchemaOnBoard),
@@ -70,12 +72,18 @@ const Onboarding = () => {
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);
+    changeVatRateIcon(Math.max(...addVatIndex) + 1);
   };
 
   const onDelete = (index) => {
     addVatIndex.length > 1
       ? setAddVatIndex(addVatIndex.filter((i) => i !== index))
       : setAddVatIndex([...addVatIndex]);
+
+    setValue(`vat[${index}].vatName`, "");
+    setValue(`vat[${index}].vatValue`, "");
+    setValue(`vat[${index}].bookKeepingReference`, "");
+    changeVatRateIcon(index, true);
   };
 
   useEffect(() => {
@@ -87,7 +95,7 @@ const Onboarding = () => {
         })
         .catch((error) => {
           navigate("/clients/approval-list");
-          enqueueSnackbar(error, { variant: "error" });
+          enqueueSnackbar(t(`message:${error}`), { variant: "error" });
           setIsLoading(false);
         });
       ClientService.organizationTypeList()
@@ -169,9 +177,7 @@ const Onboarding = () => {
     }
   };
 
-  const { isValid, dirtyFields, errors } = formState;
-  console.log(errors);
-  // TODO : turn on the flag based on the input field or we can omit that as it got validation
+  const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const onSubmit = (values) => {
     const primaryPhoneNumber = values?.primaryPhoneNumber
@@ -342,6 +348,7 @@ const Onboarding = () => {
       onBoardingData.contractDetails.planTag = "Plan 3";
       onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
+    setLoading(true)
 
     onboardClient(onBoardingData).then((response) => {
       // if (res?.status_code === 201) {
@@ -351,33 +358,50 @@ const Onboarding = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
+        setLoading(false)
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
+      setLoading(false)
     });
-    // ClientService.clientOnboard(onBoardingData, params.uuid)
-    //   .then((res) => {
-    //     // if (res?.status_code === 201) {
-    //     if (res?.status_code === 202) {
-    //       enqueueSnackbar(`${params.uuid} Onboarded Successfully`, {
-    //         variant: "success",
-    //         autoHideDuration: 3000,
-    //       });
-    //       navigate("/clients/clients-list");
-    //     } else {
-    //       enqueueSnackbar(res, { variant: "error" });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     enqueueSnackbar(error, { variant: "error" });
-    //   });
-    // console.log(uploadDocuments);
   };
   // end form
 
+  const changeVatRateIcon = (index, lessCheck = false) => {
+    const watchVateName = watch(`vat[${index}].vatName`) || null;
+    const watchVateValue = watch(`vat[${index}].vatValue`) || null;
+    if (!lessCheck) {
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    } else {
+      const watchVateName =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatName`
+        ) || null;
+      const watchVateValue =
+        !watch(
+          `order[${
+            index -
+            (addVatIndex[addVatIndex.indexOf(index)] -
+              addVatIndex[addVatIndex.indexOf(index) - 1])
+          }].vatValue`
+        ) || null;
+      if (watchVateName && watchVateValue) {
+        setIsVatIconGreen(true);
+      } else setIsVatIconGreen(false);
+    }
+  };
+
   return (
     <div>
-      <div className="flex flex-1 flex-col items-center justify-center p-24">
+      <div className="flex flex-1 flex-col items-center justify-center">
         <Backdrop
           sx={{
             zIndex: (theme) => theme.zIndex.drawer + 2,
@@ -404,17 +428,33 @@ const Onboarding = () => {
                     {t("label:registrationRequest")} ( {params?.uuid} )
                   </div>
                   <div className="flex gap-10 w-full justify-between sm:w-auto">
-                    <Button
-                      color="secondary"
-                      type="submit"
-                      variant="contained"
-                      startIcon={
-                        <RiCheckDoubleLine className="icon-size-20 mr-0 md:mr-5" />
-                      }
-                      className="font-semibold rounded-4"
+                    <LoadingButton
+                        variant="contained"
+                        color="secondary"
+                        className="rounded-4 button2"
+                        aria-label="Confirm"
+                        size="large"
+                        type="submit"
+                        startIcon={
+                          <RiCheckDoubleLine className="icon-size-20 mr-0 md:mr-5" />
+                        }
+                        loading={loading}
+                        loadingPosition="center"
+                        disabled={!isDirty}
                     >
                       {t("label:approveClient")}
-                    </Button>
+                    </LoadingButton>
+                    {/*<Button*/}
+                    {/*  color="secondary"*/}
+                    {/*  type="submit"*/}
+                    {/*  variant="contained"*/}
+                    {/*  startIcon={*/}
+                    {/*    <RiCheckDoubleLine className="icon-size-20 mr-0 md:mr-5" />*/}
+                    {/*  }*/}
+                    {/*  className="font-semibold rounded-4"*/}
+                    {/*>*/}
+                    {/*  {t("label:approveClient")}*/}
+                    {/*</Button>*/}
                     <Button
                       color="secondary"
                       onClick={() => setOpen(true)}
@@ -453,7 +493,11 @@ const Onboarding = () => {
                               type="number"
                               autoComplete="off"
                               error={!!errors.id}
-                              helperText={errors?.id?.message}
+                              helperText={
+                                errors?.id?.message
+                                  ? t(`validation:${errors?.id?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -470,7 +514,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.clientName}
-                              helperText={errors?.clientName?.message}
+                              helperText={
+                                errors?.clientName?.message
+                                  ? t(
+                                      `validation:${errors?.clientName?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -515,7 +565,11 @@ const Onboarding = () => {
                                 )}
                               </Select>
                               <FormHelperText>
-                                {errors?.organizationType?.message}
+                                {errors?.organizationType?.message
+                                  ? t(
+                                      `validation:${errors?.organizationType?.message}`
+                                    )
+                                  : ""}
                               </FormHelperText>
                             </FormControl>
                           )}
@@ -548,7 +602,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.parentClientName}
-                                helperText={errors?.parentClientName?.message}
+                                helperText={
+                                  errors?.parentClientName?.message
+                                    ? t(
+                                        `validation:${errors?.parentClientName?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 required
@@ -593,7 +653,11 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.fullName}
-                              helperText={errors?.fullName?.message}
+                              helperText={
+                                errors?.fullName?.message
+                                  ? t(`validation:${errors?.fullName?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -624,7 +688,11 @@ const Onboarding = () => {
                                 onBlur={handleOnBlurGetDialCode}
                               />
                               <FormHelperText>
-                                {errors?.primaryPhoneNumber?.message}
+                                {errors?.primaryPhoneNumber?.message
+                                  ? t(
+                                      `validation:${errors?.primaryPhoneNumber?.message}`
+                                    )
+                                  : ""}
                               </FormHelperText>
                             </FormControl>
                           )}
@@ -639,7 +707,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.designation}
-                              helperText={errors?.designation?.message}
+                              helperText={
+                                errors?.designation?.message
+                                  ? t(
+                                      `validation:${errors?.designation?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               fullWidth
                             />
@@ -655,7 +729,7 @@ const Onboarding = () => {
                               type="email"
                               autoComplete="off"
                               error={!!errors.email}
-                              helperText={errors?.email?.message}
+                              helperText={errors?.email?.message? t(`validation:${errors?.email?.message}`): ""}
                               variant="outlined"
                               required
                               fullWidth
@@ -725,9 +799,22 @@ const Onboarding = () => {
                           render={({ field: { onChange, value, onBlur } }) => (
                             <DesktopDatePicker
                               label={t("label:contractEndDate")}
+                              mask=""
                               inputFormat="dd.MM.yyyy"
                               value={value}
                               onChange={onChange}
+                              PopperProps={{
+                                sx: {
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                    {
+                                      borderRadius: "8px",
+                                      "&.Mui-selected": {
+                                        backgroundColor: "#c9eee7",
+                                        color: "#323434",
+                                      },
+                                    },
+                                },
+                              }}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
@@ -735,7 +822,13 @@ const Onboarding = () => {
                                   type="date"
                                   required
                                   error={!!errors.contactEndDate}
-                                  helperText={errors?.contactEndDate?.message}
+                                  helperText={
+                                    errors?.contactEndDate?.message
+                                      ? t(
+                                          `validation:${errors?.contactEndDate?.message}`
+                                        )
+                                      : ""
+                                  }
                                 />
                               )}
                             />
@@ -751,7 +844,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.commision}
-                              helperText={errors?.commision?.message}
+                              helperText={
+                                errors?.commision?.message
+                                  ? t(
+                                      `validation:${errors?.commision?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -775,7 +874,11 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.smsCost}
-                              helperText={errors?.smsCost?.message}
+                              helperText={
+                                errors?.smsCost?.message
+                                  ? t(`validation:${errors?.smsCost?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -799,7 +902,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.emailCost}
-                              helperText={errors?.emailCost?.message}
+                              helperText={
+                                errors?.emailCost?.message
+                                  ? t(
+                                      `validation:${errors?.emailCost?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -823,7 +932,13 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.creditCheckCost}
-                              helperText={errors?.creditCheckCost?.message}
+                              helperText={
+                                errors?.creditCheckCost?.message
+                                  ? t(
+                                      `validation:${errors?.creditCheckCost?.message}`
+                                    )
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -847,7 +962,11 @@ const Onboarding = () => {
                               type="text"
                               autoComplete="off"
                               error={!!errors.ehfCost}
-                              helperText={errors?.ehfCost?.message}
+                              helperText={
+                                errors?.ehfCost?.message
+                                  ? t(`validation:${errors?.ehfCost?.message}`)
+                                  : ""
+                              }
                               variant="outlined"
                               required
                               fullWidth
@@ -953,7 +1072,11 @@ const Onboarding = () => {
                                   onBlur={handleOnBlurGetDialCode}
                                 />
                                 <FormHelperText>
-                                  {errors?.billingPhoneNumber?.message}
+                                  {errors?.billingPhoneNumber?.message
+                                    ? t(
+                                        `validation:${errors?.billingPhoneNumber?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -968,7 +1091,13 @@ const Onboarding = () => {
                                 type="email"
                                 autoComplete="off"
                                 error={!!errors.billingEmail}
-                                helperText={errors?.billingEmail?.message}
+                                helperText={
+                                  errors?.billingEmail?.message
+                                    ? t(
+                                        `validation:${errors?.billingEmail?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -988,7 +1117,13 @@ const Onboarding = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.billingAddress}
-                                  helperText={errors?.billingAddress?.message}
+                                  helperText={
+                                    errors?.billingAddress?.message
+                                      ? t(
+                                          `validation:${errors?.billingAddress?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   required
                                   fullWidth
@@ -1008,7 +1143,11 @@ const Onboarding = () => {
                                   type="number"
                                   autoComplete="off"
                                   error={!!errors.zip}
-                                  helperText={errors?.zip?.message}
+                                  helperText={
+                                    errors?.zip?.message
+                                      ? t(`validation:${errors?.zip?.message}`)
+                                      : ""
+                                  }
                                   variant="outlined"
                                   required
                                   fullWidth
@@ -1028,7 +1167,11 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.city}
-                                helperText={errors?.city?.message}
+                                helperText={
+                                  errors?.city?.message
+                                    ? t(`validation:${errors?.city?.message}`)
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1059,7 +1202,11 @@ const Onboarding = () => {
                                   <MenuItem value="sweden">Sweden</MenuItem>
                                 </Select>
                                 <FormHelperText>
-                                  {errors?.country?.message}
+                                  {errors?.country?.message
+                                    ? t(
+                                        `validation:${errors?.country?.message}`
+                                      )
+                                    : ""}
                                 </FormHelperText>
                               </FormControl>
                             )}
@@ -1149,7 +1296,11 @@ const Onboarding = () => {
                                       onBlur={handleOnBlurGetDialCode}
                                     />
                                     <FormHelperText>
-                                      {errors?.shippingPhoneNumber?.message}
+                                      {errors?.shippingPhoneNumber?.message
+                                        ? t(
+                                            `validation:${errors?.shippingPhoneNumber?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -1165,7 +1316,13 @@ const Onboarding = () => {
                                     autoComplete="off"
                                     disabled={sameAddress}
                                     error={!!errors.shippingEmail}
-                                    helperText={errors?.shippingEmail?.message}
+                                    helperText={
+                                      errors?.shippingEmail?.message
+                                        ? t(
+                                            `validation:${errors?.shippingEmail?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     // required
                                     fullWidth
@@ -1188,6 +1345,10 @@ const Onboarding = () => {
                                       error={!!errors.shippingAddress}
                                       helperText={
                                         errors?.shippingAddress?.message
+                                          ? t(
+                                              `validation:${errors?.shippingAddress?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       // required
@@ -1209,7 +1370,13 @@ const Onboarding = () => {
                                       autoComplete="off"
                                       disabled={sameAddress}
                                       error={!!errors.shippingZip}
-                                      helperText={errors?.shippingZip?.message}
+                                      helperText={
+                                        errors?.shippingZip?.message
+                                          ? t(
+                                              `validation:${errors?.shippingZip?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       // required
                                       fullWidth
@@ -1230,7 +1397,13 @@ const Onboarding = () => {
                                     autoComplete="off"
                                     disabled={sameAddress}
                                     error={!!errors.shippingCity}
-                                    helperText={errors?.shippingCity?.message}
+                                    helperText={
+                                      errors?.shippingCity?.message
+                                        ? t(
+                                            `validation:${errors?.shippingCity?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     // required
                                     fullWidth
@@ -1265,7 +1438,11 @@ const Onboarding = () => {
                                       <MenuItem value="sweden">Sweden</MenuItem>
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.shippingCountry?.message}
+                                      {errors?.shippingCountry?.message
+                                        ? t(
+                                            `validation:${errors?.shippingCountry?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -1300,7 +1477,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.bankName}
-                                helperText={errors?.bankName?.message}
+                                helperText={
+                                  errors?.bankName?.message
+                                    ? t(
+                                        `validation:${errors?.bankName?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1326,7 +1509,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.accountNumber}
-                                helperText={errors?.accountNumber?.message}
+                                helperText={
+                                  errors?.accountNumber?.message
+                                    ? t(
+                                        `validation:${errors?.accountNumber?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1343,7 +1532,11 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.IBAN}
-                                helperText={errors?.IBAN?.message}
+                                helperText={
+                                  errors?.IBAN?.message
+                                    ? t(`validation:${errors?.IBAN?.message}`)
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1360,7 +1553,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.SWIFTCode}
-                                helperText={errors?.SWIFTCode?.message}
+                                helperText={
+                                  errors?.SWIFTCode?.message
+                                    ? t(
+                                        `validation:${errors?.SWIFTCode?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1396,7 +1595,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.APTICuserName}
-                                helperText={errors?.APTICuserName?.message}
+                                helperText={
+                                  errors?.APTICuserName?.message
+                                    ? t(
+                                        `validation:${errors?.APTICuserName?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1413,7 +1618,13 @@ const Onboarding = () => {
                                 type={!hide ? "text" : "password"}
                                 autoComplete="off"
                                 error={!!errors.APTICpassword}
-                                helperText={errors?.APTICpassword?.message}
+                                helperText={
+                                  errors?.APTICpassword?.message
+                                    ? t(
+                                        `validation:${errors?.APTICpassword?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 required
@@ -1449,7 +1660,11 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.name}
-                                helperText={errors?.name?.message}
+                                helperText={
+                                  errors?.name?.message
+                                    ? t(`validation:${errors?.name?.message}`)
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1466,7 +1681,13 @@ const Onboarding = () => {
                                 type="text"
                                 autoComplete="off"
                                 error={!!errors.fpReference}
-                                helperText={errors?.fpReference?.message}
+                                helperText={
+                                  errors?.fpReference?.message
+                                    ? t(
+                                        `validation:${errors?.fpReference?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1488,6 +1709,10 @@ const Onboarding = () => {
                                 error={!!errors.creditLimitCustomer}
                                 helperText={
                                   errors?.creditLimitCustomer?.message
+                                    ? t(
+                                        `validation:${errors?.creditLimitCustomer?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 required
@@ -1514,6 +1739,10 @@ const Onboarding = () => {
                                 error={!!errors.costLimitforCustomer}
                                 helperText={
                                   errors?.costLimitforCustomer?.message
+                                    ? t(
+                                        `validation:${errors?.costLimitforCustomer?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 fullWidth
@@ -1537,7 +1766,13 @@ const Onboarding = () => {
                                 type="number"
                                 autoComplete="off"
                                 error={!!errors.costLimitforOrder}
-                                helperText={errors?.costLimitforOrder?.message}
+                                helperText={
+                                  errors?.costLimitforOrder?.message
+                                    ? t(
+                                        `validation:${errors?.costLimitforOrder?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 InputProps={{
@@ -1559,8 +1794,14 @@ const Onboarding = () => {
                                 label={t("label:invoiceWithRegress")}
                                 type="number"
                                 autoComplete="off"
-                                error={!!errors.nvoicewithRegress}
-                                helperText={errors?.nvoicewithRegress?.message}
+                                error={!!errors.invoicewithRegress}
+                                helperText={
+                                  errors?.invoicewithRegress?.message
+                                    ? t(
+                                        `validation:${errors?.invoicewithRegress?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 InputProps={{
@@ -1585,6 +1826,10 @@ const Onboarding = () => {
                                 error={!!errors.invoicewithoutRegress}
                                 helperText={
                                   errors?.invoicewithoutRegress?.message
+                                    ? t(
+                                        `validation:${errors?.invoicewithoutRegress?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 s
@@ -1627,6 +1872,10 @@ const Onboarding = () => {
                                 error={!!errors.APTIEngineCuserName}
                                 helperText={
                                   errors?.APTIEngineCuserName?.message
+                                    ? t(
+                                        `validation:${errors?.APTIEngineCuserName?.message}`
+                                      )
+                                    : ""
                                 }
                                 variant="outlined"
                                 required
@@ -1644,7 +1893,13 @@ const Onboarding = () => {
                                 type={!hide ? "text" : "password"}
                                 autoComplete="off"
                                 error={!!errors.APTIEnginePassword}
-                                helperText={errors?.APTIEnginePassword?.message}
+                                helperText={
+                                  errors?.APTIEnginePassword?.message
+                                    ? t(
+                                        `validation:${errors?.APTIEnginePassword?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 fullWidth
                                 required
@@ -1803,8 +2058,7 @@ const Onboarding = () => {
                   <div className="vat rate">
                     <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                       {t("label:vatRate")}
-                      {defaultValueOnBoard.vat.length > 0 ? (
-                        //TODO: i am not sure how to active the check icon here.
+                      {defaultValueOnBoard.vat.length > 0 || isVatIconGreen ? (
                         <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                       ) : (
                         <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -1838,6 +2092,7 @@ const Onboarding = () => {
                                   control={control}
                                   render={({ field }) => (
                                     <TextField
+                                      onKeyUp={() => changeVatRateIcon(index)}
                                       {...field}
                                       type="text"
                                       autoComplete="off"
@@ -1858,6 +2113,7 @@ const Onboarding = () => {
                                   render={({ field }) => (
                                     <TextField
                                       {...field}
+                                      onKeyUp={() => changeVatRateIcon(index)}
                                       type="number"
                                       className="text-right  custom-input-height"
                                       autoComplete="off"
@@ -1901,6 +2157,7 @@ const Onboarding = () => {
                                 <IconButton
                                   aria-label="delete"
                                   onClick={() => onDelete(index)}
+                                  disabled={index === Math.min(...addVatIndex)}
                                 >
                                   <RemoveCircleOutline className="icon-size-20 text-red-500" />
                                 </IconButton>
@@ -1961,7 +2218,13 @@ const Onboarding = () => {
                                 type="number"
                                 autoComplete="off"
                                 error={!!errors.fakturaB2B}
-                                helperText={errors?.fakturaB2B?.message}
+                                helperText={
+                                  errors?.fakturaB2B?.message
+                                    ? t(
+                                        `validation:${errors?.fakturaB2B?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -1985,7 +2248,13 @@ const Onboarding = () => {
                                 type="number"
                                 autoComplete="off"
                                 error={!!errors.fakturaB2C}
-                                helperText={errors?.fakturaB2C?.message}
+                                helperText={
+                                  errors?.fakturaB2C?.message
+                                    ? t(
+                                        `validation:${errors?.fakturaB2C?.message}`
+                                      )
+                                    : ""
+                                }
                                 variant="outlined"
                                 required
                                 fullWidth

@@ -11,7 +11,7 @@ import UserService from "../../../data-access/services/userService/UserService";
 import AuthService from "../../../data-access/services/authService/AuthService";
 import { useTranslation } from 'react-i18next';
 
-const updatePassword = ({role}) => {
+const updatePassword = ({role, userProfile}) => {
   const {t} = useTranslation()
   const [hide, setHide] = React.useState(true);
   const { enqueueSnackbar } = useSnackbar();
@@ -25,7 +25,7 @@ const updatePassword = ({role}) => {
     resolver: yupResolver(schema),
   });
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   function onSubmit(values) {
     const param = {
       currentPassword: role === 0 ? null : values.currentPassword,
@@ -34,23 +34,23 @@ const updatePassword = ({role}) => {
 
     UserService.changePassword(
       param,
-      JSON.parse(localStorage.getItem("userProfile")).uuid
+      userProfile.uuid
     )
       .then((res) => {
       if (res.status_code === 202) {
-        enqueueSnackbar(res.message, {
+        enqueueSnackbar(t(`message:${res?.message}`), {
           variant: "success",
         });
         if (
           user['data'].uuid ===
-          JSON.parse(localStorage.getItem("userProfile")).uuid
+          userProfile.uuid
         ) {
           AuthService.logout();
         }
       }else enqueueSnackbar(res, { variant: "error" });
     })
       .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
+        enqueueSnackbar(t(`message:${error}`), { variant: "error" });
       });
 
     reset(defaultValues);
@@ -63,13 +63,13 @@ const updatePassword = ({role}) => {
   return (
     <div className="simple">
       <div className=" change-password-header subtitle2">{t("label:changePassword")}</div>
-      <div className="p-32 sm:p-20">
+      <div className="p-20 sm:p-20">
         {t("label:changePasswordValidationRule")}
         {/*Your password must be between 8-15 digits and contain both numbers and*/}
         {/*alphabets.*/}
       </div>
       <form name="createUserForm" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <div className="p-32 sm:p-20">
+        <div className="p-20 sm:p-20 mb-20">
         {
           role !== 0 && (
             <Controller
@@ -83,7 +83,7 @@ const updatePassword = ({role}) => {
                   type={!hide ? "text" : "password"}
                   autoComplete="off"
                   error={!!errors.currentPassword}
-                  helperText={errors?.currentPassword?.message}
+                  helperText={errors?.currentPassword?.message ? t(`validation:${errors?.currentPassword?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -116,7 +116,7 @@ const updatePassword = ({role}) => {
                 type={!hide ? "text" : "password"}
                 autoComplete="off"
                 error={!!errors.password}
-                helperText={errors?.password?.message}
+                helperText={errors?.password?.message ? t(`validation:${errors?.password?.message}`) : ""}
                 variant="outlined"
                 required
                 fullWidth
@@ -147,7 +147,7 @@ const updatePassword = ({role}) => {
                 type={!hide ? "text" : "password"}
                 autoComplete="off"
                 error={!!errors.confirmpassword}
-                helperText={errors?.confirmpassword?.message}
+                helperText={errors?.confirmpassword?.message ? t(`validation:${errors?.confirmpassword?.message}`) : ""}
                 variant="outlined"
                 required
                 fullWidth
@@ -167,7 +167,7 @@ const updatePassword = ({role}) => {
               />
             )}
           />
-          <Button type="submit" color="secondary" variant="contained" className="button2 rounded-4 w-full ">
+          <Button type="submit" color="secondary" disabled={!isDirty} variant="contained" className="button2 rounded-4 w-full ">
             {t("label:updatePassword")}
           </Button>
         </div>

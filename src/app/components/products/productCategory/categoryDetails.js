@@ -39,7 +39,6 @@ const createCategory = (onSubmit = () => {}) => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [productsList, setProductsList] = useState([]);
-  // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [defaultProducts, setDefaultProducts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -55,7 +54,7 @@ const createCategory = (onSubmit = () => {}) => {
     defaultValue,
     resolver: yupResolver(validateSchema),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
   const onRawSubmit = (values) => {
     if (
       localStorage.getItem("defaultPdList") &&
@@ -74,14 +73,14 @@ const createCategory = (onSubmit = () => {}) => {
     );
     updateCategory(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(`Updated Successfully`, {
+        enqueueSnackbar(t(`message:updatedSuccessfully`), {
           variant: "success",
           autoHideDuration: 3000,
         });
         navigate("/categories/categories-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
     // CategoryService.updateCategoryByUUID(info.uuid, values)
@@ -141,7 +140,7 @@ const createCategory = (onSubmit = () => {}) => {
           })
           .catch((error) => {
             navigate("/categories/categories-list");
-            enqueueSnackbar(error, { variant: "error" });
+            enqueueSnackbar(t(`message:${error}`), { variant: "error" });
             setIsLoading(false);
           });
       });
@@ -177,7 +176,7 @@ const createCategory = (onSubmit = () => {}) => {
               >
                 <div className=" header-click-to-action">
                   <div className="header-text header6">
-                    {t("label:createCategory")}
+                    {t("label:categoryDetails")}
                   </div>
                   <div className="button-container-product">
                     <Button
@@ -199,7 +198,7 @@ const createCategory = (onSubmit = () => {}) => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
                       loadingPosition="center"
                     >
                       {t("label:updateCategory")}
@@ -223,7 +222,7 @@ const createCategory = (onSubmit = () => {}) => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.name}
-                            helperText={errors?.name?.message}
+                            helperText={errors?.name?.message ? t(`validation:${errors?.name?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             required
@@ -244,7 +243,7 @@ const createCategory = (onSubmit = () => {}) => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.description}
-                            helperText={errors?.description?.message}
+                            helperText={errors?.description?.message ? t(`validation:${errors?.description?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             value={field.value || ""}

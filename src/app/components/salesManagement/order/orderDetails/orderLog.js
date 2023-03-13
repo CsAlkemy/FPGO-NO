@@ -9,7 +9,9 @@ import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
-import { Skeleton } from "@mui/material";
+import {Hidden, Skeleton} from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
+import {CharCont} from "../../../../utils/helperFunctions";
 
 const orderLog = ({ info }) => {
   const { t } = useTranslation();
@@ -19,7 +21,25 @@ const orderLog = ({ info }) => {
   useEffect(() => {
     OrdersService.getOrdersLogByUUID(info.orderUuid)
       .then((res) => {
-        setLogs(res?.data);
+        let orderData = [];
+        let data = res?.data;
+        let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
+
+        if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
+          orderData.push({
+            "title": t("label:orderExpiredAndWasNotPaid"),
+            "slug":"order-expired",
+            "datetime":info.paymentLinkDueDate,
+            "sentTo": null,
+            "actionBy":null,
+            "note":null,
+            "paymentMethod":null,
+            "refundAmount":null
+          });
+        }
+        orderData.push(...data);
+        
+        setLogs(orderData);
         setLoading(false);
       })
       .catch((e) => {
@@ -42,12 +62,13 @@ const orderLog = ({ info }) => {
           {logs &&
             logs.map((log, index) => {
               return (
-                <TimelineItem>
+                <TimelineItem key={index}>
                   <TimelineSeparator>
                     {log.slug === "order-created" ||
                     log.slug === "order-sent" ||
                     log.slug === "order-resent" ||
-                    log.slug === "payment-link-open" ||
+                    log.slug === "payment-link-opened" ||
+                    log.slug === "partial-refunded" ||
                     log.slug === "refund-sent" ||
                     log.slug === "payment-successful" ? (
                       <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
@@ -86,7 +107,12 @@ const orderLog = ({ info }) => {
                             {t("label:sentTo")}:
                           </div>
                           <div className="body4 text-MonochromeGray-700">
-                            {log.sentTo}
+                            <Hidden smUp>
+                              <Tooltip title={log.sentTo}>
+                                <div>{CharCont(log.sentTo, 20)}</div>
+                              </Tooltip>
+                            </Hidden>
+                            <Hidden smDown>{log.sentTo}</Hidden>
                           </div>
                         </div>
                       )}
@@ -141,17 +167,17 @@ const orderLog = ({ info }) => {
           <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
           <div className="flex gap-10">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
         </div>

@@ -8,13 +8,16 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import { Skeleton, TextField } from "@mui/material";
+import { Hidden, Skeleton, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
+import { useParams } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+import { CharCont } from "../../../utils/helperFunctions";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
+  const queryParams = useParams();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
   const [isFetching, setIsFetching] = React.useState(true);
@@ -35,15 +38,15 @@ const TimelineLog = () => {
     // setSelectedDate(date);
     const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
     setSelectedDate(prepareSelectedDate);
-    ClientService.getClientTimelineByUUID(
-      info?.organizationDetails?.uuid,
-      timeStamp
-    )
+    ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp)
       .then((res) => {
-        const summary = res?.data.filter((d) => d?.summary);
-        setSummary(summary[0].summary);
-        const filteredLogs = res?.data.filter((d) => !d?.summary);
-        setLogs(filteredLogs);
+        // const summary = res?.data.filter((d) => d?.summary);
+        // setSummary(summary[0].summary);
+        // const filteredLogs = res?.data.filter((d) => !d?.summary);
+        // console.log("filteredLogs : ",filteredLogs);
+        // setLogs(filteredLogs);
+        setSummary(res?.data?.summary ? res?.data?.summary : []);
+        setLogs(res?.data?.timeline ? res?.data?.timeline : []);
         setIsFetching(false);
       })
       .catch((e) => {
@@ -56,13 +59,10 @@ const TimelineLog = () => {
     if (defaultTimeline) {
       const prepareSelectedDate = `${
         new Date().getMonth() + 1
-      }.01.${new Date().getFullYear()} 00:00:00`;
+      }.09.${new Date().getFullYear()} 00:00:00`;
       // setSelectedDate(date);
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-      ClientService.getClientTimelineByUUID(
-        info?.organizationDetails?.uuid,
-        timeStamp
-      )
+      ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp)
         .then((res) => {
           setSummary(res?.data?.summary ? res?.data?.summary : []);
           setLogs(res?.data?.timeline ? res?.data?.timeline : []);
@@ -83,7 +83,8 @@ const TimelineLog = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} type="date" />}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
         />
       </div>
       <div className="p-5 bg-MonochromeGray-25 rounded-8 mb-32">
@@ -123,7 +124,7 @@ const TimelineLog = () => {
         </div>
       </div>
 
-      {logs?.length > 0 ? (
+      {!isFetching && logs?.length > 0 ? (
         <Timeline
           sx={{
             "& .MuiTimelineItem-root:before": {
@@ -134,7 +135,7 @@ const TimelineLog = () => {
         >
           {logs.map((log, index) => {
             return (
-              <TimelineItem>
+              <TimelineItem key={index}>
                 <TimelineSeparator>
                   {log.slug === "order-sent-by-ehf" ||
                   log.slug === "order-sent-by-invoice" ||
@@ -188,7 +189,12 @@ const TimelineLog = () => {
                           {t("label:sentTo")}:
                         </div>
                         <div className="body4 text-MonochromeGray-700">
-                          {log.sentTo}
+                          <Hidden smUp>
+                            <Tooltip title={log.sentTo}>
+                              <div>{CharCont(log.sentTo, 20)}</div>
+                            </Tooltip>
+                          </Hidden>
+                          <Hidden smDown>{log.sentTo}</Hidden>
                         </div>
                       </div>
                     )}
@@ -271,25 +277,27 @@ const TimelineLog = () => {
             );
           })}
         </Timeline>
-      ) : (
-        <div>
+      ) : isFetching ? (
+        <div className="p-10">
           <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
           <div className="flex gap-10">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
         </div>
+      ) : (
+        ""
       )}
     </div>
   );

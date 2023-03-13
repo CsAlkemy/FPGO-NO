@@ -5,6 +5,14 @@ import { memo } from 'react';
 import Logo from '../../../../shared-components/Logo';
 import NavbarToggleButton from '../../../../shared-components/NavbarToggleButton';
 import Navigation from '../../../../shared-components/Navigation';
+import { Button, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { FP_ADMIN } from '../../../../../utils/user-roles/UserRoles';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectUser } from 'app/store/userSlice';
+import { useTranslation } from 'react-i18next';
+import { selectFuseCurrentSettings } from 'app/store/fuse/settingsSlice';
 
 const Root = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -32,6 +40,13 @@ const StyledContent = styled(FuseScrollbars)(({ theme }) => ({
 }));
 
 function NavbarStyle1Content(props) {
+  const navigate = useNavigate();
+  const user = useSelector(selectUser)
+  const { t } = useTranslation()
+
+  const settings = useSelector(selectFuseCurrentSettings);
+  const { config } = settings.layout;
+
   return (
     <Root className={clsx('flex flex-auto flex-col overflow-hidden h-full', props.className)}>
       <div className="flex flex-row items-center shrink-0 h-48 md:h-72 px-20">
@@ -41,6 +56,30 @@ function NavbarStyle1Content(props) {
 
         <NavbarToggleButton className="w-40 h-40 p-0" />
       </div>
+      {
+        !settings.layout.config.navbar.folded && (
+          <Button
+            startIcon={<AddIcon />}
+            color="secondary"
+            variant="outlined"
+            className="button-outline-product flex justify-center items-center custom-position-for-nav-button mt-20 mb-10"
+            onClick={()=> navigate(`/create-order`)}
+            disabled={user.role[0] === FP_ADMIN}
+          >
+            {t("label:createOrder")}
+          </Button>
+        )
+      }
+      {
+        !!settings.layout.config.navbar.folded && (
+          <IconButton aria-label="fingerprint" color="secondary" className="rounded-4 mx-10"
+                      onClick={()=> navigate(`/create-order`)}
+                      disabled={user.role[0] === FP_ADMIN}
+          >
+            <AddIcon />
+          </IconButton>
+        )
+      }
 
       <StyledContent
         className="flex flex-1 flex-col min-h-0"
@@ -49,9 +88,9 @@ function NavbarStyle1Content(props) {
         {/* <UserNavbarHeader /> */}
 
         <Navigation layout="vertical" />
-        <div className="flex flex-0 items-center justify-center py-48 opacity-10">
-          <img className="w-full max-w-64" src="assets/images/logo/Go.svg" alt="footer logo" />
-        </div>
+        {/*<div className="flex flex-0 items-center justify-center py-48 opacity-10">*/}
+        {/*  <img className="w-full max-w-64" src="assets/images/logo/Go.svg" alt="footer logo" />*/}
+        {/*</div>*/}
       </StyledContent>
     </Root>
   );

@@ -11,6 +11,7 @@ import { useSnackbar } from "notistack";
 import { useTranslation } from 'react-i18next';
 import { useGetCustomersListQuery, useGetOrdersListQuery } from 'app/store/api/apiSlice';
 import OrdersService from '../../../data-access/services/ordersService/OrdersService';
+import Hidden from '@mui/material/Hidden';
 
 export default function CustomersListOverview() {
   const {t} = useTranslation()
@@ -75,18 +76,39 @@ export default function CustomersListOverview() {
 
   const preparedData = data?.is_data ?  CustomersService.mapCustomersList(data.data) : []
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={customersListOverview}
-      headerRows={customersListHeaderRows}
-      // tableData={customersList.tableData}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={customersListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={customersListOverview}
+          headerRows={customersListHeaderRows}
+          // tableData={customersList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={customersListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={customersListOverview}
+          headerRows={customersListHeaderRows}
+          // tableData={customersList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={customersListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

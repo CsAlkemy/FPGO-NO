@@ -1,44 +1,38 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {LoadingButton} from "@mui/lab";
 import {
-  Button,
-  FormControl,
-  FormHelperText,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
+    Button,
+    FormControl,
+    FormHelperText,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
 } from "@mui/material";
-import { selectUser } from "app/store/userSlice";
-import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import {selectUser} from "app/store/userSlice";
+import {useSnackbar} from "notistack";
+import React, {useEffect, useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
 import PhoneInput from "react-phone-input-2";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 import UserService from "../../data-access/services/userService/UserService";
-import {
-  BUSINESS_ADMIN,
-  FP_ADMIN,
-  GENERAL_USER,
-} from "../../utils/user-roles/UserRoles";
+import {BUSINESS_ADMIN, FP_ADMIN, GENERAL_USER,} from "../../utils/user-roles/UserRoles";
 import DiscardConfirmModal from "../common/confirmDiscard";
 import {
-  defaultValues,
-  validateSchemaCreateBusinessAdmin,
-  validateSchemaCreateCompanyAdmin,
-  validateSchemaGeneralAdmin,
+    defaultValues,
+    validateSchemaCreateBusinessAdmin,
+    validateSchemaCreateCompanyAdmin,
+    validateSchemaGeneralAdmin,
 } from "./utils/helper";
-import { useCreateUserMutation } from "app/store/api/apiSlice";
+import {useCreateUserMutation} from "app/store/api/apiSlice";
 import UtilsServices from "../../data-access/utils/UtilsServices";
 import AuthService from "../../data-access/services/authService";
-import ProductService from "../../data-access/services/productsService/ProductService";
-import CategoryService from "../../data-access/services/categoryService/CategoryService";
-import { defaultValue } from "../products/utils/helper";
+import _ from "lodash";
 
 export default function CreateUsers() {
   const { t } = useTranslation();
@@ -84,9 +78,11 @@ export default function CreateUsers() {
   const { isValid, dirtyFields, errors } = formState;
 
   useEffect(() => {
-    defaultValues.organization = info?.user_data?.organization?.uuid
-      ? info?.user_data?.organization?.uuid
-      : "";
+    defaultValues.organization =
+      info?.user_data?.user_role?.slug !== FP_ADMIN &&
+      info?.user_data?.organization?.uuid
+        ? info?.user_data?.organization?.uuid
+        : "";
     reset({ ...defaultValues });
 
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
@@ -133,7 +129,7 @@ export default function CreateUsers() {
     );
     createUser(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar("User Created Successfully", {
+        enqueueSnackbar(t(`message:userCreatedSuccessfully`), {
           variant: "success",
           autoHideDuration: 5000,
           anchorOrigin: {
@@ -146,7 +142,9 @@ export default function CreateUsers() {
         navigate(-1);
       } else {
         setLoading(false);
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
     // UserService.createUserByRole(values, type)
@@ -191,12 +189,12 @@ export default function CreateUsers() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex-auto p-20 sm:p-0 w-full max-w-screen-md bg-white">
-            <div className="rounded-sm bg-white p-20">
+            <div className="rounded-sm bg-white p-0 sm:p-20">
               <div className=" header-click-to-action">
                 <div className="header-text header6">
                   {t("label:createUser")}
                 </div>
-                <div className="flex gap-x-10 w-full sm:w-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full sm:w-auto">
                   <Button
                     color="secondary"
                     type="reset"
@@ -212,7 +210,7 @@ export default function CreateUsers() {
                   <LoadingButton
                     variant="contained"
                     color="secondary"
-                    className="rounded-4 button2"
+                    className="rounded-4 button2 mb-10 sm:mb-0"
                     aria-label="Confirm"
                     size="large"
                     type="submit"
@@ -231,7 +229,7 @@ export default function CreateUsers() {
                   <div className="create-user-roles caption2">
                     {t("label:userRole")}
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-7 mt-10">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-7 mt-10">
                     {roleList
                       .filter((role) => {
                         return role.hierarchy !== 2 && role.hierarchy !== 3;
@@ -250,7 +248,7 @@ export default function CreateUsers() {
                               setType(role.slug);
                             }}
                           >
-                            {role.title}
+                            {t(`label:${_.camelCase(role?.title)}`)}
                           </button>
                         );
                       })}
@@ -268,7 +266,11 @@ export default function CreateUsers() {
                             type="email"
                             autoComplete="off"
                             error={!!errors.email}
-                            helperText={errors?.email?.message}
+                            helperText={
+                              errors?.email?.message
+                                ? t(`validation:${errors?.email?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -285,7 +287,11 @@ export default function CreateUsers() {
                             type="text"
                             autoComplete="off"
                             error={!!errors.fullName}
-                            helperText={errors?.fullName?.message}
+                            helperText={
+                              errors?.fullName?.message
+                                ? t(`validation:${errors?.fullName?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             required
                             fullWidth
@@ -316,7 +322,11 @@ export default function CreateUsers() {
                               onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.phoneNumber?.message}
+                              {errors?.phoneNumber?.message
+                                ? t(
+                                    `validation:${errors?.phoneNumber?.message}`
+                                  )
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -331,29 +341,20 @@ export default function CreateUsers() {
                               required
                               fullWidth
                             >
-                              <InputLabel id="demo-simple-select-label-role-org">
+                              <InputLabel id="demo-simple-select-label-role">
                                 {t("label:organization")}
                               </InputLabel>
                               <Select
                                 {...field}
-                                labelId="demo-simple-select-label-role-org"
-                                //id="demo-simple-select"
-                                required
+                                labelId="demo-simple-select-label-role"
+                                id="demo-simple-select"
+                                label={t("label:organization")}
+                                placeholder={t("label:organization")}
                                 disabled={
                                   user.role[0] === BUSINESS_ADMIN ||
                                   user.role[0] === GENERAL_USER
                                 }
                               >
-                                {/*{*/}
-                                {/*  user.role[0] === BUSINESS_ADMIN  && (*/}
-                                {/*    <MenuItem*/}
-                                {/*      key={0}*/}
-                                {/*      value={user?.user_data?.organization?.name}*/}
-                                {/*    >*/}
-                                {/*      {user?.user_data?.organization?.name}*/}
-                                {/*    </MenuItem>*/}
-                                {/*  )*/}
-                                {/*}*/}
                                 {organizationsList.map((item, index) => {
                                   return (
                                     <MenuItem key={index} value={item.uuid}>
@@ -363,7 +364,11 @@ export default function CreateUsers() {
                                 })}
                               </Select>
                               <FormHelperText>
-                                {errors.organization?.message}
+                                {errors.organization?.message
+                                  ? t(
+                                      `validation:${errors.organization?.message}`
+                                    )
+                                  : ""}
                               </FormHelperText>
                             </FormControl>
                           )}
@@ -379,7 +384,13 @@ export default function CreateUsers() {
                             type="text"
                             autoComplete="off"
                             error={!!errors.designation}
-                            helperText={errors?.designation?.message}
+                            helperText={
+                              errors?.designation?.message
+                                ? t(
+                                    `validation:${errors?.designation?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                           />
@@ -406,13 +417,17 @@ export default function CreateUsers() {
                               {languageList.map((item, index) => {
                                 return (
                                   <MenuItem key={index} value={item.value}>
-                                    {item.title}
+                                    {t(`label:${item?.title.toLowerCase()}`)}
                                   </MenuItem>
                                 );
                               })}
                             </Select>
                             <FormHelperText>
-                              {errors.preferredLanguage?.message}
+                              {errors.preferredLanguage?.message
+                                ? t(
+                                    `validation:${errors.preferredLanguage?.message}`
+                                  )
+                                : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -461,7 +476,11 @@ export default function CreateUsers() {
                           type={!hide ? "text" : "password"}
                           autoComplete="off"
                           error={!!errors.password}
-                          helperText={errors?.password?.message}
+                          helperText={
+                            errors?.password?.message
+                              ? t(`validation:${errors?.password?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -491,7 +510,13 @@ export default function CreateUsers() {
                           type={!hide ? "text" : "password"}
                           autoComplete="off"
                           error={!!errors.confirmpassword}
-                          helperText={errors?.confirmpassword?.message}
+                          helperText={
+                            errors?.confirmpassword?.message
+                              ? t(
+                                  `validation:${errors?.confirmpassword?.message}`
+                                )
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth

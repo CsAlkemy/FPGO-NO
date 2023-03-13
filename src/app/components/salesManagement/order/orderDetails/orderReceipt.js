@@ -1,64 +1,55 @@
-import {
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import React, { createRef } from "react";
+import React, { createRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "app/store/userSlice";
 import { useTranslation } from "react-i18next";
 import Pdf from "react-to-pdf";
+import {CharCont, ThousandSeparator} from "../../../../utils/helperFunctions";
+import { LoadingButton } from "@mui/lab";
+import {Hidden} from "@mui/material";
 
-const orderReceipt = ({info}) => {
+const orderReceipt = ({ info }) => {
   const { t } = useTranslation();
   const ref = createRef();
+  const [loading, setLoading] = useState(false);
 
-  const rows = [
-    {
-      productName: "ahaha",
-      qty: 200,
-      rate: 2000,
-      tax: 5,
-      amount: 5000,
-    },
-    {
-      productName: "ahaha",
-      qty: 200,
-      rate: 2000,
-      tax: 5,
-      amount: 5000,
-    },
-    {
-      productName: "ahaha",
-      qty: 200,
-      rate: 2000,
-      tax: 5,
-      amount: 5000,
-    },
-  ];
   const user = useSelector(selectUser);
 
   return (
     <div>
-      <Pdf targetRef={ref} filename={`kvittering_${info?.organizationDetails?.name}_${info?.orderUuid}.pdf`} x={.5} y={.5}>
+      <Pdf
+        targetRef={ref}
+        filename={`kvittering_${info?.organizationDetails?.name}_${info?.orderUuid}.pdf`}
+        // x={0.5}
+        // y={0.5}
+      >
         {({ toPdf }) => (
-          <Button
-            color="secondary"
-            variant="outlined"
-            className="button-outline-product text-MonochromeGray-700 mb-4"
-            onClick={toPdf}
-          >
-            {t("label:exportToPdf")}
-          </Button>
+          <div>
+            <LoadingButton
+              variant="contained"
+              color="secondary"
+              className="button2 rounded-4 mb-20 hover:bg-MonochromeGray-25 hover:text-MonochromeGray-700"
+              size="large"
+              loading={loading}
+              onClick={() => {
+                toPdf();
+                setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                }, [1000]);
+              }}
+              loadingPosition="center"
+            >
+              {t("label:exportToPdf")}
+            </LoadingButton>
+          </div>
         )}
       </Pdf>
+
       <div className="flex flex-col flex-auto min-w-0 max-w-screen-xl mb-32 md:mb-0">
-        <div className="flex-auto  w-full border-1 border-MonochromeGray-50 max-w-lg"  ref={ref}>
+        <div
+          className="flex-auto  w-full border-1 border-MonochromeGray-50 max-w-lg"
+          ref={ref}
+        >
           {/*md:w-3/4 lg:w-2/3 xl:w-7/12*/}
           <div className="order-receipt-container">
             <img
@@ -66,18 +57,17 @@ const orderReceipt = ({info}) => {
               src="assets/images/logo/front-go.svg"
               alt="logo"
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center pt-32 pb-20 border-b-1 border-MonochromeGray-50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-0 justify-between items-center pt-32 pb-20 border-b-1 border-MonochromeGray-50">
               <div className="subtitle1 text-MonochromeGray-700">
                 {t("label:transactionReceipt")}
               </div>
-              <div className="subtitle3 text-MonochromeGray-700 flex justify-end">
-                {t("label:orderId")}:{" "}
-                {info?.orderUuid ? info?.orderUuid : "-"}
+              <div className="subtitle3 text-MonochromeGray-700 flex md:justify-end">
+                {t("label:orderId")}: {info?.orderUuid ? info?.orderUuid : "-"}
               </div>
             </div>
 
             <div className="flex gap-20 pt-20 justify-between">
-              <div className="text-MonochromeGray-700 body3 flex flex-col gap-5">
+              <div className="text-MonochromeGray-700 body3 flex flex-col gap-10 md:gap-5">
                 <div>
                   {t("label:customer")}:{" "}
                   {info?.customerDetails?.name
@@ -113,7 +103,7 @@ const orderReceipt = ({info}) => {
                   {info?.paymentLinkDueDate ? info?.paymentLinkDueDate : "-"}
                 </div>
               </div>
-              <div className="text-MonochromeGray-700 body3 flex flex-col gap-5">
+              <div className="text-MonochromeGray-700 body3 flex flex-col gap-10 md:gap-5">
                 <div>
                   {info?.organizationDetails?.name
                     ? info?.organizationDetails?.name
@@ -145,16 +135,28 @@ const orderReceipt = ({info}) => {
                   info?.organizationDetails?.billingAddress?.countryCode &&
                   info?.organizationDetails?.billingAddress?.msisdn
                     ? info?.organizationDetails?.billingAddress?.countryCode +
-                    info?.organizationDetails?.billingAddress?.msisdn
+                      info?.organizationDetails?.billingAddress?.msisdn
                     : "-, "}
                 </div>
-                <div>
-                  {t("label:email")}. :{" "}
-                  {info?.organizationDetails?.billingAddress &&
-                  info?.organizationDetails?.billingAddress?.email
-                    ? info?.organizationDetails?.billingAddress?.email
-                    : "-, "}
-                </div>
+                <Hidden smUp>
+                  <div>
+                    {t("label:email")} :{" "}
+                    {info?.organizationDetails?.billingAddress &&
+                    info?.organizationDetails?.billingAddress?.email
+                        ? CharCont(info?.organizationDetails?.billingAddress?.email, 10)
+                        : "-, "}
+                  </div>
+                </Hidden>
+                <Hidden smDown>
+                  <div>
+                    {t("label:email")} :{" "}
+                    {info?.organizationDetails?.billingAddress &&
+                    info?.organizationDetails?.billingAddress?.email
+                        ? info?.organizationDetails?.billingAddress?.email
+                        : "-, "}
+                  </div>
+                </Hidden>
+
               </div>
             </div>
             <div className="order-receipt-table subtitle3 mt-20 border-b-1 border-MonochromeGray-300">
@@ -174,23 +176,23 @@ const orderReceipt = ({info}) => {
             </div>
             {info?.productList && info?.productList.length
               ? info.productList.map((row, index) => (
-                <div
-                  key={index}
-                  className="order-receipt-table body4 border-b-1 border-MonochromeGray-50"
-                >
-                  <div className="my-auto py-16 px-10 ">{row.name}</div>
-                  <div className="my-auto py-16 px-10">{row.quantity}</div>
-                  <div className="my-auto py-16 px-10 text-right">
-                    {row.rate}
+                  <div
+                    key={index}
+                    className="order-receipt-table body4 border-b-1 border-MonochromeGray-50"
+                  >
+                    <div className="my-auto py-16 px-10 ">{row.name}</div>
+                    <div className="my-auto py-16 px-10">{row.quantity}</div>
+                    <div className="my-auto py-16 px-10 text-right">
+                      {ThousandSeparator(row.rate)}
+                    </div>
+                    <div className="my-auto py-16 px-10 text-right">
+                      {row.tax}
+                    </div>
+                    <div className="my-auto py-16 px-10 text-right">
+                      {ThousandSeparator(row.amount)}
+                    </div>
                   </div>
-                  <div className="my-auto py-16 px-10 text-right">
-                    {row.tax}
-                  </div>
-                  <div className="my-auto py-16 px-10 text-right">
-                    {row.amount}
-                  </div>
-                </div>
-              ))
+                ))
               : ""}
             <div className="grid grid-cols-1 sm:grid-cols-3 my-10">
               <div className="col-span-2"></div>
@@ -199,7 +201,7 @@ const orderReceipt = ({info}) => {
                   <div>{t("label:subTotal")}</div>
                   <div>
                     {info?.orderSummary && info?.orderSummary?.subTotal
-                      ? info?.orderSummary?.subTotal
+                      ? ThousandSeparator(info?.orderSummary?.subTotal)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -208,7 +210,7 @@ const orderReceipt = ({info}) => {
                   <div>{t("label:discount")}</div>
                   <div>
                     {info?.orderSummary && info?.orderSummary?.discount
-                      ? info?.orderSummary?.discount
+                      ? ThousandSeparator(info?.orderSummary?.discount)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -217,7 +219,7 @@ const orderReceipt = ({info}) => {
                   <div>{t("label:tax")}</div>
                   <div>
                     {info?.orderSummary && info?.orderSummary?.tax
-                      ? info?.orderSummary?.tax
+                      ? ThousandSeparator(info?.orderSummary?.tax)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -226,7 +228,7 @@ const orderReceipt = ({info}) => {
                   <div>{t("label:grandTotal")}</div>
                   <div>
                     {info?.orderSummary && info?.orderSummary?.grandTotal
-                      ? info?.orderSummary?.grandTotal
+                      ? ThousandSeparator(info?.orderSummary?.grandTotal)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>

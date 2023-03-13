@@ -10,6 +10,7 @@ import { setOverviewMainTableDataSlice } from "app/store/overview-table/overview
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useGetApprovedClientsListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function ClientListOverview() {
   const { t } = useTranslation();
@@ -83,18 +84,39 @@ export default function ClientListOverview() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={clientsListOverview}
-      headerRows={clientsListOverviewHeaderRows}
-      // tableData={approvedClientList.tableData}
-      tableData={preparedData}
-      rowDataFields={clientsListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={clientsListOverview}
+          headerRows={clientsListOverviewHeaderRows}
+          // tableData={approvedClientList.tableData}
+          tableData={preparedData}
+          rowDataFields={clientsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={clientsListOverview}
+          headerRows={clientsListOverviewHeaderRows}
+          // tableData={approvedClientList.tableData}
+          tableData={preparedData}
+          rowDataFields={clientsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

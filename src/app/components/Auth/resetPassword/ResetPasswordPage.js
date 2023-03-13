@@ -13,22 +13,21 @@ import AuthLayout from "../Layout/layout";
 import AuthMobileHeader from "../Layout/authMobileHeader";
 import { useTranslation } from 'react-i18next';
 
-
 /**
  * Form Validation Schema
  */
 const schema = Yup.object().shape({
   password: Yup.string()
-    .required("Please enter your password.")
+    .required("pleaseEnterYourPassword")
     .matches(
       /^(?=.*[a-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must be at least 8-15 digits and contain number and alphabets."
+      "passwordCombinationRules"
     ),
   confirmpassword: Yup.string().when("password", {
     is: (val) => !!(val && val.length > 0),
     then: Yup.string().oneOf(
       [Yup.ref("password")],
-      "Both password need to be the same"
+      "bothPasswordNeedToBeTheSame"
     ),
   }),
 });
@@ -64,7 +63,7 @@ function ResetPasswordPage() {
         }
       })
       .catch((error) => {
-        enqueueSnackbar(error, { variant: "error" });
+        enqueueSnackbar(t(`message:${error}`), { variant: "error" });
       });
     reset(defaultValues);
     // setIsSend(true)
@@ -101,7 +100,7 @@ function ResetPasswordPage() {
                   label={t("label:password")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.password}
-                  helperText={errors?.password?.message}
+                  helperText={errors?.password?.message ? t(`validation:${errors?.password?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -131,7 +130,7 @@ function ResetPasswordPage() {
                   label={t("label:confirmPassword")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.confirmpassword}
-                  helperText={errors?.confirmpassword?.message}
+                  helperText={errors?.confirmpassword?.message ? t(`validation:${errors?.confirmpassword?.message}`) : ""}
                   variant="outlined"
                   required
                   fullWidth
@@ -173,7 +172,7 @@ function ResetPasswordPage() {
         <div className="w-full max-w-320 sm:w-320 mx-auto  h-full bg-grey-50 rounded-md p-10 flex justify-end items-center">
           <div className="flex flex-col pb-92">
             <div className="header4 text-center mb-5">
-              {t("label:PasswordUpdatedSuccessfully")}!
+              {t("label:passwordUpdatedSuccessfully")}!
             </div>
             <Link to="/login">
               <Button

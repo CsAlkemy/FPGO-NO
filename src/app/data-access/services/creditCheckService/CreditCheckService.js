@@ -26,8 +26,8 @@ class CreditCheckService {
         type: row.type,
       };
     });
-    d.status_code = 200;
-    d.is_data = true;
+    // d.status_code = 200;
+    // d.is_data = true;
     return d;
   };
 
@@ -75,17 +75,17 @@ class CreditCheckService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          return reject("Something went wrong");
+          return reject("somethingWentWrong");
         });
     });
   };
@@ -115,10 +115,10 @@ class CreditCheckService {
                   ? reject(e?.response?.data?.error)
                   : reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -154,7 +154,7 @@ class CreditCheckService {
               .then((response) => {
                 if (response?.data?.status_code === 200) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 e?.response?.data?.error
@@ -162,10 +162,10 @@ class CreditCheckService {
                   : reject(e?.response?.data?.message);
               });
           }
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -196,10 +196,10 @@ class CreditCheckService {
       //     if (status) {
       //
       //     }
-      //     reject("Something went wrong");
+      //     reject("somethingWentWrong");
       //   })
       //   .catch((e) => {
-      //     reject("Something went wrong");
+      //     reject("somethingWentWrong");
       //   });
       const creditCheckPrivateData = {
         personalId: params.creditCheckId,
@@ -223,7 +223,7 @@ class CreditCheckService {
         .then((response) => {
           if (response?.data?.status_code === 200) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
           e?.response?.data?.error

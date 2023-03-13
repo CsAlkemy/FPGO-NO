@@ -11,6 +11,7 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { useTranslation } from "react-i18next";
 import { useGetOrdersListQuery } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
+import Hidden from '@mui/material/Hidden';
 
 export default function OrdersListOverview() {
   const { t } = useTranslation();
@@ -105,18 +106,39 @@ export default function OrdersListOverview() {
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={ordersListOverview}
-      headerRows={orderListOverviewHeaderRows}
-      // tableData={ordersList.tableData}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={orderListOverviewRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+    <Hidden smUp>
+      <OverviewMainTable
+        headerSubtitle={headerSubtitle}
+        headerButtonLabel={headerButtonLabel}
+        tableName={ordersListOverview}
+        headerRows={orderListOverviewHeaderRows}
+        // tableData={ordersList.tableData}
+        tableData={data?.is_data ? preparedData : []}
+        rowDataFields={orderListOverviewRowDataFields}
+        tabPanelsLabel={tabPanelsLabel}
+        tabs={tabs}
+        // isLoading={isLoading}
+        isLoading={isFetching}
+        isMobileScreen={true}
+      />
+    </Hidden>
+    <Hidden smDown>
+      <OverviewMainTable
+        headerSubtitle={headerSubtitle}
+        headerButtonLabel={headerButtonLabel}
+        tableName={ordersListOverview}
+        headerRows={orderListOverviewHeaderRows}
+        // tableData={ordersList.tableData}
+        tableData={data?.is_data ? preparedData : []}
+        rowDataFields={orderListOverviewRowDataFields}
+        tabPanelsLabel={tabPanelsLabel}
+        tabs={tabs}
+        // isLoading={isLoading}
+        isLoading={isFetching}
+        isMobileScreen={false}
+      />
+    </Hidden>
+    </>
   );
 }

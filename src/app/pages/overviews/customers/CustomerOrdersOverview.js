@@ -10,6 +10,7 @@ import { setOverviewMainTableDataSlice } from "app/store/overview-table/overview
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import Hidden from '@mui/material/Hidden';
 
 export default function CustomerOrdersOverview() {
   const { t } = useTranslation();
@@ -93,23 +94,42 @@ export default function CustomerOrdersOverview() {
         }
       })
       .catch((e) => {
-        if (isLoading) enqueueSnackbar(e, { variant: "error" });
+        if (isLoading) enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setIsLoading(false);
         dispatch(setOverviewMainTableDataSlice([]));
       });
   }, [isLoading]);
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={customerOrdersListOverview}
-      headerRows={customersListHeaderRows}
-      tableData={customersList.tableData}
-      rowDataFields={customerOrdersListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      isLoading={isLoading}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={customerOrdersListOverview}
+          headerRows={customersListHeaderRows}
+          tableData={customersList.tableData}
+          rowDataFields={customerOrdersListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isLoading}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={customerOrdersListOverview}
+          headerRows={customersListHeaderRows}
+          tableData={customersList.tableData}
+          rowDataFields={customerOrdersListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isLoading}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

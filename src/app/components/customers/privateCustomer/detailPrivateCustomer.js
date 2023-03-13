@@ -63,7 +63,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
     PrivateDefaultValue,
     resolver: yupResolver(validateSchemaUpdatePrivateCustomer),
   });
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const billingAddress = watch("billingAddress") || "";
   const zip = watch("billingZip") || "";
@@ -128,7 +128,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
       setIsLoading(false);
     }).catch((e)=> {
       navigate("/customers/customers-list")
-      enqueueSnackbar(e, {variant: "error"})
+      enqueueSnackbar(t(`message:${e}`), {variant: "error"})
     })
   },[isLoading]);
 
@@ -154,23 +154,21 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
       );
     updatePrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });
   };
   // form end
   const handleMakeInactive = () => {
-    CustomersService.makeInactiveCustomerByUUID(
-      JSON.parse(localStorage.getItem("tableRowDetails")).uuid
-    )
+    CustomersService.makeInactiveCustomerByUUID(queryParams.id)
       .then((res) => {
         if (res?.status_code === 202) {
-          enqueueSnackbar(res.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${res?.message}`), { variant: "success" });
           navigate(`/customers/customers-list`);
         }
       })
@@ -238,7 +236,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                       aria-label="Confirm"
                       size="large"
                       type="submit"
-                      disabled={user.role[0] === FP_ADMIN}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty}
                       loading={loading}
                       loadingPosition="center"
                     >
@@ -260,13 +258,13 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                         allowScrollButtonsMobile
                       >
                         <Tab
-                          label="Customer Information"
+                          label={t("label:customerInformation")}
                           className="subtitle3"
                           value="1"
                         />
-                        <Tab label="Timeline" className="subtitle3" value="2" />
-                        <Tab label="Orders" className="subtitle3" value="3" />
-                        <Tab label="Notes" className="subtitle3" value="4" />
+                        <Tab label={t("label:timeline")}  className="subtitle3" value="2" />
+                        <Tab label={t("label:orders")} className="subtitle3" value="3" />
+                        <Tab label={t("label:notes")} className="subtitle3" value="4" />
                       </TabList>
                     </Box>
                     <TabPanel value="1" className="py-20 px-10">
@@ -530,7 +528,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                               </div>
                               <div className="shipping-information px-7 sm:px-14">
                                 <div className="w-full">
-                                  <div className="flex justify-between items-center billing-address-head no-padding-x">
+                                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center no-padding-x">
                                     <div className="billing-address-head no-padding-x">
                                       {t("label:shippingAddress")}
                                       {(sameAddress &&
@@ -547,9 +545,9 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                         <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
                                       )}
                                     </div>
-                                    <div className="billing-address-right">
+                                    <div className="billing-address-right ml-0">
                                       <FormControlLabel
-                                        className="font-bold"
+                                        className="font-bold ml-0"
                                         control={
                                           <Switch
                                             onChange={() =>

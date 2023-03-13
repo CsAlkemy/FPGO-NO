@@ -58,7 +58,7 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 // reject(e?.response?.data?.message)
@@ -66,10 +66,10 @@ class OrdersService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -80,6 +80,18 @@ class OrdersService {
       const preparePhone =
         row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
       const phone = preparePhone ? preparePhone.split("+") : null;
+
+      //On the fly get the order is expired or not
+      // const dueDate = row.paymentLinkDueDate;
+      // const splitedTimeAndDate = dueDate.split(", ");
+      // const splitedDates = splitedTimeAndDate[1].split(".");
+      // const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+      // const dueDateTimeStamp = new Date(formatedDate).getTime();
+      // const currentTimeStamp = new Date().getTime();
+      // const isExpired =
+      //   row.status.toLowerCase() === "sent" &&
+      //   dueDateTimeStamp < currentTimeStamp;
+
       return {
         uuid: row.orderUuid,
         date: row.dateCreated,
@@ -89,16 +101,32 @@ class OrdersService {
         phone: phone ? "+" + phone[phone.length - 1] : null,
         email: row?.email ? row?.email : null,
         amount: row.amount,
-        stage: row?.status ? row?.status.toLowerCase() : null,
+        stage: row?.status ? row.status.toLowerCase() : null,
+        // stage: row?.status
+        //   ? isExpired
+        //     ? "expired"
+        //     : row.status.toLowerCase()
+        //   : null,
         // stage: "Partial Refunded",
-        refundResend:
-          row.status.toLowerCase() === "sent"
-            ? "Resend"
-            : row.status.toLowerCase() === "paid" ||
-              row.status.toLowerCase() === "partial refunded"
-            // || row.status.toLowerCase() === "invoiced"
-            ? "Refund"
-            : null,
+        // refundResend: isExpired
+        //   ? null
+        //   : row.status.toLowerCase() === "sent"
+        //   ? "Resend"
+        //   : row.status.toLowerCase() === "paid" ||
+        //     row.status.toLowerCase() === "partial refunded" ||
+        //     row.status.toLowerCase() === "refund pending"
+        //   ? // || row.status.toLowerCase() === "invoiced"
+        //     "Refund"
+        //   : null,
+        refundResend: row.status.toLowerCase() === "sent"
+          ? "Resend"
+          : row.status.toLowerCase() === "paid" ||
+            row.status.toLowerCase() === "partial refunded" ||
+            row.status.toLowerCase() === "refund pending"
+          ? // || row.status.toLowerCase() === "invoiced"
+            "Refund"
+          : null,
+        // isCancel: !isExpired && row.status.toLowerCase() === "sent",
         isCancel: row.status.toLowerCase() === "sent",
         // refundResend: "Resend",
         // isCancel: true,
@@ -127,16 +155,28 @@ class OrdersService {
             ordr.tax !== ""
         )
         .map((order) => {
+          //Decimal comma to dot separator conversion logic
+          const rate = order.rate;
+          const splitedRate = rate.toString().includes(",")
+            ? rate.split(",")
+            : rate;
+          const dotFormatRate =
+            typeof splitedRate === "object"
+              ? `${splitedRate[0]}.${splitedRate[1]}`
+              : splitedRate;
+          const floatRate = parseFloat(dotFormatRate);
+
           return {
             name: order?.productName ? order?.productName : null,
             productId: order.productID,
             quantity: order.quantity,
-            rate: order.rate,
+            // rate: order.rate,
+            rate: floatRate,
             discount: order?.discount ? order?.discount : 0,
             tax: order.tax,
             amount:
               order.quantity && order.rate
-                ? parseInt(order.quantity) * parseFloat(order.rate) -
+                ? parseInt(order.quantity) * parseFloat(floatRate) -
                   parseFloat(order?.discount ? order.discount : 0)
                 : null,
           };
@@ -388,7 +428,7 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
@@ -396,7 +436,7 @@ class OrdersService {
           } else reject([]);
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -455,7 +495,7 @@ class OrdersService {
           // if (response?.data?.status_code === 202) {
           if (response?.data?.status_code === 202) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
           // reject(e?.response?.data?.message)
@@ -503,15 +543,15 @@ class OrdersService {
                   response?.data?.is_data
                 ) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -535,7 +575,7 @@ class OrdersService {
               response?.data?.is_data
             ) {
               resolve(response.data);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             reject(e?.response?.data?.message);
@@ -560,7 +600,7 @@ class OrdersService {
           .then((response) => {
             if (response?.data?.status_code === 202) {
               resolve(response.data);
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((e) => {
             if (e?.response?.data?.status_code === 111)
@@ -595,15 +635,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -625,15 +665,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -655,15 +695,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -717,15 +757,15 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -749,7 +789,7 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 // reject(e?.response?.data?.message)
@@ -757,15 +797,15 @@ class OrdersService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
 
-  mapRefundRequestsList = (data)=> {
+  mapRefundRequestsList = (data) => {
     let d;
     d = data.map((row) => {
       return {
@@ -776,16 +816,14 @@ class OrdersService {
         orderAmount: row.orderAmount,
         refundAmount: row.refundAmount,
         stage: row?.status ? row?.status.toLowerCase() : null,
-        approveAction: row?.status
-          ? row?.status.toLowerCase()
-          : null,
+        approveAction: row?.status ? row?.status.toLowerCase() : null,
         isCancel: row?.status.toLowerCase() === "refund pending",
       };
     });
     d.status_code = 200;
     d.is_data = true;
     return d;
-  }
+  };
 
   refundRequests = async () => {
     return new Promise((resolve, reject) => {
@@ -824,7 +862,7 @@ class OrdersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 // reject(e?.response?.data?.message)
@@ -832,10 +870,10 @@ class OrdersService {
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -851,15 +889,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -880,15 +918,15 @@ class OrdersService {
               .then((response) => {
                 if (response?.data?.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
                 reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };

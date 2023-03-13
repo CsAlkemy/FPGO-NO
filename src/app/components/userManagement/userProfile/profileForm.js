@@ -1,40 +1,23 @@
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, {useEffect, useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 import PhoneInput from "react-phone-input-2";
-import {
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
-import {
-  schemaUserProfileFpAdmin,
-  schemaUserProfileFpAdminSubClient,
-  schemaUserProfile,
-} from "../utils/helper";
+import {FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField,} from "@mui/material";
+import {useSnackbar} from "notistack";
+import {useNavigate} from "react-router-dom";
+import {schemaUserProfile, schemaUserProfileFpAdmin,} from "../utils/helper";
 import UserService from "../../../data-access/services/userService/UserService";
-import { defaultValue } from "../../clientManagement/utils/helper";
-import { useSelector } from "react-redux";
-import { selectUser } from "app/store/userSlice";
-import {
-  BUSINESS_ADMIN,
-  FP_ADMIN,
-  GENERAL_USER,
-} from "../../../utils/user-roles/UserRoles";
-import * as yup from "yup";
-import { useTranslation } from "react-i18next";
-import { useUpdateUserMutation } from "app/store/api/apiSlice";
+import {useSelector} from "react-redux";
+import {selectUser} from "app/store/userSlice";
+import {BUSINESS_ADMIN, FP_ADMIN,} from "../../../utils/user-roles/UserRoles";
+import {useTranslation} from "react-i18next";
+import {useUpdateUserMutation} from "app/store/api/apiSlice";
 import AuthService from "../../../data-access/services/authService";
 
 const defaultValues = {
   email: "",
   fullName: "",
-  phoneNumber: "",
+  phoneNumber: "47",
   designation: "",
   role: "",
   organization: "",
@@ -44,7 +27,7 @@ const defaultValues = {
   preferredLanguage: "",
 };
 
-const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
+const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty  }) => {
   const { t } = useTranslation();
   const [roleList, setRoleList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -63,7 +46,6 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
 
   const schema =
     isUserID === true ? schemaUserProfile : schemaUserProfileFpAdmin;
-  const userID = "1039826589";
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
   };
@@ -74,7 +56,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     resolver: yupResolver(schema),
   });
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, isDirty } = formState;
+
+  useEffect(()=>{
+      setIsDirty(isDirty)
+  },[isDirty])
   function onSubmit(values) {
     const phoneNumber = values?.phoneNumber
       ? values.phoneNumber.split("+")
@@ -100,10 +86,10 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     };
     updateUser(userData).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate(-1);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
     });
   }
@@ -114,23 +100,27 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
     defaultValues.phoneNumber =
       userProfile?.countryCode && userProfile?.msisdn
         ? userProfile.countryCode + userProfile.msisdn
-        : "";
+        : "47";
     defaultValues.designation = userProfile?.designation
       ? userProfile?.designation
       : "";
     defaultValues.role = userProfile["userRoleDetails"]?.slug
       ? userProfile["userRoleDetails"].slug
       : "";
-    defaultValues.organization = userProfile["organizationDetails"]?.uuid
-      ? userProfile["organizationDetails"]?.uuid
-      : "";
+    defaultValues.organization =
+      (role === 0 && userProfile["userRoleDetails"].slug === FP_ADMIN) ||
+      role === 1
+        ? "Front Payment AS"
+        : userProfile["organizationDetails"]?.uuid
+        ? userProfile["organizationDetails"]?.uuid
+        : "";
     defaultValues.preferredLanguage = userProfile?.preferredLanguage
       ? userProfile.preferredLanguage
       : "";
     // defaultValues.branch = userProfile['organizationDetails']?.name
     reset({ ...defaultValues });
 
-    if(isLoading) {
+    if (isLoading) {
       AuthService.axiosRequestHelper().then((isAuthenticated) => {
         UserService.userRoleList(true)
           .then((response) => {
@@ -139,7 +129,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
             } else if (response?.is_data === false) {
               setRoleList([]);
             } else {
-              enqueueSnackbar("No role found", { variant: "warning" });
+              enqueueSnackbar(t(`message:noRoleFound`), { variant: "warning" });
             }
           })
           .catch((error) => {});
@@ -152,7 +142,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
             } else if (response?.is_data === false) {
               setOrganizationsList([]);
             } else {
-              enqueueSnackbar("No Organization found", { variant: "warning" });
+              enqueueSnackbar(t(`message:noOrganizationFound`),{ variant: "warning" });
             }
           })
           .catch((error) => {});
@@ -189,8 +179,8 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
   return (
     <>
       <form name="createUserForm" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col justify-center w-full mt-32 mb-32 px-0 md:px-14">
-          <div className="form-pair-input">
+        <div className="flex flex-col justify-center w-full mt-32 mb-20 px-0 md:px-14">
+          <div className="form-pair-input mb-0-i">
             <Controller
               name="email"
               control={control}
@@ -204,7 +194,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="email"
                   autoComplete="off"
                   error={!!errors.email}
-                  helperText={errors?.email?.message}
+                  helperText={
+                    errors?.email?.message
+                      ? t(`validation:${errors?.email?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
@@ -221,7 +215,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="text"
                   autoComplete="off"
                   error={!!errors.fullName}
-                  helperText={errors?.fullName?.message}
+                  helperText={
+                    errors?.fullName?.message
+                      ? t(`validation:${errors?.fullName?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
@@ -248,42 +246,78 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                     onBlur={handleOnBlurGetDialCode}
                   />
                   <FormHelperText>
-                    {errors?.phoneNumber?.message}
+                    {errors?.phoneNumber?.message
+                      ? t(`validation:${errors?.phoneNumber?.message}`)
+                      : ""}
                   </FormHelperText>
                 </FormControl>
               )}
             />
 
-            <Controller
-              name="organization"
-              control={control}
-              render={({ field }) => (
-                <FormControl error={!!errors.organization} required fullWidth>
-                  <InputLabel id="demo-simple-select-label-org">
-                    {t("label:organization")}
-                  </InputLabel>
-                  <Select
-                    {...field}
-                    labelId="demo-simple-select-label-org"
-                    id="demo-simple-select"
-                    label="Organization"
-                    disabled={
-                      user.role[0] === BUSINESS_ADMIN ||
-                      userProfile["userRoleDetails"].slug === FP_ADMIN ||
-                      role !== 0
-                    }
-                  >
-                    {organizationsList.map((item, index) => {
-                      return (
-                        <MenuItem key={index} value={item.uuid}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+            {role === 0 &&
+              userProfile["userRoleDetails"].slug !== FP_ADMIN &&
+              role !== 1 && (
+                <Controller
+                  name="organization"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl
+                      error={!!errors.organization}
+                      required
+                      fullWidth
+                    >
+                      <InputLabel id="demo-simple-select-label-org">
+                        {t("label:organization")}
+                      </InputLabel>
+                      <Select
+                        {...field}
+                        labelId="demo-simple-select-label-org"
+                        id="demo-simple-select"
+                        label="Organization"
+                        disabled={
+                          user.role[0] === BUSINESS_ADMIN ||
+                          userProfile["userRoleDetails"].slug === FP_ADMIN ||
+                          role !== 0
+                        }
+                      >
+                        {organizationsList.map((item, index) => {
+                          return (
+                            <MenuItem key={index} value={item.uuid}>
+                              {item.name}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               )}
-            />
+            {((role === 0 &&
+              userProfile["userRoleDetails"].slug === FP_ADMIN) ||
+              role === 1) && (
+              <Controller
+                name="organization"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label={t("label:organization")}
+                    type="text"
+                    autoComplete="off"
+                    error={!!errors.organization}
+                    helperText={
+                      errors?.organization?.message
+                        ? t(`validation:${errors?.organization?.message}`)
+                        : ""
+                    }
+                    variant="outlined"
+                    fullWidth
+                    // defaultValue={"Front Payment AS"}
+                    disabled
+                  />
+                )}
+              />
+            )}
 
             <Controller
               name="designation"
@@ -295,7 +329,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                   type="text"
                   autoComplete="off"
                   error={!!errors.designation}
-                  helperText={errors?.designation?.message}
+                  helperText={
+                    errors?.designation?.message
+                      ? t(`validation:${errors?.designation?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   fullWidth
                 />
@@ -356,7 +394,11 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                       <MenuItem disabled>{t("label:noRoleFound")}</MenuItem>
                     )}
                   </Select>
-                  <FormHelperText>{errors?.role?.message}</FormHelperText>
+                  <FormHelperText>
+                    {errors?.role?.message
+                      ? t(`validation:${errors?.role?.message}`)
+                      : ""}
+                  </FormHelperText>
                 </FormControl>
               )}
             />
@@ -381,13 +423,13 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile }) => {
                     {languageList.map((item, index) => {
                       return (
                         <MenuItem key={index} value={item.value}>
-                          {item.title}
+                            {t(`label:${item?.title.toLowerCase()}`)}
                         </MenuItem>
                       );
                     })}
                   </Select>
                   <FormHelperText>
-                    {errors.preferredLanguage?.message}
+                    {errors.preferredLanguage?.message ? t(`validation:${errors.preferredLanguage?.message}`) : ""}
                   </FormHelperText>
                 </FormControl>
               )}

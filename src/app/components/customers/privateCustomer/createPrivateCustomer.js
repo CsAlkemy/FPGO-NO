@@ -64,11 +64,11 @@ const createPrivateCustomer = () => {
       CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress);
     createPrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });
@@ -129,7 +129,6 @@ const createPrivateCustomer = () => {
                   {dirtyFields.primaryPhoneNumber &&
                   dirtyFields.customerEmail &&
                   dirtyFields.customerName &&
-                  dirtyFields.pNumber &&
                   dirtyFields.billingAddress &&
                   dirtyFields.billingZip &&
                   dirtyFields.billingCity &&
@@ -163,7 +162,7 @@ const createPrivateCustomer = () => {
                           // onBlur={handleOnBlurGetDialCode}
                         />
                         <FormHelperText>
-                          {errors?.primaryPhoneNumber?.message}
+                          {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
                         </FormHelperText>
                       </FormControl>
                     )}
@@ -179,7 +178,7 @@ const createPrivateCustomer = () => {
                         type="email"
                         autoComplete="off"
                         error={!!errors.customerEmail}
-                        helperText={errors?.customerEmail?.message}
+                        helperText={errors?.customerEmail?.message ? t(`validation:${errors?.customerEmail?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                         required
@@ -197,7 +196,7 @@ const createPrivateCustomer = () => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.customerName}
-                        helperText={errors?.customerName?.message}
+                        helperText={errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                         required
@@ -215,7 +214,7 @@ const createPrivateCustomer = () => {
                         type="number"
                         autoComplete="off"
                         error={!!errors.pNumber}
-                        helperText={errors?.pNumber?.message}
+                        helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
                         variant="outlined"
                         //fullWidth
                       />
@@ -235,7 +234,7 @@ const createPrivateCustomer = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.billingAddress}
-                            helperText={errors?.billingAddress?.message}
+                            helperText={errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             required
@@ -255,7 +254,7 @@ const createPrivateCustomer = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.billingZip}
-                            helperText={errors?.billingZip?.message}
+                            helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
                             variant="outlined"
                             fullWidth
                             required
@@ -275,7 +274,7 @@ const createPrivateCustomer = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.billingCity}
-                          helperText={errors?.billingCity?.message}
+                          helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
                           variant="outlined"
                           fullWidth
                           required
@@ -305,7 +304,7 @@ const createPrivateCustomer = () => {
                             ))}
                           </Select>
                           <FormHelperText>
-                            {errors?.billingCountry?.message}
+                            {errors?.billingCountry?.message ? t(`validation:${errors?.billingCountry?.message}`) : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -344,9 +343,9 @@ const createPrivateCustomer = () => {
                           dirtyFields.shippingZip &&
                           dirtyFields.shippingCity &&
                           dirtyFields.shippingCountry) ? (
-                          <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                         ) : (
-                          <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                         )}
                       </div>
                     </AccordionSummary>
@@ -366,7 +365,7 @@ const createPrivateCustomer = () => {
                                     color="secondary"
                                   />
                                 }
-                                label={t("label:sameAsbillingAddress")}
+                                label={t("label:sameAsBillingAddress")}
                                 labelPlacement="start"
                                 disabled={
                                   !(
@@ -399,7 +398,7 @@ const createPrivateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingAddress}
                                           helperText={
-                                            errors?.shippingAddress?.message
+                                            errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -421,7 +420,7 @@ const createPrivateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingZip}
                                           helperText={
-                                            errors?.shippingZip?.message
+                                            errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -443,7 +442,7 @@ const createPrivateCustomer = () => {
                                         disabled={sameAddress}
                                         error={!!errors.shippingCity}
                                         helperText={
-                                          errors?.shippingCity?.message
+                                          errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -475,7 +474,7 @@ const createPrivateCustomer = () => {
                                           </MenuItem>
                                         </Select>
                                         <FormHelperText>
-                                          {errors?.shippingCountry?.message}
+                                          {errors?.shippingCountry?.message ? t(`validation:${errors?.shippingCountry?.message}`) : ""}
                                         </FormHelperText>
                                       </FormControl>
                                     )}

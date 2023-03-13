@@ -17,6 +17,7 @@ import OrderInformation from "../orderDetails/orderInformation";
 
 const OrderLog = lazy(() => import("../orderDetails/orderLog"));
 const OrderReceipt = lazy(() => import("../orderDetails/orderReceipt"));
+import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -51,12 +52,24 @@ const createOrder = () => {
     if (isLoading) {
       OrdersService.getOrdersDetailsByUUID(queryParams.uuid)
         .then((res) => {
-          setInfo(res?.data);
+          let info = res?.data;
+
+          //  //On the fly get the order is expired or not
+          // const dueDate = info.paymentLinkDueDate;
+          // const splitedTimeAndDate = dueDate.split(", ");
+          // const splitedDates = splitedTimeAndDate[1].split(".");
+          // const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+          // const dueDateTimeStamp = new Date(formatedDate).getTime();
+          // const currentTimeStamp = new Date(new Date().toLocaleString('no-NO', {timeZone: "Europe/Oslo"})).getTime();
+          // const isExpired = info.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
+          // info.status = isExpired ? 'Expired' : info.status;
+          
+          setInfo(info);
           setIsLoading(false);
         })
         .catch((error) => {
           if (error) navigate("/sales/orders-list");
-          enqueueSnackbar(error, { variant: "error" });
+          enqueueSnackbar(t(`message:${error}`), { variant: "error" });
           setIsLoading(false);
         });
     }
@@ -89,8 +102,13 @@ const createOrder = () => {
                     className={`${
                       info.status.toLowerCase() === "paid"
                         ? "bg-confirmed"
-                        : info.status.toLowerCase() === "sent"
+                        : info.status.toLowerCase() === "sent" ||
+                          info.status.toLowerCase() === "refund pending" ||
+                          info.status.toLowerCase() === "partial refunded" ||
+                          info.status.toLowerCase() === "refunded"
                         ? "bg-pending"
+                        : info.status.toLowerCase() === "invoiced"
+                        ? "bg-invoiced"
                         : "bg-rejected"
                     } rounded-4 px-16 py-4 body3 ml-10`}
                   >
@@ -152,13 +170,17 @@ const createOrder = () => {
                       allowScrollButtonsMobile
                     >
                       <Tab
-                        label="Order Information"
+                        label={ t("label:orderInformation") }
                         className="subtitle3"
                         value="1"
                       />
-                      <Tab label="Order Log" className="subtitle3" value="2" />
+                      <Tab 
+                        label={ t("label:orderLog") } 
+                        className="subtitle3" 
+                        value="2" 
+                      />
                       <Tab
-                        label="Order Receipt"
+                        label={ t("label:orderReceipt") }
                         className="subtitle3"
                         value="3"
                       />
@@ -225,7 +247,7 @@ const createOrder = () => {
             headerTitle={headerTitle}
             orderId={info.orderUuid}
             orderName={info.customerDetails.name}
-            orderAmount={info.orderSummary.grandTotal}
+            orderAmount={ info.orderSummary.grandTotal }
             customerPhone={
               info.customerDetails.countryCode && info.customerDetails.msisdn
                 ? info.customerDetails.countryCode + info.customerDetails.msisdn

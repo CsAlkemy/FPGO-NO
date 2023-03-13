@@ -1,31 +1,35 @@
 import * as yup from "yup";
 export const validateSchemaCreateOrderPrivate = yup.object().shape({
-  orderDate: yup.string().required("You must enter Order Date"),
+  orderDate: yup.string().typeError("youMustEnterOrderDate").required("youMustEnterOrderDate"),
   dueDatePaymentLink: yup
     .string()
-    .required("You must enter Payment Link due date"),
+    .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  primaryPhoneNumber: yup.string().required("You must enter phone number"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
   // dueDatePaymentLink: yup.string()
   //   .when( "orderDate",
   //     (orderDate, field)=> orderDate ? field.required() : field
   //   )
   orgorPID: yup
     .string()
-    .matches(/^[0-9]+$/, { message: 'P number must be number', excludeEmptyString: true })
+    .matches(/^[0-9]+$/, {
+      message: "pNumberMustBeNumber",
+      excludeEmptyString: true,
+    })
     .notRequired()
-    .nullable().transform((o, c) => o === "" ? null : c)
-    .min(11, 'Must be exactly 11 numbers')
-    .max(11, 'Must be exactly 11 numbers'),
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(11, "mustBeExactlyElevenNumbers")
+    .max(11, "mustBeExactlyElevenNumbers"),
   email: yup
     .string()
     .required("You must enter email address")
-    .email("Must be valid email"),
-  billingAddress: yup.string().required("You must enter street address"),
-  billingZip: yup.string().required("Enter ZIP"),
-  billingCity: yup.string().required("You must enter city"),
-  billingCountry: yup.string().required("You must enter country"),
-  customerName: yup.string().required("You must enter customer name"),
+    .email("mustBeValidEmail"),
+  billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
+  billingZip: yup.string().required("enterZIP"),
+  billingCity: yup.string().required("youMustEnterYourCity"),
+  billingCountry: yup.string().required("youMustEnterYourCountry"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -41,7 +45,10 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
         yup.string().when(["productName", "rate", "tax"], {
           is: (productName, rate, tax) => productName || rate || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -49,7 +56,10 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
         yup.string().when(["productName", "quantity", "tax"], {
           is: (productName, quantity, tax) => productName || quantity || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -65,27 +75,29 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
   ),
 });
 export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
-  orderDate: yup.string().required("You must enter Order Date"),
+  orderDate: yup.string().typeError("youMustEnterOrderDate").required("youMustEnterOrderDate"),
   dueDatePaymentLink: yup
     .string()
-    .required("You must enter Payment Link due date"),
+    .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  primaryPhoneNumber: yup.string().required("You must enter phone number"),
-  email: yup
-    .string()
-    .required("You must enter email address"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  email: yup.string().email("youMustEnterAValidEmail").required("youMustEnterAEmail"),
   orgorPID: yup
     .string()
-    .matches(/^[0-9]+$/, { message: 'P number must be number', excludeEmptyString: true })
+    .matches(/^[0-9]+$/, {
+      message: "pNumberMustBeNumber",
+      excludeEmptyString: true,
+    })
     .notRequired()
-    .nullable().transform((o, c) => o === "" ? null : c)
-    .min(11, 'Must be exactly 11 numbers')
-    .max(11, 'Must be exactly 11 numbers'),
-  billingAddress: yup.string().required("You must enter street address"),
-  billingZip: yup.string().required("Enter ZIP"),
-  billingCity: yup.string().required("You must enter city"),
-  billingCountry: yup.string().required("You must enter country"),
-  customerName: yup.string().required("You must enter customer name"),
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(11, "mustBeExactlyElevenNumbers")
+    .max(11, "mustBeExactlyElevenNumbers"),
+  billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
+  billingZip: yup.string().required("enterZIP"),
+  billingCity: yup.string().required("youMustEnterYourCity"),
+  billingCountry: yup.string().required("youMustEnterYourCountry"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -101,7 +113,10 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
         yup.string().when(["productName", "rate", "tax"], {
           is: (productName, rate, tax) => productName || rate || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -109,7 +124,10 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
         yup.string().when(["productName", "quantity", "tax"], {
           is: (productName, quantity, tax) => productName || quantity || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -126,27 +144,31 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
 });
 
 export const validateSchemaCreateOrderCorporate = yup.object().shape({
-  orderDate: yup.string().required("You must enter Order Date"),
+  orderDate: yup.string().typeError("youMustEnterOrderDate").required("youMustEnterOrderDate"),
   dueDatePaymentLink: yup
     .string()
-    .required("You must enter Payment Link due date"),
+    .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
   orgorPID: yup
     .string()
-    .matches(/^[0-9]+$/, { message: 'Must be number', excludeEmptyString: true })
-    .required('You must enter organization id')
-    .nullable().transform((o, c) => o === "" ? null : c)
-    .min(9, 'Must be exactly 9 numbers')
-    .max(9, 'Must be exactly 9 numbers'),
+    .matches(/^[0-9]+$/, {
+      message: "Must be number",
+      excludeEmptyString: true,
+    })
+    .required("youMustEnterOrganizationID")
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(9, "pNumberMustBeNumber")
+    .max(9, "pNumberMustBeNumber"),
   email: yup
     .string()
     .required("You must enter email address")
-    .email("Must be valid email"),
-  billingAddress: yup.string().required("You must enter street address"),
-  billingZip: yup.string().required("Enter ZIP"),
-  billingCity: yup.string().required("You must enter city"),
-  billingCountry: yup.string().required("You must enter country"),
-  customerName: yup.string().required("You must enter customer name"),
+    .email("mustBeValidEmail"),
+  billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
+  billingZip: yup.string().required("enterZIP"),
+  billingCity: yup.string().required("youMustEnterYourCity"),
+  billingCountry: yup.string().required("youMustEnterYourCountry"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -162,7 +184,10 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
         yup.string().when(["productName", "rate", "tax"], {
           is: (productName, rate, tax) => productName || rate || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -170,7 +195,10 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
         yup.string().when(["productName", "quantity", "tax"], {
           is: (productName, quantity, tax) => productName || quantity || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -187,30 +215,34 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
 });
 
 export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
-  orderDate: yup.string().required("You must enter Order Date"),
+  orderDate: yup.string().typeError("youMustEnterOrderDate").required("youMustEnterOrderDate"),
   dueDatePaymentLink: yup
     .string()
-    .required("You must enter Payment Link due date"),
+    .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
   orgorPID: yup
     .string()
-    .matches(/^[0-9]+$/, { message: 'Must be number', excludeEmptyString: true })
-    .required('You must enter Organization ID')
-    .nullable().transform((o, c) => o === "" ? null : c)
-    .min(9, 'Must be exactly 9 numbers')
-    .max(9, 'Must be exactly 9 numbers'),
-  customerName: yup.string().required("You must enter customer name"),
+    .matches(/^[0-9]+$/, {
+      message: "Must be number",
+      excludeEmptyString: true,
+    })
+    .required("youMustEnterOrganizationID")
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(9, "pNumberMustBeNumber")
+    .max(9, "pNumberMustBeNumber"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup
     .string()
-    .required("You must enter email address")
-    .email("Must be valid email"),
+    .required("youMustEnterAEmail")
+    .email("mustBeValidEmail"),
   primaryPhoneNumber: yup
     .string()
-    .required("You must enter phone number as selected Order by SMS"),
-  billingAddress: yup.string().required("You must enter street address"),
-  billingZip: yup.string().required("Enter ZIP"),
-  billingCity: yup.string().required("You must enter city"),
-  billingCountry: yup.string().required("You must enter country"),
+    .required("youMustEnterPhoneNumberAsSelectedOrderBySMS"),
+  billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
+  billingZip: yup.string().required("enterZIP"),
+  billingCity: yup.string().required("youMustEnterYourCity"),
+  billingCountry: yup.string().required("youMustEnterYourCountry"),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -226,7 +258,10 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
         yup.string().when(["productName", "rate", "tax"], {
           is: (productName, rate, tax) => productName || rate || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -234,7 +269,10 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
         yup.string().when(["productName", "quantity", "tax"], {
           is: (productName, quantity, tax) => productName || quantity || tax,
           // is: "",
-          then: yup.string().required("").matches(/^[0-9]+$/),
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9,]+$/),
           // otherwise: yup.string()
         })
       ),
@@ -250,47 +288,66 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
   ),
 });
 
-
 export const CreateOrderDefaultValue = {
   order: [],
-
 };
 
-
 export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
-  phone: yup.string().required('You must enter phone'),
-  email: yup.string().required('You must enter email address').email('Must be valid email'),
+  phone: yup.string().required("youMustEnterYourPhoneNumber"),
+  email: yup
+    .string()
+    .required("youMustEnterAEmail")
+    .email("mustBeValidEmail"),
   orgIdOrPNumber: yup
     .string()
-    .matches(/^[0-9]+$/, { message: 'org number must be number', excludeEmptyString: true })
-    .required('You must enter organization id')
-    .nullable().transform((o, c) => o === "" ? null : c)
-    .min(9, 'Must be exactly 9 numbers')
-    .max(9, 'Must be exactly 9 numbers'),
-  billingAddress: yup.string().required("You must enter street address"),
-  billingZip: yup.string().required("You must enter zip code"),
-  billingCity: yup.string().required("You must enter your city"),
-  billingCountry: yup.string().required("You must enter country"),
-
+    .matches(/^[0-9]+$/, {
+      message: "organizationIdMustBeNumber",
+      excludeEmptyString: true,
+    })
+    .required("youMustEnterOrganizationID")
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(9, "pNumberMustBeNumber")
+    .max(9, "pNumberMustBeNumber"),
+  billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
+  billingZip: yup.string().required("enterZIP"),
+  billingCity: yup.string().required("youMustEnterYourCity"),
+  billingCountry: yup.string().required("youMustEnterYourCountry"),
 });
 export const validateSchemaPaymentCheckout = yup.object().shape({
-  phone: yup.string().required('You must enter phone'),
-  email: yup.string().required('You must enter email address').email('Must be valid email'),
+  phone: yup.string().required("youMustEnterYourPhoneNumber"),
+  email: yup
+    .string()
+    .required("youMustEnterAEmail")
+    .email("mustBeValidEmail"),
   orgIdOrPNumber: yup
     .string()
-    .matches(/^[0-9]+$/, { message: 'P number must be number', excludeEmptyString: true })
+    .matches(/^[0-9]+$/, {
+      message: "pNumberMustBeNumber",
+      excludeEmptyString: true,
+    })
     .notRequired()
-    .nullable().transform((o, c) => o === "" ? null : c)
-    .min(11, 'Must be exactly 11 numbers')
-    .max(11, 'Must be exactly 11 numbers'),
-  billingAddress: yup.string().required("You must enter street address"),
-  billingZip: yup.string().required("You must enter zip code"),
-  billingCity: yup.string().required("You must enter your city"),
-  billingCountry: yup.string().required("You must enter country"),
-
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(11, "mustBeExactlyElevenNumbers")
+    .max(11, "mustBeExactlyElevenNumbers"),
+  billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
+  billingZip: yup.string().required("enterZIP"),
+  billingCity: yup.string().required("youMustEnterYourCity"),
+  billingCountry: yup.string().required("youMustEnterYourCountry"),
 });
 export const validateSchemaCreditCheckForCheckout = yup.object().shape({
-  orgIdCreditCheck: yup.string().required('You must enter the credit check ID')
+  orgIdCreditCheck: yup
+    .string()
+    .matches(/^[0-9]+$/, {
+      message: "Must be number",
+      excludeEmptyString: true,
+    })
+      .typeError("enterValidID")
+    .required("youMustEnterTheCreditCheckId")
+    .transform((o, c) => (o === "" ? null : c))
+    .min(9, "enterValidID")
+    .max(11, "enterValidID"),
 });
 
 export const PaymentDefaultValue = {
@@ -302,7 +359,7 @@ export const PaymentDefaultValue = {
   billingZip: "",
   billingCity: "",
   billingCountry: "",
-  orgIdCreditCheck: ""
+  orgIdCreditCheck: "",
 };
 export const OrderModalDefaultValue = {
   phone: "",
@@ -312,14 +369,17 @@ export const OrderModalDefaultValue = {
 };
 
 export const validateSchemaOrderResendModal = yup.object().shape({
-  phone: yup.string().required('You must enter the phone')
+  phone: yup.string().required("youMustEnterYourPhoneNumber"),
 });
 export const validateSchemaOrderCancelModal = yup.object().shape({
-  cancellationNote: yup.string().max(200, "Must be 200 characters or less").required('You must enter the Cancellation Note')
+  cancellationNote: yup
+    .string()
+    .max(200, "cancellationNoteRules")
+    .required("youMustEnterTheCancellationNote"),
 });
 export const validateSchemaOrderRefundModal = yup.object().shape({
-  refundAmount: yup.string().required('You must enter the Refund amount')
+  refundAmount: yup.string().required("youMustEnterTheRefundAmount"),
 });
 export const validateSchemaMoreThanFiveThousand = yup.object().shape({
-  cancellationNote: yup.string().notRequired()
+  cancellationNote: yup.string().notRequired(),
 });

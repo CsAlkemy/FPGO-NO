@@ -2,7 +2,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Search } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
-import { DateTimePicker, DesktopDatePicker } from "@mui/lab";
+import {
+  DateTimePicker,
+  DesktopDatePicker,
+  DesktopDateTimePicker,
+} from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
@@ -43,6 +47,7 @@ import { useTranslation } from "react-i18next";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
 import AuthService from "../../../../data-access/services/authService";
 import ClientService from "../../../../data-access/services/clientsService/ClientService";
+import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const OrderInformation = ({ info }) => {
   const { t } = useTranslation();
@@ -375,7 +380,7 @@ const OrderInformation = ({ info }) => {
                     </AccordionSummary>
                     <AccordionDetails className="bg-white px-0">
                       {addOrderIndex.map((index) => (
-                        <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
+                        <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
                           <Controller
                             name={`order[${index}].productName`}
                             control={control}
@@ -474,7 +479,7 @@ const OrderInformation = ({ info }) => {
                                   defaultValue={
                                     info.productList &&
                                     info.productList?.[index]?.rate
-                                      ? info.productList[index].rate
+                                      ? ThousandSeparator(info.productList[index].rate)
                                       : ""
                                   }
                                 />
@@ -527,9 +532,9 @@ const OrderInformation = ({ info }) => {
                                   disabled
                                   defaultValue={
                                     info.productList &&
-                                    info.productList?.[index]?.tax
-                                      ? info.productList[index].tax
-                                      : ""
+                                    info.productList?.[index]?.tax === 0
+                                      ? 0
+                                      :info.productList[index]?.tax
                                   }
                                 />
                               )}
@@ -537,10 +542,16 @@ const OrderInformation = ({ info }) => {
                           </div>
                           <div className="flex justify-between subtitle1 py-20 border-t-1 border-MonochromeGray-50">
                             <div>{t("label:total")}</div>
-                            <div>{t("label:nok")} 2,400</div>
+                            <div>{t("label:nok")} {info.productList &&
+                            info.productList?.[index]?.amount
+                              ? ThousandSeparator(info.productList[index].amount)
+                              : ""}</div>
                           </div>
                         </div>
                       ))}
+                      <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                        {t("label:grandTotal")} : {t("label:nok")} {ThousandSeparator(info.orderSummary.grandTotal)}
+                      </div>
                     </AccordionDetails>
                   </Accordion>
                 </Hidden>
@@ -679,7 +690,7 @@ const OrderInformation = ({ info }) => {
                                 defaultValue={
                                   info.productList &&
                                   info.productList?.[index]?.rate
-                                    ? info.productList[index].rate
+                                    ? ThousandSeparator(info.productList[index].rate)
                                     : ""
                                 }
                               />
@@ -734,9 +745,9 @@ const OrderInformation = ({ info }) => {
                                 disabled
                                 defaultValue={
                                   info.productList &&
-                                  info.productList?.[index]?.tax
-                                    ? info.productList[index].tax
-                                    : ""
+                                  info.productList?.[index]?.tax === 0
+                                    ? 0
+                                      :info.productList[index]?.tax
                                 }
                               />
                             )}
@@ -747,7 +758,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:nok")}{" "}
                             {info.productList &&
                             info.productList?.[index]?.amount
-                              ? info.productList[index].amount
+                              ? ThousandSeparator(info.productList[index].amount)
                               : ""}
                           </div>
                         </div>
@@ -775,9 +786,21 @@ const OrderInformation = ({ info }) => {
                             <DesktopDatePicker
                               label={t("label:orderDate")}
                               // inputFormat="mm.dd.yyyy"
+                              mask=""
                               inputFormat="dd.MM.yyyy"
                               // inputFormat="dd.MMM.yyyy"
                               // value={!value ? new Date() : value}
+                              PopperProps={{
+                                sx: {
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                    borderRadius: '8px',
+                                    "&.Mui-selected": {
+                                      backgroundColor: "#c9eee7",
+                                      color: "#323434",
+                                    }
+                                  }
+                                }
+                              }}
                               value={
                                 info?.orderDate
                                   ? prepareOrderDate(info?.orderDate)
@@ -809,15 +832,15 @@ const OrderInformation = ({ info }) => {
                             />
                           )}
                         />
-                        <Tooltip
-                          placement="bottom"
-                          title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                        >
-                          <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                            <ErrorIcon className="icon-size-14 my-auto " />
-                            {t("label:whatIsThis")}
-                          </div>
-                        </Tooltip>
+                        {/*<Tooltip*/}
+                        {/*  placement="bottom"*/}
+                        {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                        {/*>*/}
+                        {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                        {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                        {/*    {t("label:whatIsThis")}*/}
+                        {/*  </div>*/}
+                        {/*</Tooltip>*/}
                       </div>
                       <div className="flex flex-col gap-5">
                         <Controller
@@ -828,9 +851,20 @@ const OrderInformation = ({ info }) => {
                               onClickAway={handleDueDatePickerClose}
                             >
                               <div className="create-order-due-date w-full">
-                                <DateTimePicker
+                                <DesktopDateTimePicker
                                   label={t("label:dueDateForPaymentLink")}
                                   inputFormat="dd.MM.yyyy HH:mm"
+                                  PopperProps={{
+                                    sx: {
+                                      "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                        borderRadius: '8px',
+                                        "&.Mui-selected": {
+                                          backgroundColor: "#c9eee7",
+                                          color: "#323434",
+                                        }
+                                      }
+                                    }
+                                  }}
                                   // inputFormat="dd.MMM.yyyy"
                                   value={
                                     info?.paymentLinkDueDate
@@ -949,15 +983,15 @@ const OrderInformation = ({ info }) => {
                             </ClickAwayListener>
                           )}
                         />
-                        <Tooltip
-                          placement="bottom"
-                          title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                        >
-                          <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                            <ErrorIcon className="icon-size-14 my-auto " />
-                            {t("label:whatIsThis")}
-                          </div>
-                        </Tooltip>
+                        {/*<Tooltip*/}
+                        {/*  placement="bottom"*/}
+                        {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                        {/*>*/}
+                        {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                        {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                        {/*    {t("label:whatIsThis")}*/}
+                        {/*  </div>*/}
+                        {/*</Tooltip>*/}
                       </div>
                       <div className="flex flex-col gap-5"></div>
                     </div>
@@ -1041,7 +1075,7 @@ const OrderInformation = ({ info }) => {
                         <div className="body3 text-MonochromeGray-300">
                           {t("label:creditCheckDetailsOrderPage")}
                         </div>
-                        <div className="send-order-credit-check mt-24 mb-16">
+                        <div className="send-order-credit-check">
                           <div className="subtitle3 text-MonochromeGray-500">
                             {t("label:creditCheckFlagOrderPage")}
                           </div>
@@ -1091,9 +1125,9 @@ const OrderInformation = ({ info }) => {
                                 dirtyFields.email &&
                                 dirtyFields.customerName &&
                                 dirtyFields.orgorPID ? (
-                                  <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                  <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                                 ) : (
-                                  <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                  <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                                 )}
                               </span>
                             </div>
@@ -1113,7 +1147,7 @@ const OrderInformation = ({ info }) => {
                                   <Autocomplete
                                     freeSolo
                                     options={customersList}
-                                    forcePopupIcon={<Search />}
+                                    // forcePopupIcon={<Search />}
                                     getOptionLabel={(option) => option.name}
                                     className="custom-input-height"
                                     disabled
@@ -1543,9 +1577,9 @@ const OrderInformation = ({ info }) => {
                                   dirtyFields.customerReference &&
                                   dirtyFields.customerNotes &&
                                   dirtyFields.termsConditions ? (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                                   ) : (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                                   )}
                                 </span>
                               </div>
@@ -1730,9 +1764,9 @@ const OrderInformation = ({ info }) => {
                                 <span>
                                   {dirtyFields.internalReferenceNo &&
                                   dirtyFields.customerNotesInternal ? (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                                   ) : (
-                                    <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                    <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                                   )}
                                 </span>
                               </div>
@@ -1819,7 +1853,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:subTotal")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.subTotal}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.subTotal) }
                           </div>
                         </div>
                         <div className="flex justify-between items-center  my-20">
@@ -1827,7 +1861,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:tax")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.tax}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.tax) }
                           </div>
                         </div>
                         <div className="flex justify-between items-center  my-20">
@@ -1835,7 +1869,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:discount")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.discount}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.discount) }
                           </div>
                         </div>
                       </div>
@@ -1845,7 +1879,7 @@ const OrderInformation = ({ info }) => {
                             {t("label:grandTotal")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} {info.orderSummary.grandTotal}
+                            {t("label:nok")} { ThousandSeparator(info.orderSummary.grandTotal) }
                           </div>
                         </div>
                       </div>
