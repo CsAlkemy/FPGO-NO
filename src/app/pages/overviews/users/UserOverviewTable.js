@@ -344,7 +344,7 @@ export default function UserOverviewTable(props) {
         }
       })
       .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
+        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setIsLoading(false);
         dispatch(setOverviewMainTableDataSlice([]));
       });

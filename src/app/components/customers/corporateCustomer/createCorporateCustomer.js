@@ -79,11 +79,11 @@ const createCorporateCustomer = () => {
       CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress);
     createCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(response?.data?.message, { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });
@@ -124,12 +124,12 @@ const createCorporateCustomer = () => {
             CreateCorporateDefaultValue.billingZip =
               response.data.billingAddress.zip;
             reset({ ...CreateCorporateDefaultValue })
-            enqueueSnackbar(response.message, { variant: "success" });
+            enqueueSnackbar(t(`message:${response?.message}`), { variant: "success" });
             setLoadingfind(false)
           }
         })
         .catch((error) => {
-          enqueueSnackbar("Data Retrieve Failed", { variant: "error" });
+          enqueueSnackbar(t(`message:dataRetrieveFailed`), { variant: "error" });
           reset();
           setLoadingfind(false)
         });
@@ -194,7 +194,7 @@ const createCorporateCustomer = () => {
                   )}
                 </div>
                 <div className="my-32 px-10 md:px-16">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 w-full md:w-3/4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
                     <Controller
                       name="organizationID"
                       control={control}
@@ -202,11 +202,11 @@ const createCorporateCustomer = () => {
                         <TextField
                           {...field}
                           label={t("label:organizationId")}
-                          className="col-span-1 md:col-span-2"
+                          className="col-span-1 md:col-span-1"
                           type="number"
                           autoComplete="off"
                           error={!!errors.organizationID}
-                          helperText={errors?.organizationID?.message}
+                          helperText={errors?.organizationID?.message ? t(`validation:${errors?.organizationID?.message}`) : ""}
                           variant="outlined"
                           required
                           fullWidth
@@ -216,7 +216,7 @@ const createCorporateCustomer = () => {
                     <LoadingButton
                       variant="contained"
                       color="secondary"
-                      className="col-span-1 w-full button2 rounded-4 h-fit mt-7"
+                      className="col-span-1 w-full button2 rounded-4 h-fit mt-7 md:max-w-[190px]"
                       aria-label="Confirm"
                       size="large"
                       type="button"
@@ -246,7 +246,7 @@ const createCorporateCustomer = () => {
                         type='text'
                         autoComplete='off'
                         error={!!errors.OrganizationName}
-                        helperText={errors?.OrganizationName?.message}
+                        helperText={errors?.OrganizationName?.message ? t(`validation:${errors?.OrganizationName?.message}`) : ""}
                         variant='outlined'
                         fullWidth
                         required
@@ -269,7 +269,7 @@ const createCorporateCustomer = () => {
                         type={t("label:email")}
                         autoComplete="off"
                         error={!!errors.orgEmail}
-                        helperText={errors?.orgEmail?.message}
+                        helperText={errors?.orgEmail?.message ? t(`validation:${errors?.orgEmail?.message}`) : ""}
                         variant="outlined"
                         required
                         value={field.value || ''}
@@ -304,7 +304,7 @@ const createCorporateCustomer = () => {
 
                           />
                           <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message}
+                            {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -323,7 +323,7 @@ const createCorporateCustomer = () => {
                           type='text'
                           autoComplete='off'
                           error={!!errors.billingAddress}
-                          helperText={errors?.billingAddress?.message}
+                          helperText={errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""}
                           variant='outlined'
                           fullWidth
                           required
@@ -345,7 +345,7 @@ const createCorporateCustomer = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.billingZip}
-                          helperText={errors?.billingZip?.message}
+                          helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
                           variant="outlined"
                           fullWidth
                           required
@@ -366,7 +366,7 @@ const createCorporateCustomer = () => {
                         type='text'
                         autoComplete='off'
                         error={!!errors.billingCity}
-                        helperText={errors?.billingCity?.message}
+                        helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
                         variant='outlined'
                         fullWidth
                         required
@@ -413,7 +413,7 @@ const createCorporateCustomer = () => {
                           )}
                         </Select>
                         <FormHelperText>
-                          {errors?.billingCountry?.message}
+                          {errors?.billingCountry?.message ? t(`validation:${errors?.billingCountry?.message}`) : ""}
                         </FormHelperText>
                       </FormControl>
                     )}
@@ -438,9 +438,9 @@ const createCorporateCustomer = () => {
                           dirtyFields.shippingZip &&
                           dirtyFields.shippingCity &&
                           dirtyFields.shippingCountry ? (
-                          <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                         ) : (
-                          <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                         )}
                       </div>
                     </AccordionSummary>
@@ -513,7 +513,7 @@ const createCorporateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingAddress}
                                           helperText={
-                                            errors?.shippingAddress?.message
+                                            errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -540,7 +540,7 @@ const createCorporateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingZip}
                                           helperText={
-                                            errors?.shippingZip?.message
+                                            errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -567,7 +567,7 @@ const createCorporateCustomer = () => {
                                         disabled={sameAddress}
                                         error={!!errors.shippingCity}
                                         helperText={
-                                          errors?.shippingCity?.message
+                                          errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -612,7 +612,7 @@ const createCorporateCustomer = () => {
                                           ))}
                                         </Select>
                                         <FormHelperText>
-                                          {errors?.shippingCountry?.message}
+                                          {errors?.shippingCountry?.message ? t(`validation:${errors?.shippingCountry?.message}`) : ""}
                                         </FormHelperText>
                                       </FormControl>
                                     )}
@@ -650,7 +650,7 @@ const createCorporateCustomer = () => {
                           dirtyFields.notes ? (
                           <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                         ) : (
-                          <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                          <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                         )}
                       </div>
                     </AccordionSummary>
@@ -680,7 +680,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.fullName}
-                                  helperText={errors?.fullName?.message}
+                                  helperText={errors?.fullName?.message ? t(`validation:${errors?.fullName?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -700,7 +700,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.designation}
-                                  helperText={errors?.designation?.message}
+                                  helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -752,7 +752,7 @@ const createCorporateCustomer = () => {
                                   type="email"
                                   autoComplete="off"
                                   error={!!errors.email}
-                                  helperText={errors?.email?.message}
+                                  helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -776,7 +776,7 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.notes}
-                                  helperText={errors?.notes?.message}
+                                  helperText={errors?.notes?.message ? t(`validation:${errors?.notes?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
                                 // inputlabelprops={{
@@ -824,7 +824,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.fullName}
-                                      helperText={errors?.fullName}
+                                      helperText={errors?.fullName ? t(`validation:${errors?.fullName}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{
@@ -845,7 +845,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.designation}
-                                      helperText={errors?.designation?.message}
+                                      helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{
@@ -927,7 +927,7 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.notes}
-                                      helperText={errors?.message}
+                                      helperText={errors?.message ? t(`validation:${errors?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                     // inputlabelprops={{

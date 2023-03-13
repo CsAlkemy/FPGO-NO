@@ -3,7 +3,7 @@ import authRoles from '../../data-access/utils/AuthRoles';
 import OrdersListOverview from '../overviews/orders/OrdersListOverview';
 const CreateOrder = lazy(() => import('../../components/salesManagement/order/createOrder'));
 const OrderModals = lazy(() => import('../../components/salesManagement/order/popupModal'));
-const OrderDetails = lazy(() => import('../../components/salesManagement/order/orderDetails'));
+import OrderDetails from '../../components/salesManagement/order/orderDetails';
 
 export const SalesConfig = {
   settings: {
@@ -65,7 +65,7 @@ export const SalesConfigRBAC = {
       element: <OrderModals />,
     },
     {
-      path: '/create-order/details',
+      path: '/create-order/details/:uuid',
       element: <OrderDetails />,
     },
     {

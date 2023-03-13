@@ -1,22 +1,28 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ClickAwayListener } from '@mui/base';
-import { Search } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import Cancel from '@mui/icons-material/Cancel';
-import CheckIcon from '@mui/icons-material/Check';
-import ErrorIcon from '@mui/icons-material/Error';
-import EventIcon from '@mui/icons-material/Event';
-import RedoIcon from '@mui/icons-material/Redo';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import SendIcon from '@mui/icons-material/Send';
-import { DesktopDatePicker, DesktopDateTimePicker } from '@mui/lab';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ClickAwayListener } from "@mui/base";
+import { Search } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import Cancel from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
+import ErrorIcon from "@mui/icons-material/Error";
+import EventIcon from "@mui/icons-material/Event";
+import RedoIcon from "@mui/icons-material/Redo";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import SendIcon from "@mui/icons-material/Send";
+import {
+  DesktopDatePicker,
+  DesktopDateTimePicker,
+  LoadingButton,
+} from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Autocomplete,
+  Backdrop,
   Button,
+  CircularProgress,
   FormControl,
   FormHelperText,
   Hidden,
@@ -27,33 +33,40 @@ import {
   Select,
   TextField,
   Tooltip,
-} from '@mui/material';
-import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
-import { FiMinus } from 'react-icons/fi';
-import { IoMdAdd } from 'react-icons/io';
-import PhoneInput from 'react-phone-input-2';
-import { useNavigate } from 'react-router-dom';
-import CustomersService from '../../../data-access/services/customersService/CustomersService';
-import OrdersService from '../../../data-access/services/ordersService/OrdersService';
-import ProductService from '../../../data-access/services/productsService/ProductService';
-import DiscardConfirmModal from '../../common/confirmDiscard';
+} from "@mui/material";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { FiMinus } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
+import PhoneInput from "react-phone-input-2";
+import { useNavigate } from "react-router-dom";
+import CustomersService from "../../../data-access/services/customersService/CustomersService";
+import OrdersService from "../../../data-access/services/ordersService/OrdersService";
+import ProductService from "../../../data-access/services/productsService/ProductService";
+import DiscardConfirmModal from "../../common/confirmDiscard";
 import {
   CreateOrderDefaultValue,
   validateSchemaCreateOrderCorporate,
   validateSchemaCreateOrderCorporateOrderBySms,
   validateSchemaCreateOrderPrivate,
   validateSchemaCreateOrderPrivateOrderByEmail,
-} from '../utils/helper';
-import ClientService from '../../../data-access/services/clientsService/ClientService';
-import { useCreateOrderMutation } from 'app/store/api/apiSlice';
+} from "../utils/helper";
+import ClientService from "../../../data-access/services/clientsService/ClientService";
+import { useCreateOrderMutation } from "app/store/api/apiSlice";
+import UtilsServices from "../../../data-access/utils/UtilsServices";
+import AuthService from "../../../data-access/services/authService";
+// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { es, nn, nb } from "date-fns/locale";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const createOrder = () => {
   const { t } = useTranslation();
-  const userInfo = JSON.parse(localStorage.getItem("fp_user"))
+  const userInfo = UtilsServices.getFPUserData();
   const [open, setOpen] = React.useState(false);
   const [expanded1, setExpanded1] = React.useState(false);
   const [expanded0, setExpanded0] = React.useState(false);
@@ -65,6 +78,10 @@ const createOrder = () => {
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [itemLoader, setItemLoader] = useState(false);
+  const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
+  const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createOrder, response] = useCreateOrderMutation();
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
@@ -91,12 +108,11 @@ const createOrder = () => {
       name: "sweden",
     },
   ]);
- 
 
-  // const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([ 0 ]);
+  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  // const [addOrderIndex, setAddOrderIndex] = React.useState([ 0 ]);
 
-  const [taxes, setTaxes] = React.useState([])
+  const [taxes, setTaxes] = React.useState([]);
 
   // const activeSchema = () => {
   //   if (
@@ -156,8 +172,8 @@ const createOrder = () => {
   // };
   const activeSchema = () => {
     if (
-      (customData.orderBy === "sms" &&
-      customData.customerType === "private") || (customData.orderBy === "invoice" &&
+      (customData.orderBy === "sms" && customData.customerType === "private") ||
+      (customData.orderBy === "invoice" &&
         customData.customerType === "private")
     )
       return validateSchemaCreateOrderPrivate;
@@ -167,9 +183,10 @@ const createOrder = () => {
     )
       return validateSchemaCreateOrderPrivateOrderByEmail;
     else if (
-      (customData.orderBy === "email"&&
-      customData.customerType === "corporate" ) || (customData.orderBy === "invoice"&&
-        customData.customerType === "corporate" )
+      (customData.orderBy === "email" &&
+        customData.customerType === "corporate") ||
+      (customData.orderBy === "invoice" &&
+        customData.customerType === "corporate")
     )
       return validateSchemaCreateOrderCorporate;
     else if (
@@ -199,7 +216,23 @@ const createOrder = () => {
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
+  const searchCustomerOnFocus = (e) => {
+    const searchByPhone =
+      customersList.filter((customer) =>
+        customer.phone.startsWith(e.target.value)
+      ) || [];
+    const searchByName =
+      customersList.filter((customer) =>
+        customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+      ) || [];
+    setCustomerSearchBy(
+      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
+    );
+    setCustomerSearchBoxLength(e.target.value.length);
+  };
+
   const onSubmit = (values) => {
+    setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
     totalDiscount = (totalDiscount / 2).toFixed(2);
@@ -213,25 +246,25 @@ const createOrder = () => {
         totalDiscount,
         grandTotal,
       },
-    })
-    createOrder(data)
-      .then((response)=> {
-        if (response?.data?.status_code === 201) {
-              enqueueSnackbar(response?.data?.message, { variant: "success" });
-              navigate(`/sales/orders-list`);
-        } else {
-          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
-        }
-      })
-      // .then((response) => {
-      //   if (response?.status_code === 201) {
-      //     enqueueSnackbar(response.message, { variant: "success" });
-      //     navigate(`/sales/orders-list`);
-      //   }
-      // })
-      // .catch((e) => {
-      //   enqueueSnackbar(e, { variant: "error" });
-      // });
+    });
+    createOrder(data).then((response) => {
+      setLoading(false);
+      if (response?.data?.status_code === 201) {
+        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        navigate(`/sales/orders-list`);
+      } else {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+      }
+    });
+    // .then((response) => {
+    //   if (response?.status_code === 201) {
+    //     enqueueSnackbar(response.message, { variant: "success" });
+    //     navigate(`/sales/orders-list`);
+    //   }
+    // })
+    // .catch((e) => {
+    //   enqueueSnackbar(e, { variant: "error" });
+    // });
   };
 
   let defaultTaxValue;
@@ -284,12 +317,21 @@ const createOrder = () => {
     //Amount : (Rate * Qty) - discount
     //Discount : Sum of discounts
     //Grand Total : Sum of amounts
+    let rate, splitedRate, dotFormatRate, floatRate;
+    if (!!watchRate) {
+      rate = watchRate;
+      splitedRate = rate.toString().includes(",") ? rate.split(",") : rate;
+      dotFormatRate =
+        typeof splitedRate === "object"
+          ? `${splitedRate[0]}.${splitedRate[1]}`
+          : splitedRate;
+      floatRate = parseFloat(dotFormatRate);
+    }
+
     const total =
-      parseInt(watchQuantity) * parseFloat(watchRate) -
-      parseFloat(watchDiscount);
+      parseInt(watchQuantity) * floatRate - parseFloat(watchDiscount);
     const subTotalCalculation =
-      (parseInt(watchQuantity) * parseFloat(watchRate)) /
-      ((100 + watchTax) / 100);
+      (parseInt(watchQuantity) * floatRate) / ((100 + watchTax) / 100);
     const totalTaxCalculation = subTotalCalculation
       ? (subTotalCalculation * (watchTax / 100)) / 2
       : 0;
@@ -302,21 +344,26 @@ const createOrder = () => {
       totalDiscount = totalDiscount + parseFloat(watchDiscount);
     if (total) grandTotal = grandTotal + total;
     if (total > 0) {
-      return ` ${total.toFixed(2)}`;
+      return ` ${total}`;
     }
   };
 
   const addNewOrder = () => {
     // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
+    setItemLoader(true);
     setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
-    setValue(`order[${addOrderIndex}].productName`, "");
-    setValue(`order[${addOrderIndex}].productID`, "");
-    setValue(`order[${addOrderIndex}].quantity`, "");
-    setValue(`order[${addOrderIndex}].rate`, "");
-    setValue(`order[${addOrderIndex}].discount`, "");
-    setValue(`order[${addOrderIndex}].tax`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].quantity`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
   };
   const onDelete = (index) => {
+    setItemLoader(true);
     //resetField(``)
     setValue(`order[${index}].productName`, "");
     setValue(`order[${index}].productID`, "");
@@ -328,6 +375,30 @@ const createOrder = () => {
     addOrderIndex.length > 1
       ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
       : setAddOrderIndex([...addOrderIndex]);
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
+  };
+  const onSameRowAction = (index) => {
+    setValue(`order[${index}].productName`, "");
+    resetField(`order[${index}].productName`);
+    resetField(`order[${index}].productID`);
+    resetField(`order[${index}].quantity`);
+    resetField(`order[${index}].rate`);
+    resetField(`order[${index}].discount`);
+    resetField(`order[${index}].tax`);
+
+    setValue(`order[${index}].productName`, "");
+    setValue(`order[${index}].productID`, "");
+    setValue(`order[${index}].quantity`, "");
+    setValue(`order[${index}].rate`, "");
+    setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].tax`, "");
+    enableCurrentProductRow(index);
+    // addNewOrder()
+    // addOrderIndex.length > 1
+    //   ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
+    //   : setAddOrderIndex([...addOrderIndex]);
   };
 
   const watchOrderDate = watch(`orderDate`)
@@ -339,85 +410,160 @@ const createOrder = () => {
     setValue(
       "dueDatePaymentLink",
       new Date().setDate(
-        watchOrderDate && watchOrderDate.getDate() >= new Date().getDate() ? watchOrderDate.getDate() + 1 : new Date().getDate() + 1
+        watchOrderDate && watchOrderDate.getDate() >= new Date().getDate()
+          ? watchOrderDate.getDate() + 1
+          : new Date().getDate() + 1
       )
     );
   }, [watch(`orderDate`)]);
 
   useEffect(() => {
-    ProductService.productsList()
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200 && res.length) {
-          res
-            .filter((r) => r.status === "Active")
-            .map((row) => {
-              return data.push({
-                uuid: row.uuid,
-                name: row.name,
-                id: row.id,
-                price: row.pricePerUnit,
-                tax: row.taxRate,
-              });
-            });
-        }
-        setProductsList(data);
-      })
-      .catch((e) => {
-        console.log("E : ", e);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (userInfo?.user_data?.organization?.uuid){
-      ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid)
+    AuthService.axiosRequestHelper().then((isAuthenticated) => {
+      ProductService.productsList(true)
         .then((res) => {
-          if (res?.status_code === 200) {
-            setTaxes(res?.data);
-          }else{
-            setTaxes([])
+          let data = [];
+          if (res?.status_code === 200 && res.length) {
+            res
+              .filter((r) => r.status === "Active")
+              .map((row) => {
+                return data.push({
+                  uuid: row.uuid,
+                  name: row.name,
+                  id: row.id,
+                  price: row.pricePerUnit,
+                  tax: row.taxRate,
+                });
+              });
           }
+          setProductsList(data);
         })
         .catch((e) => {
-          setTaxes([])
+          setProductsList([]);
         });
-    }
+      CustomersService.customersList(true)
+        .then((res) => {
+          let data = [];
+          if (res?.status_code === 200 && res.length) {
+            res
+              .filter((item) => {
+                return item.status === "Active";
+              })
+              .map((row) => {
+                return data.push({
+                  uuid: row.uuid,
+                  name: row?.name ? row?.name : null,
+                  orgOrPNumber: row?.orgIdOrPNumber
+                    ? row?.orgIdOrPNumber
+                    : null,
+                  email: row?.email ? row?.email : null,
+                  phone: row?.phone ? row?.phone : null,
+                  type: row.type,
+                  street: row?.street,
+                  city: row?.city,
+                  zip: row?.zip,
+                  country: row?.country,
+                  searchString: row?.name + " ( " + row?.phone + " )",
+                });
+              });
+          }
+          setCustomersList(data);
+        })
+        .catch((e) => {
+          setCustomersList([]);
+        });
+      if (userInfo?.user_data?.organization?.uuid) {
+        ClientService.vateRatesList(
+          userInfo?.user_data?.organization?.uuid,
+          true
+        )
+          .then((res) => {
+            if (res?.status_code === 200) {
+              setTaxes(res?.data);
+            } else {
+              setTaxes([]);
+            }
+          })
+          .catch((e) => {
+            setTaxes([]);
+          });
+      }
+    });
+    // ProductService.productsList()
+    //   .then((res) => {
+    //     console.log("aaa pl t");
+    //     let data = [];
+    //     if (res?.status_code === 200 && res.length) {
+    //       res
+    //         .filter((r) => r.status === "Active")
+    //         .map((row) => {
+    //           return data.push({
+    //             uuid: row.uuid,
+    //             name: row.name,
+    //             id: row.id,
+    //             price: row.pricePerUnit,
+    //             tax: row.taxRate,
+    //           });
+    //         });
+    //     }
+    //     setProductsList(data);
+    //   })
+    //   .catch((e) => {
+    //   });
   }, []);
+
+  //EXperiment
+  // useEffect(() => {
+  //   if (userInfo?.user_data?.organization?.uuid){
+  //     ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid)
+  //       .then((res) => {
+  //         if (res?.status_code === 200) {
+  //           setTaxes(res?.data);
+  //         }else{
+  //           setTaxes([])
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         setTaxes([])
+  //       });
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   console.log("addOrderIndex : ", addOrderIndex);
   // }, [addOrderIndex]);
 
-  useEffect(() => {
-    CustomersService.customersList()
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200 && res.length) {
-          res
-            .filter((item) => {
-              return item.status === "Active";
-            })
-            .map((row) => {
-              return data.push({
-                uuid: row.uuid,
-                name: row?.name ? row?.name : null,
-                orgOrPNumber: row?.orgIdOrPNumber ? row?.orgIdOrPNumber : null,
-                email: row?.email ? row?.email : null,
-                phone: row?.phone ? row?.phone : null,
-                type: row.type,
-                street: row?.street,
-                city: row?.city,
-                zip: row?.zip,
-                country: row?.country,
-              });
-            });
-        }
-        setCustomersList(data);
-      })
-      .catch((e) => {
-        console.log("E : ", e);
-      });
-  }, []);
+  //EXperiment
+  // useEffect(() => {
+  //   CustomersService.customersList()
+  //     .then((res) => {
+  //       let data = [];
+  //       if (res?.status_code === 200 && res.length) {
+  //         res
+  //           .filter((item) => {
+  //             return item.status === "Active";
+  //           })
+  //           .map((row) => {
+  //             return data.push({
+  //               uuid: row.uuid,
+  //               name: row?.name ? row?.name : null,
+  //               orgOrPNumber: row?.orgIdOrPNumber ? row?.orgIdOrPNumber : null,
+  //               email: row?.email ? row?.email : null,
+  //               phone: row?.phone ? row?.phone : null,
+  //               type: row.type,
+  //               street: row?.street,
+  //               city: row?.city,
+  //               zip: row?.zip,
+  //               country: row?.country,
+  //               searchString : row?.name+" ( "+row?.phone+" )"
+  //             });
+  //           });
+  //       }
+  //       setCustomersList(data);
+  //     })
+  //     .catch((e) => {
+  //     });
+  // }, []);
+
   // useEffect(() => {
   //   let selectedProduct;
   //   if (watchProductName) {
@@ -433,9 +579,19 @@ const createOrder = () => {
   //   setDatePickerOpen(false);
   // };
 
+  const pnameOnBlur = (e) => {
+    if (!e.target.value.length) {
+      resetField(`${e.target.name}`);
+    }
+  };
+
   const prepareDate = (dayCount, dateRef) => {
     const date = new Date(
-      dateRef === 1 ? (watchOrderDate && watchOrderDate.getDate() >= new Date().getDate() ? watchOrderDate : new Date()) : watchDueDatePaymentLink
+      dateRef === 1
+        ? watchOrderDate && watchOrderDate.getDate() >= new Date().getDate()
+          ? watchOrderDate
+          : new Date()
+        : watchDueDatePaymentLink
     );
     const lastDayOfMonthCalculation = new Date(
       date.getFullYear(),
@@ -471,6 +627,16 @@ const createOrder = () => {
 
   return (
     <div className="create-product-container">
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 2,
+          color: "#0088AE",
+          background: "white",
+        }}
+        open={itemLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div className="inside-div-product">
         <div className="rounded-sm bg-white p-0 md:px-20">
           <form
@@ -492,7 +658,18 @@ const createOrder = () => {
                   >
                     {t("label:discard")}
                   </Button>
-                  <Button
+                  {/*<Button*/}
+                  {/*  color="secondary"*/}
+                  {/*  variant="contained"*/}
+                  {/*  className="font-semibold rounded-4 w-full sm:w-auto"*/}
+                  {/*  type="submit"*/}
+                  {/*  // disabled={!(isValid && customData.paymentMethod.length)}*/}
+                  {/*  disabled={!isValid}*/}
+                  {/*  startIcon={<SendIcon />}*/}
+                  {/*>*/}
+                  {/*  {t("label:sendOrder")}*/}
+                  {/*</Button>*/}
+                  <LoadingButton
                     color="secondary"
                     variant="contained"
                     className="font-semibold rounded-4 w-full sm:w-auto"
@@ -500,279 +677,321 @@ const createOrder = () => {
                     // disabled={!(isValid && customData.paymentMethod.length)}
                     disabled={!isValid}
                     startIcon={<SendIcon />}
+                    loading={loading}
+                    loadingPosition="center"
                   >
-                    {t("label:sendOrder")}
-                  </Button>
+                    {t("label:createOrder")}
+                  </LoadingButton>
                 </div>
               </Hidden>
             </div>
             <Hidden smUp>
-              <Accordion
-                defaultExpanded={true}
-                className={`${!expandedPanelOrder ? "bg-primary-25" : "bg-primary-700"
+              <div className="px-10">
+                <Accordion
+                  defaultExpanded={true}
+                  className={`${
+                    !expandedPanelOrder ? "bg-primary-25" : "bg-primary-700"
                   } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
-              >
-                <AccordionSummary
-                  expandIcon={
-                    !expandedPanelOrder ? (
-                      <IoMdAdd className="icon-size-20" />
-                    ) : (
-                      <FiMinus className={`icon-size-20 ${!expandedPanelOrder ? "" : "text-white"}`}
-                      />
-                    )
-                  }
-                  onClick={() => setExpandedPanelOrder(!expandedPanelOrder)}
-                  id="panel2a-header"
                 >
-                  <div
-                    className={`subtitle3  flex gap-10 my-auto ${!expandedPanelOrder
-                      ? "text-MonochromeGray-700"
-                      : "text-white"
-                      }`}
+                  <AccordionSummary
+                    expandIcon={
+                      !expandedPanelOrder ? (
+                        <IoMdAdd className="icon-size-20" />
+                      ) : (
+                        <FiMinus
+                          className={`icon-size-20 ${
+                            !expandedPanelOrder ? "" : "text-white"
+                          }`}
+                        />
+                      )
+                    }
+                    onClick={() => setExpandedPanelOrder(!expandedPanelOrder)}
+                    id="panel2a-header"
                   >
-                    {t("label:orderDetails")}
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails className="bg-white px-0">
-                  {addOrderIndex.map((index) => (
-                    <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20">
-                      <Controller
-                        control={control}
-                        required
-                        name={`order[${index}].productName`}
-                        render={({ field: { ref, onChange, ...field } }) => (
-                          <Autocomplete
-                            disabled={
-                              index === 0 ||
-                                index === Math.min(...addOrderIndex)
-                                ? false
-                                : !watch(
-                                  `order[${index -
-                                  (index -
-                                    addOrderIndex[
-                                    addOrderIndex.indexOf(index - 1)
-                                    ])
-                                  }].productName`
-                                )
-                            }
-                            freeSolo
-                            autoSelect
-                            options={productsList}
-                            forcePopupIcon={<Search />}
-                            getOptionLabel={(option) =>
-                              option?.name ? option.name : option ? option : ""
-                            }
-                            size="small"
-                            //className="custom-input-height"
-                            onChange={(_, data) => {
-                              if (data) {
-                                if (data?.name) {
-                                  setValue(
-                                    `order[${index}].productName`,
-                                    data.name
-                                  );
-                                  setValue(
-                                    `order[${index}].productID`,
-                                    data.id
-                                  );
-                                  setValue(`order[${index}].rate`, data.price);
-                                  setValue(`order[${index}].tax`, data.tax);
-                                  disableCurrentProductRow(index);
-
-                                  const watchRate = watch(
-                                    `order[${index}].rate`
-                                  );
-                                  const watchTax = watch(`order[${index}].tax`);
-                                  const watchName = watch(
-                                    `order[${index}].productName`
-                                  );
-                                  const watchId = watch(
-                                    `order[${index}].productID`
-                                  );
-
-                                  for (
-                                    let i = 0;
-                                    i < addOrderIndex.length;
-                                    i++
-                                  ) {
-                                    if (
-                                      watchName &&
-                                      watchId &&
-                                      watchRate &&
-                                      watchTax &&
-                                      i !== index &&
-                                      watchName ===
-                                      watch(`order[${i}].productName`) &&
-                                      watchId ===
-                                      watch(`order[${i}].productID`) &&
-                                      watchRate === watch(`order[${i}].rate`) &&
-                                      watchTax === watch(`order[${i}].tax`)
-                                    ) {
-                                      let quantityNum = isNaN(
-                                        parseInt(watch(`order[${i}].quantity`))
-                                      )
-                                        ? 1
-                                        : parseInt(
-                                          watch(`order[${i}].quantity`)
-                                        );
-                                      setValue(
-                                        `order[${i}].quantity`,
-                                        quantityNum + 1
-                                      );
-                                      onDelete(index);
-                                      enqueueSnackbar(
-                                        `Same product found in Row ${i + 1
-                                        } and ${index + 1}, merged together!`,
-                                        { variant: "success" }
-                                      );
-                                    }
-                                  }
-                                } else
-                                  setValue(
-                                    `order[${index}].productName`,
-                                    data ? data : ""
-                                  );
-                              } else {
-                                setValue(`order[${index}].productName`, "");
-                                setValue(`order[${index}].productID`, "");
-                                setValue(`order[${index}].rate`, "");
-                                setValue(`order[${index}].tax`, "");
-                                enableCurrentProductRow(index);
-                              }
-                              return onChange(data);
-                            }}
-                            renderOption={(props, option, { selected }) => (
-                              <MenuItem
-                                {...props}
-                                key={option.uuid}
-                              >{`${option.name}`}</MenuItem>
-                            )}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                placeholder='Product Name'
-                                {...field}
-                                className="custom-input-height"
-                                inputRef={ref}
-                              />
-                            )}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name={`order[${index}].productID`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="Product ID"
-                            className="bg-white custom-input-height"
-                            type="text"
-                            autoComplete="off"
-                            error={!!errors.productID}
-                            helperText={errors?.productID?.message}
-                            variant="outlined"
-                            fullWidth
-                            disabled={disableRowIndexes.includes(index)}
-                          />
-                        )}
-                      />
-                      <div className="grid grid-cols-3 gap-20">
+                    <div
+                      className={`subtitle3  flex gap-10 my-auto ${
+                        !expandedPanelOrder
+                          ? "text-MonochromeGray-700"
+                          : "text-white"
+                      }`}
+                    >
+                      {t("label:orderDetails")}
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails className="bg-white px-0">
+                    <div className="sticky top-28 z-40">
+                      <Button
+                        className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
+                        startIcon={<AddIcon className="text-main" />}
+                        variant="contained"
+                        onClick={() => addNewOrder()}
+                        disabled={addOrderIndex.length >= 20 ? true : false}
+                      >
+                        Add Item
+                      </Button>
+                    </div>
+                    {addOrderIndex.map((index) => (
+                      <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
                         <Controller
-                          name={`order[${index}].quantity`}
                           control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label="Qty"
-                              className="bg-white custom-input-height col-span-2"
-                              type="number"
-                              required
-                              autoComplete="off"
-                              error={!!errors?.order?.[index]?.quantity}
-                              // helperText={
-                              //   errors?.order?.[index]?.quantity?.message
-                              // }
-                              // error={!!errors.quantity}
-                              // helperText={errors?.quantity?.message}
-                              variant="outlined"
-                              fullWidth
+                          required
+                          name={`order[${index}].productName`}
+                          render={({ field: { ref, onChange, ...field } }) => (
+                            <Autocomplete
+                              disabled={
+                                index === 0 ||
+                                index === Math.min(...addOrderIndex)
+                                  ? false
+                                  : !watch(
+                                      `order[${
+                                        index -
+                                        (addOrderIndex[
+                                          addOrderIndex.indexOf(index)
+                                        ] -
+                                          addOrderIndex[
+                                            addOrderIndex.indexOf(index) - 1
+                                          ])
+                                      }].productName`
+                                    )
+                              }
+                              freeSolo
+                              autoSelect
+                              onBlur={pnameOnBlur}
+                              options={productsList}
+                              // forcePopupIcon={<Search />}
+                              getOptionLabel={(option) =>
+                                option?.name
+                                  ? option.name
+                                  : option
+                                  ? option
+                                  : ""
+                              }
+                              size="small"
+                              //className="custom-input-height"
+                              onChange={(_, data) => {
+                                if (data) {
+                                  if (data?.name) {
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data.name
+                                    );
+                                    setValue(
+                                      `order[${index}].productID`,
+                                      data.id
+                                    );
+                                    setValue(
+                                      `order[${index}].rate`,
+                                      data.price
+                                    );
+                                    setValue(`order[${index}].tax`, data.tax);
+                                    disableCurrentProductRow(index);
+
+                                    const watchRate = watch(
+                                      `order[${index}].rate`
+                                    );
+                                    const watchTax = watch(
+                                      `order[${index}].tax`
+                                    );
+                                    const watchName = watch(
+                                      `order[${index}].productName`
+                                    );
+                                    const watchId = watch(
+                                      `order[${index}].productID`
+                                    );
+
+                                    for (
+                                      let i = 0;
+                                      i < addOrderIndex.length;
+                                      i++
+                                    ) {
+                                      if (
+                                        watchName &&
+                                        watchId &&
+                                        watchRate &&
+                                        watchTax &&
+                                        i !== index &&
+                                        watchName ===
+                                          watch(`order[${i}].productName`) &&
+                                        watchId ===
+                                          watch(`order[${i}].productID`) &&
+                                        watchRate ===
+                                          watch(`order[${i}].rate`) &&
+                                        watchTax === watch(`order[${i}].tax`)
+                                      ) {
+                                        let quantityNum = isNaN(
+                                          parseInt(
+                                            watch(`order[${i}].quantity`)
+                                          )
+                                        )
+                                          ? 1
+                                          : parseInt(
+                                              watch(`order[${i}].quantity`)
+                                            );
+                                        setValue(
+                                          `order[${i}].quantity`,
+                                          quantityNum + 1
+                                        );
+                                        // onDelete(index);
+                                        onSameRowAction(index);
+                                        enqueueSnackbar(
+                                          `Same product found in Row ${
+                                            i + 1
+                                          } and ${index + 1}, merged together!`,
+                                          { variant: "success" }
+                                        );
+                                      }
+                                    }
+                                  } else
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data ? data : ""
+                                    );
+                                } else {
+                                  setValue(`order[${index}].productName`, "");
+                                  setValue(`order[${index}].productID`, "");
+                                  setValue(`order[${index}].rate`, "");
+                                  setValue(`order[${index}].tax`, "");
+                                  enableCurrentProductRow(index);
+                                }
+                                return onChange(data);
+                              }}
+                              renderOption={(props, option, { selected }) => (
+                                <MenuItem
+                                  {...props}
+                                  key={option.uuid}
+                                >{`${option.name}`}</MenuItem>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  placeholder="Product Name"
+                                  {...field}
+                                  className="custom-input-height"
+                                  inputRef={ref}
+                                />
+                              )}
                             />
                           )}
                         />
                         <Controller
-                          name={`order[${index}].rate`}
+                          name={`order[${index}].productID`}
                           control={control}
                           render={({ field }) => (
                             <TextField
                               {...field}
-                              label="Rate"
-                              className="bg-white custom-input-height col-span-1"
-                              type="number"
+                              label="Product ID"
+                              className="bg-white custom-input-height"
+                              type="text"
                               autoComplete="off"
-                              error={!!errors?.order?.[index]?.rate}
-                              // helperText={errors?.order?.[index]?.rate?.message}
+                              error={!!errors.productID}
+                              helperText={errors?.productID?.message}
                               variant="outlined"
-                              required
                               fullWidth
+                              value={field.value || ""}
                               disabled={disableRowIndexes.includes(index)}
                             />
                           )}
                         />
-                      </div>
-                      <div className="grid grid-cols-3 gap-20">
-                        <Controller
-                          name={`order[${index}].discount`}
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label="Discount"
-                              className="bg-white custom-input-height col-span-2"
-                              type="number"
-                              autoComplete="off"
-                              error={!!errors.discount}
-                              helperText={errors?.discount?.message}
-                              variant="outlined"
-                              fullWidth
-                            />
-                          )}
-                        />
-                        {!disableRowIndexes.includes(index) ? (
+                        <div className="grid grid-cols-3 gap-20">
                           <Controller
-                            name={`order[${index}].tax`}
+                            name={`order[${index}].quantity`}
                             control={control}
                             render={({ field }) => (
-                              <FormControl
-                                error={!!errors?.order?.[index]?.tax}
+                              <TextField
+                                {...field}
+                                label="Qty"
+                                className="bg-white custom-input-height col-span-2"
+                                type="number"
                                 required
+                                value={field.value || ""}
+                                autoComplete="off"
+                                error={!!errors?.order?.[index]?.quantity}
+                                // helperText={
+                                //   errors?.order?.[index]?.quantity?.message
+                                // }
+                                // error={!!errors.quantity}
+                                // helperText={errors?.quantity?.message}
+                                variant="outlined"
                                 fullWidth
-                              >
-                                <InputLabel id="demo-simple-select-outlined-label-type">
-                                  Tax
-                                </InputLabel>
-                                <Select
-                                  {...field}
-                                  labelId="demo-simple-select-outlined-label-type"
-                                  id="demo-simple-select-outlined"
-                                  label="Tax"
-                                  defaultValue={defaultTaxValue}
-                                  className="col-span-1"
-                                  disabled={disableRowIndexes.includes(index)}
-                                  inputlabelprops={{
-                                    shrink: !!field.value || touchedFields.tax,
-                                  }}
+                              />
+                            )}
+                          />
+                          <Controller
+                            name={`order[${index}].rate`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Rate"
+                                className="bg-white custom-input-height col-span-1"
+                                autoComplete="off"
+                                error={!!errors?.order?.[index]?.rate}
+                                // helperText={errors?.order?.[index]?.rate?.message}
+                                variant="outlined"
+                                required
+                                value={field.value || ""}
+                                fullWidth
+                                disabled={disableRowIndexes.includes(index)}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 gap-20">
+                          <Controller
+                            name={`order[${index}].discount`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Discount"
+                                className="bg-white custom-input-height col-span-2"
+                                type="number"
+                                autoComplete="off"
+                                value={field.value || ""}
+                                error={!!errors.discount}
+                                helperText={errors?.discount?.message}
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                          />
+                          {!disableRowIndexes.includes(index) ? (
+                            <Controller
+                              name={`order[${index}].tax`}
+                              control={control}
+                              render={({ field }) => (
+                                <FormControl
+                                  error={!!errors?.order?.[index]?.tax}
+                                  required
+                                  fullWidth
                                 >
-                                  {taxes && taxes.length ? taxes.map((tax, index) => (
-                                      tax.status === "Active" ? (
+                                  <InputLabel id="demo-simple-select-outlined-label-type">
+                                    Tax
+                                  </InputLabel>
+                                  <Select
+                                    {...field}
+                                    labelId="demo-simple-select-outlined-label-type"
+                                    id="demo-simple-select-outlined"
+                                    label="Tax"
+                                    value={field.value || ""}
+                                    defaultValue={defaultTaxValue}
+                                    className="col-span-1"
+                                    disabled={disableRowIndexes.includes(index)}
+                                    inputlabelprops={{
+                                      shrink:
+                                        !!field.value || touchedFields.tax,
+                                    }}
+                                  >
+                                    {!!taxes && taxes.length ? (
+                                      taxes.map((tax, index) =>
+                                        tax.status === "Active" ? (
                                           <MenuItem
                                             key={index}
                                             value={tax.value}
                                           >
                                             {tax.value}
                                           </MenuItem>
-                                        )
-                                        : (
+                                        ) : (
                                           <MenuItem
                                             key={index}
                                             value={tax.value}
@@ -781,75 +1000,70 @@ const createOrder = () => {
                                             {tax.value}
                                           </MenuItem>
                                         )
-                                    ))
-                                    :<MenuItem
-                                      key={0}
-                                      value={0}
-                                    >
-                                      0
-                                    </MenuItem>}
-                                </Select>
-                                <FormHelperText>
-                                  {errors?.order?.[index]?.tax?.message}
-                                </FormHelperText>
-                              </FormControl>
-                            )}
-                          />
-                        ) : (
-                          <Controller
-                            name={`order[${index}].tax`}
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Tax"
-                                className="bg-white custom-input-height"
-                                type="number"
-                                autoComplete="off"
-                                error={!!errors?.order?.[index]?.tax}
-                                helperText={
-                                  errors?.order?.[index]?.tax?.message
-                                }
-                                variant="outlined"
-                                required
-                                placeholder="Tax"
-                                disabled={disableRowIndexes.includes(index)}
-                                fullWidth
-                              />
-                            )}
-                          />
-                        )}
-                      </div>
-                      <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
-                        <div>{t("label:total")}</div>
-                        <div>
-                          {t("label:nok")} {productWiseTotal(index)}
+                                      )
+                                    ) : (
+                                      <MenuItem key={0} value={0}>
+                                        0
+                                      </MenuItem>
+                                    )}
+                                  </Select>
+                                  <FormHelperText>
+                                    {errors?.order?.[index]?.tax?.message}
+                                  </FormHelperText>
+                                </FormControl>
+                              )}
+                            />
+                          ) : (
+                            <Controller
+                              name={`order[${index}].tax`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label="Tax"
+                                  className="bg-white custom-input-height"
+                                  type="number"
+                                  autoComplete="off"
+                                  error={!!errors?.order?.[index]?.tax}
+                                  helperText={
+                                    errors?.order?.[index]?.tax?.message
+                                  }
+                                  variant="outlined"
+                                  required
+                                  placeholder="Tax"
+                                  disabled={disableRowIndexes.includes(index)}
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          )}
                         </div>
+                        <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
+                          <div>{t("label:total")}</div>
+                          <div>
+                            {t("label:nok")} {productWiseTotal(index)}
+                          </div>
+                        </div>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                          startIcon={
+                            <RemoveCircleOutlineIcon className="text-red-400" />
+                          }
+                          onClick={() => onDelete(index)}
+                        >
+                          Remove Item
+                        </Button>
                       </div>
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
-                        startIcon={
-                          <RemoveCircleOutlineIcon className="text-red-400" />
-                        }
-                        onClick={() => onDelete(index)}
-                      >
-                        Remove Item
-                      </Button>
+                    ))}
+                    <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                      {/*TODO: joni vai please add grandtotal here*/}
+                      {t("label:grandTotal")} : {t("label:nok")} {grandTotal}
                     </div>
-                  ))}
-                </AccordionDetails>
-              </Accordion>
-              <Button
-                className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
-                startIcon={<AddIcon className="text-main" />}
-                variant="contained"
-                onClick={() => addNewOrder()}
-                disabled={addOrderIndex.length >= 20 ? true : false}
-              >
-                Add Item
-              </Button>
+                  </AccordionDetails>
+                </Accordion>
+              </div>
             </Hidden>
 
             <Hidden smDown>
@@ -892,21 +1106,25 @@ const createOrder = () => {
                           <Autocomplete
                             disabled={
                               index === 0 ||
-                                index === Math.min(...addOrderIndex)
+                              index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                  `order[${index -
-                                  (index -
-                                    addOrderIndex[
-                                    addOrderIndex.indexOf(index - 1)
-                                    ])
-                                  }].productName`
-                                )
+                                    `order[${
+                                      index -
+                                      (addOrderIndex[
+                                        addOrderIndex.indexOf(index)
+                                      ] -
+                                        addOrderIndex[
+                                          addOrderIndex.indexOf(index) - 1
+                                        ])
+                                    }].productName`
+                                  )
                             }
                             freeSolo
                             autoSelect
                             options={productsList}
-                            forcePopupIcon={<Search />}
+                            onBlur={pnameOnBlur}
+                            // forcePopupIcon={<Search />}
                             getOptionLabel={(option) =>
                               option?.name ? option.name : option ? option : ""
                             }
@@ -950,9 +1168,9 @@ const createOrder = () => {
                                       watchTax &&
                                       i !== index &&
                                       watchName ===
-                                      watch(`order[${i}].productName`) &&
+                                        watch(`order[${i}].productName`) &&
                                       watchId ===
-                                      watch(`order[${i}].productID`) &&
+                                        watch(`order[${i}].productID`) &&
                                       watchRate === watch(`order[${i}].rate`) &&
                                       watchTax === watch(`order[${i}].tax`)
                                     ) {
@@ -961,15 +1179,16 @@ const createOrder = () => {
                                       )
                                         ? 1
                                         : parseInt(
-                                          watch(`order[${i}].quantity`)
-                                        );
+                                            watch(`order[${i}].quantity`)
+                                          );
                                       setValue(
                                         `order[${i}].quantity`,
                                         quantityNum + 1
                                       );
-                                      onDelete(index);
+                                      onSameRowAction(index);
                                       enqueueSnackbar(
-                                        `Same product found in Row ${i + 1
+                                        `Same product found in Row ${
+                                          i + 1
                                         } and ${index + 1}, merged together!`,
                                         { variant: "success" }
                                       );
@@ -1001,8 +1220,8 @@ const createOrder = () => {
                                 {...field}
                                 className="custom-input-height"
                                 inputRef={ref}
-                              // error={!!errors?.order?.[index]?.productName}
-                              // helperText={errors?.order?.[index]?.productName?.message}
+                                // error={!!errors?.order?.[index]?.productName}
+                                // helperText={errors?.order?.[index]?.productName?.message}
                               />
                             )}
                           />
@@ -1058,7 +1277,6 @@ const createOrder = () => {
                             {...field}
                             //label="Rate"
                             className="bg-white custom-input-height"
-                            type="number"
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
@@ -1108,31 +1326,27 @@ const createOrder = () => {
                                 className="custom-select-create-order"
                                 disabled={disableRowIndexes.includes(index)}
                               >
-                                {taxes && taxes.length ? taxes.map((tax, index) => (
+                                {taxes && taxes.length ? (
+                                  taxes.map((tax, index) =>
                                     tax.status === "Active" ? (
-                                        <MenuItem
-                                          key={index}
-                                          value={tax.value}
-                                        >
-                                          {tax.value}
-                                        </MenuItem>
-                                      )
-                                      : (
-                                        <MenuItem
-                                          key={index}
-                                          value={tax.value}
-                                          disabled
-                                        >
-                                          {tax.value}
-                                        </MenuItem>
-                                      )
-                                  ))
-                                  :<MenuItem
-                                    key={0}
-                                    value={0}
-                                  >
+                                      <MenuItem key={index} value={tax.value}>
+                                        {tax.value}
+                                      </MenuItem>
+                                    ) : (
+                                      <MenuItem
+                                        key={index}
+                                        value={tax.value}
+                                        disabled
+                                      >
+                                        {tax.value}
+                                      </MenuItem>
+                                    )
+                                  )
+                                ) : (
+                                  <MenuItem key={0} value={0}>
                                     0
-                                  </MenuItem>}
+                                  </MenuItem>
+                                )}
                               </Select>
                               <FormHelperText>
                                 {errors?.order?.[index]?.tax?.message}
@@ -1159,13 +1373,24 @@ const createOrder = () => {
                               disabled={disableRowIndexes.includes(index)}
                               fullWidth
                             />
-                          )}
+                          )}  PopperProps={{
+                          sx: {
+                            "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                              borderRadius: '8px',
+                              "&.Mui-selected": {
+                                backgroundColor: "#c9eee7",
+                                color: "#323434",
+                              }
+                            }
+                          }
+                        }}
                         />
                       )}
                     </div>
                     <div className="my-auto">
                       <div className="body3 text-right">
-                        NOK {productWiseTotal(index)}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(productWiseTotal(index))}
                       </div>
                     </div>
                     <div className="my-auto">
@@ -1199,6 +1424,7 @@ const createOrder = () => {
                       render={({ field: { onChange, value, onBlur } }) => (
                         <DesktopDatePicker
                           label={t("label:orderDate")}
+                          mask=""
                           inputFormat="dd.MM.yyyy"
                           value={!value ? new Date() : value}
                           required
@@ -1210,6 +1436,17 @@ const createOrder = () => {
                           maxDate={new Date().setDate(
                             new Date().getDate() + 30
                           )}
+                          PopperProps={{
+                            sx: {
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                borderRadius: '8px',
+                                "&.Mui-selected": {
+                                  backgroundColor: "#c9eee7",
+                                  color: "#323434",
+                                }
+                              }
+                            }
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -1217,7 +1454,11 @@ const createOrder = () => {
                               required
                               type="date"
                               error={!!errors.orderDate}
-                              helperText={errors?.orderDate?.message}
+                              helperText={
+                                errors?.orderDate?.message
+                                    ? t(`validation:${errors?.orderDate?.message}`)
+                                    : ""
+                              }
                               sx={{
                                 svg: { color: "#69C77E" },
                               }}
@@ -1226,15 +1467,15 @@ const createOrder = () => {
                         />
                       )}
                     />
-                    <Tooltip
-                      placement="bottom"
-                      title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                    >
-                      <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                        <ErrorIcon className="icon-size-14 my-auto " />
-                        {t("label:whatIsThis")}
-                      </div>
-                    </Tooltip>
+                    {/*<Tooltip*/}
+                    {/*  placement="bottom"*/}
+                    {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                    {/*>*/}
+                    {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                    {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                    {/*    {t("label:whatIsThis")}*/}
+                    {/*  </div>*/}
+                    {/*</Tooltip>*/}
                   </div>
                   <div className="flex flex-col gap-5">
                     <Controller
@@ -1252,14 +1493,27 @@ const createOrder = () => {
                             <DesktopDateTimePicker
                               label={t("label:dueDateForPaymentLink")}
                               // inputFormat="dd MMM, yyyy HH:mm"
+                              mask=""
                               inputFormat="dd.MM.yyyy HH:mm"
                               autoFocus
                               ampm={false}
+                              PopperProps={{
+                                sx: {
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
+                                    borderRadius: '8px',
+                                    "&.Mui-selected": {
+                                      backgroundColor: "#c9eee7",
+                                      color: "#323434",
+                                    }
+                                  }
+                                }
+                              }}
                               disableOpenPicker
                               value={
                                 !value
                                   ? new Date().setDate(new Date().getDate() + 1)
                                   : value
+                                // : value
                               }
                               required
                               open={datePickerOpen}
@@ -1267,14 +1521,22 @@ const createOrder = () => {
                               minDate={
                                 watchOrderDate
                                   ? new Date().setDate(
-                                    watchOrderDate.getDate() + 1
-                                  )
+                                      watchOrderDate.getDate() + 1
+                                    )
                                   : new Date().setDate(
-                                    new Date().getDate() - 30
-                                  )
+                                      new Date().getDate() - 30
+                                    )
                               }
                               disablePast={true}
-                              onChange={onChange}
+                              onChange={(_) => {
+                                let utc =
+                                  _.getTime() + _.getTimezoneOffset() * 60000;
+                                let nd = new Date(
+                                  utc + 3000000 * new Date().getTimezoneOffset()
+                                );
+                                return onChange(_);
+                                // return onChange(nd)
+                              }}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
@@ -1288,6 +1550,8 @@ const createOrder = () => {
                                   error={!!errors.dueDatePaymentLink}
                                   helperText={
                                     errors?.dueDatePaymentLink?.message
+                                        ? t(`validation:${errors?.dueDatePaymentLink?.message}`)
+                                        : ""
                                   }
                                   sx={{
                                     svg: {
@@ -1384,15 +1648,15 @@ const createOrder = () => {
                         </ClickAwayListener>
                       )}
                     />
-                    <Tooltip
-                      placement="bottom"
-                      title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."
-                    >
-                      <div className="flex gap-5 body4 text-primary-500 cursor-pointer">
-                        <ErrorIcon className="icon-size-14 my-auto " />
-                        {t("label:whatIsThis")}
-                      </div>
-                    </Tooltip>
+                    {/*<Tooltip*/}
+                    {/*  placement="bottom"*/}
+                    {/*  title="Sagittis risus quis lacus, lacus. Molestie enim, eleifend massa semper risus amet justo diam enim. Enim turpis ornare non nisl morbi mauris at habitant."*/}
+                    {/*>*/}
+                    {/*  <div className="flex gap-5 body4 text-primary-500 cursor-pointer">*/}
+                    {/*    <ErrorIcon className="icon-size-14 my-auto " />*/}
+                    {/*    {t("label:whatIsThis")}*/}
+                    {/*  </div>*/}
+                    {/*</Tooltip>*/}
                   </div>
                   <div></div>
                 </div>
@@ -1408,10 +1672,11 @@ const createOrder = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-20 w-full md:w-3/4 my-32">
                         <Button
                           variant="outlined"
-                          className={`body2 ${customData?.orderBy === "sms"
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
-                            }`}
+                          className={`body2 ${
+                            customData?.orderBy === "sms"
+                              ? "create-order-capsule-button-active"
+                              : "create-order-capsule-button"
+                          }`}
                           startIcon={
                             <CheckIcon
                               className={
@@ -1424,24 +1689,25 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                ...customData,
-                                orderBy: "sms",
-                                isCeditCheck: false,
-                              })
+                                  ...customData,
+                                  orderBy: "sms",
+                                  isCeditCheck: false,
+                                })
                               : setCustomData({
-                                ...customData,
-                                orderBy: "sms",
-                              });
+                                  ...customData,
+                                  orderBy: "sms",
+                                });
                           }}
                         >
                           {t("label:sms")}
                         </Button>
                         <Button
                           variant="outlined"
-                          className={`body2 ${customData?.orderBy === "email"
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
-                            }`}
+                          className={`body2 ${
+                            customData?.orderBy === "email"
+                              ? "create-order-capsule-button-active"
+                              : "create-order-capsule-button"
+                          }`}
                           startIcon={
                             <CheckIcon
                               className={
@@ -1454,24 +1720,25 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                ...customData,
-                                orderBy: "email",
-                                isCeditCheck: false,
-                              })
+                                  ...customData,
+                                  orderBy: "email",
+                                  isCeditCheck: false,
+                                })
                               : setCustomData({
-                                ...customData,
-                                orderBy: "email",
-                              });
+                                  ...customData,
+                                  orderBy: "email",
+                                });
                           }}
                         >
                           {t("label:email")}
                         </Button>
                         <Button
                           variant="outlined"
-                          className={`body2 ${customData?.orderBy === "invoice"
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
-                            }`}
+                          className={`body2 ${
+                            customData?.orderBy === "invoice"
+                              ? "create-order-capsule-button-active"
+                              : "create-order-capsule-button"
+                          }`}
                           startIcon={
                             <CheckIcon
                               className={
@@ -1670,15 +1937,15 @@ const createOrder = () => {
                     <div className="body3 text-MonochromeGray-300">
                       {t("label:creditCheckDetailsOrderPage")}
                     </div>
-                    <div className="send-order-credit-check mt-24 mb-16">
-
+                    <div className="send-order-credit-check">
                       <div className="flex gap-20 w-full md:w-3/4 my-32">
                         <Button
                           variant="outlined"
-                          className={`body2 ${customData?.isCeditCheck === true
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
-                            }`}
+                          className={`body2 ${
+                            customData?.isCeditCheck === true
+                              ? "create-order-capsule-button-active"
+                              : "create-order-capsule-button"
+                          }`}
                           onClick={() => {
                             setCustomData({
                               ...customData,
@@ -1697,16 +1964,16 @@ const createOrder = () => {
                         </Button>
                         <Button
                           variant="outlined"
-                          className={`body2 ${customData?.isCeditCheck === false
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
-                            }`}
+                          className={`body2 ${
+                            customData?.isCeditCheck === false
+                              ? "create-order-capsule-button-active"
+                              : "create-order-capsule-button"
+                          }`}
                           onClick={() => {
                             setCustomData({
                               ...customData,
                               isCeditCheck: false,
                             });
-
                           }}
                         >
                           {t("label:no")}
@@ -1716,8 +1983,9 @@ const createOrder = () => {
                   </div>
                   <div className="accordion-for-customer-details">
                     <Accordion
-                      className={`${!expandedPanel2 ? "bg-primary-25" : "bg-primary-700"
-                        } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
+                      className={`${
+                        !expandedPanel2 ? "bg-primary-25" : "bg-primary-700"
+                      } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
                     >
                       <AccordionSummary
                         expandIcon={
@@ -1725,8 +1993,9 @@ const createOrder = () => {
                             <IoMdAdd className="icon-size-20" />
                           ) : (
                             <FiMinus
-                              className={`icon-size-20 ${!expandedPanel2 ? "" : "text-white"
-                                }`}
+                              className={`icon-size-20 ${
+                                !expandedPanel2 ? "" : "text-white"
+                              }`}
                             />
                           )
                         }
@@ -1734,24 +2003,29 @@ const createOrder = () => {
                         id="panel2a-header"
                       >
                         <div
-                          className={`subtitle3  flex gap-10 my-auto ${!expandedPanel2
-                            ? "text-MonochromeGray-700"
-                            : "text-white"
-                            }`}
+                          className={`subtitle3  flex gap-10 my-auto items-center ${
+                            !expandedPanel2
+                              ? "text-MonochromeGray-700"
+                              : "text-white"
+                          }`}
                         >
-                          {t("label:customerDetails")}
+                          <div className="my-auto mt-2">
+                            {t("label:customerDetails")}
+                          </div>
+
                           <span>
-                            {dirtyFields.primaryPhoneNumber &&
+                            {(dirtyFields.primaryPhoneNumber &&
                               dirtyFields.email &&
                               dirtyFields.customerName &&
                               dirtyFields.billingAddress &&
                               dirtyFields.billingZip &&
                               dirtyFields.billingCity &&
                               dirtyFields.billingCountry &&
-                              dirtyFields.orgorPID ? (
-                              <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                              dirtyFields.orgorPID) ||
+                            dirtyFields.searchCustomer ? (
+                              <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                             ) : (
-                              <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                              <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                             )}
                           </span>
                         </div>
@@ -1770,12 +2044,14 @@ const createOrder = () => {
                               <Autocomplete
                                 freeSolo
                                 options={customersList}
-                                forcePopupIcon={<Search />}
-                                getOptionLabel={(option) => option.name}
-                                className="custom-input-height"
+                                // forcePopupIcon={<Search />}
+                                getOptionLabel={(option) => option.searchString}
+                                className=""
                                 fullWidth
                                 onChange={(_, data) => {
                                   if (data) {
+                                    setCustomerSearchBy(undefined);
+                                    setCustomerSearchBoxLength(0);
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
                                     setValue("customerName", data.name);
@@ -1786,13 +2062,13 @@ const createOrder = () => {
                                     setValue("billingCountry", data.country);
                                     data.type === "Corporate"
                                       ? setCustomData({
-                                        ...customData,
-                                        customerType: "corporate",
-                                      })
+                                          ...customData,
+                                          customerType: "corporate",
+                                        })
                                       : setCustomData({
-                                        ...customData,
-                                        customerType: "private",
-                                      });
+                                          ...customData,
+                                          customerType: "private",
+                                        });
                                     data.type === "Corporate"
                                       ? setSelectedFromList("Corporate")
                                       : setSelectedFromList("Private");
@@ -1810,17 +2086,63 @@ const createOrder = () => {
                                   return onChange(data);
                                 }}
                                 renderOption={(props, option, { selected }) => (
-                                  <MenuItem
-                                    {...props}
-                                  >{`${option.name}`}</MenuItem>
+                                  <MenuItem {...props}>
+                                    {/*{`${option.name}`}*/}
+                                    {customerSearchBy ? (
+                                      <div>
+                                        {customerSearchBy === "name" &&
+                                        customerSearchBoxLength > 0 ? (
+                                          <div>
+                                            <span
+                                              style={{ color: "#0088AE" }}
+                                            >{`${option.name.slice(
+                                              0,
+                                              customerSearchBoxLength
+                                            )}`}</span>
+                                            <span>{`${option.name.slice(
+                                              customerSearchBoxLength
+                                            )}`}</span>
+                                          </div>
+                                        ) : (
+                                          <div>{`${option.name}`}</div>
+                                        )}
+                                        {customerSearchBy === "phone" &&
+                                        customerSearchBoxLength > 0 ? (
+                                          <div>
+                                            <span
+                                              style={{ color: "#0088AE" }}
+                                            >{`${option.phone.slice(
+                                              0,
+                                              customerSearchBoxLength
+                                            )}`}</span>
+                                            <span>{`${option.phone.slice(
+                                              customerSearchBoxLength
+                                            )}`}</span>
+                                          </div>
+                                        ) : (
+                                          <div>{`${option.phone}`}</div>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <div>
+                                        <div>{`${option.name}`}</div>
+                                        <div>{`${option.phone}`}</div>
+                                      </div>
+                                    )}
+                                  </MenuItem>
                                 )}
                                 renderInput={(params) => (
                                   <TextField
+                                    id="searchBox"
                                     {...params}
                                     {...field}
                                     //className='custom-input-height-div'
                                     inputRef={ref}
-                                    placeholder="Search by name, org ID, phone no. & email"
+                                    onChange={searchCustomerOnFocus}
+                                    // placeholder="Search by Name or Phone Number"
+                                    placeholder={t(
+                                      "label:searchByNameOrPhoneNo"
+                                    )}
                                   />
                                 )}
                               />
@@ -1834,27 +2156,28 @@ const createOrder = () => {
                           <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20">
                             <Button
                               variant="outlined"
-                              className={`body2 ${customData?.customerType === "private"
-                                ? "create-order-capsule-button-active"
-                                : "create-order-capsule-button"
-                                }`}
+                              className={`body2 ${
+                                customData?.customerType === "private"
+                                  ? "create-order-capsule-button-active"
+                                  : "create-order-capsule-button"
+                              }`}
                               onClick={() => {
                                 setCustomData({
                                   ...customData,
                                   customerType: "private",
                                 });
                                 setValue("orgorPID", "");
-
                               }}
                             >
                               {t("label:private")}
                             </Button>
                             <Button
                               variant="outlined"
-                              className={`body2 ${customData?.customerType === "corporate"
-                                ? "create-order-capsule-button-active"
-                                : "create-order-capsule-button"
-                                }`}
+                              className={`body2 ${
+                                customData?.customerType === "corporate"
+                                  ? "create-order-capsule-button-active"
+                                  : "create-order-capsule-button"
+                              }`}
                               onClick={() => {
                                 setCustomData({
                                   ...customData,
@@ -1897,7 +2220,11 @@ const createOrder = () => {
                                     value={field.value || ""}
                                   />
                                   <FormHelperText>
-                                    {errors?.primaryPhoneNumber?.message}
+                                    {
+                                    errors?.email?.message
+                                        ? t(`validation:${errors?.email?.message}`)
+                                        : ""
+                                  }
                                   </FormHelperText>
                                 </FormControl>
                               )}
@@ -1912,7 +2239,11 @@ const createOrder = () => {
                                   type="email"
                                   autoComplete="off"
                                   error={!!errors.email}
-                                  helperText={errors?.email?.message}
+                                  helperText={
+                                    errors?.email?.message
+                                        ? t(`validation:${errors?.email?.message}`)
+                                        : ""
+                                  }
                                   variant="outlined"
                                   fullWidth
                                   required={
@@ -1936,7 +2267,11 @@ const createOrder = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.customerName}
-                                    helperText={errors?.customerName?.message}
+                                    helperText={
+                                      errors?.customerName?.message
+                                          ? t(`validation:${errors?.customerName?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     required
@@ -1961,7 +2296,11 @@ const createOrder = () => {
                                     required={
                                       customData.customerType === "corporate"
                                     }
-                                    helperText={errors?.orgorPID?.message}
+                                    helperText={
+                                      errors?.orgorPID?.message
+                                          ? t(`validation:${errors?.orgorPID?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -1985,7 +2324,10 @@ const createOrder = () => {
                                       error={!!errors.billingAddress}
                                       helperText={
                                         errors?.billingAddress?.message
+                                            ? t(`validation:${errors?.billingAddress?.message}`)
+                                            : ""
                                       }
+
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2013,7 +2355,11 @@ const createOrder = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.billingZip}
-                                      helperText={errors?.billingZip?.message}
+                                      helperText={
+                                        errors?.billingZip?.message
+                                            ? t(`validation:${errors?.billingZip?.message}`)
+                                            : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2041,7 +2387,11 @@ const createOrder = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.billingCity}
-                                    helperText={errors?.billingCity?.message}
+                                    helperText={
+                                      errors?.billingCity?.message
+                                          ? t(`validation:${errors?.billingCity?.message}`)
+                                          : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     inputlabelprops={{
@@ -2096,6 +2446,11 @@ const createOrder = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
+                                      {
+                                      errors?.billingCity?.message
+                                          ? t(`validation:${errors?.billingCity?.message}`)
+                                          : ""
+                                    }
                                       {errors?.billingCountry?.message}
                                     </FormHelperText>
                                   </FormControl>
@@ -2108,8 +2463,9 @@ const createOrder = () => {
                     </Accordion>
                     <div className="my-20">
                       <Accordion
-                        className={`${!expanded0 ? "bg-primary-25" : "bg-primary-700"
-                          }  bg-primary-25 shadow-0 border-0 custom-accordion`}
+                        className={`${
+                          !expanded0 ? "bg-primary-25" : "bg-primary-700"
+                        }  bg-primary-25 shadow-0 border-0 custom-accordion`}
                       >
                         <AccordionSummary
                           expandIcon={
@@ -2117,8 +2473,9 @@ const createOrder = () => {
                               <IoMdAdd className="icon-size-20" />
                             ) : (
                               <FiMinus
-                                className={`icon-size-20 ${!expanded0 ? "" : "text-white"
-                                  }`}
+                                className={`icon-size-20 ${
+                                  !expanded0 ? "" : "text-white"
+                                }`}
                               />
                             )
                           }
@@ -2126,21 +2483,22 @@ const createOrder = () => {
                           id="panel1a-header"
                         >
                           <div
-                            className={`subtitle3  flex gap-10 my-auto ${!expanded0
-                              ? "text-MonochromeGray-700"
-                              : "text-white"
-                              }`}
+                            className={`subtitle3  flex gap-10 my-auto ${
+                              !expanded0
+                                ? "text-MonochromeGray-700"
+                                : "text-white"
+                            }`}
                           >
                             {t("label:invoiceReferences")}
                             <span>
                               {dirtyFields.referenceNumber &&
-                                dirtyFields.customerReference &&
-                                dirtyFields.receiptNo &&
-                                dirtyFields.customerNotes &&
-                                dirtyFields.termsConditions ? (
-                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                              dirtyFields.customerReference &&
+                              dirtyFields.receiptNo &&
+                              dirtyFields.customerNotes &&
+                              dirtyFields.termsConditions ? (
+                                <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                               ) : (
-                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                               )}
                             </span>
                           </div>
@@ -2161,6 +2519,8 @@ const createOrder = () => {
                                       error={!!errors.referenceNumber}
                                       helperText={
                                         errors?.referenceNumber?.message
+                                            ? t(`validation:${errors?.referenceNumber?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2185,6 +2545,8 @@ const createOrder = () => {
                                       error={!!errors.customerReference}
                                       helperText={
                                         errors?.customerReference?.message
+                                            ? t(`validation:${errors?.customerReference?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2206,7 +2568,11 @@ const createOrder = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.receiptNo}
-                                      helperText={errors?.receiptNo?.message}
+                                      helperText={
+                                        errors?.receiptNo?.message
+                                            ? t(`validation:${errors?.receiptNo?.message}`)
+                                            : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2233,6 +2599,8 @@ const createOrder = () => {
                                       error={!!errors.customerNotes}
                                       helperText={
                                         errors?.customerNotes?.message
+                                            ? t(`validation:${errors?.customerNotes?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2253,7 +2621,10 @@ const createOrder = () => {
                                       error={!!errors.termsConditions}
                                       helperText={
                                         errors?.termsConditions?.message
+                                            ? t(`validation:${errors?.termsConditions?.message}`)
+                                            : ""
                                       }
+
                                       variant="outlined"
                                       fullWidth
                                     />
@@ -2267,8 +2638,9 @@ const createOrder = () => {
                     </div>
                     <div className="my-20">
                       <Accordion
-                        className={`${!expanded1 ? "bg-primary-25" : "bg-primary-700"
-                          }  bg-primary-25 shadow-0 border-0 custom-accordion`}
+                        className={`${
+                          !expanded1 ? "bg-primary-25" : "bg-primary-700"
+                        }  bg-primary-25 shadow-0 border-0 custom-accordion`}
                       >
                         <AccordionSummary
                           expandIcon={
@@ -2276,8 +2648,9 @@ const createOrder = () => {
                               <IoMdAdd className="icon-size-20" />
                             ) : (
                               <FiMinus
-                                className={`icon-size-20 ${!expanded1 ? "" : "text-white"
-                                  }`}
+                                className={`icon-size-20 ${
+                                  !expanded1 ? "" : "text-white"
+                                }`}
                               />
                             )
                           }
@@ -2285,18 +2658,19 @@ const createOrder = () => {
                           id="panel1a-header"
                         >
                           <div
-                            className={`subtitle3  flex gap-10 my-auto ${!expanded1
-                              ? "text-MonochromeGray-700"
-                              : "text-white"
-                              }`}
+                            className={`subtitle3  flex gap-10 my-auto ${
+                              !expanded1
+                                ? "text-MonochromeGray-700"
+                                : "text-white"
+                            }`}
                           >
                             {t("label:internalReferences")}
                             <span>
                               {dirtyFields.internalReferenceNo &&
-                                dirtyFields.customerNotesInternal ? (
-                                <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
+                              dirtyFields.customerNotesInternal ? (
+                                <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                               ) : (
-                                <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
+                                <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
                               )}
                             </span>
                           </div>
@@ -2317,6 +2691,8 @@ const createOrder = () => {
                                       error={!!errors.internalReferenceNo}
                                       helperText={
                                         errors?.internalReferenceNo?.message
+                                            ? t(`validation:${errors?.internalReferenceNo?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2342,6 +2718,8 @@ const createOrder = () => {
                                       error={!!errors.customerNotesInternal}
                                       helperText={
                                         errors?.customerNotesInternal?.message
+                                            ? t(`validation:${errors?.customerNotesInternal?.message}`)
+                                            : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2357,16 +2735,29 @@ const createOrder = () => {
                   </div>
                   <Hidden smDown>
                     <div className="flex justify-end items-end mt-32">
-                      <Button
+                      {/*<Button*/}
+                      {/*  color="secondary"*/}
+                      {/*  variant="contained"*/}
+                      {/*  className="font-semibold rounded-4 w-full sm:w-auto"*/}
+                      {/*  type="submit"*/}
+                      {/*  startIcon={<SendIcon />}*/}
+                      {/*  disabled={!(isValid)}*/}
+                      {/*>*/}
+                      {/*  {t("label:sendOrder")}*/}
+                      {/*</Button>*/}
+                      <LoadingButton
                         color="secondary"
                         variant="contained"
                         className="font-semibold rounded-4 w-full sm:w-auto"
                         type="submit"
+                        // disabled={!(isValid && customData.paymentMethod.length)}
+                        disabled={!isValid}
                         startIcon={<SendIcon />}
-                        disabled={!(isValid)}
+                        loading={loading}
+                        loadingPosition="center"
                       >
-                        {t("label:sendOrder")}
-                      </Button>
+                        {t("label:createOrder")}
+                      </LoadingButton>
                     </div>
                   </Hidden>
                 </div>
@@ -2382,7 +2773,8 @@ const createOrder = () => {
                         {t("label:subTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {subTotal.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(subTotal.toFixed(2) / 2)}
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2390,7 +2782,8 @@ const createOrder = () => {
                         {t("label:tax")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {totalTax.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(totalTax.toFixed(2) / 2)}
                       </div>
                     </div>
                     <div className="flex justify-between items-center  my-20">
@@ -2398,7 +2791,8 @@ const createOrder = () => {
                         {t("label:discount")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {totalDiscount.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(totalDiscount.toFixed(2) / 2)}
                       </div>
                     </div>
                   </div>
@@ -2408,7 +2802,8 @@ const createOrder = () => {
                         {t("label:grandTotal")}
                       </div>
                       <div className="body3 text-MonochromeGray-700">
-                        {t("label:nok")} {grandTotal.toFixed(2) / 2}
+                        {t("label:nok")}{" "}
+                        {ThousandSeparator(grandTotal.toFixed(2) / 2)}
                       </div>
                     </div>
                   </div>
@@ -2419,17 +2814,30 @@ const createOrder = () => {
               </div>
               <Hidden smUp>
                 <div className="flex justify-end items-end mt-32 mb-44 mx-10 sm:mx-0">
-                  <Button
+                  {/*<Button*/}
+                  {/*  color="secondary"*/}
+                  {/*  variant="contained"*/}
+                  {/*  className="font-semibold rounded-4 w-full sm:w-auto"*/}
+                  {/*  type="submit"*/}
+                  {/*  startIcon={<SendIcon />}*/}
+                  {/*  // disabled={!(isValid && customData.paymentMethod.length)}*/}
+                  {/*  disabled={!isValid}*/}
+                  {/*>*/}
+                  {/*  {t("label:sendOrder")}*/}
+                  {/*</Button>*/}
+                  <LoadingButton
                     color="secondary"
                     variant="contained"
                     className="font-semibold rounded-4 w-full sm:w-auto"
                     type="submit"
-                    startIcon={<SendIcon />}
                     // disabled={!(isValid && customData.paymentMethod.length)}
                     disabled={!isValid}
+                    startIcon={<SendIcon />}
+                    loading={loading}
+                    loadingPosition="center"
                   >
-                    {t("label:sendOrder")}
-                  </Button>
+                    {t("label:createOrder")}
+                  </LoadingButton>
                 </div>
               </Hidden>
             </div>
@@ -2444,7 +2852,23 @@ const createOrder = () => {
                 >
                   {t("label:discard")}
                 </Button>
-                <Button
+                {/*<Button*/}
+                {/*  color="secondary"*/}
+                {/*  variant="contained"*/}
+                {/*  type="submit"*/}
+                {/*  className="rounded-full bg-primary-500 button2 py-5"*/}
+                {/*  disabled={!isValid}*/}
+                {/*  sx={{*/}
+                {/*    "&.Mui-disabled": {*/}
+                {/*      background: "#eaeaea",*/}
+                {/*      color: "#c0c0c0"*/}
+                {/*    }*/}
+                {/*  }}*/}
+                {/*  startIcon={<RedoIcon />}*/}
+                {/*>*/}
+                {/*  {t("label:sendOrder")}*/}
+                {/*</Button>*/}
+                <LoadingButton
                   color="secondary"
                   variant="contained"
                   type="submit"
@@ -2453,13 +2877,15 @@ const createOrder = () => {
                   sx={{
                     "&.Mui-disabled": {
                       background: "#eaeaea",
-                      color: "#c0c0c0"
-                    }
+                      color: "#c0c0c0",
+                    },
                   }}
                   startIcon={<RedoIcon />}
+                  loading={loading}
+                  loadingPosition="center"
                 >
-                  {t("label:sendOrder")}
-                </Button>
+                  {t("label:createOrder")}
+                </LoadingButton>
               </div>
             </Hidden>
           </form>

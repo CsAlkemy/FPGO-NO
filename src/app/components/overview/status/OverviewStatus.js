@@ -78,9 +78,14 @@ export const overviewStatuses = [
     color: "bg-sent text-m-grey-700",
   },
   {
-    id: 1,
+    id: 14,
     name: "Accepted",
     color: "bg-active text-m-grey-700",
+  },
+  {
+    id: 15,
+    name: "Refund Pending",
+    color: "bg-pending text-m-grey-700",
   },
 ];
 
@@ -101,19 +106,21 @@ function OverviewStatus(props) {
     : props.name === "Refunded"
     ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : props.name === "Partial Refunded"
-    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
     : props.name === "Completed"
     ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : props.name === "Reminder Sent"
-    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
     : props.name === "Reminder Sent"
-    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
     : props.name === "Debt Collection"
-    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
     : props.name === "Rejected"
     ? (classes = "inline text-12 py-4 px-8 rounded-sm min-w-3xl")
     : props.name === "Accepted"
     ? (classes = "inline text-12 py-4 px-6 rounded-sm min-w-3xl")
+    : props.name === "Refund Pending"
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
     : (classes = "inline text-12 py-4 px-10 rounded-sm min-w-3xl");
 
   return (

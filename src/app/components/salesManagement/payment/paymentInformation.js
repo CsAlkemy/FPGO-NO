@@ -22,7 +22,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate, useParams } from "react-router-dom";
-import CreditCheckService from "../../../data-access/services/creditCheckService/CreditCheckService";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import {
   PaymentDefaultValue,
@@ -32,6 +31,8 @@ import {
 } from "../utils/helper";
 import PaymentHeader from "./paymentHeader";
 import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
+import { LoadingButton } from "@mui/lab";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -39,11 +40,12 @@ const paymentInformation = () => {
   const [editOpen, setEditOpen] = React.useState(false);
   const orderUuid = useParams().uuid;
   const { enqueueSnackbar } = useSnackbar();
-  const [visible, setVisible] = React.useState(false);
+  const [isApproved, setIsApproved] = React.useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState([]);
-  const [creditCheckMessage, setCreditCheckMessage] = useState("N/A");
+  const [creditCheckMessage, setCreditCheckMessage] = useState("");
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
+  const [apiLoading, setApiLoading] = React.useState(false);
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -106,7 +108,6 @@ const paymentInformation = () => {
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
   const onSubmit = (values) => {
-    // console.log("custom data", customData);
     setOpen(true);
     const data = isUpdateData
       ? {
@@ -137,10 +138,9 @@ const paymentInformation = () => {
           // navigate(`${response?.data?.paymentUrl}`);
           window.location.href = `${response?.data?.paymentUrl}`;
         }
-        // console.log("r : ", response);
       })
       .catch((e) => {
-        enqueueSnackbar(e, { variant: "error" });
+        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setOpen(false);
       });
     // setTimeout(()=>{
@@ -223,14 +223,13 @@ const paymentInformation = () => {
   }, [isLoading]);
 
   const handleCreditCheck = () => {
+    setApiLoading(true);
     const params = {
       // type : customData?.customerType.toLowerCase(),
       type:
         getValues("orgIdCreditCheck").length === 9 ? "corporate" : "private",
       creditCheckId: getValues("orgIdCreditCheck"),
     };
-    if (params.creditCheckId.length !== 11 && params.creditCheckId.length !== 9)
-      return setCreditCheckMessage("N/A");
     const creditCheckPrivateData = {
       personalId: params.creditCheckId,
       type: params.type,
@@ -243,24 +242,18 @@ const paymentInformation = () => {
       params.type === "private"
         ? creditCheckPrivateData
         : creditCheckCorporateData;
-
+    setApiLoading(true);
     paymentScreenCreditCheck(preparedPayload).then((response) => {
-      // console.log("RES :", response);
-      if (response?.data?.data?.isApproved)
+      if (response?.data?.data?.isApproved) {
+        setIsApproved(true);
         setCreditCheckMessage("Credit check was successful");
-      else setCreditCheckMessage("Credit check was declined");
+        setApiLoading(false);
+      } else {
+        setIsApproved(false);
+        setCreditCheckMessage("Credit check was declined");
+        setApiLoading(false);
+      }
     });
-    // CreditCheckService.creditCheckForCheckout(preparedPayload, params.type)
-    //   .then((response) => {
-    //     // console.log("RES :", response);
-    //     if (response?.data?.isApproved)
-    //       setCreditCheckMessage("Credit check was successful");
-    //     else setCreditCheckMessage("Credit check was declined");
-    //   })
-    //   .catch((e) => {
-    //     enqueueSnackbar(e, { variant: "error" });
-    //     setCreditCheckMessage("N/A");
-    //   });
     setCustomData({
       ...customData,
       isCeditCheck: true,
@@ -351,27 +344,27 @@ const paymentInformation = () => {
                           : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
-                        {updatedData?.street
-                          ? updatedData.street + ", "
+                        {updatedData?.billingAddress
+                          ? updatedData.billingAddress + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.street
                           ? orderDetails?.customerDetails?.address?.street +
                             ", "
                           : "-, "}
-                        {updatedData?.city
-                          ? updatedData.city + ", "
+                        {updatedData?.billingCity
+                          ? updatedData.billingCity + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.city
                           ? orderDetails?.customerDetails?.address?.city + " "
                           : "-"}
-                        {updatedData?.zip
-                          ? updatedData.zip + ", "
+                        {updatedData?.billingZip
+                          ? updatedData.billingZip + ", "
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.zip
                           ? orderDetails?.customerDetails?.address?.zip + ", "
                           : "-, "}
-                        {updatedData?.country
-                          ? updatedData.country
+                        {updatedData?.billingCountry
+                          ? updatedData.billingCountry
                           : orderDetails?.customerDetails?.address &&
                             orderDetails?.customerDetails?.address?.country
                           ? orderDetails?.customerDetails?.address?.country
@@ -485,7 +478,7 @@ const paymentInformation = () => {
                                         value={field.value || ""}
                                       />
                                       <FormHelperText>
-                                        {errors?.phone?.message}
+                                        {errors?.phone?.message ? t(`validation:${errors?.phone?.message}`) : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -501,7 +494,7 @@ const paymentInformation = () => {
                                       className="mb-32 md:mb-auto"
                                       autoComplete="off"
                                       error={!!errors.email}
-                                      helperText={errors?.email?.message}
+                                      helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                       required={
@@ -527,7 +520,7 @@ const paymentInformation = () => {
                                         autoComplete="off"
                                         error={!!errors.customerName}
                                         helperText={
-                                          errors?.customerName?.message
+                                          errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -554,7 +547,7 @@ const paymentInformation = () => {
                                           "corporate"
                                         }
                                         helperText={
-                                          errors?.orgIdOrPNumber?.message
+                                          errors?.orgIdOrPNumber?.message ? t(`validation:${errors?.orgIdOrPNumber?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -582,7 +575,7 @@ const paymentInformation = () => {
                                       autoComplete="off"
                                       error={!!errors.billingAddress}
                                       helperText={
-                                        errors?.billingAddress?.message
+                                        errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -611,7 +604,7 @@ const paymentInformation = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.billingZip}
-                                      helperText={errors?.billingZip?.message}
+                                      helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
                                       // inputlabelprops={{
@@ -639,7 +632,7 @@ const paymentInformation = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.billingCity}
-                                    helperText={errors?.billingCity?.message}
+                                    helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -686,7 +679,7 @@ const paymentInformation = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.billingCountry?.message}
+                                      {errors?.billingCountry?.message ? t(`validation:${errors?.billingCountry?.message}`) : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -744,7 +737,7 @@ const paymentInformation = () => {
                               }}
                             >
                               <img
-                                className="max-h-20 md:max-h-48"
+                                className={` ${item.name === 'VIPPS' ? 'max-h-16 min-h-16': 'max-h-32 min-h-32'} md:max-h-48`}
                                 src={item.logo}
                                 alt={item.name}
                               />
@@ -772,24 +765,36 @@ const paymentInformation = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.orgIdCreditCheck}
-                                    helperText={
-                                      errors?.orgIdCreditCheck?.message
-                                    }
+                                    // helperText={
+                                    //   errors?.orgIdCreditCheck?.message
+                                    // }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
                                   />
                                 )}
                               />
-                              <Button
+                              <LoadingButton
                                 variant="contained"
+                                color="secondary"
                                 className="w-full md:w-auto font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800"
+                                aria-label="Confirm"
+                                size="large"
+                                type="button"
+                                loading={apiLoading}
+                                loadingPosition="center"
                                 onClick={() => handleCreditCheck()}
                               >
                                 {t("label:check")}
-                              </Button>
+                              </LoadingButton>
                             </div>
-                            <div className="text-MonochromeGray-300 my-8">
+                            <div
+                              className={`${
+                                !!isApproved
+                                  ? "text-green-600"
+                                  : "text-red-500"
+                              } text-MonochromeGray-300 my-8 mx-8`}
+                            >
                               {creditCheckMessage}
                             </div>
                           </div>
@@ -809,7 +814,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.subTotal
-                              ? orderDetails?.orderSummary?.subTotal
+                              ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                               : ""}
                           </div>
                         </div>
@@ -820,7 +825,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.tax
-                              ? orderDetails?.orderSummary?.tax
+                              ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                               : 0}
                           </div>
                         </div>
@@ -831,7 +836,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.discount
-                              ? orderDetails?.orderSummary?.discount
+                              ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                               : 0}
                           </div>
                         </div>
@@ -844,7 +849,7 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.grandTotal
-                              ? orderDetails?.orderSummary?.grandTotal
+                              ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                               : ""}
                           </div>
                         </div>
@@ -866,7 +871,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.subTotal
-                            ? orderDetails?.orderSummary?.subTotal
+                            ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                             : ""}
                         </div>
                       </div>
@@ -877,7 +882,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.tax
-                            ? orderDetails?.orderSummary?.tax
+                            ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                             : 0}
                         </div>
                       </div>
@@ -888,7 +893,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.discount
-                            ? orderDetails?.orderSummary?.discount
+                            ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                             : 0}
                         </div>
                       </div>
@@ -901,7 +906,7 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.grandTotal
-                            ? orderDetails?.orderSummary?.grandTotal
+                            ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                             : ""}
                         </div>
                       </div>

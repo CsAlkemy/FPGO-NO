@@ -7,32 +7,76 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
-import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
-import { Skeleton } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Hidden, Skeleton, TextField } from "@mui/material";
+import CustomersService from "../../../../data-access/services/customersService/CustomersService";
+import { DesktopDatePicker } from "@mui/lab";
+import { useParams } from "react-router-dom";
+import { CharCont } from "../../../../utils/helperFunctions";
+import Tooltip from "@mui/material/Tooltip";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
-  const [loading, setLoading] = useState(true);
+  const queryParams = useParams();
   const [logs, setLogs] = useState([]);
+  const [isFetching, setIsFetching] = useState(true);
+  const [defaultTimeline, setDefaultTimeline] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(
+    new Date(
+      `${new Date().getMonth() + 1}.09.${new Date().getFullYear()} 00:00:00`
+    )
+  );
 
-  useEffect(() => {
-    OrdersService.getOrdersLogByUUID(info.orderUuid)
+  const handleDateChange = (date) => {
+    setIsFetching(true);
+    setDefaultTimeline(false);
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.09.${new Date(
+      date
+    ).getFullYear()} 00:00:00`;
+    const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+    setSelectedDate(prepareSelectedDate);
+    CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp)
       .then((res) => {
         setLogs(res?.data);
-        setLoading(false);
+        setIsFetching(false);
       })
       .catch((e) => {
-        console.log("E : ", e);
         setLogs([]);
-        setLoading(false);
+        setIsFetching(false);
       });
-  }, [loading]);
+  };
+
+  useEffect(() => {
+    if (defaultTimeline) {
+      const prepareSelectedDate = `${
+        new Date().getMonth() + 1
+      }.09.${new Date().getFullYear()} 00:00:00`;
+      const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+      CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp)
+        .then((res) => {
+          setLogs(res?.data);
+          setIsFetching(false);
+        })
+        .catch((e) => {
+          setLogs([]);
+          setIsFetching(false);
+        });
+    }
+  }, [isFetching]);
 
   return (
-    <div className="mb-32 md:mb-0">
-      {logs?.length > 0 ? (
+    <div className="mb-32 md:mb-0 w-full sm:w-4/5">
+      <div className="mb-20 mt-10 flex justify-end">
+        <DesktopDatePicker
+          inputFormat="MM.yyyy"
+          views={["year", "month"]}
+          value={selectedDate}
+          onChange={handleDateChange}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
+        />
+      </div>
+      {!isFetching && logs?.length > 0 ? (
         <Timeline
           sx={{
             "& .MuiTimelineItem-root:before": {
@@ -41,93 +85,174 @@ const TimelineLog = () => {
             },
           }}
         >
-          {logs.map((log) => {
+          {logs.map((log, index) => {
             return (
               <TimelineItem>
                 <TimelineSeparator>
-                  {log.slug === "order-created" || log.slug === "order-sent" || log.slug === "order-resent" || log.slug === "payment-link-open" || log.slug === "refund-sent" || log.slug === "payment-successful" ? (
-                    <TimelineDot className="bg-orderLog-success">
-                      <CheckIcon className="icon-size-14 text-white" />
+                  {log.slug === "order-created" ||
+                  log.slug === "credit-check-performed" ||
+                  log.slug === "customer-information-updated" ||
+                  log.slug === "order-was-resent" ||
+                  log.slug === "order-was-resent" ||
+                  log.slug === "payment-link-opened" ||
+                  log.slug === "refund-sent" ||
+                  log.slug === "payment-successful" ? (
+                    <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
+                      <CheckIcon className="icon-size-16 text-white" />
                     </TimelineDot>
-                  ) : log.slug === "payment-failed" || log.slug === "order-converted-to-invoice" ? (
-                    <TimelineDot color="warning">
-                      <PriorityHighIcon className="icon-size-14 text-white" />
+                  ) : log.slug === "payment-failed" ||
+                    log.slug === "order-converted-to-invoice" ? (
+                    <TimelineDot className="bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0">
+                      <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
-                  )
-                    : (
-                      <TimelineDot className="bg-orderLog-warning">
-                        <PriorityHighIcon className="icon-size-14 text-white" />
-                      </TimelineDot>
-                    )}
-                  <TimelineConnector />
+                  ) : (
+                    <TimelineDot className="border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]">
+                      <PriorityHighIcon className="icon-size-16 text-white" />
+                    </TimelineDot>
+                  )}
+                  {index + 1 < logs.length && <TimelineConnector />}
                 </TimelineSeparator>
                 <TimelineContent>
-                  <div className="ml-10">
+                  <div className="ml-5 mt-10 mb-10">
                     <div className="subtitle3 text-MonochromeGray-700">
-                      hjhjhj
+                      {log.title}
                     </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Date:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        878:989
+                    {log.datetime && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:date")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.datetime}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Sent to:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        jj
+                    )}
+
+                    {log.sentTo && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:sentTo")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          <Hidden smUp>
+                            <Tooltip title={log.sentTo}>
+                              <div>{CharCont(log.sentTo, 20)}</div>
+                            </Tooltip>
+                          </Hidden>
+                          <Hidden smDown>{log.sentTo}</Hidden>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Refund amount:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        9878
+                    )}
+                    {log.refundAmount && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:refundAmount")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.refundAmount}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Action by:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        ijhhj
+                    )}
+                    {log.actionBy && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:actionBy")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.actionBy}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Payment method:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        jhhg
+                    )}
+                    {log.orderAmount && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:orderAmount")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.orderAmount}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Note:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        ioiou
+                    )}
+                    {log.orderUuid && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:orderId")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.orderUuid}
+                        </div>
                       </div>
-                    </div>
+                    )}
+                    {log.paymentMethod && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:paymentMethod")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.paymentMethod}
+                        </div>
+                      </div>
+                    )}
+                    {log.note && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:note")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.note}
+                        </div>
+                      </div>
+                    )}
+                    {log?.organizationBusinessId &&
+                    log?.organizationBusinessId.length === 9 ? (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:orgId")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log?.organizationBusinessId}
+                        </div>
+                      </div>
+                    ) : log?.organizationBusinessId &&
+                      log?.organizationBusinessId.length === 11 ? (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:pNumber")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log?.organizationBusinessId}
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </TimelineContent>
               </TimelineItem>
             );
           })}
         </Timeline>
-
-      ) : (
+      ) : isFetching ? (
         <div>
-          <div className='flex gap-10 mb-32'>
+          <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
-          <div className='flex gap-10'>
+          <div className="flex gap-10">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
         </div>
+      ) : (
+        ""
       )}
     </div>
   );

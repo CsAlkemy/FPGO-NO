@@ -14,6 +14,7 @@ import { useSnackbar } from "notistack";
 import { selectUser } from "app/store/userSlice";
 import { useTranslation } from "react-i18next";
 import { useGetClientOrganizationsSummaryListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function BusinessAdminUsersOverview() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function BusinessAdminUsersOverview() {
   const user = useSelector(selectUser);
   const businessAdminUsers = useSelector(selectOverviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isFetching, isLoading, isSuccess, isError, error } =
+  const { data, isFetching, isLoading, isSuccess, isError, error, refetch } =
     useGetClientOrganizationsSummaryListQuery();
   const businessAdminUsersListOverviewHeaderRows = [
     {
@@ -84,41 +85,48 @@ export default function BusinessAdminUsersOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   UserService.businessAdminUsersList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data
     ? UserService.mapClientOrganizationsSummaryList(data.data)
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={businessAdminUsersOverview}
-      headerRows={businessAdminUsersListOverviewHeaderRows}
-      // tableData={businessAdminUsers}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={businessAdminUsersRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={businessAdminUsersOverview}
+          headerRows={businessAdminUsersListOverviewHeaderRows}
+          // tableData={businessAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={businessAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={businessAdminUsersOverview}
+          headerRows={businessAdminUsersListOverviewHeaderRows}
+          // tableData={businessAdminUsers}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={businessAdminUsersRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

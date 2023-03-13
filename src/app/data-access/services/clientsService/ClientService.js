@@ -4,7 +4,7 @@ import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 
 class ClientService {
-  mapApprovalList = (data)=> {
+  mapApprovalList = (data) => {
     let d;
     d = data.map((row) => {
       return {
@@ -16,9 +16,7 @@ class ClientService {
         primaryContact:
           row.primaryContactDetails.name +
           (row.primaryContactDetails?.designation
-            ? " ( " +
-            row.primaryContactDetails?.designation +
-            " ) "
+            ? " ( " + row.primaryContactDetails?.designation + " ) "
             : ""),
         phone:
           row.primaryContactDetails.countryCode +
@@ -29,7 +27,8 @@ class ClientService {
     d.status_code = 200;
     d.is_data = true;
     return d;
-  }
+  };
+
   approvalList = async () => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
@@ -72,16 +71,17 @@ class ClientService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -111,7 +111,7 @@ class ClientService {
     return `${day} ${monthName}, ${year}`;
   };
 
-  mapApprovedClientList = (data)=> {
+  mapApprovedClientList = (data) => {
     let d;
     d = data.map((row) => {
       return {
@@ -123,9 +123,7 @@ class ClientService {
         primaryContact:
           row.primaryContactDetails?.name +
           (row.primaryContactDetails?.designation
-            ? " ( " +
-            row.primaryContactDetails?.designation +
-            " ) "
+            ? " ( " + row.primaryContactDetails?.designation + " ) "
             : ""),
         phone:
           row.primaryContactDetails?.countryCode +
@@ -138,7 +136,7 @@ class ClientService {
     d.status_code = 200;
     d.is_data = true;
     return d;
-  }
+  };
 
   approvedClientList = async () => {
     return new Promise((resolve, reject) => {
@@ -165,8 +163,8 @@ class ClientService {
                         row.primaryContactDetails?.name +
                         (row.primaryContactDetails?.designation
                           ? " ( " +
-                          row.primaryContactDetails?.designation +
-                          " ) "
+                            row.primaryContactDetails?.designation +
+                            " ) "
                           : ""),
                       phone:
                         row.primaryContactDetails?.countryCode +
@@ -184,16 +182,17 @@ class ClientService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-                reject(e.response.data.errors)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -206,30 +205,51 @@ class ClientService {
         .then((response) => {
           if (response?.data?.status_code === 200) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject(e.response.data.errors)
+          reject(e?.response?.data?.message);
         });
     });
   };
 
-  vateRatesList = async (orgUuid) => {
-    return new Promise((resolve, reject) => {
+  vateRatesList = async (orgUuid, isSkipIsAuthenticated) => {
       const URL = `${EnvVariable.BASEURL}/clients/vat/list/${orgUuid}`;
-      return axios
-        .get(URL)
-        .then((response) => {
-          if (response?.data?.status_code === 200) {
-            resolve(response.data);
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          console.log("Err : ",e);
-          if (e?.response?.data?.status_code === 404) resolve(e.response.data)
-          reject(e.response.data.errors)
+      if (isSkipIsAuthenticated) {
+        return new Promise((resolve, reject) => {
+          return axios
+            .get(URL)
+            .then((response) => {
+              if (response?.data?.status_code === 200) {
+                resolve(response?.data);
+              } else reject("somethingWentWrong");
+            })
+            .catch((e) => {
+              if (e?.response?.data?.status_code === 404) resolve(e.response.data);
+              reject(e?.response?.data?.message);
+            });
         });
-    });
+      } else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (response?.data?.status_code === 200) {
+                    resolve(response.data);
+                  } else reject("somethingWentWrong");
+                })
+                .catch((e) => {
+                  if (e?.response?.data?.status_code === 404) resolve(e.response.data);
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("somethingWentWrong");
+          })
+          .catch((e) => {
+            reject("somethingWentWrong");
+          });
+      }
   };
 
   createClient = async (params) => {
@@ -243,15 +263,15 @@ class ClientService {
               .then((response) => {
                 if (response?.data.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -267,15 +287,15 @@ class ClientService {
               .then((response) => {
                 if (response?.data.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -291,15 +311,15 @@ class ClientService {
               .then((response) => {
                 if (response?.data?.status_code === 200) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -315,15 +335,15 @@ class ClientService {
               .then((response) => {
                 if (response?.data.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -339,15 +359,15 @@ class ClientService {
               .then((response) => {
                 if (response?.status === 204) {
                   resolve(response);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -363,15 +383,99 @@ class ClientService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors)
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
+        });
+    });
+  };
+
+  getClientTimelineByUUID = async (uuid, startTime) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  resolve(response.data);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                // reject(e?.response?.data?.message)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
+    });
+  };
+
+  getOrdersList = async (uuid, timeStamp) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/clients/${uuid}/orders/${timeStamp}`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  let d;
+                  d = response.data.data.map((row) => {
+                    const preparePhone =
+                      row.countryCode && row.msisdn
+                        ? row.countryCode + row.msisdn
+                        : null;
+                    const phone = preparePhone ? preparePhone.split("+") : null;
+                    return {
+                      uuid: row.orderUuid,
+                      dateCreated: row.dateCreated,
+                      orderId: row.orderUuid,
+                      customerName: row.customerName,
+                      paymentLinkDueDate: row.paymentLinkDueDate,
+                      phoneNo: phone ? "+" + phone[phone.length - 1] : null,
+                      amount: row.amount,
+                      status: row?.status ? row?.status.toLowerCase() : null,
+                    };
+                  });
+                  d.status_code = 200;
+                  d.is_data = true;
+                  resolve(d);
+                } else if (
+                  response.data.status_code === 200 &&
+                  !response.data.is_data
+                ) {
+                  resolve([]);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
         });
     });
   };

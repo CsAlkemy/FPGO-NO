@@ -10,6 +10,7 @@ import { setOverviewMainTableDataSlice } from "app/store/overview-table/overview
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useGetApprovedClientsListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function ClientListOverview() {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ export default function ClientListOverview() {
     (state) => state.overviewMainTableData
   );
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading, isFetching, isSuccess, isError, error } =
+  const { data, isLoading, isFetching, isSuccess, isError, error, refetch } =
     useGetApprovedClientsListQuery();
   const clientsListOverviewHeaderRows = [
     {
@@ -74,41 +75,48 @@ export default function ClientListOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   ClientService.approvedClientList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data
     ? ClientService.mapApprovedClientList(data.data)
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={clientsListOverview}
-      headerRows={clientsListOverviewHeaderRows}
-      // tableData={approvedClientList.tableData}
-      tableData={preparedData}
-      rowDataFields={clientsListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={clientsListOverview}
+          headerRows={clientsListOverviewHeaderRows}
+          // tableData={approvedClientList.tableData}
+          tableData={preparedData}
+          rowDataFields={clientsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={clientsListOverview}
+          headerRows={clientsListOverviewHeaderRows}
+          // tableData={approvedClientList.tableData}
+          tableData={preparedData}
+          rowDataFields={clientsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

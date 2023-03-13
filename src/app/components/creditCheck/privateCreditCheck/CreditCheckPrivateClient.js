@@ -30,18 +30,18 @@ const schema = yup.object().shape({
   personalId: yup
     .string()
     .matches(/^[0-9]+$/, {
-      message: "P number must be number",
+      message: "pNumberMustBeNumber",
       excludeEmptyString: true,
     })
-    .required("P Number is required")
+    .required("pNumberIsRequired")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(11, "Must be exactly 11 numbers")
-    .max(11, "Must be exactly 11 numbers"),
+    .min(11, "mustBeExactlyElevenNumbers")
+    .max(11, "mustBeExactlyElevenNumbers"),
   trems: yup
     .bool()
-    .required("You need to accept the terms and conditions")
-    .oneOf([true], "You need to accept the terms and conditions"),
+    .required("youNeedToAcceptTheTermsAndConditions")
+    .oneOf([true], "youNeedToAcceptTheTermsAndConditions"),
 });
 
 export default function CreditCheckPrivateClient() {
@@ -76,12 +76,12 @@ export default function CreditCheckPrivateClient() {
           })
         );
         response?.data?.message
-          ? enqueueSnackbar(response?.data?.message, { variant: "success" })
+          ? enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" })
           : "";
         setLoading(false);
         setIsSuccess(true);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });
@@ -127,12 +127,12 @@ export default function CreditCheckPrivateClient() {
                   {t("label:creditCheckPrivateClient")}
                 </div>
                 {!isSuccess && (
-                  <div className=" flex flex-col sm:flex-row gap-20 justify-end w-full sm:w-auto ">
+                  <div className=" grid grid-cols-1 sm:grid-cols-2 gap-20 p-10 sm:p-auto justify-end w-full sm:w-auto ">
                     <Link to={"/credit-check/credit-checks-list"}>
                       <Button
                         color="secondary"
-                        variant="text"
-                        className="button2 text-center"
+                        variant="outlined"
+                        className="button2 rounded-md w-full  text-center"
                       >
                         {t("label:cancel")}
                       </Button>
@@ -143,7 +143,7 @@ export default function CreditCheckPrivateClient() {
                       loadingPosition="center"
                       variant="contained"
                       color="secondary"
-                      className="font-semibold rounded-4 w-full sm:w-auto min-w-[140px]"
+                      className="font-semibold rounded-4 w-full min-w-[140px]"
                     >
                       {t("label:confirm")}
                     </LoadingButton>
@@ -163,7 +163,7 @@ export default function CreditCheckPrivateClient() {
                             label={t("label:personalId")}
                             type="text"
                             error={!!errors.personalId}
-                            helperText={errors?.personalId?.message}
+                            helperText={errors?.personalId?.message ? t(`validation:${errors?.personalId?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth
@@ -190,7 +190,7 @@ export default function CreditCheckPrivateClient() {
                               //onBlur={handleOnBlurGetDialCode}
                             />
                             <FormHelperText>
-                              {errors?.phoneNumber?.message}
+                              {errors?.phoneNumber?.message ? t(`validation:${errors?.phoneNumber?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -227,8 +227,8 @@ export default function CreditCheckPrivateClient() {
                                 </div>
                               }
                             />
-                            <FormHelperText>
-                              {errors?.trems?.message}
+                            <FormHelperText className='ml-32'>
+                              {errors?.trems?.message ? t(`validation:${errors?.trems?.message}`) : ""}
                             </FormHelperText>
                           </FormControl>
                         )}
@@ -244,7 +244,7 @@ export default function CreditCheckPrivateClient() {
                 <div className="flex justify-center items-center bg-MonochromeGray-25 rounded-8 p-20 w-full my-20 min-h-200">
                   <div className="flex flex-col justify-center items-center gap-20 my-32">
                     <div className="text-center header5">
-                      {t("label:requestSuccessful")}
+                      {t("label:requestSuccess")}
                     </div>
                     <div className="text-center body2 w-auto sm:w-2/3">
                       {`${t("label:yourCreditCheckRequestFor")} ${t(

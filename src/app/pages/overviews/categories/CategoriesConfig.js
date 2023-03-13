@@ -4,9 +4,7 @@ import CategoriesListOverview from "./CategoriesListOverview";
 const CreateCategory = lazy(() =>
   import("../../../components/products/productCategory/createCategory")
 );
-const CategoryDetails = lazy(() =>
-  import("../../../components/products/productCategory/categoryDetails")
-);
+import CategoryDetails from '../../../components/products/productCategory/categoryDetails'
 
 export const CategoriesConfig = {
   settings: {

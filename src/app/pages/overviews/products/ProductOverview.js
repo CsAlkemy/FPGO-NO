@@ -10,6 +10,7 @@ import ProductService from "../../../data-access/services/productsService/Produc
 import { useSnackbar } from "notistack";
 import { useTranslation } from 'react-i18next';
 import { useGetProductsListQuery } from 'app/store/api/apiSlice';
+import Hidden from '@mui/material/Hidden';
 
 export default function ProductOverview() {
   const {t} = useTranslation()
@@ -21,7 +22,7 @@ export default function ProductOverview() {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const {data, isFetching, isLoading, isSuccess, isError, error} = useGetProductsListQuery()
+  const {data, isFetching, isLoading, isSuccess, isError, error, refetch} = useGetProductsListQuery()
   const producstListHeaderRows = [
     {
       id: 'id',
@@ -74,40 +75,48 @@ export default function ProductOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   ProductService.productsList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data ?  ProductService.mapProductsList(data.data) : []
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={productsListOverview}
-      headerRows={producstListHeaderRows}
-      // tableData={productList.tableData}
-      tableData={data?.is_data ? preparedData : []}
-      // tableData={productListRows}
-      rowDataFields={productsListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      isLoading={isFetching}
-      // isLoading={isLoading}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={productsListOverview}
+          headerRows={producstListHeaderRows}
+          // tableData={productList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          // tableData={productListRows}
+          rowDataFields={productsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isFetching}
+          // isLoading={isLoading}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={productsListOverview}
+          headerRows={producstListHeaderRows}
+          // tableData={productList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          // tableData={productListRows}
+          rowDataFields={productsListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          isLoading={isFetching}
+          // isLoading={isLoading}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

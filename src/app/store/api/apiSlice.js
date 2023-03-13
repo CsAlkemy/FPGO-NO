@@ -1,16 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { EnvVariable } from "../../data-access/utils/EnvVariables";
 import AuthService from "../../data-access/services/authService";
+import UtilsServices from "../../data-access/utils/UtilsServices";
 
-const userInfo = AuthService.getUserInfo();
+let userInfo = UtilsServices.getFPUserData();
 const baseQuery = fetchBaseQuery({
   baseUrl: `${EnvVariable.BASEURL}`,
   prepareHeaders: (headers, { getState }) => {
     headers.set(
       "authorization",
-      `Bearer ${
-        JSON.parse(localStorage.getItem("fp_user")).token_data.access_token
-      }`
+      `Bearer ${userInfo?.token_data?.access_token}`
     );
     return headers;
   },
@@ -30,6 +29,7 @@ const baseQueryWithoutToken = fetchBaseQuery({
 });
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
+  userInfo = UtilsServices.getFPUserData()
   let result =
     args?.url === `/credit/check/checkout/private` ||
     args?.url === `/credit/check/checkout/corporate`
@@ -63,8 +63,8 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
       // =======================
       // store the new token
       AuthService.setSession(refreshResult.data.data.access_token);
-      const userInfo = AuthService.getUserInfo();
-      userInfo["token_data"] = refreshResult.data.data;
+      // const userInfo = AuthService.getUserInfo();
+      userInfo.token_data = refreshResult.data.data;
       AuthService.setUserInfo(userInfo);
       // =======================
       // store the new token
@@ -92,6 +92,7 @@ export const apiSlice = createApi({
     "ClientOrganizationsSummaryList",
     "ApprovedClientsList",
     "ApprovalClientsList",
+    "RefundRequestsList"
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -115,7 +116,8 @@ export const apiSlice = createApi({
           amount: parseFloat(payload.refundAmount),
         },
       }),
-      invalidatesTags: ["OrdersList"],
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["OrdersList"] : [""],
     }),
     resendOrder: builder.mutation({
       query: (payload) => ({
@@ -355,6 +357,26 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["ApprovalClientsList"],
     }),
+    getRefundRequestsList: builder.query({
+      query: () => "/orders/refund/list/all",
+      providesTags: ["RefundRequestsList"],
+    }),
+    refundRequestDecision: builder.mutation({
+      query: (params) => ({
+        url: `/orders/refund/decision/${params.orderUuid}`,
+        method: "POST",
+        body: params,
+      }),
+      invalidatesTags: ["RefundRequestsList"],
+    }),
+    requestRefundApproval: builder.mutation({
+      query: (params) => ({
+        url: `/orders/refund/request/approval/${params.uuid}`,
+        method: "POST",
+        body: params,
+      }),
+      invalidatesTags: ["RefundRequestsList"],
+    }),
   }),
 });
 
@@ -396,4 +418,8 @@ export const {
   useUpdateClientStatusMutation,
   useDeleteClientMutation,
   useCreateRegistrationRequestMutation,
+  useGetRefundRequestsListQuery,
+  useRefundRequestDecisionMutation,
+  useRequestRefundApprovalMutation,
+
 } = apiSlice;

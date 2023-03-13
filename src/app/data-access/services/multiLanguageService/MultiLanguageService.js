@@ -19,10 +19,10 @@ class MultiLanguageService {
             !response.data.is_data
           ) {
             resolve([]);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject(e.response.data.errors)
+          reject(e?.response?.data?.message)
         });
     });
   };

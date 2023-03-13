@@ -36,6 +36,7 @@ function AuthProvider({ children }) {
     });
 
     AuthService.on('onLogout', () => {
+      localStorage.clear()
       dispatch(logoutUser());
     });
 

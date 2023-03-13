@@ -13,12 +13,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { BsQuestionCircle } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import CategoryService from "../../../data-access/services/categoryService/CategoryService";
@@ -26,22 +26,26 @@ import ProductService from "../../../data-access/services/productsService/Produc
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import FAQs from "../../common/faqs";
 import {
-  defaultValueCreateProduct, validateSchemaProductCreate
+  defaultValueCreateProduct,
+  validateSchemaProductCreate,
 } from "../utils/helper";
-import ClientService from '../../../data-access/services/clientsService/ClientService';
-import { useCreateProductMutation } from 'app/store/api/apiSlice';
+import ClientService from "../../../data-access/services/clientsService/ClientService";
+import { useCreateProductMutation } from "app/store/api/apiSlice";
+import UtilsServices from "../../../data-access/utils/UtilsServices";
+import AuthService from "../../../data-access/services/authService";
+import CustomersService from "../../../data-access/services/customersService/CustomersService";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const createProducts = (onSubmit = () => { }) => {
-  const info = JSON.parse(localStorage.getItem("fp_user"))
-  const { t } = useTranslation()
+const createProducts = (onSubmit = () => {}) => {
+  const info = UtilsServices.getFPUserData();
+  const { t } = useTranslation();
   // const [productType, setProductType] = React.useState(1);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [taxes, setTaxes] = React.useState([])
+  const [taxes, setTaxes] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [createProduct] = useCreateProductMutation();
@@ -55,18 +59,21 @@ const createProducts = (onSubmit = () => { }) => {
   });
   const { isValid, dirtyFields, errors } = formState;
   const onRawSubmit = (values) => {
-    setLoading(true)
-    const preparedPaload = ProductService.prepareCreateProductPayload(values)
-    createProduct(preparedPaload)
-      .then((response)=> {
-        if (response?.data?.status_code === 201) {
-          enqueueSnackbar(response?.data?.message, { variant: "success" });
-          navigate("/products/products-list");
-          setLoading(false)
-        } else {
-          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
-        }
-      })
+    setLoading(true);
+    const preparedPaload = ProductService.prepareCreateProductPayload(values);
+    createProduct(preparedPaload).then((response) => {
+      if (response?.data?.status_code === 201) {
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
+        navigate("/products/products-list");
+        setLoading(false);
+      } else {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
+      }
+    });
     // ProductService.createProduct(values)
     //   .then((res) => {
     //     if (res?.status_code === 201) {
@@ -83,36 +90,53 @@ const createProducts = (onSubmit = () => { }) => {
   // form end
 
   useEffect(() => {
-    CategoryService.categoryList()
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200) {
-          res.map((row) => {
-            return data.push({ uuid: row.uuid, name: row.name });
+    AuthService.axiosRequestHelper().then((isAuthenticated) => {
+      CategoryService.categoryList(true)
+        .then((res) => {
+          let data = [];
+          if (res?.status_code === 200) {
+            res.map((row) => {
+              return data.push({ uuid: row.uuid, name: row.name });
+            });
+          }
+          setCategoriesList(data);
+        })
+        .catch((e) => {});
+      if (info?.user_data?.organization?.uuid) {
+        ClientService.vateRatesList(info?.user_data?.organization?.uuid, true)
+          .then((res) => {
+            if (res?.status_code === 200) {
+              setTaxes(res?.data);
+            } else {
+              setTaxes([]);
+            }
+          })
+          .catch((e) => {
+            setTaxes([]);
           });
-        }
-        setCategoriesList(data);
-      })
-      .catch((e) => {
-        console.log("E : ", e);
-      });
+      }
+    });
   }, []);
 
-  useEffect(() => {
-    if (info?.user_data?.organization?.uuid){
-      ClientService.vateRatesList(info?.user_data?.organization?.uuid)
-        .then((res) => {
-          if (res?.status_code === 200) {
-            setTaxes(res?.data);
-          }else{
-            setTaxes([])
-          }
-        })
-        .catch((e) => {
-          setTaxes([])
-        });
-    }
-  }, []);
+  {
+    /*useEffect(() => {*/
+  }
+  //   if (info?.user_data?.organization?.uuid) {
+  //     ClientService.vateRatesList(info?.user_data?.organization?.uuid)
+  //       .then((res) => {
+  {
+    /*        if (res?.status_code === 200) {*/
+  }
+  //           setTaxes(res?.data);
+  //         } else {
+  //           setTaxes([]);
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         setTaxes([]);
+  //       });
+  //   }
+  // }, []);
 
   return (
     <div className="create-product-container">
@@ -124,7 +148,9 @@ const createProducts = (onSubmit = () => { }) => {
             onSubmit={handleSubmit(onRawSubmit)}
           >
             <div className=" header-click-to-action">
-              <div className="header-text header6">{t("label:createProduct")}</div>
+              <div className="header-text header6">
+                {t("label:createProduct")}
+              </div>
               <div className="button-container-product">
                 <Button
                   color="secondary"
@@ -146,50 +172,14 @@ const createProducts = (onSubmit = () => { }) => {
                 >
                   {t("label:createProduct")}
                 </LoadingButton>
-
               </div>
             </div>
             <div className="main-layout-product">
               <div className="col-span-1 md:col-span-4 bg-white">
                 {/*<div>*/}
-                  <div className="create-user-form-header subtitle3 bg-m-grey-25">
-                    {t("label:productDetails")}
-                  </div>
-                {/*  <div className="p-10">*/}
-                {/*    <div className="create-user-roles caption2 mb-0-i">*/}
-                {/*      {t("label:productType")}**/}
-                {/*    </div>*/}
-                {/*  </div>*/}
-                {/*  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-7 mt-10 p-10">*/}
-                {/*    <button*/}
-                {/*      type="button"*/}
-                {/*      className={*/}
-                {/*        productType === 1*/}
-                {/*          ? "create-user-role-button-active"*/}
-                {/*          : "create-user-role-button"*/}
-                {/*      }*/}
-                {/*      onClick={() => {*/}
-                {/*        setProductType(1);*/}
-                {/*      }}*/}
-                {/*    >*/}
-                {/*      {t("label:goods")}*/}
-                {/*    </button>*/}
-                {/*    <button*/}
-                {/*      type="button"*/}
-                {/*      className={*/}
-                {/*        productType === 2*/}
-                {/*          ? "create-user-role-button-active"*/}
-                {/*          : "create-user-role-button"*/}
-                {/*      }*/}
-                {/*      onClick={() => {*/}
-                {/*        setProductType(2);*/}
-                {/*      }}*/}
-                {/*    >*/}
-                {/*      {t("label:services")}*/}
-                {/*    </button>*/}
-                {/*  </div>*/}
-                {/*</div>*/}
-
+                <div className="create-user-form-header subtitle3 bg-m-grey-25">
+                  {t("label:productDetails")}
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 px-10 py-32 gap-20">
                   <div className="col-span-1 ">
                     <Controller
@@ -203,7 +193,11 @@ const createProducts = (onSubmit = () => { }) => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.productID}
-                          helperText={errors?.productID?.message}
+                          helperText={
+                            errors?.productID?.message
+                              ? t(`validation:${errors?.productID?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -223,7 +217,11 @@ const createProducts = (onSubmit = () => { }) => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.productName}
-                          helperText={errors?.productName?.message}
+                          helperText={
+                            errors?.productName?.message
+                              ? t(`validation:${errors?.productName?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           fullWidth
                           required
@@ -241,16 +239,22 @@ const createProducts = (onSubmit = () => { }) => {
                         {...field}
                         label={t("label:pricePerUnit")}
                         className="bg-white"
-                        type="number"
                         autoComplete="off"
                         error={!!errors.price}
-                        helperText={errors?.price?.message}
+                        type='number'
+                        helperText={
+                          errors?.price?.message
+                            ? t(`validation:${errors?.price?.message}`)
+                            : ""
+                        }
                         variant="outlined"
                         fullWidth
                         required
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">{t("label:kr")}</InputAdornment>
+                            <InputAdornment position="end">
+                              {t("label:kr")}
+                            </InputAdornment>
                           ),
                         }}
                       />
@@ -267,7 +271,11 @@ const createProducts = (onSubmit = () => { }) => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.unit}
-                        helperText={errors?.unit?.message}
+                        helperText={
+                          errors?.unit?.message
+                            ? t(`validation:${errors?.unit?.message}`)
+                            : ""
+                        }
                         variant="outlined"
                         fullWidth
                       />
@@ -284,7 +292,11 @@ const createProducts = (onSubmit = () => { }) => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.manufacturer}
-                        helperText={errors?.manufacturer?.message}
+                        helperText={
+                          errors?.manufacturer?.message
+                            ? t(`validation:${errors?.manufacturer?.message}`)
+                            : ""
+                        }
                         variant="outlined"
                         fullWidth
                         // disabled={productType === 2 ? true : false}
@@ -294,28 +306,6 @@ const createProducts = (onSubmit = () => { }) => {
                 </div>
                 <div className="px-10 mt gap-x-20 mb-32">
                   <div className="w-full sm:w-2/3">
-                    {/*<Autocomplete*/}
-                    {/*  multiple*/}
-                    {/*  id="checkboxes-tags-demo"*/}
-                    {/*  options={top100Films}*/}
-                    {/*  disableCloseOnSelect*/}
-                    {/*  getOptionLabel={(option) => option.title}*/}
-                    {/*  fullWidth*/}
-                    {/*  renderOption={(props, option, { selected }) => (*/}
-                    {/*    <li {...props}>*/}
-                    {/*      <Checkbox*/}
-                    {/*        icon={icon}*/}
-                    {/*        checkedIcon={checkedIcon}*/}
-                    {/*        style={{ marginRight: 8 }}*/}
-                    {/*        checked={selected}*/}
-                    {/*      />*/}
-                    {/*      {option.title}*/}
-                    {/*    </li>*/}
-                    {/*  )}*/}
-                    {/*  renderInput={(params) => (*/}
-                    {/*    <TextField {...params} label="Category" />*/}
-                    {/*  )}*/}
-                    {/*/>*/}
                     <Controller
                       control={control}
                       name="assignedCategories"
@@ -342,7 +332,9 @@ const createProducts = (onSubmit = () => { }) => {
                               {...params}
                               {...field}
                               inputRef={ref}
-                              placeholder={t("label:searchCategoryToAssignThisProduct")}
+                              placeholder={t(
+                                "label:searchCategoryToAssignThisProduct"
+                              )}
                             />
                           )}
                         />
@@ -364,7 +356,11 @@ const createProducts = (onSubmit = () => { }) => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.description}
-                          helperText={errors?.description?.message}
+                          helperText={
+                            errors?.description?.message
+                              ? t(`validation:${errors?.description?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           fullWidth
                         />
@@ -378,32 +374,25 @@ const createProducts = (onSubmit = () => { }) => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 px-10 my-32 gap-20">
                     <Controller
-                      name='tax'
+                      name="tax"
                       control={control}
                       render={({ field }) => (
-                        <FormControl
-                          error={!!errors.tax}
-                          required
-                          fullWidth
-                        >
-                          <InputLabel id='tax'>{t("label:taxRate")}</InputLabel>
+                        <FormControl error={!!errors.tax} required fullWidth>
+                          <InputLabel id="tax">{t("label:taxRate")}</InputLabel>
                           <Select
                             {...field}
                             labelId="tax"
                             id="tax"
-                            label='Tax Rate'
-                          //defaultValue={0}
+                            label="Tax Rate"
+                            //defaultValue={0}
                           >
-                            {taxes && taxes.length ? taxes.map((tax, index) => (
+                            {taxes && taxes.length ? (
+                              taxes.map((tax, index) =>
                                 tax.status === "Active" ? (
-                                <MenuItem
-                                  key={index}
-                                  value={tax.value}
-                                >
-                                  {tax.value}
-                                </MenuItem>
-                              )
-                                : (
+                                  <MenuItem key={index} value={tax.value}>
+                                    {tax.value}
+                                  </MenuItem>
+                                ) : (
                                   <MenuItem
                                     key={index}
                                     value={tax.value}
@@ -412,16 +401,17 @@ const createProducts = (onSubmit = () => { }) => {
                                     {tax.value}
                                   </MenuItem>
                                 )
-                            ))
-                            :<MenuItem
-                                key={0}
-                                value={0}
-                              >
+                              )
+                            ) : (
+                              <MenuItem key={0} value={0}>
                                 0
-                              </MenuItem>}
+                              </MenuItem>
+                            )}
                           </Select>
                           <FormHelperText>
-                            {errors?.tax?.message}
+                            {errors?.tax?.message
+                              ? t(`validation:youMustSelectTax`)
+                              : ""}
                           </FormHelperText>
                         </FormControl>
                       )}
@@ -437,12 +427,18 @@ const createProducts = (onSubmit = () => { }) => {
                           type="number"
                           autoComplete="off"
                           error={!!errors.cost}
-                          helperText={errors?.cost?.message}
+                          helperText={
+                            errors?.cost?.message
+                              ? t(`validation:${errors?.cost?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           fullWidth
                           InputProps={{
                             endAdornment: (
-                              <InputAdornment position="end">{t("label:kr")}</InputAdornment>
+                              <InputAdornment position="end">
+                                {t("label:kr")}
+                              </InputAdornment>
                             ),
                           }}
                         />

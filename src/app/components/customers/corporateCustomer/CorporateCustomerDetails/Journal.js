@@ -14,7 +14,7 @@ const Journal = () => {
   const [notes, setNotes] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(
     new Date(
-      `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
+      `${new Date().getMonth() + 1}.09.${new Date().getFullYear()} 00:00:00`
     )
   );
   const { id } = useParams();
@@ -22,7 +22,7 @@ const Journal = () => {
   const handleDateChange = (date) => {
     setIsFetching(true);
     setDefaultJournal(false);
-    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.01.${new Date(
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.09.${new Date(
       date
     ).getFullYear()} 00:00:00`;
     // setSelectedDate(date);
@@ -48,7 +48,6 @@ const Journal = () => {
         setIsFetching(false);
       })
       .catch((e) => {
-        console.log("E :", e);
         setJournals([]);
         setIsFetching(false);
       });
@@ -75,7 +74,6 @@ const Journal = () => {
           setIsFetching(false);
         })
         .catch((e) => {
-          console.log("E :", e);
           setJournals([]);
           setIsFetching(false);
         });
@@ -88,13 +86,42 @@ const Journal = () => {
       .then((response)=> {
         setNotes("")
         setLoading(false)
-        setJournals([...journals, {date : null, text: notes, time : `${new Date().getHours()}:${new Date().getMinutes()}`}])
+        setIsFetching(true)
+        const stDate = new Date(selectedDate).getTime() / 1000;
+        CustomersService.getCutomerJournals(id, stDate)
+          .then((response) => {
+            const sameDates = [];
+            const mappedData = response?.data.map((d) => {
+              return {
+                date: sameDates.includes(d.datetime.split(" ")[0])
+                  ? null
+                  : sameDates.push(d.datetime.split(" ")[0]) &&
+                  d.datetime.split(" ")[0],
+                time: d.datetime.split(" ")[1],
+                text: d.text,
+              };
+            });
+            // setJournals(response?.data);
+            setJournals(mappedData);
+            setIsFetching(false);
+          })
+          .catch((e) => {
+            setJournals([]);
+            setIsFetching(false);
+          });
       })
       .catch((e)=> {
-        console.log("E :: ",e);
         setLoading(false)
       })
   }
+
+  const disableFromNextMonth = (date) => {
+    console.log("disableFromNextMonth");
+    const paramMonth = date.getMonth();
+    console.log("paramMonth",paramMonth);
+    console.log("new Date().getMonth() <= paramMonth",new Date().getMonth() <= paramMonth);
+    return new Date().getMonth() <= paramMonth;
+  };
 
   return (
     <div className="w-full sm:w-3/4">
@@ -132,7 +159,8 @@ const Journal = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} type="date" />}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
         />
       </div>
       <div>
@@ -156,21 +184,6 @@ const Journal = () => {
               );
             })
           : ""}
-        {/*<div className="mb-10 text-MonochromeGray-500 subtitle2 ">25.10.22</div>*/}
-        {/*<div className="p-20 bg-MonochromeGray-25 text-MonochromeGray-900 body2 rounded-16">*/}
-        {/*  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum*/}
-        {/*  delectus recusandae quisquam vel inventore, in aspernatur sapiente id*/}
-        {/*  sequi obcaecati animi. Reprehenderit dicta magni totam labore in*/}
-        {/*  maxime praesentium laudantium ipsam! Minima id amet odit laudantium*/}
-        {/*  quam, veritatis dolore doloribus numquam ipsam veniam in animi*/}
-        {/*  voluptas voluptatum nihil accusantium sint!*/}
-        {/*</div>*/}
-        {/*<div className="mt-7 body3 text-MonochromeGray-300">15:17</div>*/}
-        {/*<br />*/}
-        {/*<div className='p-20 bg-MonochromeGray-50 text-MonochromeGray-900 body2 rounded-16'>*/}
-        {/*    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum */}
-        {/*</div>*/}
-        {/*<div className='mt-7 body3 text-MonochromeGray-300'>15:17</div>*/}
       </div>
     </div>
   );

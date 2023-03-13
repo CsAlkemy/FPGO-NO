@@ -10,6 +10,7 @@ import CreditCheckService from "../../../data-access/services/creditCheckService
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { useGetCreditChecksListQuery } from "app/store/api/apiSlice";
+import Hidden from '@mui/material/Hidden';
 
 export default function CreditChecksListOverview() {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export default function CreditChecksListOverview() {
   const dispatch = useDispatch();
   const creditCheckList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading, isFetching, isSuccess, isError, error } =
+  const { data, isLoading, isFetching, isSuccess, isError, error, refetch } =
     useGetCreditChecksListQuery();
   const creditChecksListHeaderRows = [
     {
@@ -73,41 +74,48 @@ export default function CreditChecksListOverview() {
     },
   ];
 
-  // useEffect(() => {
-  //   CreditCheckService.creditCheckList()
-  //     .then((res) => {
-  //       if (res?.status_code === 200 && res?.is_data) {
-  //         dispatch(setOverviewMainTableDataSlice(res));
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoading(false);
-  //         dispatch(setOverviewMainTableDataSlice([]));
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       enqueueSnackbar(e, { variant: "error" });
-  //       setIsLoading(false);
-  //       dispatch(setOverviewMainTableDataSlice([]));
-  //     });
-  // }, [isLoading]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const preparedData = data?.is_data
     ? CreditCheckService.mapCreditCheckList(data.data)
     : [];
 
   return (
-    <OverviewMainTable
-      headerSubtitle={headerSubtitle}
-      headerButtonLabel={headerButtonLabel}
-      tableName={creditChecksListOverview}
-      headerRows={creditChecksListHeaderRows}
-      // tableData={creditCheckList.tableData}
-      tableData={data?.is_data ? preparedData : []}
-      rowDataFields={creditChecksListRowDataFields}
-      tabPanelsLabel={tabPanelsLabel}
-      tabs={tabs}
-      // isLoading={isLoading}
-      isLoading={isFetching}
-    />
+    <>
+      <Hidden smUp>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={creditChecksListOverview}
+          headerRows={creditChecksListHeaderRows}
+          // tableData={creditCheckList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={creditChecksListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={true}
+        />
+      </Hidden>
+      <Hidden smDown>
+        <OverviewMainTable
+          headerSubtitle={headerSubtitle}
+          headerButtonLabel={headerButtonLabel}
+          tableName={creditChecksListOverview}
+          headerRows={creditChecksListHeaderRows}
+          // tableData={creditCheckList.tableData}
+          tableData={data?.is_data ? preparedData : []}
+          rowDataFields={creditChecksListRowDataFields}
+          tabPanelsLabel={tabPanelsLabel}
+          tabs={tabs}
+          // isLoading={isLoading}
+          isLoading={isFetching}
+          isMobileScreen={false}
+        />
+      </Hidden>
+    </>
   );
 }

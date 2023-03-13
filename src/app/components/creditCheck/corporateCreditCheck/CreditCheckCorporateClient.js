@@ -31,18 +31,18 @@ const schema = yup.object().shape({
   organizationId: yup
     .string()
     .matches(/^[0-9]+$/, {
-      message: "Organization ID must be number",
+      message: "organizationIdMustBeNumber",
       excludeEmptyString: true,
     })
-    .required("Organization ID is required")
+    .required("organizationIdIsRequired")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "Must be exactly 9 numbers")
-    .max(9, "Must be exactly 9 numbers"),
+    .min(9, "pNumberMustBeNumber")
+    .max(9, "pNumberMustBeNumber"),
   // trems: yup
   //   .bool()
-  //   .required("You need to accept the terms and conditions")
-  //   .oneOf([true], "You need to accept the terms and conditions"),
+  //   .required("youNeedToAcceptTheTermsAndConditions")
+  //   .oneOf([true], "youNeedToAcceptTheTermsAndConditions"),
 });
 
 export default function CreditCheckCorporateClient() {
@@ -75,12 +75,12 @@ export default function CreditCheckCorporateClient() {
           })
         );
         response?.data?.message
-          ? enqueueSnackbar(response?.data?.message, { variant: "success" })
+          ? enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" })
           : "";
         setLoading(false);
         setIsSuccess(true);
       } else {
-        enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         setLoading(false);
       }
     });
@@ -112,7 +112,6 @@ export default function CreditCheckCorporateClient() {
     resolver: yupResolver(schema),
   });
   const { isValid, dirtyFields, errors } = formState;
-  console.log(errors);
 
   return (
     <>
@@ -125,12 +124,12 @@ export default function CreditCheckCorporateClient() {
                   {t("label:creditCheckCorporateClient")}
                 </div>
                 {!isSuccess && (
-                  <div className="flex gap-20 w-full md:w-auto">
+                  <div className=" grid grid-cols-1 sm:grid-cols-2 gap-20 p-10 sm:p-auto justify-end w-full sm:w-auto ">
                     <Link to={"/credit-check/credit-checks-list"}>
                       <Button
                         color="secondary"
-                        variant="text"
-                        className="button2"
+                        variant="outlined"
+                        className="button2 rounded-md w-full  text-center"
                         type="button"
                       >
                         {t("label:cancel")}
@@ -142,7 +141,7 @@ export default function CreditCheckCorporateClient() {
                       loadingPosition="center"
                       variant="contained"
                       color="secondary"
-                      className="font-semibold rounded-4 w-full sm:w-auto min-w-[140px]"
+                      className="font-semibold rounded-4 w-full min-w-[140px]"
                     >
                       {t("label:confirm")}
                     </LoadingButton>
@@ -162,7 +161,7 @@ export default function CreditCheckCorporateClient() {
                             label={t("label:organizationId")}
                             type="number"
                             error={!!errors.organizationId}
-                            helperText={errors?.organizationId?.message}
+                            helperText={errors?.organizationId?.message ? t(`validation:${errors?.organizationId?.message}`) : ""}
                             variant="outlined"
                             required
                             fullWidth

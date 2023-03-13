@@ -7,10 +7,11 @@ import { Fingerprint } from "@mui/icons-material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import { useSnackbar } from "notistack";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 const orderDetails = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const param = useParams();
   const { enqueueSnackbar } = useSnackbar();
@@ -44,16 +45,14 @@ const orderDetails = () => {
         // }
         // setIsLoading(false);
       })
-      .catch((e) => {
-        console.log("E : ",e);
-      });
+      .catch((e) => {});
   }, [isLoading]);
 
   useEffect(() => {
     OrdersService.getOrdersDetailsByUUIDPayment(param.uuid)
       .then((response) => {
         if (response?.status_code === 200 && response?.is_data) {
-          if (response?.data?.status !== "SENT") return navigate("404")
+          if (response?.data?.status !== "SENT") return navigate("404");
           setOrderDetails(response.data);
         }
         setIsLoading(false);
@@ -61,7 +60,7 @@ const orderDetails = () => {
       .catch((e) => {
         setIsLoading(false);
         // enqueueSnackbar(e, { variant: "error" });
-        return navigate("404")
+        return navigate("404");
       });
   }, [isLoading]);
 
@@ -70,8 +69,8 @@ const orderDetails = () => {
       <div className="flex-auto mx-auto  w-full md:w-4/5 lg:w-3/4 xl:w-7/12">
         <div className="order-receipt-container">
           <PaymentHeader />
-          <div className="pt-32 pb-20 flex justify-between items-center">
-            <div className="subtitle1 text-MonochromeGray-700">
+          <div className="pt-32 pb-20 flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div className="subtitle1 text-MonochromeGray-700 ">
               {t("label:orderDetails")}
             </div>
             <div className="subtitle3 text-MonochromeGray-300 my-10">
@@ -119,16 +118,16 @@ const orderDetails = () => {
                       {row.quantity}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {t("label:nok")} {row.rate}
+                      {t("label:nok")} { ThousandSeparator(row.rate) }
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {row.discount}
+                      { ThousandSeparator(row.discount) }
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {row.tax} % {t("label:vat")}
+                      { ThousandSeparator(row.tax) } % {t("label:vat")}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {t("label:nok")} {row.amount}
+                      {t("label:nok")} { ThousandSeparator(row.amount) }
                     </div>
                   </div>
                 ))}
@@ -148,7 +147,7 @@ const orderDetails = () => {
                     <div className="flex justify-between items-center subtitle2 text-MonochromeGray-700 pb-10 border-b-1 border-MonochromeGray-50">
                       <div>{index + 1}</div>
                       <div>
-                        {t("label:nok")} {row.amount}
+                        {t("label:nok")} { ThousandSeparator(row.amount) }
                       </div>
                     </div>
                     <div className="flex flex-col gap-10 mt-20">
@@ -184,7 +183,7 @@ const orderDetails = () => {
                           {t("label:rate")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} {row.rate}
+                          {t("label:nok")} { ThousandSeparator(row.rate) }
                         </div>
                       </div>
 
@@ -193,7 +192,7 @@ const orderDetails = () => {
                           {t("label:discount")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} {row.discount}
+                          {t("label:nok")} { ThousandSeparator(row.discount) }
                         </div>
                       </div>
 
@@ -202,7 +201,7 @@ const orderDetails = () => {
                           Tax
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {row.tax} % {t("label:vat")}
+                          { ThousandSeparator(row.tax) } % {t("label:vat")}
                         </div>
                       </div>
                     </div>
@@ -284,7 +283,7 @@ const orderDetails = () => {
                     <div>
                       {t("label:nok")}
                       {orderDetails?.orderSummary?.subTotal
-                        ? orderDetails?.orderSummary?.subTotal
+                        ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                         : ""}
                     </div>
                   </div>
@@ -293,7 +292,7 @@ const orderDetails = () => {
                     <div>
                       {t("label:nok")}
                       {orderDetails?.orderSummary?.discount
-                        ? orderDetails?.orderSummary?.discount
+                        ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                         : 0}
                     </div>
                   </div>
@@ -302,7 +301,7 @@ const orderDetails = () => {
                     <div>
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.tax
-                        ? orderDetails?.orderSummary?.tax
+                        ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                         : 0}
                     </div>
                   </div>
@@ -311,7 +310,7 @@ const orderDetails = () => {
                     <div>
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.grandTotal
-                        ? orderDetails?.orderSummary?.grandTotal
+                        ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                         : ""}
                     </div>
                   </div>
@@ -330,7 +329,7 @@ const orderDetails = () => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.subTotal
-                          ? orderDetails?.orderSummary?.subTotal
+                          ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
                           : ""}
                       </div>
                     </div>
@@ -341,7 +340,7 @@ const orderDetails = () => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.tax
-                          ? orderDetails?.orderSummary?.tax
+                          ? ThousandSeparator(orderDetails?.orderSummary?.tax)
                           : 0}
                       </div>
                     </div>
@@ -352,7 +351,7 @@ const orderDetails = () => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.discount
-                          ? orderDetails?.orderSummary?.discount
+                          ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                           : 0}
                       </div>
                     </div>
@@ -365,7 +364,7 @@ const orderDetails = () => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.grandTotal
-                          ? orderDetails?.orderSummary?.grandTotal
+                          ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
                           : ""}
                       </div>
                     </div>

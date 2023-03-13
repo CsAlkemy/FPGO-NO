@@ -51,18 +51,7 @@ class CustomersService {
       !params.billingCountry
         ? null
         : {
-            // type: "billing",
-            // countryCode: bl_countryCode,
-            // msisdn: bl_msisdn,
-            // email: params.billingEmail ? params.billingEmail : null,
-            street: params.billingAddress ? params.billingAddress : null,
-            zip: params.billingZip ? params.billingZip : null,
-            city: params.billingCity ? params.billingCity : null,
-            country: params.billingCountry ? params.billingCountry : null,
-          };
-    const addresses1 = sameAddress
-      ? {
-          // type: "Shipping",
+          // type: "billing",
           // countryCode: bl_countryCode,
           // msisdn: bl_msisdn,
           // email: params.billingEmail ? params.billingEmail : null,
@@ -70,16 +59,27 @@ class CustomersService {
           zip: params.billingZip ? params.billingZip : null,
           city: params.billingCity ? params.billingCity : null,
           country: params.billingCountry ? params.billingCountry : null,
-        }
+        };
+    const addresses1 = sameAddress
+      ? {
+        // type: "Shipping",
+        // countryCode: bl_countryCode,
+        // msisdn: bl_msisdn,
+        // email: params.billingEmail ? params.billingEmail : null,
+        street: params.billingAddress ? params.billingAddress : null,
+        zip: params.billingZip ? params.billingZip : null,
+        city: params.billingCity ? params.billingCity : null,
+        country: params.billingCountry ? params.billingCountry : null,
+      }
       : !sh_msisdn &&
-        !sh_countryCode &&
-        !params?.shippingEmail &&
-        !params?.shippingAddress &&
-        !params?.shippingZip &&
-        !params?.shippingCity &&
-        !params?.shippingCountry
-      ? null
-      : {
+      !sh_countryCode &&
+      !params?.shippingEmail &&
+      !params?.shippingAddress &&
+      !params?.shippingZip &&
+      !params?.shippingCity &&
+      !params?.shippingCountry
+        ? null
+        : {
           // type: "Shipping",
           // countryCode: sh_countryCode,
           // msisdn: sh_msisdn,
@@ -94,12 +94,12 @@ class CustomersService {
       !addresses0 && !addresses1
         ? null
         : !addresses1 && addresses0
-        ? {
+          ? {
             // 0: addresses0,
             billing: { ...addresses0 },
             shipping: null,
           }
-        : {
+          : {
             // 0: addresses0,
             // 1: addresses1,
             billing: { ...addresses0 },
@@ -141,21 +141,21 @@ class CustomersService {
               : null;
             const countryCode = primaryPhoneNumber
               ? "+" +
-                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+              primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
               : null;
             const bl_msisdn = billingPhoneNumber
               ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
               : null;
             const bl_countryCode = billingPhoneNumber
               ? "+" +
-                billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
+              billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const sh_msisdn = shippingPhoneNumber
               ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
               : null;
             const sh_countryCode = shippingPhoneNumber
               ? "+" +
-                shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+              shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
 
             const URL = `${EnvVariable.BASEURL}/customers/create/private`;
@@ -170,39 +170,39 @@ class CustomersService {
               !params.billingCountry
                 ? null
                 : {
-                    // type: "billing",
-                    // countryCode: bl_countryCode,
-                    // msisdn: bl_msisdn,
-                    // email: params.billingEmail ? params.billingEmail : null,
-                    street: params.billingAddress
-                      ? params.billingAddress
-                      : null,
-                    zip: params.billingZip ? params.billingZip : null,
-                    city: params.billingCity ? params.billingCity : null,
-                    country: params.billingCountry
-                      ? params.billingCountry
-                      : null,
-                  };
-            const addresses1 = sameAddress
-              ? {
-                  // type: "Shipping",
+                  // type: "billing",
                   // countryCode: bl_countryCode,
                   // msisdn: bl_msisdn,
                   // email: params.billingEmail ? params.billingEmail : null,
-                  street: params.billingAddress ? params.billingAddress : null,
+                  street: params.billingAddress
+                    ? params.billingAddress
+                    : null,
                   zip: params.billingZip ? params.billingZip : null,
                   city: params.billingCity ? params.billingCity : null,
-                  country: params.billingCountry ? params.billingCountry : null,
-                }
+                  country: params.billingCountry
+                    ? params.billingCountry
+                    : null,
+                };
+            const addresses1 = sameAddress
+              ? {
+                // type: "Shipping",
+                // countryCode: bl_countryCode,
+                // msisdn: bl_msisdn,
+                // email: params.billingEmail ? params.billingEmail : null,
+                street: params.billingAddress ? params.billingAddress : null,
+                zip: params.billingZip ? params.billingZip : null,
+                city: params.billingCity ? params.billingCity : null,
+                country: params.billingCountry ? params.billingCountry : null,
+              }
               : !sh_msisdn &&
-                !sh_countryCode &&
-                !params?.shippingEmail &&
-                !params?.shippingAddress &&
-                !params?.shippingZip &&
-                !params?.shippingCity &&
-                !params?.shippingCountry
-              ? null
-              : {
+              !sh_countryCode &&
+              !params?.shippingEmail &&
+              !params?.shippingAddress &&
+              !params?.shippingZip &&
+              !params?.shippingCity &&
+              !params?.shippingCountry
+                ? null
+                : {
                   // type: "Shipping",
                   // countryCode: sh_countryCode,
                   // msisdn: sh_msisdn,
@@ -221,12 +221,12 @@ class CustomersService {
               !addresses0 && !addresses1
                 ? null
                 : !addresses1 && addresses0
-                ? {
+                  ? {
                     // 0: addresses0,
                     billing: { ...addresses0 },
                     shipping: null,
                   }
-                : {
+                  : {
                     // 0: addresses0,
                     // 1: addresses1,
                     billing: { ...addresses0 },
@@ -246,15 +246,15 @@ class CustomersService {
               .then((response) => {
                 if (response?.data.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -301,17 +301,6 @@ class CustomersService {
       !params.billingCountry
         ? null
         : {
-            // countryCode: bl_countryCode,
-            // msisdn: bl_msisdn,
-            // email: params.billingEmail ? params.billingEmail : null,
-            street: params.billingAddress ? params.billingAddress : null,
-            zip: params.billingZip ? params.billingZip : null,
-            city: params.billingCity ? params.billingCity : null,
-            country: params.billingCountry ? params.billingCountry : null,
-          };
-
-    const addresses1 = sameAddress
-      ? {
           // countryCode: bl_countryCode,
           // msisdn: bl_msisdn,
           // email: params.billingEmail ? params.billingEmail : null,
@@ -319,16 +308,27 @@ class CustomersService {
           zip: params.billingZip ? params.billingZip : null,
           city: params.billingCity ? params.billingCity : null,
           country: params.billingCountry ? params.billingCountry : null,
-        }
+        };
+
+    const addresses1 = sameAddress
+      ? {
+        // countryCode: bl_countryCode,
+        // msisdn: bl_msisdn,
+        // email: params.billingEmail ? params.billingEmail : null,
+        street: params.billingAddress ? params.billingAddress : null,
+        zip: params.billingZip ? params.billingZip : null,
+        city: params.billingCity ? params.billingCity : null,
+        country: params.billingCountry ? params.billingCountry : null,
+      }
       : !sh_msisdn &&
-        !sh_countryCode &&
-        !params.shippingEmail &&
-        !params.shippingAddress &&
-        !params.shippingZip &&
-        !params.shippingCity &&
-        !params.shippingCountry
-      ? null
-      : {
+      !sh_countryCode &&
+      !params.shippingEmail &&
+      !params.shippingAddress &&
+      !params.shippingZip &&
+      !params.shippingCity &&
+      !params.shippingCountry
+        ? null
+        : {
           // countryCode: sh_countryCode,
           // msisdn: sh_msisdn,
           // email: params.shippingEmail ? params.shippingEmail : null,
@@ -341,13 +341,13 @@ class CustomersService {
       !addresses0 && !addresses1
         ? null
         : !addresses1 && addresses0
-        ? {
+          ? {
             billing: {
               ...addresses0,
             },
             shipping: null,
           }
-        : {
+          : {
             // 0: addresses0,
             // 1: addresses1,
             billing: {
@@ -365,34 +365,34 @@ class CustomersService {
       !params?.notes
         ? null
         : {
-            0: {
-              name: params.fullName,
-              email: params.email,
-              designation: params.designation,
-              countryCode: "+" + params.phone.slice(0, 2),
-              msisdn: params.phone.slice(2),
-              note: params.notes,
-            },
-          };
+          0: {
+            name: params.fullName,
+            email: params.email,
+            designation: params.designation,
+            countryCode: "+" + params.phone.slice(0, 2),
+            msisdn: params.phone.slice(2),
+            note: params.notes,
+          },
+        };
 
     const additionalData = params?.contact
       ? params.contact.map((row) => {
-          const phone = row?.phone ? row.phone.split("+") : null;
+        const phone = row?.phone ? row.phone.split("+") : null;
 
-          const msisdn = phone ? phone[phone.length - 1].slice(2) : null;
-          const countryCode = phone
-            ? "+" + phone[phone.length - 1].slice(0, 2)
-            : null;
+        const msisdn = phone ? phone[phone.length - 1].slice(2) : null;
+        const countryCode = phone
+          ? "+" + phone[phone.length - 1].slice(0, 2)
+          : null;
 
-          return {
-            name: row.fullName,
-            email: row.email,
-            designation: row.designation,
-            countryCode,
-            msisdn,
-            note: row.notes,
-          };
-        })
+        return {
+          name: row.fullName,
+          email: row.email,
+          designation: row.designation,
+          countryCode,
+          msisdn,
+          note: row.notes,
+        };
+      })
       : null;
 
     if (additionalData) {
@@ -432,21 +432,21 @@ class CustomersService {
               : null;
             const countryCode = primaryPhoneNumber
               ? "+" +
-                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+              primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
               : null;
             const bl_msisdn = billingPhoneNumber
               ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
               : null;
             const bl_countryCode = billingPhoneNumber
               ? "+" +
-                billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
+              billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const sh_msisdn = shippingPhoneNumber
               ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
               : null;
             const sh_countryCode = shippingPhoneNumber
               ? "+" +
-                shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+              shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
 
             const URL = `${EnvVariable.BASEURL}/customers/create/corporate`;
@@ -461,38 +461,38 @@ class CustomersService {
               !params.billingCountry
                 ? null
                 : {
-                    // countryCode: bl_countryCode,
-                    // msisdn: bl_msisdn,
-                    // email: params.billingEmail ? params.billingEmail : null,
-                    street: params.billingAddress
-                      ? params.billingAddress
-                      : null,
-                    zip: params.billingZip ? params.billingZip : null,
-                    city: params.billingCity ? params.billingCity : null,
-                    country: params.billingCountry
-                      ? params.billingCountry
-                      : null,
-                  };
-
-            const addresses1 = sameAddress
-              ? {
                   // countryCode: bl_countryCode,
                   // msisdn: bl_msisdn,
                   // email: params.billingEmail ? params.billingEmail : null,
-                  street: params.billingAddress ? params.billingAddress : null,
+                  street: params.billingAddress
+                    ? params.billingAddress
+                    : null,
                   zip: params.billingZip ? params.billingZip : null,
                   city: params.billingCity ? params.billingCity : null,
-                  country: params.billingCountry ? params.billingCountry : null,
-                }
+                  country: params.billingCountry
+                    ? params.billingCountry
+                    : null,
+                };
+
+            const addresses1 = sameAddress
+              ? {
+                // countryCode: bl_countryCode,
+                // msisdn: bl_msisdn,
+                // email: params.billingEmail ? params.billingEmail : null,
+                street: params.billingAddress ? params.billingAddress : null,
+                zip: params.billingZip ? params.billingZip : null,
+                city: params.billingCity ? params.billingCity : null,
+                country: params.billingCountry ? params.billingCountry : null,
+              }
               : !sh_msisdn &&
-                !sh_countryCode &&
-                !params.shippingEmail &&
-                !params.shippingAddress &&
-                !params.shippingZip &&
-                !params.shippingCity &&
-                !params.shippingCountry
-              ? null
-              : {
+              !sh_countryCode &&
+              !params.shippingEmail &&
+              !params.shippingAddress &&
+              !params.shippingZip &&
+              !params.shippingCity &&
+              !params.shippingCountry
+                ? null
+                : {
                   // countryCode: sh_countryCode,
                   // msisdn: sh_msisdn,
                   // email: params.shippingEmail ? params.shippingEmail : null,
@@ -509,13 +509,13 @@ class CustomersService {
               !addresses0 && !addresses1
                 ? null
                 : !addresses1 && addresses0
-                ? {
+                  ? {
                     billing: {
                       ...addresses0,
                     },
                     shipping: null,
                   }
-                : {
+                  : {
                     // 0: addresses0,
                     // 1: addresses1,
                     billing: {
@@ -533,36 +533,36 @@ class CustomersService {
               !params?.notes
                 ? null
                 : {
-                    0: {
-                      name: params.fullName,
-                      email: params.email,
-                      designation: params.designation,
-                      countryCode: "+" + params.phone.slice(0, 2),
-                      msisdn: params.phone.slice(2),
-                      note: params.notes,
-                    },
-                  };
+                  0: {
+                    name: params.fullName,
+                    email: params.email,
+                    designation: params.designation,
+                    countryCode: "+" + params.phone.slice(0, 2),
+                    msisdn: params.phone.slice(2),
+                    note: params.notes,
+                  },
+                };
 
             const additionalData = params?.contact
               ? params.contact.map((row) => {
-                  const phone = row?.phone ? row.phone.split("+") : null;
+                const phone = row?.phone ? row.phone.split("+") : null;
 
-                  const msisdn = phone
-                    ? phone[phone.length - 1].slice(2)
-                    : null;
-                  const countryCode = phone
-                    ? "+" + phone[phone.length - 1].slice(0, 2)
-                    : null;
+                const msisdn = phone
+                  ? phone[phone.length - 1].slice(2)
+                  : null;
+                const countryCode = phone
+                  ? "+" + phone[phone.length - 1].slice(0, 2)
+                  : null;
 
-                  return {
-                    name: row.fullName,
-                    email: row.email,
-                    designation: row.designation,
-                    countryCode,
-                    msisdn,
-                    note: row.notes,
-                  };
-                })
+                return {
+                  name: row.fullName,
+                  email: row.email,
+                  designation: row.designation,
+                  countryCode,
+                  msisdn,
+                  note: row.notes,
+                };
+              })
               : null;
 
             if (additionalData) {
@@ -588,16 +588,16 @@ class CustomersService {
               .then((response) => {
                 if (response?.data.status_code === 201) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           }
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -631,65 +631,119 @@ class CustomersService {
     return d;
   };
 
-  customersList = async () => {
+  customersList = async (isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      return AuthService.axiosRequestHelper()
-        .then((status) => {
-          if (status) {
-            const URL = `${EnvVariable.BASEURL}/customers/list`;
-            return axios
-              .get(URL)
-              .then((response) => {
-                if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-                ) {
-                  let d;
-                  d = response.data.data.map((row) => {
-                    const preparePhone =
-                      row.countryCode && row.msisdn
-                        ? row.countryCode + row.msisdn
-                        : null;
-                    const phone = preparePhone ? preparePhone.split("+") : null;
-                    return {
-                      uuid: row.uuid,
-                      type: row.type,
-                      name: row.name,
-                      orgIdOrPNumber: row.organizationId
-                        ? row.organizationId
-                        : row.personalNumber,
-                      phone: phone ? "+" + phone[phone.length - 1] : null,
-                      email: row.email,
-                      lastInvoicedOn: row.lastOrderOn,
-                      lastOrderAmount: row.lastOrderAmount,
-                      status: row.status,
-                      street: row?.billingAddress?.street,
-                      city: row?.billingAddress?.city,
-                      zip: row?.billingAddress?.zip,
-                      country: row?.billingAddress?.country,
-                    };
-                  });
-                  d.status_code = 200;
-                  d.is_data = true;
-                  resolve(d);
-                } else if (
-                  response.data.status_code === 200 &&
-                  !response.data.is_data
-                ) {
-                  resolve([]);
-                } else reject("Something went wrong");
-              })
-              .catch((e) => {
-                // reject(e.response.data.errors)
-                if (e?.response?.data?.status_code === 404)
-                  resolve(e.response.data);
-                reject(e.response.data.message);
+      if (isSkipIsAuthenticated){
+        const URL = `${EnvVariable.BASEURL}/customers/list`;
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              let d;
+              d = response.data.data.map((row) => {
+                const preparePhone =
+                  row.countryCode && row.msisdn
+                    ? row.countryCode + row.msisdn
+                    : null;
+                const phone = preparePhone ? preparePhone.split("+") : null;
+                return {
+                  uuid: row.uuid,
+                  type: row.type,
+                  name: row.name,
+                  orgIdOrPNumber: row.organizationId
+                    ? row.organizationId
+                    : row.personalNumber,
+                  phone: phone ? "+" + phone[phone.length - 1] : null,
+                  email: row.email,
+                  lastInvoicedOn: row.lastOrderOn,
+                  lastOrderAmount: row.lastOrderAmount,
+                  status: row.status,
+                  street: row?.billingAddress?.street,
+                  city: row?.billingAddress?.city,
+                  zip: row?.billingAddress?.zip,
+                  country: row?.billingAddress?.country,
+                };
               });
-          } else reject("Something went wrong");
-        })
-        .catch((e) => {
-          reject("Something went wrong");
-        });
+              d.status_code = 200;
+              d.is_data = true;
+              resolve(d);
+            } else if (
+              response.data.status_code === 200 &&
+              !response.data.is_data
+            ) {
+              resolve([]);
+            } else reject("somethingWentWrong");
+          })
+          .catch((e) => {
+            // reject(e?.response?.data?.message)
+            if (e?.response?.data?.status_code === 404)
+              resolve(e.response.data);
+            reject(e?.response?.data?.message);
+          });
+      }else {
+        return AuthService.axiosRequestHelper()
+          .then((status) => {
+            if (status) {
+              const URL = `${EnvVariable.BASEURL}/customers/list`;
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    let d;
+                    d = response.data.data.map((row) => {
+                      const preparePhone =
+                        row.countryCode && row.msisdn
+                          ? row.countryCode + row.msisdn
+                          : null;
+                      const phone = preparePhone
+                        ? preparePhone.split("+")
+                        : null;
+                      return {
+                        uuid: row.uuid,
+                        type: row.type,
+                        name: row.name,
+                        orgIdOrPNumber: row.organizationId
+                          ? row.organizationId
+                          : row.personalNumber,
+                        phone: phone ? "+" + phone[phone.length - 1] : null,
+                        email: row.email,
+                        lastInvoicedOn: row.lastOrderOn,
+                        lastOrderAmount: row.lastOrderAmount,
+                        status: row.status,
+                        street: row?.billingAddress?.street,
+                        city: row?.billingAddress?.city,
+                        zip: row?.billingAddress?.zip,
+                        country: row?.billingAddress?.country,
+                      };
+                    });
+                    d.status_code = 200;
+                    d.is_data = true;
+                    resolve(d);
+                  } else if (
+                    response.data.status_code === 200 &&
+                    !response.data.is_data
+                  ) {
+                    resolve([]);
+                  } else reject("somethingWentWrong");
+                })
+                .catch((e) => {
+                  // reject(e?.response?.data?.message)
+                  if (e?.response?.data?.status_code === 404)
+                    resolve(e.response.data);
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("somethingWentWrong");
+          })
+          .catch((e) => {
+            reject("somethingWentWrong");
+          });
+      }
     });
   };
 
@@ -707,15 +761,15 @@ class CustomersService {
                   response?.data?.is_data
                 ) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -734,15 +788,15 @@ class CustomersService {
                   response?.data?.is_data
                 ) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -758,16 +812,16 @@ class CustomersService {
               .then((response) => {
                 // if (response?.data.status_code === 200) {
                 //   resolve(response.data);
-                // }else reject("Something went wrong");
+                // }else reject("somethingWentWrong");
                 resolve(response.data);
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -790,24 +844,24 @@ class CustomersService {
 
     const data = {
       customerID: params.customerID,
-        name: params.customerName,
+      name: params.customerName,
       countryCode: primaryPhoneNumber
-      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
-      : null,
+        ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+        : null,
       msisdn: primaryPhoneNumber
-      ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
-      : null,
+        ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+        : null,
       personalNumber: `${params.pNumber !== null ? params.pNumber : ""}`,
       email: params.customerEmail,
       addresses: {
-      billing: {
-        uuid: billingUUID,
+        billing: {
+          uuid: billingUUID,
           street: params.billingAddress,
           zip: params?.billingZip,
           city: params.billingCity,
           country: params.billingCountry,
+        },
       },
-    },
     };
 
     if (sameAddress) {
@@ -857,7 +911,7 @@ class CustomersService {
               name: params.customerName,
               countryCode: primaryPhoneNumber
                 ? "+" +
-                  primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
                 : null,
               msisdn: primaryPhoneNumber
                 ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
@@ -900,15 +954,15 @@ class CustomersService {
               .then((response) => {
                 if (response?.data?.status_code === 202) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -973,7 +1027,6 @@ class CustomersService {
             note: params.notes,
           },
         };
-
     const paramsContact = params.contact;
     if (params.contact.length) {
       for (let i = 0; i < params.contact.length; i++) {
@@ -987,7 +1040,6 @@ class CustomersService {
           paramsContact.splice(i, 1);
       }
     }
-
     const additionalData = paramsContact
       ? paramsContact.map((row) => {
         const phone = row?.phone ? row.phone.split("+") : null;
@@ -1098,21 +1150,21 @@ class CustomersService {
               : null;
             const countryCode = primaryPhoneNumber
               ? "+" +
-                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+              primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
               : null;
             const bl_msisdn = billingPhoneNumber
               ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
               : null;
             const bl_countryCode = billingPhoneNumber
               ? "+" +
-                billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
+              billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const sh_msisdn = shippingPhoneNumber
               ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
               : null;
             const sh_countryCode = shippingPhoneNumber
               ? "+" +
-                shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+              shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const ad_p_msisdn = phone ? phone[phone.length - 1].slice(2) : null;
             const ad_p_countryCode = phone
@@ -1127,20 +1179,20 @@ class CustomersService {
               !params.notes
                 ? null
                 : {
-                    0: {
-                      uuid:
-                        detailsInfo?.additionalContactDetails &&
-                        detailsInfo?.additionalContactDetails[0]?.uuid
-                          ? detailsInfo?.additionalContactDetails[0]?.uuid
-                          : null,
-                      name: params.fullName,
-                      email: params.email,
-                      designation: params.designation,
-                      countryCode: ad_p_countryCode,
-                      msisdn: ad_p_msisdn,
-                      note: params.notes,
-                    },
-                  };
+                  0: {
+                    uuid:
+                      detailsInfo?.additionalContactDetails &&
+                      detailsInfo?.additionalContactDetails[0]?.uuid
+                        ? detailsInfo?.additionalContactDetails[0]?.uuid
+                        : null,
+                    name: params.fullName,
+                    email: params.email,
+                    designation: params.designation,
+                    countryCode: ad_p_countryCode,
+                    msisdn: ad_p_msisdn,
+                    note: params.notes,
+                  },
+                };
 
             const paramsContact = params.contact;
             if (params.contact.length) {
@@ -1158,23 +1210,23 @@ class CustomersService {
 
             const additionalData = paramsContact
               ? paramsContact.map((row) => {
-                  const phone = row?.phone ? row.phone.split("+") : null;
-                  const msisdn = phone
-                    ? phone[phone.length - 1].slice(2)
-                    : null;
-                  const countryCode = phone
-                    ? "+" + phone[phone.length - 1].slice(0, 2)
-                    : null;
+                const phone = row?.phone ? row.phone.split("+") : null;
+                const msisdn = phone
+                  ? phone[phone.length - 1].slice(2)
+                  : null;
+                const countryCode = phone
+                  ? "+" + phone[phone.length - 1].slice(0, 2)
+                  : null;
 
-                  return {
-                    name: row?.fullName ? row?.fullName : "",
-                    email: row?.email ? row?.email : "",
-                    designation: row?.designation ? row?.designation : "",
-                    countryCode,
-                    msisdn,
-                    note: row?.notes ? row?.notes : "",
-                  };
-                })
+                return {
+                  name: row?.fullName ? row?.fullName : "",
+                  email: row?.email ? row?.email : "",
+                  designation: row?.designation ? row?.designation : "",
+                  countryCode,
+                  msisdn,
+                  note: row?.notes ? row?.notes : "",
+                };
+              })
               : null;
 
             if (additionalData.length) {
@@ -1247,7 +1299,7 @@ class CustomersService {
                 } else reject("Something went wrong 3");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
           } else reject("Something went wrong 2");
         })
@@ -1271,18 +1323,48 @@ class CustomersService {
                   response?.data?.is_data
                 ) {
                   resolve(response.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                // reject(e.response.data.errors)
+                // reject(e?.response?.data?.message)
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
+        });
+    });
+  };
+
+  getCustomerTimelineByUUID = async (uuid, startTime) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  resolve(response.data);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                // reject(e?.response?.data?.message)
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
         });
     });
   };
@@ -1298,15 +1380,15 @@ class CustomersService {
               .then((response) => {
                 if (response?.data.status_code === 201) {
                   resolve(response?.data);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                reject(e.response.data.errors);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };
@@ -1347,10 +1429,10 @@ class CustomersService {
                         row.status.toLowerCase() === "sent"
                           ? "Resend"
                           : row.status.toLowerCase() === "paid" ||
-                            row.status.toLowerCase() === "partial refunded" ||
-                            row.status.toLowerCase() === "invoiced"
-                          ? "Refund"
-                          : null,
+                          row.status.toLowerCase() === "partial refunded"
+                          // || row.status.toLowerCase() === "invoiced"
+                            ? "Refund"
+                            : null,
                       isCancel: row.status.toLowerCase() === "sent",
                     };
                   });
@@ -1362,18 +1444,18 @@ class CustomersService {
                   !response.data.is_data
                 ) {
                   resolve([]);
-                } else reject("Something went wrong");
+                } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                // reject(e.response.data.errors)
+                // reject(e?.response?.data?.message)
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
-                reject(e.response.data.message);
+                reject(e?.response?.data?.message);
               });
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject("Something went wrong");
+          reject("somethingWentWrong");
         });
     });
   };

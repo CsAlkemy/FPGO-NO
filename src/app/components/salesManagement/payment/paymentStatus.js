@@ -1,11 +1,18 @@
 import { CheckCircle } from '@mui/icons-material';
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PaymentHeader from './paymentHeader';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
+import { useParams } from "react-router-dom";
 
 const paymentStatus = () => {
-  const {t} = useTranslation()
+  const {t} = useTranslation();
+  const queryParams = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    console.log(queryParams.uuid)
+  }, [isLoading]);
+
     // const [isSuccess, setIsSuccess] = React.useState(false);
   return (
     <div className="flex flex-col flex-auto min-w-0 max-w-screen-xl my-32">

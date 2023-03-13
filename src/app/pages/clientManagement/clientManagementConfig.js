@@ -6,9 +6,7 @@ import ClientDetails from "../../components/clientManagement/client-details/Clie
 const OnbordingHome = lazy(() =>
   import("../../components/clientManagement/onboarding/index")
 ); //TODO will remove when the table is ready.
-const Onbording = lazy(() =>
-  import("../../components/clientManagement/onboarding/Onboarding")
-);
+import Onbording from "../../components/clientManagement/onboarding/Onboarding";
 const CreateClient = lazy(() =>
   import("../../components/clientManagement/create-client/CreateClient")
 );

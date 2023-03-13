@@ -79,6 +79,16 @@ export const customerOrdersListRowDataFields = [
   "cancel",
 ];
 
+export const clientOrdersListRowDataFields = [
+  "dateCreated",
+  "orderId",
+  "customerName",
+  "paymentLinkDueDate",
+  "phoneNo",
+  "amount",
+  "status"
+];
+
 export const creditChecksListRowDataFields = [
   "date",
   "customerName",
@@ -135,6 +145,6 @@ export const refundRequestsOverviewRowDataFields = [
   "orderAmount",
   "refundAmount",
   "stage",
-  "refundResend",
+  "approveAction",
   "cancel",
 ];

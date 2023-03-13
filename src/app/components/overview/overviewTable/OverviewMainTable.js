@@ -1,15 +1,6 @@
 import FuseUtils from "@fuse/utils";
 import _ from "@lodash";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import {
-  Button,
-  Hidden,
-  IconButton,
-  MenuItem,
-  Select,
-  SvgIcon,
-  TablePagination,
-} from "@mui/material";
+import { Hidden, MenuItem, Select, TablePagination } from "@mui/material";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Table from "@mui/material/Table";
@@ -29,11 +20,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../../../../styles/colors.css";
-import CategoryService from "../../../data-access/services/categoryService/CategoryService";
-import ClientService from "../../../data-access/services/clientsService/ClientService";
-import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import ProductService from "../../../data-access/services/productsService/ProductService";
 import UserService from "../../../data-access/services/userService/UserService";
 import OverviewHeader from "../overviewHeader/overviewHeader";
 import OverViewMainTableBody from "./OverViewMainTableBody";
@@ -45,6 +32,7 @@ import {
   businessAdminUsersOverview,
   categoriesListOverview,
   clientAdminOverview,
+  clientOrdersListOverview,
   clientsListOverview,
   creditChecksListOverview,
   customerOrdersListOverview,
@@ -58,33 +46,67 @@ import {
   userListOverview,
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
+import UtilsService from '../../../utils/UtilsService';
+import moment from 'moment';
 
 export default function OverviewMainTable(props) {
   const { t } = useTranslation();
   const [value, setValue] = React.useState(0);
-  const [page, setPage] = useState(localStorage.getItem("pageNo") && localStorage.getItem("tableName") && (localStorage.getItem("tableName") === props.tableName) ? parseInt(localStorage.getItem("pageNo")) : 0);
+  const [page, setPage] = useState(
+    localStorage.getItem("pageNo") &&
+      localStorage.getItem("tableName") &&
+      localStorage.getItem("tableName") === props.tableName
+      ? parseInt(localStorage.getItem("pageNo"))
+      : 0
+  );
   // const pageNumCount = (tableName)=> {
   //   console.log("tableName :",tableName);
   //   return 2;
   // }
   // const [page, setPage] = useState(pageNumCount(props.tableName));
-  const [data, setData] = useState(props.tableData);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [data, setData] = useState(
+    props.tableName === refundRequestsOverview
+      ? props.tableData.filter(
+          (row) => row.stage.toLowerCase() === "refund pending"
+        )
+      : props.tableData
+  );
+  const [rowsPerPage, setRowsPerPage] = useState(!props?.isMobileScreen ? 10 : props.tableData.length);
+  const [filteredData, setFilteredData] = useState([]);
   const [item, setItems] = useState(0);
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const { enqueueSnackbar } = useSnackbar();
   const searchText = useSelector(selectSearchText);
-  const [refundRequestCount, setRefundRequestCount] = useState(localStorage.getItem("refundRequestCount"))
-
+  const [refundRequestCount, setRefundRequestCount] = useState(
+    localStorage.getItem("refundRequestCount")
+  );
   // useEffect(() => {
   //     setData(props.tableData);
   // }, [props.isLoading]);
   useEffect(() => {
     if (searchText.length !== 0) {
-      setData(FuseUtils.filterArrayByString(props.tableData, searchText));
+      setData(
+        FuseUtils.filterArrayByString(
+          // (props.tableName === refundRequestsOverview   || props.tableName === ordersListOverview)
+          filteredData.length
+            ? filteredData
+            : props.tableData,
+          searchText
+        )
+      );
+      setRowsPerPage(!props?.isMobileScreen ? 10 : props.tableData.length);
     } else {
-      setData(props.tableData);
+      setData(
+        props.tableName === refundRequestsOverview && !filteredData.length
+          ? props.tableData.filter(
+              (row) => row.stage.toLowerCase() === "refund pending"
+            )
+          : filteredData.length
+          ? filteredData
+          : props.tableData
+      );
+      setRowsPerPage(!props?.isMobileScreen ? 10 : props.tableData.length);
     }
   }, [props.isLoading, searchText]);
   const [sortOrder, setSortOrder] = useState({
@@ -101,85 +123,65 @@ export default function OverviewMainTable(props) {
   };
 
   const handleApprovalListTableTabPanelsData = (event, newValue) => {
-    newValue === 0
-      ? setData(props.tableData)
-      : newValue === 1
-      ? setData(
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
           props.tableData.filter(
-            (row) =>
-              new Date(row.reqOn).toLocaleDateString() ===
-              new Date().toLocaleDateString()
+            (row) => {
+              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+              return preparedDate.getDate() === new Date().getDate()
+            }
           )
         )
-      : newValue === 2
-      ? setData(
-          props.tableData.filter((row) => {
-            let date = new Date();
-            let day = new Date(row.reqOn).getDay();
-            switch (new Date().getDay()) {
-              case 0:
-                return (
-                  new Date(row.reqOn).toLocaleDateString() ===
-                  new Date().toLocaleDateString()
-                );
-              case 1:
-                date.setDate(date.getDate() - 1);
-                return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
-                );
-              case 2:
-                date.setDate(date.getDate() - 2);
-                return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
-                );
-              case 3:
-                date.setDate(date.getDate() - 3);
-                return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
-                );
-              case 4:
-                date.setDate(date.getDate() - 4);
-                return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
-                );
-              case 5:
-                date.setDate(date.getDate() - 5);
-                return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
-                );
-              case 6:
-                date.setDate(date.getDate() - 6);
-                return (
-                  new Date(row.reqOn).toLocaleDateString() <=
-                    new Date().toLocaleDateString() &&
-                  new Date(row.reqOn).toLocaleDateString() >=
-                    date.toLocaleDateString()
-                );
-            }
-          })
-        )
-      : setData(
+        setFilteredData(
           props.tableData.filter(
-            (row) =>
-              new Date(row.reqOn).toLocaleDateString().split("/")[0] ===
-              new Date().toLocaleDateString().split("/")[0]
+            (row) => {
+              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+              return preparedDate.getDate() === new Date().getDate()
+            }
+          )
+        )
+        break;
+      case 2:
+        const currentDate = moment();
+        // const allDates = [...];
+        // const filtered = allDates.filter(date => moment(date).isSame(currentDate, 'week');
+        setData(
+          props.tableData.filter((row) => {
+            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(currentDate, 'week')
+          })
+        );
+        setFilteredData(
+          props.tableData.filter((row) => {
+            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(currentDate, 'week')
+          })
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter(
+            (row) =>{
+              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+              return preparedDate.getMonth() ===
+                new Date().getMonth()
+            }
           )
         );
+        setFilteredData(
+          props.tableData.filter(
+            (row) =>{
+              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+              return preparedDate.getMonth() ===
+                new Date().getMonth()
+            }
+          )
+        );
+        break;
+    }
   };
 
   const clientsListTableTabPanelsData = (event, newValue) => {
@@ -190,10 +192,12 @@ export default function OverviewMainTable(props) {
       case 1:
         // setData(props.tableData.filter((row) => row.role === "client"));
         setData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
         break;
       case 2:
         // setData(props.tableData.filter((row) => row.role === "sub-client"));
         setData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
         break;
       // case 3:
       //   setData(props.tableData.filter((row) => row.status === "Active"));
@@ -204,16 +208,68 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const clientOrdersListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
+        );
+        break;
+      case 2:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "paid")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "paid")
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "invoiced"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "invoiced"
+          )
+        );
+        break;
+      case 4:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "expired"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "expired"
+          )
+        );
+        break;
+    }
+  };
+
   const productsListTableTabPanelsData = (event, newValue) => {
     switch (newValue) {
       case 0:
         setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
       case 1:
         setData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
         break;
       case 2:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
         break;
     }
   };
@@ -230,18 +286,23 @@ export default function OverviewMainTable(props) {
     switch (newValue) {
       case 0:
         setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
       case 1:
         setData(props.tableData.filter((row) => row.type === "Corporate"));
+        setFilteredData(props.tableData.filter((row) => row.type === "Corporate"));
         break;
       case 2:
         setData(props.tableData.filter((row) => row.type === "Private"));
+        setFilteredData(props.tableData.filter((row) => row.type === "Private"));
         break;
       case 3:
         setData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
         break;
       case 4:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
         break;
     }
   };
@@ -250,18 +311,23 @@ export default function OverviewMainTable(props) {
     switch (newValue) {
       case 0:
         setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
       case 1:
         setData(props.tableData.filter((row) => row.stage === "sent"));
+        setFilteredData(props.tableData.filter((row) => row.stage === "sent"));
         break;
       case 2:
         setData(props.tableData.filter((row) => row.stage === "paid"));
+        setFilteredData(props.tableData.filter((row) => row.stage === "paid"));
         break;
       case 3:
         setData(props.tableData.filter((row) => row.stage === "invoiced"));
+        setFilteredData(props.tableData.filter((row) => row.stage === "invoiced"));
         break;
       case 4:
         setData(props.tableData.filter((row) => row.stage === "expired"));
+        setFilteredData(props.tableData.filter((row) => row.stage === "expired"));
         break;
     }
   };
@@ -270,12 +336,15 @@ export default function OverviewMainTable(props) {
     switch (newValue) {
       case 0:
         setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
       case 1:
         setData(props.tableData.filter((row) => row.type === "Private"));
+        setFilteredData(props.tableData.filter((row) => row.type === "Private"));
         break;
       case 2:
         setData(props.tableData.filter((row) => row.type === "Corporate"));
+        setFilteredData(props.tableData.filter((row) => row.type === "Corporate"));
         break;
     }
   };
@@ -284,12 +353,15 @@ export default function OverviewMainTable(props) {
     switch (newValue) {
       case 0:
         setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
       case 1:
         setData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
         break;
       case 2:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
         break;
     }
   };
@@ -298,12 +370,32 @@ export default function OverviewMainTable(props) {
     switch (newValue) {
       case 0:
         setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
       case 1:
         setData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
         break;
       case 2:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
+        break;
+    }
+  };
+
+  const businessAdminUsersListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
+        break;
+      case 2:
+        setData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
         break;
     }
   };
@@ -312,14 +404,21 @@ export default function OverviewMainTable(props) {
     switch (newValue) {
       case 0:
         setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
       case 1:
         setData(
           props.tableData.filter((row) => row.stage.toLowerCase() === "sent")
         );
+        setFilteredData(
+          props.tableData.filter((row) => row.stage.toLowerCase() === "sent")
+        );
         break;
       case 2:
         setData(
+          props.tableData.filter((row) => row.stage.toLowerCase() === "paid")
+        );
+        setFilteredData(
           props.tableData.filter((row) => row.stage.toLowerCase() === "paid")
         );
         break;
@@ -329,12 +428,50 @@ export default function OverviewMainTable(props) {
             (row) => row.stage.toLowerCase() === "invoiced"
           )
         );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "invoiced"
+          )
+        );
         break;
       case 4:
         setData(
-          props.tableData.filter(
-            (row) => row.stage.toLowerCase() === "=expired"
-          )
+          props.tableData
+            .map((data) => {
+              const dueDate = data.dueDate;
+              const splitedTimeAndDate = dueDate.split(", ");
+              const splitedDates = splitedTimeAndDate[1].split(".");
+              const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+              const dueDateTimeStamp = new Date(formatedDate).getTime();
+              const currentTimeStamp = new Date().getTime();
+              const isExpired = data.stage.toLowerCase() === "sent" && dueDateTimeStamp < currentTimeStamp;
+              const statusChanged = data?.status
+                ? isExpired
+                  ? "expired"
+                  : data.status.toLowerCase()
+                : null;
+              return { ...data, status: statusChanged };
+            })
+            .filter((row) => row.stage.toLowerCase() === "expired")
+        );
+        setFilteredData(
+          props.tableData
+            .map((data) => {
+              const dueDate = data.dueDate;
+              const splitedTimeAndDate = dueDate.split(", ");
+              const splitedDates = splitedTimeAndDate[1].split(".");
+              const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+              const dueDateTimeStamp = new Date(formatedDate).getTime();
+              const currentTimeStamp = new Date().getTime();
+              const isExpired = data.stage.toLowerCase() === "sent" && dueDateTimeStamp < currentTimeStamp;
+              const statusChanged = data?.status
+                ? isExpired
+                  ? "expired"
+                  : data.status.toLowerCase()
+                : null;
+              return { ...data, status: statusChanged };
+            })
+            .filter((row) => row.stage.toLowerCase() === "expired")
         );
         break;
     }
@@ -343,31 +480,50 @@ export default function OverviewMainTable(props) {
   const refundRequestsListTableTabPanelsData = (event, newValue) => {
     switch (newValue) {
       case 0:
-        setData(props.tableData);
-        break;
-      case 1:
         setData(
-          props.tableData.filter((row) => row.stage.toLowerCase() === "pending")
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "refund pending"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "refund pending"
+          )
         );
         break;
-      case 2:
+      case 1:
         setData(
           props.tableData.filter(
             (row) => row.stage.toLowerCase() === "accepted"
           )
         );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "accepted"
+          )
+        );
         break;
-      case 3:
+      case 2:
         setData(
           props.tableData.filter(
             (row) => row.stage.toLowerCase() === "rejected"
           )
         );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "rejected"
+          )
+        );
+        break;
+      case 3:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
         break;
     }
   };
 
   const handleTabChange = (event, newValue) => {
+    setPage(0);
     switch (props.tableName) {
       // case "test" for DEV test Purpose
       case "test":
@@ -387,6 +543,9 @@ export default function OverviewMainTable(props) {
         break;
       case clientsListOverview:
         clientsListTableTabPanelsData(event, newValue);
+        break;
+      case clientOrdersListOverview:
+        clientOrdersListTableTabPanelsData(event, newValue);
         break;
       case productsListOverview:
         productsListTableTabPanelsData(event, newValue);
@@ -408,6 +567,9 @@ export default function OverviewMainTable(props) {
         break;
       case organizationWiseUsersOverview:
         organizationWiseUsersListTableTabPanelsData(event, newValue);
+        break;
+      case businessAdminUsersOverview:
+        businessAdminUsersListTableTabPanelsData(event, newValue);
         break;
       case ordersListOverview:
         ordersListTableTabPanelsData(event, newValue);
@@ -450,7 +612,8 @@ export default function OverviewMainTable(props) {
 
   const handleChangePage = (event, value) => {
     setPage(value);
-    localStorage.setItem("pageNo", `${value}`)
+    localStorage.setItem("tableName", `${props.tableName}`);
+    localStorage.setItem("pageNo", `${value}`);
   };
 
   const handleRequestSort = (event, property) => {
@@ -472,7 +635,7 @@ export default function OverviewMainTable(props) {
   };
 
   const handleTableRowClick = (info) => {
-    localStorage.setItem("tableName", `${props.tableName}`)
+    localStorage.setItem("tableName", `${props.tableName}`);
     switch (props.tableName) {
       case approvalListOverviewFPAdmin:
         // let companyName = info.nameOrgId.split("(")[0];
@@ -480,171 +643,114 @@ export default function OverviewMainTable(props) {
         // let name = info.primaryContact.split("(")[0];
         // let designation = info.primaryContact.split("(")[1].split(")")[0];
         // let phone = info.phone.slice(4);
-        ClientService.clientDetails(info.uuid)
-          .then((res) => {
-            // const tableRowDetails = {
-            //   orgId: res.data.organizationDetails.id,
-            //   clientName: res.data.organizationDetails.name,
-            //   orgType: res.data.organizationDetails?.type,
-            //   fullName: res.data.,
-            //   phone: info.phone,
-            //   designation: designation,
-            //   email: info.email,
-            //   uuid: res.data["primaryContactDetails"].uuid,
-            //   tableRef: approvalListOverviewFPAdmin,
-            // };
-            // localStorage.setItem(
-            //   "tableRowDetails",
-            //   JSON.stringify(tableRowDetails)
-            // );
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/client-management/onbroading/${info.organizationUuid}`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        // ClientService.clientDetails(info.uuid)
+        //   .then((res) => {
+        // const tableRowDetails = {
+        //   orgId: res.data.organizationDetails.id,
+        //   clientName: res.data.organizationDetails.name,
+        //   orgType: res.data.organizationDetails?.type,
+        //   fullName: res.data.,
+        //   phone: info.phone,
+        //   designation: designation,
+        //   email: info.email,
+        //   uuid: res.data["primaryContactDetails"].uuid,
+        //   tableRef: approvalListOverviewFPAdmin,
+        // };
+        // localStorage.setItem(
+        //   "tableRowDetails",
+        //   JSON.stringify(tableRowDetails)
+        // );
+        // localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
+        navigate(`/client-management/onbroading/${info.organizationUuid}`);
+        // })
+        // .catch((error) => {
+        //   enqueueSnackbar(error, { variant: "error" });
+        // });
         break;
       case clientsListOverview:
-        ClientService.clientDetails(info.uuid)
-          .then((res) => {
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/client-management/details/${info.uuid}`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        // ClientService.clientDetails(info.uuid)
+        //   .then((res) => {
+        //     localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
+        navigate(`/client-management/details/${info.uuid}`);
+        //   })
+        //   .catch((error) => {
+        //     enqueueSnackbar(error, { variant: "error" });
+        //   });
+        break;
+      case clientOrdersListOverview:
+        navigate(`/create-order/details/${info.uuid}`);
         break;
       case userListOverview:
-        UserService.getProfileByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
-            navigate(`/user-management/user-profile`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
-        break;
-      case customersListOverview:
-        CustomersService.getCustomerDetailsByUUID(info.uuid).then((res) => {
-          localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-          res.data.type === "Corporate"
-            ? navigate(`/customers/corporate/details/${info.uuid}`)
-            : navigate(`/customers/private/details/${info.uuid}`);
-          // navigate(`/customers/private/details/${info.uuid}`);
+        navigate(`/user-management/user-profile`, {
+          state: {
+            userId: info.uuid,
+          },
         });
         break;
+      case customersListOverview:
+        info.type === "Corporate"
+          ? navigate(`/customers/corporate/details/${info.uuid}`)
+          : navigate(`/customers/private/details/${info.uuid}`);
+        break;
       case customerOrdersListOverview:
-        OrdersService.getOrdersDetailsByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/create-order/details`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/create-order/details/${info.uuid}`);
         break;
       case categoriesListOverview:
-        CategoryService.categoryDetailsByUUID(info.uuid)
-          .then((response) => {
-            if (response.data.productList) {
-              let pL = [];
-              response.data.productList.map((row) => {
-                return pL.push({
-                  uuid: row.uuid,
-                  name: row.name,
-                  id: row.productId,
-                });
-              });
-              localStorage.setItem("defaultPdList", JSON.stringify(pL));
-            } else localStorage.setItem("defaultPdList", "");
-            localStorage.setItem(
-              "tableRowDetails",
-              JSON.stringify(response.data)
-            );
-            navigate(`/category/details/${info.uuid}`);
-          })
-          .catch((error) => {
-            console.log("E : ", error);
-          });
+        navigate(`/category/details/${info.uuid}`);
         break;
       case productsListOverview:
-        ProductService.productDetailsByUUID(info.uuid)
-          .then((response) => {
-            if (response.data.categories) {
-              let pL = [];
-              response.data.categories.map((row) => {
-                return pL.push({ uuid: row.uuid, name: row.name });
-              });
-              localStorage.setItem("defaultCategories", JSON.stringify(pL));
-            } else localStorage.setItem("defaultCategories", "");
-            localStorage.setItem(
-              "tableRowDetails",
-              JSON.stringify(response.data)
-            );
-            navigate(`/products/details/${info.uuid}`);
-          })
-          .catch((error) => {
-            console.log("E : ", error);
-          });
+        navigate(`/products/details/${info.uuid}`);
         break;
       case fpAdminUsersOverview:
-        UserService.getProfileByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
-            navigate(`/user-management/user-profile`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/user-management/user-profile`, {
+          state: {
+            userId: info.uuid,
+          },
+        });
         break;
       case businessAdminUsersOverview:
         navigate(`/users/organization-wise-user-list/${info.uuid}`);
         break;
       case organizationWiseUsersOverview:
-        UserService.getProfileByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
-            navigate(`/user-management/user-profile`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/user-management/user-profile`, {
+          state: {
+            userId: info.uuid,
+          },
+        });
         break;
       case ordersListOverview:
-        OrdersService.getOrdersDetailsByUUID(info.uuid)
-          .then((res) => {
-            localStorage.setItem("tableRowDetails", JSON.stringify(res.data));
-            navigate(`/create-order/details`);
-          })
-          .catch((error) => {
-            enqueueSnackbar(error, { variant: "error" });
-          });
+        navigate(`/create-order/details/${info.uuid}`);
         break;
     }
   };
 
   return (
     <>
-      <Hidden mdUp>
+      <Hidden smUp>
         <div className="px-28">
           <OverviewHeader
             headerSubtitle={props.headerSubtitle}
             headerButtonLabel={props.headerButtonLabel}
             tableRef={props.tableName}
             tableData={props.tableData}
+            isLoading={props.isLoading}
           />
           <div className="">
             <div>
               <Select
                 sx={{ height: 40 }}
-                // defaultValue="All"
+                defaultValue={
+                  props.tableName === refundRequestsOverview
+                    ? t("label:pending")
+                    : t("label:all")
+                }
                 displayEmpty
                 className="w-full min-h-auto"
                 renderValue={(value) => {
                   return (
                     <Box
                       sx={{ display: "flex", gap: 1 }}
-                      className="flex justify-start items-center"
+                      className="flex justify-start items-center mt-4"
                     >
                       <div className="my-auto">{value}</div>
                     </Box>
@@ -665,25 +771,32 @@ export default function OverviewMainTable(props) {
           </div>
           <div className="my-20 grid grid-cols-2 gap-10 justify-between items-center">
             <div className="subtitle3 text-MonochromeGray-500">
-              {props.tableData.length} {t("label:resultsFound")}
+              {data.length} {t("label:resultsFound")}
             </div>
             <div>
               <Select
                 sx={{ height: 40 }}
-                // defaultValue="Sort By: All"
+                defaultValue={t("label:sortBy")}
                 displayEmpty
                 className="w-full min-h-auto"
                 renderValue={(value) => {
                   return (
                     <Box
                       sx={{ display: "flex", gap: 1 }}
-                      className="flex justify-start items-center"
+                      className="flex justify-start items-center mt-4"
                     >
                       <div className="my-auto">{value}</div>
                     </Box>
                   );
                 }}
               >
+                {/*<MenuItem*/}
+                {/*  key={"notSelected"}*/}
+                {/*  value={"notSelected"}*/}
+                {/*  // onClick={() => handleRequestSort(null, option.id)}*/}
+                {/*>*/}
+                {/*  Select a option to sort*/}
+                {/*</MenuItem>*/}
                 {props.headerRows
                   .filter(
                     (headerRow) =>
@@ -746,12 +859,18 @@ export default function OverviewMainTable(props) {
           />
         </Hidden>
       </Hidden>
-      <Hidden mdDown>
+      <Hidden smDown>
         <Box sx={{ width: "100%" }}>
           <OverviewHeader
             headerSubtitle={props.headerSubtitle}
             headerButtonLabel={props.headerButtonLabel}
             tableRef={props.tableName}
+            changeDate={props.changeDate ? props.changeDate : null}
+            selectedDate={props.selectedDate ? props.selectedDate : null}
+            setSelectedDate={
+              props.setSelectedDate ? props.setSelectedDate : null
+            }
+            isLoading={props.isLoading}
           />
           <Box
             sx={{
@@ -856,7 +975,7 @@ export default function OverviewMainTable(props) {
                             align="center"
                           >
                             <Typography className="subtitle3">
-                              Data Not Found!
+                              {t("label:dataNotFound")}
                             </Typography>
                           </TableCell>
                         </TableRow>

@@ -2,8 +2,9 @@ import FuseUtils from "@fuse/utils/FuseUtils";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 // import jwtServiceConfig from "./jwtServiceConfig";
-import { EnvVariable } from "../../utils/EnvVariables";
+import { EnvVariable, SecretKey } from "../../utils/EnvVariables";
 import MultiLanguageService from "../multiLanguageService/MultiLanguageService";
+import UtilsServices from "../../utils/UtilsServices";
 
 /* eslint-disable camelcase */
 
@@ -36,51 +37,39 @@ class AuthService extends FuseUtils.EventEmitter {
   //     }
   //   );
   // };
-  setTranslation = () => {
-    MultiLanguageService.translations()
-      .then((response) => {
-        localStorage.setItem("translation", JSON.stringify(response.data));
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
 
   axiosRequestHelper = () => {
     const userInfo = this.getUserInfo();
     return new Promise((resolve, reject) => {
       if (userInfo) {
-        if (this.isRefreshTokenValid()) {
-          if (this.isAccessTokenValid()) {
-            if (userInfo) {
-              this.isAuthenticated(userInfo?.user_data?.uuid)
-                .then((res) => {
-                  resolve(res);
-                })
-                .catch((e) => {
-                  this.emit("onAutoLogout");
-                  reject(false);
-                });
-            }
-          } else if (!this.isAccessTokenValid()) {
-            this.refreshAccessToken().then((res) => {
-              if (res) {
-                if (userInfo) {
-                  this.isAuthenticated(userInfo.uuid)
-                    .then((res) => {
-                      resolve(res);
-                    })
-                    .catch((e) => {
-                      this.emit("onAutoLogout");
-                      reject(false);
-                    });
-                }
-              } else reject(false);
+        if (this.isAccessTokenValid()) {
+          return this.isAuthenticated(userInfo?.user_data?.uuid)
+            .then((loggedInStatus) => {
+              if (loggedInStatus) {
+                resolve(true);
+              } else {
+                reject(false);
+                this.emit("onAutoLogout");
+              }
+            })
+            .catch((e) => {
+              reject(false);
+              this.emit("onAutoLogout");
             });
-          }
+        } else if (this.isRefreshTokenValid()) {
+          return this.refreshAccessToken()
+            .then((res) => {
+              if (res) {
+                resolve(true);
+              } else reject(false);
+            })
+            .catch((e) => {
+              reject(false);
+              this.emit("onAutoLogout");
+            });
         } else {
-          this.emit("onAutoLogout");
           reject(false);
+          this.emit("onAutoLogout");
         }
       } else {
         this.emit("onAutoLogout");
@@ -100,14 +89,35 @@ class AuthService extends FuseUtils.EventEmitter {
             refreshToken: userInfo.token_data.refresh_token,
           })
           .then((res) => {
-            if (res?.data?.status_code === 202 && res?.data?.data) {
-              this.setSession(res.data.data.access_token);
-              const userInfo = this.getUserInfo();
-              userInfo["token_data"] = res.data.data;
-              this.setUserInfo(userInfo);
-              resolve(true);
+            if (
+              res?.data?.status_code === 202 &&
+              res?.data?.data
+            ) {
+              return this.isAuthenticated(userInfo?.user_data?.uuid)
+                .then((loggedInStatus) => {
+                  if (loggedInStatus) {
+                    const isValid = this.isAccessTokenValid(
+                      res?.data?.data?.access_token_expires_at
+                    );
+                    if (isValid) {
+                      this.setSession(res.data.data.access_token);
+                      userInfo.token_data = res.data.data;
+                      this.setUserInfo(userInfo);
+                      resolve(true);
+                    } else reject(false);
+                  } else {
+                    reject(false);
+                    this.emit("onAutoLogout");
+                  }
+                })
+                .catch((e) => {
+                  reject(false);
+                  this.emit("onAutoLogout");
+                });
+            } else {
+              reject(false);
+              this.emit("onAutoLogout");
             }
-            reject(false);
           })
           .catch((e) => {
             console.warn((e) => "isRefreshTokenValid E: ", e);
@@ -122,75 +132,17 @@ class AuthService extends FuseUtils.EventEmitter {
 
   handleAuthentication = () => {
     const userInfo = this.getUserInfo();
-    // const userId = userInfo["user_data"].uuid;
-    // const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userId}`;
-    // axios
-    //   .get(URL)
-    //   .then((res) => {
-    //     if (res.data.status_code === 200) {
-    //       if (this.isAccessTokenValid()) {
-    //         this.emit("onAutoLogin", true);
-    //       } else if (this.isRefreshTokenValid()) {
-    //         this.refreshAccessToken();
-    //         this.emit("onAutoLogin", true);
-    //       } else {
-    //         this.setSession(null);
-    //         this.emit("onAutoLogout");
-    //       }
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     if (this.isRefreshTokenValid()) {
-    //       this.refreshAccessToken()
-    //         .then((res) => {
-    //           this.emit("onAutoLogin");
-    //         })
-    //         .catch((e) => {
-    //           this.emit("onAutoLogout");
-    //         });
-    //     } else this.emit("onAutoLogout");
-    //   });
     if (window.location.pathname.includes("/reset-password/")) {
       this.emit("onAutoLogout");
       localStorage.clear();
     } else if (
       userInfo &&
-      userInfo.token_data &&
-      userInfo.user_data &&
-      this.isRefreshTokenValid()
+      userInfo?.token_data &&
+      userInfo?.user_data
     ) {
-      if (!this.isAccessTokenValid()) {
-        return this.refreshAccessToken()
-          .then((res) => {
-            if (res) {
-              const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo["user_data"].uuid}`;
-              return axios
-                .get(URL)
-                .then((res) => {
-                  if (res.data.status_code === 200) {
-                    this.emit("onAutoLogin", true);
-                  } else this.emit("onAutoLogout");
-                })
-                .catch((error) => {
-                  this.emit("onAutoLogout");
-                });
-            } else this.emit("onAutoLogout");
-          })
-          .catch((e) => {
-            this.emit("onAutoLogout");
-          });
-      } else {
-        const URL = `${EnvVariable.BASEURL}/auth/is-authenticated/${userInfo["user_data"].uuid}`;
-        return axios
-          .get(URL)
-          .then((res) => {
-            if (res.data.status_code === 200) {
-              this.emit("onAutoLogin", true);
-            }
-          })
-          .catch((error) => {
-            this.emit("onAutoLogout");
-          });
+      const isAuthenticated = this.isAuthenticated(userInfo?.user_data?.uuid)
+      if (isAuthenticated) {
+        this.emit("onAutoLogin", true);
       }
     } else {
       this.emit("onAutoLogout");
@@ -252,10 +204,10 @@ class AuthService extends FuseUtils.EventEmitter {
         })
         .then((res) => {
           if (res.data.status_code === 201) resolve(res.data);
-          else reject("Something went wrong");
+          else reject("somethingWentWrong");
         })
         .catch((e) => {
-          reject(e.response.data.errors);
+          reject(e?.response?.data?.message);
         });
     });
   };
@@ -275,19 +227,19 @@ class AuthService extends FuseUtils.EventEmitter {
     const userInfo = this.getUserInfo();
     if (userInfo) {
       return new Promise((resolve, reject) => {
-        this.setSession(userInfo["token_data"].access_token);
+        this.setSession(userInfo.token_data.access_token);
         // this.setAutoLoginInfo(cred);
         this.setUserInfo(userInfo);
-        userData.role.push(userInfo["user_data"]["user_role"].slug);
+        userData.role.push(userInfo?.user_data?.user_role?.slug);
         userData = {
           ...userData,
-          role: [userInfo["user_data"]["user_role"].slug],
+          role: [userInfo?.user_data?.user_role?.slug],
           data: {
-            displayName: userInfo["user_data"].name.split(" ")[0],
-            uuid: userInfo["user_data"].uuid,
+            displayName: userInfo?.user_data?.name.split(" ")[0],
+            uuid: userInfo?.user_data?.uuid,
           },
-          token_data: userInfo["token_data"],
-          user_data: userInfo["user_data"],
+          token_data: userInfo?.token_data,
+          user_data: userInfo?.user_data,
         };
         resolve(userData);
         this.emit("onLogin", userData);
@@ -311,22 +263,24 @@ class AuthService extends FuseUtils.EventEmitter {
 
   setUserInfo = (userInfo) => {
     if (userInfo) {
-      localStorage.removeItem("fp_user");
-      localStorage.setItem("fp_user", JSON.stringify(userInfo));
+      localStorage.removeItem(SecretKey);
+      //Set enc data to the local - 30-01-23
+      // localStorage.setItem("fp_user", JSON.stringify(userInfo));
+      localStorage.setItem(SecretKey, UtilsServices.encryptData(userInfo));
     } else {
-      localStorage.removeItem("fp_user");
+      localStorage.removeItem(SecretKey);
     }
   };
 
   getUserInfo = () => {
-    return JSON.parse(localStorage.getItem("fp_user"));
+    return UtilsServices.getFPUserData();
   };
 
   logout = () => {
     return this.axiosRequestHelper().then((status) => {
       if (status) {
-        const userId = JSON.parse(localStorage.getItem("fp_user"))["user_data"]
-          .uuid;
+        const userData = UtilsServices.getFPUserData();
+        const userId = userData?.user_data?.uuid;
         const URL = `${EnvVariable.BASEURL}/auth/logout/${userId}`;
         axios
           .put(URL)
@@ -413,7 +367,7 @@ class AuthService extends FuseUtils.EventEmitter {
                 console.warn("OTP : ", res.data.otp);
                 resolve([response.data, res.data.otp]);
               });
-            } else reject("Something went wrong");
+            } else reject("somethingWentWrong");
           })
           .catch((error) => {
             reject(error.response.data.message);
@@ -424,7 +378,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           if (response?.data?.status_code === 201) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
           resolve(response.data);
         })
         .catch((error) => {
@@ -441,7 +395,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           // if (response?.data?.status_code === 200) {
           //   resolve(response.data);
-          // } else reject("Something went wrong");
+          // } else reject("somethingWentWrong");
           resolve(response.data);
         })
         .catch((error) => {
@@ -461,7 +415,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           if (response?.data?.status_code === 201) {
             resolve(response);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((error) => {
           reject(error.response.data.message);
@@ -480,7 +434,7 @@ class AuthService extends FuseUtils.EventEmitter {
         .then((response) => {
           if (response?.data?.status_code === 202) {
             resolve(response.data);
-          } else reject("Something went wrong");
+          } else reject("somethingWentWrong");
         })
         .catch((error) => {
           reject(error.response.data.message);
@@ -488,9 +442,9 @@ class AuthService extends FuseUtils.EventEmitter {
     });
   };
 
-  isAccessTokenValid = () => {
+  isAccessTokenValid = (ttl) => {
     const currentTime = Date.now() / 1000;
-    const expiresAt = this.getAccessTokenExpiresAt();
+    const expiresAt = ttl ? ttl : this.getAccessTokenExpiresAt();
     if (expiresAt < currentTime) {
       return false;
     }
@@ -498,18 +452,18 @@ class AuthService extends FuseUtils.EventEmitter {
   };
 
   isRefreshTokenValid = () => {
-    const currentTime = Date.now() / 1000;
+    const currentTime = (Date.now() / 1000) - 180;
     const refreshTokenExpiresAt = this.getRefreshTokenExpiresAt();
     return refreshTokenExpiresAt >= currentTime;
   };
 
   getAccessTokenExpiresAt = () => {
-    return JSON.parse(localStorage.getItem("fp_user"))["token_data"]
-      .access_token_expires_at;
+    const userInfo = UtilsServices.getFPUserData();
+    return userInfo?.token_data?.access_token_expires_at;
   };
   getRefreshTokenExpiresAt = () => {
-    return JSON.parse(localStorage.getItem("fp_user"))["token_data"]
-      .refresh_token_expires_at;
+    const userInfo = UtilsServices.getFPUserData();
+    return userInfo?.token_data?.refresh_token_expires_at;
     // return window.localStorage.getItem("fp_refresh_token_expires_at");
   };
 }

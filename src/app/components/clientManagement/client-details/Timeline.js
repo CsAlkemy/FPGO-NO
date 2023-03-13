@@ -8,37 +8,72 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import { Skeleton, TextField } from "@mui/material";
+import { Hidden, Skeleton, TextField } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
-
+import ClientService from "../../../data-access/services/clientsService/ClientService";
+import { useParams } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+import { CharCont } from "../../../utils/helperFunctions";
 
 const TimelineLog = () => {
   const { t } = useTranslation();
-  const info = JSON.parse(localStorage.getItem("tableRowDetails"));
+  const queryParams = useParams();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
+  const [isFetching, setIsFetching] = React.useState(true);
+  const [defaultTimeline, setDefaultTimeline] = React.useState(true);
+  const [summary, setSummary] = useState([]);
   const [selectedDate, setSelectedDate] = React.useState(
     new Date(
-      `${new Date().getMonth() + 1}.01.${new Date().getFullYear()} 00:00:00`
+      `${new Date().getMonth() + 1}.09.${new Date().getFullYear()} 00:00:00`
     )
   );
 
-  useEffect(() => {
-    OrdersService.getOrdersLogByUUID(info.orderUuid)
+  const handleDateChange = (date) => {
+    setIsFetching(true);
+    setDefaultTimeline(false);
+    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.09.${new Date(
+      date
+    ).getFullYear()} 00:00:00`;
+    // setSelectedDate(date);
+    const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+    setSelectedDate(prepareSelectedDate);
+    ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp)
       .then((res) => {
-        setLogs(res?.data);
-        setLoading(false);
+        // const summary = res?.data.filter((d) => d?.summary);
+        // setSummary(summary[0].summary);
+        // const filteredLogs = res?.data.filter((d) => !d?.summary);
+        // console.log("filteredLogs : ",filteredLogs);
+        // setLogs(filteredLogs);
+        setSummary(res?.data?.summary ? res?.data?.summary : []);
+        setLogs(res?.data?.timeline ? res?.data?.timeline : []);
+        setIsFetching(false);
       })
       .catch((e) => {
-        console.log("E : ", e);
         setLogs([]);
-        setLoading(false);
+        setIsFetching(false);
       });
-  }, [loading]);
-  const handleDateChange = (date) => {
-    setSelectedDate(date)
-  }
+  };
+
+  useEffect(() => {
+    if (defaultTimeline) {
+      const prepareSelectedDate = `${
+        new Date().getMonth() + 1
+      }.09.${new Date().getFullYear()} 00:00:00`;
+      // setSelectedDate(date);
+      const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+      ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp)
+        .then((res) => {
+          setSummary(res?.data?.summary ? res?.data?.summary : []);
+          setLogs(res?.data?.timeline ? res?.data?.timeline : []);
+          setIsFetching(false);
+        })
+        .catch((e) => {
+          setLogs([]);
+          setIsFetching(false);
+        });
+    }
+  }, [isFetching]);
 
   return (
     <div className="mb-32 md:mb-0 w-full sm:w-4/5">
@@ -48,31 +83,48 @@ const TimelineLog = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} type="date" />}
+          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          disableFuture
         />
       </div>
       <div className="p-5 bg-MonochromeGray-25 rounded-8 mb-32">
         <div className="bg-white grid grid-cols-2 sm:grid-cols-4 gap-5 rounded-4">
           <div className="border-r-1 border-MonochromeGray-50 p-10">
-            <div className="subtitle3 text-MonochromeGray-300">No. of Orders</div>
-            <div className="body1 text-MonochromeGray-700 mt-5" >201</div>
+            <div className="subtitle3 text-MonochromeGray-300">
+              {t("label:noOfOrders")}
+            </div>
+            <div className="body1 text-MonochromeGray-700 mt-5">
+              {summary?.orderCount}
+            </div>
           </div>
           <div className="border-r-1 border-MonochromeGray-50 p-10">
-            <div className="subtitle3 text-MonochromeGray-300">No. of Orders</div>
-            <div className="body1 text-MonochromeGray-700 mt-5" >201</div>
+            <div className="subtitle3 text-MonochromeGray-300">
+              {t("label:noOfSMSSent")}
+            </div>
+            <div className="body1 text-MonochromeGray-700 mt-5">
+              {summary?.smsCount}
+            </div>
           </div>
           <div className="border-r-1 border-MonochromeGray-50 p-10">
-            <div className="subtitle3 text-MonochromeGray-300">No. of Orders</div>
-            <div className="body1 text-MonochromeGray-700 mt-5" >201</div>
+            <div className="subtitle3 text-MonochromeGray-300">
+              {t("label:noOfCreditChecks")}
+            </div>
+            <div className="body1 text-MonochromeGray-700 mt-5">
+              {summary?.creditCheckCount}
+            </div>
           </div>
           <div className="p-10">
-            <div className="subtitle3 text-MonochromeGray-300">No. of Orders</div>
-            <div className="body1 text-MonochromeGray-700 mt-5" >201</div>
+            <div className="subtitle3 text-MonochromeGray-300">
+              {t("label:noOfEHFs")}
+            </div>
+            <div className="body1 text-MonochromeGray-700 mt-5">
+              {summary?.ehfCount}
+            </div>
           </div>
         </div>
       </div>
 
-      {logs?.length > 0 ? (
+      {!isFetching && logs?.length > 0 ? (
         <Timeline
           sx={{
             "& .MuiTimelineItem-root:before": {
@@ -81,93 +133,171 @@ const TimelineLog = () => {
             },
           }}
         >
-          {logs.map((log) => {
+          {logs.map((log, index) => {
             return (
-              <TimelineItem>
+              <TimelineItem key={index}>
                 <TimelineSeparator>
-                  {log.slug === "order-created" || log.slug === "order-sent" || log.slug === "order-resent" || log.slug === "payment-link-open" || log.slug === "refund-sent" || log.slug === "payment-successful" ? (
-                    <TimelineDot className="bg-orderLog-success">
-                      <CheckIcon className="icon-size-14 text-white" />
+                  {log.slug === "order-sent-by-ehf" ||
+                  log.slug === "order-sent-by-invoice" ||
+                  log.slug === "credit-check-performed" ||
+                  log.slug === "email-sent" ||
+                  (log.slug === "sms-sent" && log.type === "Payment Link") ||
+                  log.slug === "client-information-updated" ? (
+                    <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
+                      <CheckIcon className="icon-size-16 text-white" />
                     </TimelineDot>
-                  ) : log.slug === "payment-failed" || log.slug === "order-converted-to-invoice" ? (
-                    <TimelineDot color="warning">
-                      <PriorityHighIcon className="icon-size-14 text-white" />
+                  ) : log.slug === "sms-sent" &&
+                    log.type === "Order Cancellation" ? (
+                    <TimelineDot className="border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]">
+                      <PriorityHighIcon className="icon-size-16 text-white" />
                     </TimelineDot>
-                  )
-                    : (
-                      <TimelineDot className="bg-orderLog-warning">
-                        <PriorityHighIcon className="icon-size-14 text-white" />
-                      </TimelineDot>
-                    )}
-                  <TimelineConnector />
+                  ) : (
+                    <TimelineDot className="bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0">
+                      <PriorityHighIcon className="icon-size-16 text-white" />
+                    </TimelineDot>
+                  )}
+                  {index + 1 < logs.length && <TimelineConnector />}
                 </TimelineSeparator>
                 <TimelineContent>
-                  <div className="ml-10">
+                  <div className="ml-5 mt-10 mb-10">
                     <div className="subtitle3 text-MonochromeGray-700">
-                      hjhjhj
+                      {log.title}
                     </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Date:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        878:989
+                    {log.datetime && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:date")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.datetime}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Sent to:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        jj
+                    )}
+                    {log.orderUuid && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:orderId")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.orderUuid}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Refund amount:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        9878
+                    )}
+                    {log.sentTo && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:sentTo")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          <Hidden smUp>
+                            <Tooltip title={log.sentTo}>
+                              <div>{CharCont(log.sentTo, 20)}</div>
+                            </Tooltip>
+                          </Hidden>
+                          <Hidden smDown>{log.sentTo}</Hidden>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Action by:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        ijhhj
+                    )}
+                    {log.refundAmount && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:refundAmount")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.refundAmount}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Payment method:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        jhhg
+                    )}
+                    {log.actionBy && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:actionBy")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.actionBy}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex gap-5">
-                      <div className="text-MonochromeGray-300 body4">Note:</div>
-                      <div className="body4 text-MonochromeGray-700">
-                        ioiou
+                    )}
+                    {log.paymentMethod && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:paymentMethod")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.paymentMethod}
+                        </div>
                       </div>
-                    </div>
+                    )}
+                    {log.note && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:note")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.note}
+                        </div>
+                      </div>
+                    )}
+                    {log.type && (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:types")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log.type}
+                        </div>
+                      </div>
+                    )}
+                    {log?.personalOrBusinessNumber &&
+                    log?.personalOrBusinessNumber.length === 9 ? (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:orgId")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log?.personalOrBusinessNumber}
+                        </div>
+                      </div>
+                    ) : log?.personalOrBusinessNumber &&
+                      log?.personalOrBusinessNumber.length === 11 ? (
+                      <div className="flex gap-5">
+                        <div className="text-MonochromeGray-300 body4">
+                          {t("label:pNumber")}:
+                        </div>
+                        <div className="body4 text-MonochromeGray-700">
+                          {log?.personalOrBusinessNumber}
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </TimelineContent>
               </TimelineItem>
             );
           })}
         </Timeline>
-
-      ) : (
-        <div>
-          <div className='flex gap-10 mb-32'>
+      ) : isFetching ? (
+        <div className="p-10">
+          <div className="flex gap-10 mb-32">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
-          <div className='flex gap-10'>
+          <div className="flex gap-10">
             <Skeleton variant="circular" width={40} height={40} />
             <div className="flex flex-col">
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
-              <Skeleton variant="text" width={400} sx={{ fontSize: '1rem' }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" width={300} sx={{ fontSize: "1rem" }} />
             </div>
           </div>
         </div>
+      ) : (
+        ""
       )}
     </div>
   );

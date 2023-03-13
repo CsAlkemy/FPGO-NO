@@ -53,7 +53,6 @@ const createCategory = () => {
         setProductsList(data);
       })
       .catch((e) => {
-        console.log("E : ", e);
       });
   }, []);
 
@@ -63,11 +62,12 @@ const createCategory = () => {
     createCategory(preparedPayload)
       .then((response)=> {
         if (response?.data?.status_code === 201) {
-          enqueueSnackbar(response?.data?.message, { variant: "success" });
+          enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+          // enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
           navigate("/categories/categories-list");
           setLoading(false)
         } else {
-          enqueueSnackbar(response?.error?.data?.message, { variant: "error" });
+          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
         }
       })
     // CategoryService.createCategory(values)
@@ -138,7 +138,7 @@ const createCategory = () => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.name}
-                        helperText={errors?.name?.message}
+                        helperText={errors?.name?.message ? t(`validation:${errors?.name?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                         required
@@ -158,7 +158,7 @@ const createCategory = () => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.description}
-                        helperText={errors?.description?.message}
+                        helperText={errors?.description?.message ? t(`validation:${errors?.description?.message}`) : ""}
                         variant="outlined"
                         fullWidth
                       />
