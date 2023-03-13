@@ -750,16 +750,16 @@ const createOrder = () => {
                                 index === Math.min(...addOrderIndex)
                                   ? false
                                   : !watch(
-                                      `order[${
-                                        index -
-                                        (addOrderIndex[
+                                    `order[${
+                                      index -
+                                      (addOrderIndex[
                                           addOrderIndex.indexOf(index)
-                                        ] -
-                                          addOrderIndex[
-                                            addOrderIndex.indexOf(index) - 1
+                                          ] -
+                                        addOrderIndex[
+                                        addOrderIndex.indexOf(index) - 1
                                           ])
-                                      }].productName`
-                                    )
+                                    }].productName`
+                                  )
                               }
                               freeSolo
                               autoSelect
@@ -770,8 +770,8 @@ const createOrder = () => {
                                 option?.name
                                   ? option.name
                                   : option
-                                  ? option
-                                  : ""
+                                    ? option
+                                    : ""
                               }
                               size="small"
                               //className="custom-input-height"
@@ -818,11 +818,11 @@ const createOrder = () => {
                                         watchTax &&
                                         i !== index &&
                                         watchName ===
-                                          watch(`order[${i}].productName`) &&
+                                        watch(`order[${i}].productName`) &&
                                         watchId ===
-                                          watch(`order[${i}].productID`) &&
+                                        watch(`order[${i}].productID`) &&
                                         watchRate ===
-                                          watch(`order[${i}].rate`) &&
+                                        watch(`order[${i}].rate`) &&
                                         watchTax === watch(`order[${i}].tax`)
                                       ) {
                                         let quantityNum = isNaN(
@@ -832,8 +832,8 @@ const createOrder = () => {
                                         )
                                           ? 1
                                           : parseInt(
-                                              watch(`order[${i}].quantity`)
-                                            );
+                                            watch(`order[${i}].quantity`)
+                                          );
                                         setValue(
                                           `order[${i}].quantity`,
                                           quantityNum + 1
@@ -1116,16 +1116,16 @@ const createOrder = () => {
                               index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                    `order[${
-                                      index -
-                                      (addOrderIndex[
+                                  `order[${
+                                    index -
+                                    (addOrderIndex[
                                         addOrderIndex.indexOf(index)
-                                      ] -
-                                        addOrderIndex[
-                                          addOrderIndex.indexOf(index) - 1
+                                        ] -
+                                      addOrderIndex[
+                                      addOrderIndex.indexOf(index) - 1
                                         ])
-                                    }].productName`
-                                  )
+                                  }].productName`
+                                )
                             }
                             freeSolo
                             autoSelect
@@ -1175,9 +1175,9 @@ const createOrder = () => {
                                       watchTax &&
                                       i !== index &&
                                       watchName ===
-                                        watch(`order[${i}].productName`) &&
+                                      watch(`order[${i}].productName`) &&
                                       watchId ===
-                                        watch(`order[${i}].productID`) &&
+                                      watch(`order[${i}].productID`) &&
                                       watchRate === watch(`order[${i}].rate`) &&
                                       watchTax === watch(`order[${i}].tax`)
                                     ) {
@@ -1186,8 +1186,8 @@ const createOrder = () => {
                                       )
                                         ? 1
                                         : parseInt(
-                                            watch(`order[${i}].quantity`)
-                                          );
+                                          watch(`order[${i}].quantity`)
+                                        );
                                       setValue(
                                         `order[${i}].quantity`,
                                         quantityNum + 1
@@ -1471,8 +1471,8 @@ const createOrder = () => {
                               helperText={
                                 errors?.orderDate?.message
                                   ? t(
-                                      `validation:${errors?.orderDate?.message}`
-                                    )
+                                    `validation:${errors?.orderDate?.message}`
+                                  )
                                   : ""
                               }
                               sx={{
@@ -1538,11 +1538,11 @@ const createOrder = () => {
                               minDate={
                                 watchOrderDate
                                   ? new Date().setDate(
-                                      watchOrderDate.getDate() + 1
-                                    )
+                                    watchOrderDate.getDate() + 1
+                                  )
                                   : new Date().setDate(
-                                      new Date().getDate() - 30
-                                    )
+                                    new Date().getDate() - 30
+                                  )
                               }
                               disablePast={true}
                               onChange={(_) => {
@@ -1568,8 +1568,8 @@ const createOrder = () => {
                                   helperText={
                                     errors?.dueDatePaymentLink?.message
                                       ? t(
-                                          `validation:${errors?.dueDatePaymentLink?.message}`
-                                        )
+                                        `validation:${errors?.dueDatePaymentLink?.message}`
+                                      )
                                       : ""
                                   }
                                   sx={{
@@ -1708,14 +1708,14 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                  ...customData,
-                                  orderBy: "sms",
-                                  isCeditCheck: false,
-                                })
+                                ...customData,
+                                orderBy: "sms",
+                                isCeditCheck: false,
+                              })
                               : setCustomData({
-                                  ...customData,
-                                  orderBy: "sms",
-                                });
+                                ...customData,
+                                orderBy: "sms",
+                              });
                           }}
                         >
                           {t("label:sms")}
@@ -1739,14 +1739,14 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                  ...customData,
-                                  orderBy: "email",
-                                  isCeditCheck: false,
-                                })
+                                ...customData,
+                                orderBy: "email",
+                                isCeditCheck: false,
+                              })
                               : setCustomData({
-                                  ...customData,
-                                  orderBy: "email",
-                                });
+                                ...customData,
+                                orderBy: "email",
+                              });
                           }}
                         >
                           {t("label:email")}
@@ -2058,8 +2058,8 @@ const createOrder = () => {
                             control={control}
                             name="searchCustomer"
                             render={({
-                              field: { ref, onChange, ...field },
-                            }) => (
+                                       field: { ref, onChange, ...field },
+                                     }) => (
                               <Autocomplete
                                 freeSolo
                                 options={customersList}
@@ -2081,13 +2081,13 @@ const createOrder = () => {
                                     setValue("billingCountry", data.country);
                                     data.type === "Corporate"
                                       ? setCustomData({
-                                          ...customData,
-                                          customerType: "corporate",
-                                        })
+                                        ...customData,
+                                        customerType: "corporate",
+                                      })
                                       : setCustomData({
-                                          ...customData,
-                                          customerType: "private",
-                                        });
+                                        ...customData,
+                                        customerType: "private",
+                                      });
                                     data.type === "Corporate"
                                       ? setSelectedFromList("Corporate")
                                       : setSelectedFromList("Private");
@@ -2241,8 +2241,8 @@ const createOrder = () => {
                                   <FormHelperText>
                                     {errors?.primaryPhoneNumber?.message
                                       ? t(
-                                          `validation:${errors?.primaryPhoneNumber?.message}`
-                                        )
+                                        `validation:${errors?.primaryPhoneNumber?.message}`
+                                      )
                                       : ""}
                                   </FormHelperText>
                                 </FormControl>
@@ -2261,8 +2261,8 @@ const createOrder = () => {
                                   helperText={
                                     errors?.email?.message
                                       ? t(
-                                          `validation:${errors?.email?.message}`
-                                        )
+                                        `validation:${errors?.email?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -2291,8 +2291,8 @@ const createOrder = () => {
                                     helperText={
                                       errors?.customerName?.message
                                         ? t(
-                                            `validation:${errors?.customerName?.message}`
-                                          )
+                                          `validation:${errors?.customerName?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -2322,8 +2322,8 @@ const createOrder = () => {
                                     helperText={
                                       errors?.orgorPID?.message
                                         ? t(
-                                            `validation:${errors?.orgorPID?.message}`
-                                          )
+                                          `validation:${errors?.orgorPID?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -2350,8 +2350,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.billingAddress?.message
                                           ? t(
-                                              `validation:${errors?.billingAddress?.message}`
-                                            )
+                                            `validation:${errors?.billingAddress?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2384,8 +2384,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.billingZip?.message
                                           ? t(
-                                              `validation:${errors?.billingZip?.message}`
-                                            )
+                                            `validation:${errors?.billingZip?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2418,8 +2418,8 @@ const createOrder = () => {
                                     helperText={
                                       errors?.billingCity?.message
                                         ? t(
-                                            `validation:${errors?.billingCity?.message}`
-                                          )
+                                          `validation:${errors?.billingCity?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -2478,8 +2478,8 @@ const createOrder = () => {
                                     <FormHelperText>
                                       {errors?.billingCountry?.message
                                         ? t(
-                                            `validation:${errors?.billingCountry?.message}`
-                                          )
+                                          `validation:${errors?.billingCountry?.message}`
+                                        )
                                         : ""}
                                     </FormHelperText>
                                   </FormControl>
@@ -2549,8 +2549,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.referenceNumber?.message
                                           ? t(
-                                              `validation:${errors?.referenceNumber?.message}`
-                                            )
+                                            `validation:${errors?.referenceNumber?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2577,8 +2577,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.customerReference?.message
                                           ? t(
-                                              `validation:${errors?.customerReference?.message}`
-                                            )
+                                            `validation:${errors?.customerReference?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2604,8 +2604,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.receiptNo?.message
                                           ? t(
-                                              `validation:${errors?.receiptNo?.message}`
-                                            )
+                                            `validation:${errors?.receiptNo?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2635,8 +2635,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.customerNotes?.message
                                           ? t(
-                                              `validation:${errors?.customerNotes?.message}`
-                                            )
+                                            `validation:${errors?.customerNotes?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2659,8 +2659,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.termsConditions?.message
                                           ? t(
-                                              `validation:${errors?.termsConditions?.message}`
-                                            )
+                                            `validation:${errors?.termsConditions?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2730,8 +2730,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.internalReferenceNo?.message
                                           ? t(
-                                              `validation:${errors?.internalReferenceNo?.message}`
-                                            )
+                                            `validation:${errors?.internalReferenceNo?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2759,8 +2759,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.customerNotesInternal?.message
                                           ? t(
-                                              `validation:${errors?.customerNotesInternal?.message}`
-                                            )
+                                            `validation:${errors?.customerNotesInternal?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
