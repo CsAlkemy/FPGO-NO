@@ -23,7 +23,7 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
     .max(11, "mustBeExactlyElevenNumbers"),
   email: yup
     .string()
-    .required("You must enter email address")
+    .required("youMustEnterAEmail")
     .email("mustBeValidEmail"),
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),
@@ -162,7 +162,7 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
     .max(9, "pNumberMustBeNumber"),
   email: yup
     .string()
-    .required("You must enter email address")
+    .required("youMustEnterAEmail")
     .email("mustBeValidEmail"),
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),

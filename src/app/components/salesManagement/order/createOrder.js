@@ -250,10 +250,14 @@ const createOrder = () => {
     createOrder(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate(`/sales/orders-list`);
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
     // .then((response) => {
@@ -731,7 +735,10 @@ const createOrder = () => {
                       </Button>
                     </div>
                     {addOrderIndex.map((index) => (
-                      <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
+                      <div
+                        className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
+                        key={`order:${index}`}
+                      >
                         <Controller
                           control={control}
                           required
@@ -743,16 +750,16 @@ const createOrder = () => {
                                 index === Math.min(...addOrderIndex)
                                   ? false
                                   : !watch(
-                                      `order[${
-                                        index -
-                                        (addOrderIndex[
+                                    `order[${
+                                      index -
+                                      (addOrderIndex[
                                           addOrderIndex.indexOf(index)
-                                        ] -
-                                          addOrderIndex[
-                                            addOrderIndex.indexOf(index) - 1
+                                          ] -
+                                        addOrderIndex[
+                                        addOrderIndex.indexOf(index) - 1
                                           ])
-                                      }].productName`
-                                    )
+                                    }].productName`
+                                  )
                               }
                               freeSolo
                               autoSelect
@@ -763,8 +770,8 @@ const createOrder = () => {
                                 option?.name
                                   ? option.name
                                   : option
-                                  ? option
-                                  : ""
+                                    ? option
+                                    : ""
                               }
                               size="small"
                               //className="custom-input-height"
@@ -811,11 +818,11 @@ const createOrder = () => {
                                         watchTax &&
                                         i !== index &&
                                         watchName ===
-                                          watch(`order[${i}].productName`) &&
+                                        watch(`order[${i}].productName`) &&
                                         watchId ===
-                                          watch(`order[${i}].productID`) &&
+                                        watch(`order[${i}].productID`) &&
                                         watchRate ===
-                                          watch(`order[${i}].rate`) &&
+                                        watch(`order[${i}].rate`) &&
                                         watchTax === watch(`order[${i}].tax`)
                                       ) {
                                         let quantityNum = isNaN(
@@ -825,8 +832,8 @@ const createOrder = () => {
                                         )
                                           ? 1
                                           : parseInt(
-                                              watch(`order[${i}].quantity`)
-                                            );
+                                            watch(`order[${i}].quantity`)
+                                          );
                                         setValue(
                                           `order[${i}].quantity`,
                                           quantityNum + 1
@@ -1109,16 +1116,16 @@ const createOrder = () => {
                               index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                    `order[${
-                                      index -
-                                      (addOrderIndex[
+                                  `order[${
+                                    index -
+                                    (addOrderIndex[
                                         addOrderIndex.indexOf(index)
-                                      ] -
-                                        addOrderIndex[
-                                          addOrderIndex.indexOf(index) - 1
+                                        ] -
+                                      addOrderIndex[
+                                      addOrderIndex.indexOf(index) - 1
                                         ])
-                                    }].productName`
-                                  )
+                                  }].productName`
+                                )
                             }
                             freeSolo
                             autoSelect
@@ -1168,9 +1175,9 @@ const createOrder = () => {
                                       watchTax &&
                                       i !== index &&
                                       watchName ===
-                                        watch(`order[${i}].productName`) &&
+                                      watch(`order[${i}].productName`) &&
                                       watchId ===
-                                        watch(`order[${i}].productID`) &&
+                                      watch(`order[${i}].productID`) &&
                                       watchRate === watch(`order[${i}].rate`) &&
                                       watchTax === watch(`order[${i}].tax`)
                                     ) {
@@ -1179,8 +1186,8 @@ const createOrder = () => {
                                       )
                                         ? 1
                                         : parseInt(
-                                            watch(`order[${i}].quantity`)
-                                          );
+                                          watch(`order[${i}].quantity`)
+                                        );
                                       setValue(
                                         `order[${i}].quantity`,
                                         quantityNum + 1
@@ -1322,14 +1329,18 @@ const createOrder = () => {
                                 {...field}
                                 labelId="tax"
                                 id="tax"
+                                sx={{ height: 44 }}
                                 defaultValue={defaultTaxValue}
-                                className="custom-select-create-order"
+                                className="custom-select-create-order pt-8 mt-1"
                                 disabled={disableRowIndexes.includes(index)}
                               >
                                 {taxes && taxes.length ? (
                                   taxes.map((tax, index) =>
                                     tax.status === "Active" ? (
-                                      <MenuItem key={index} value={tax.value}>
+                                      <MenuItem
+                                        key={index}
+                                        value={tax.value}
+                                      >
                                         {tax.value}
                                       </MenuItem>
                                     ) : (
@@ -1373,17 +1384,19 @@ const createOrder = () => {
                               disabled={disableRowIndexes.includes(index)}
                               fullWidth
                             />
-                          )}  PopperProps={{
-                          sx: {
-                            "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                              borderRadius: '8px',
-                              "&.Mui-selected": {
-                                backgroundColor: "#c9eee7",
-                                color: "#323434",
-                              }
-                            }
-                          }
-                        }}
+                          )}
+                          PopperProps={{
+                            sx: {
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                {
+                                  borderRadius: "8px",
+                                  "&.Mui-selected": {
+                                    backgroundColor: "#c9eee7",
+                                    color: "#323434",
+                                  },
+                                },
+                            },
+                          }}
                         />
                       )}
                     </div>
@@ -1438,14 +1451,15 @@ const createOrder = () => {
                           )}
                           PopperProps={{
                             sx: {
-                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                borderRadius: '8px',
-                                "&.Mui-selected": {
-                                  backgroundColor: "#c9eee7",
-                                  color: "#323434",
-                                }
-                              }
-                            }
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                {
+                                  borderRadius: "8px",
+                                  "&.Mui-selected": {
+                                    backgroundColor: "#c9eee7",
+                                    color: "#323434",
+                                  },
+                                },
+                            },
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -1456,8 +1470,10 @@ const createOrder = () => {
                               error={!!errors.orderDate}
                               helperText={
                                 errors?.orderDate?.message
-                                    ? t(`validation:${errors?.orderDate?.message}`)
-                                    : ""
+                                  ? t(
+                                    `validation:${errors?.orderDate?.message}`
+                                  )
+                                  : ""
                               }
                               sx={{
                                 svg: { color: "#69C77E" },
@@ -1499,14 +1515,15 @@ const createOrder = () => {
                               ampm={false}
                               PopperProps={{
                                 sx: {
-                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                    borderRadius: '8px',
-                                    "&.Mui-selected": {
-                                      backgroundColor: "#c9eee7",
-                                      color: "#323434",
-                                    }
-                                  }
-                                }
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                    {
+                                      borderRadius: "8px",
+                                      "&.Mui-selected": {
+                                        backgroundColor: "#c9eee7",
+                                        color: "#323434",
+                                      },
+                                    },
+                                },
                               }}
                               disableOpenPicker
                               value={
@@ -1521,11 +1538,11 @@ const createOrder = () => {
                               minDate={
                                 watchOrderDate
                                   ? new Date().setDate(
-                                      watchOrderDate.getDate() + 1
-                                    )
+                                    watchOrderDate.getDate() + 1
+                                  )
                                   : new Date().setDate(
-                                      new Date().getDate() - 30
-                                    )
+                                    new Date().getDate() - 30
+                                  )
                               }
                               disablePast={true}
                               onChange={(_) => {
@@ -1550,8 +1567,10 @@ const createOrder = () => {
                                   error={!!errors.dueDatePaymentLink}
                                   helperText={
                                     errors?.dueDatePaymentLink?.message
-                                        ? t(`validation:${errors?.dueDatePaymentLink?.message}`)
-                                        : ""
+                                      ? t(
+                                        `validation:${errors?.dueDatePaymentLink?.message}`
+                                      )
+                                      : ""
                                   }
                                   sx={{
                                     svg: {
@@ -1689,14 +1708,14 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                  ...customData,
-                                  orderBy: "sms",
-                                  isCeditCheck: false,
-                                })
+                                ...customData,
+                                orderBy: "sms",
+                                isCeditCheck: false,
+                              })
                               : setCustomData({
-                                  ...customData,
-                                  orderBy: "sms",
-                                });
+                                ...customData,
+                                orderBy: "sms",
+                              });
                           }}
                         >
                           {t("label:sms")}
@@ -1720,14 +1739,14 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                  ...customData,
-                                  orderBy: "email",
-                                  isCeditCheck: false,
-                                })
+                                ...customData,
+                                orderBy: "email",
+                                isCeditCheck: false,
+                              })
                               : setCustomData({
-                                  ...customData,
-                                  orderBy: "email",
-                                });
+                                ...customData,
+                                orderBy: "email",
+                              });
                           }}
                         >
                           {t("label:email")}
@@ -2039,8 +2058,8 @@ const createOrder = () => {
                             control={control}
                             name="searchCustomer"
                             render={({
-                              field: { ref, onChange, ...field },
-                            }) => (
+                                       field: { ref, onChange, ...field },
+                                     }) => (
                               <Autocomplete
                                 freeSolo
                                 options={customersList}
@@ -2062,13 +2081,13 @@ const createOrder = () => {
                                     setValue("billingCountry", data.country);
                                     data.type === "Corporate"
                                       ? setCustomData({
-                                          ...customData,
-                                          customerType: "corporate",
-                                        })
+                                        ...customData,
+                                        customerType: "corporate",
+                                      })
                                       : setCustomData({
-                                          ...customData,
-                                          customerType: "private",
-                                        });
+                                        ...customData,
+                                        customerType: "private",
+                                      });
                                     data.type === "Corporate"
                                       ? setSelectedFromList("Corporate")
                                       : setSelectedFromList("Private");
@@ -2220,11 +2239,11 @@ const createOrder = () => {
                                     value={field.value || ""}
                                   />
                                   <FormHelperText>
-                                    {
-                                    errors?.email?.message
-                                        ? t(`validation:${errors?.email?.message}`)
-                                        : ""
-                                  }
+                                    {errors?.primaryPhoneNumber?.message
+                                      ? t(
+                                        `validation:${errors?.primaryPhoneNumber?.message}`
+                                      )
+                                      : ""}
                                   </FormHelperText>
                                 </FormControl>
                               )}
@@ -2241,8 +2260,10 @@ const createOrder = () => {
                                   error={!!errors.email}
                                   helperText={
                                     errors?.email?.message
-                                        ? t(`validation:${errors?.email?.message}`)
-                                        : ""
+                                      ? t(
+                                        `validation:${errors?.email?.message}`
+                                      )
+                                      : ""
                                   }
                                   variant="outlined"
                                   fullWidth
@@ -2269,8 +2290,10 @@ const createOrder = () => {
                                     error={!!errors.customerName}
                                     helperText={
                                       errors?.customerName?.message
-                                          ? t(`validation:${errors?.customerName?.message}`)
-                                          : ""
+                                        ? t(
+                                          `validation:${errors?.customerName?.message}`
+                                        )
+                                        : ""
                                     }
                                     variant="outlined"
                                     fullWidth
@@ -2298,8 +2321,10 @@ const createOrder = () => {
                                     }
                                     helperText={
                                       errors?.orgorPID?.message
-                                          ? t(`validation:${errors?.orgorPID?.message}`)
-                                          : ""
+                                        ? t(
+                                          `validation:${errors?.orgorPID?.message}`
+                                        )
+                                        : ""
                                     }
                                     variant="outlined"
                                     fullWidth
@@ -2324,10 +2349,11 @@ const createOrder = () => {
                                       error={!!errors.billingAddress}
                                       helperText={
                                         errors?.billingAddress?.message
-                                            ? t(`validation:${errors?.billingAddress?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.billingAddress?.message}`
+                                          )
+                                          : ""
                                       }
-
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2357,8 +2383,10 @@ const createOrder = () => {
                                       error={!!errors.billingZip}
                                       helperText={
                                         errors?.billingZip?.message
-                                            ? t(`validation:${errors?.billingZip?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.billingZip?.message}`
+                                          )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2389,8 +2417,10 @@ const createOrder = () => {
                                     error={!!errors.billingCity}
                                     helperText={
                                       errors?.billingCity?.message
-                                          ? t(`validation:${errors?.billingCity?.message}`)
-                                          : ""
+                                        ? t(
+                                          `validation:${errors?.billingCity?.message}`
+                                        )
+                                        : ""
                                     }
                                     variant="outlined"
                                     fullWidth
@@ -2446,12 +2476,11 @@ const createOrder = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
-                                      {
-                                      errors?.billingCity?.message
-                                          ? t(`validation:${errors?.billingCity?.message}`)
-                                          : ""
-                                    }
-                                      {errors?.billingCountry?.message}
+                                      {errors?.billingCountry?.message
+                                        ? t(
+                                          `validation:${errors?.billingCountry?.message}`
+                                        )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -2519,8 +2548,10 @@ const createOrder = () => {
                                       error={!!errors.referenceNumber}
                                       helperText={
                                         errors?.referenceNumber?.message
-                                            ? t(`validation:${errors?.referenceNumber?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.referenceNumber?.message}`
+                                          )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2545,8 +2576,10 @@ const createOrder = () => {
                                       error={!!errors.customerReference}
                                       helperText={
                                         errors?.customerReference?.message
-                                            ? t(`validation:${errors?.customerReference?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.customerReference?.message}`
+                                          )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2570,8 +2603,10 @@ const createOrder = () => {
                                       error={!!errors.receiptNo}
                                       helperText={
                                         errors?.receiptNo?.message
-                                            ? t(`validation:${errors?.receiptNo?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.receiptNo?.message}`
+                                          )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2599,8 +2634,10 @@ const createOrder = () => {
                                       error={!!errors.customerNotes}
                                       helperText={
                                         errors?.customerNotes?.message
-                                            ? t(`validation:${errors?.customerNotes?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.customerNotes?.message}`
+                                          )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2621,10 +2658,11 @@ const createOrder = () => {
                                       error={!!errors.termsConditions}
                                       helperText={
                                         errors?.termsConditions?.message
-                                            ? t(`validation:${errors?.termsConditions?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.termsConditions?.message}`
+                                          )
+                                          : ""
                                       }
-
                                       variant="outlined"
                                       fullWidth
                                     />
@@ -2691,8 +2729,10 @@ const createOrder = () => {
                                       error={!!errors.internalReferenceNo}
                                       helperText={
                                         errors?.internalReferenceNo?.message
-                                            ? t(`validation:${errors?.internalReferenceNo?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.internalReferenceNo?.message}`
+                                          )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2718,8 +2758,10 @@ const createOrder = () => {
                                       error={!!errors.customerNotesInternal}
                                       helperText={
                                         errors?.customerNotesInternal?.message
-                                            ? t(`validation:${errors?.customerNotesInternal?.message}`)
-                                            : ""
+                                          ? t(
+                                            `validation:${errors?.customerNotesInternal?.message}`
+                                          )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
