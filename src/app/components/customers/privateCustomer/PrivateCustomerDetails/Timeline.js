@@ -235,6 +235,10 @@ const TimelineLog = () => {
             );
           })}
         </Timeline>
+      ) : !isFetching && logs.length === 0 ? (
+        <div className="flex justify-center items-center">
+          <p>{t("label:noDataFound")}</p>
+        </div>
       ) : isFetching ? (
         <div>
           <div className="flex gap-10 mb-32">
