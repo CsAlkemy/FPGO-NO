@@ -258,14 +258,14 @@ class OrdersService {
         name: params.customerName,
         personalNumber:
           params.customerType === "private"
-            ? params.orgorPID
-              ? params.orgorPID
+            ? params?.pNumber
+              ? params.pNumber
               : null
             : null,
         organizationId:
           params.customerType === "corporate"
-            ? params.orgorPID
-              ? params.orgorPID
+            ? params?.orgID
+              ? params.orgID
               : null
             : null,
         address: billingAddress,
