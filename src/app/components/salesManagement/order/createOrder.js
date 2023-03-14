@@ -35,7 +35,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
@@ -114,62 +114,6 @@ const createOrder = () => {
 
   const [taxes, setTaxes] = React.useState([]);
 
-  // const activeSchema = () => {
-  //   if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "sms" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderPrivateOrderBySmsPaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "sms"
-  //   )
-  //     return validateSchemaCreateOrderPrivate;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "invoice"
-  //   )
-  //     return validateSchemaCreateOrderPrivateInvoice;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "email" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderPrivateOrderByEmailPaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "email"
-  //   )
-  //     return validateSchemaCreateOrderPrivateOrderByEmail;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "email" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderCorporatePaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "email"
-  //   )
-  //     return validateSchemaCreateOrderCorporate;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "invoice"
-  //   )
-  //     return validateSchemaCreateOrderCorporateInvoice;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "sms" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderCorporateOrderBySmsPaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "sms"
-  //   )
-  //     return validateSchemaCreateOrderCorporateOrderBySms;
-  // };
   const activeSchema = () => {
     if (
       (customData.orderBy === "sms" && customData.customerType === "private") ||
@@ -206,11 +150,38 @@ const createOrder = () => {
     watch,
     setValue,
     resetField,
+    getFieldState,
   } = useForm({
     mode: "onChange",
     CreateOrderDefaultValue,
-    // reValidateMode: "onChange",
+    // reValidateMode: "all",
     resolver: yupResolver(schema),
+    // resolver: () => {
+    //   if (
+    //     (customData.orderBy === "sms" &&
+    //       customData.customerType === "private") ||
+    //     (customData.orderBy === "invoice" &&
+    //       customData.customerType === "private")
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderPrivate);
+    //   else if (
+    //     customData.orderBy === "email" &&
+    //     customData.customerType === "private"
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderPrivateOrderByEmail);
+    //   else if (
+    //     (customData.orderBy === "email" &&
+    //       customData.customerType === "corporate") ||
+    //     (customData.orderBy === "invoice" &&
+    //       customData.customerType === "corporate")
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderCorporate);
+    //   else if (
+    //     customData.orderBy === "sms" &&
+    //     customData.customerType === "corporate"
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderCorporateOrderBySms);
+    // },
   });
   const watchAllFields = watch();
 
@@ -750,16 +721,16 @@ const createOrder = () => {
                                 index === Math.min(...addOrderIndex)
                                   ? false
                                   : !watch(
-                                    `order[${
-                                      index -
-                                      (addOrderIndex[
+                                      `order[${
+                                        index -
+                                        (addOrderIndex[
                                           addOrderIndex.indexOf(index)
-                                          ] -
-                                        addOrderIndex[
-                                        addOrderIndex.indexOf(index) - 1
+                                        ] -
+                                          addOrderIndex[
+                                            addOrderIndex.indexOf(index) - 1
                                           ])
-                                    }].productName`
-                                  )
+                                      }].productName`
+                                    )
                               }
                               freeSolo
                               autoSelect
@@ -770,8 +741,8 @@ const createOrder = () => {
                                 option?.name
                                   ? option.name
                                   : option
-                                    ? option
-                                    : ""
+                                  ? option
+                                  : ""
                               }
                               size="small"
                               //className="custom-input-height"
@@ -818,11 +789,11 @@ const createOrder = () => {
                                         watchTax &&
                                         i !== index &&
                                         watchName ===
-                                        watch(`order[${i}].productName`) &&
+                                          watch(`order[${i}].productName`) &&
                                         watchId ===
-                                        watch(`order[${i}].productID`) &&
+                                          watch(`order[${i}].productID`) &&
                                         watchRate ===
-                                        watch(`order[${i}].rate`) &&
+                                          watch(`order[${i}].rate`) &&
                                         watchTax === watch(`order[${i}].tax`)
                                       ) {
                                         let quantityNum = isNaN(
@@ -832,8 +803,8 @@ const createOrder = () => {
                                         )
                                           ? 1
                                           : parseInt(
-                                            watch(`order[${i}].quantity`)
-                                          );
+                                              watch(`order[${i}].quantity`)
+                                            );
                                         setValue(
                                           `order[${i}].quantity`,
                                           quantityNum + 1
@@ -1116,16 +1087,16 @@ const createOrder = () => {
                               index === Math.min(...addOrderIndex)
                                 ? false
                                 : !watch(
-                                  `order[${
-                                    index -
-                                    (addOrderIndex[
+                                    `order[${
+                                      index -
+                                      (addOrderIndex[
                                         addOrderIndex.indexOf(index)
-                                        ] -
-                                      addOrderIndex[
-                                      addOrderIndex.indexOf(index) - 1
+                                      ] -
+                                        addOrderIndex[
+                                          addOrderIndex.indexOf(index) - 1
                                         ])
-                                  }].productName`
-                                )
+                                    }].productName`
+                                  )
                             }
                             freeSolo
                             autoSelect
@@ -1148,7 +1119,8 @@ const createOrder = () => {
                                     `order[${index}].productID`,
                                     data.id
                                   );
-                                  setValue(`order[${index}].rate`, data.price);
+                                  const preparedPrice = data.price.toString().includes(".") ? `${data.price.toString().split(".")[0]},${data.price.toString().split(".")[1]}` : data.price;
+                                  setValue(`order[${index}].rate`, preparedPrice);
                                   setValue(`order[${index}].tax`, data.tax);
                                   disableCurrentProductRow(index);
 
@@ -1175,9 +1147,9 @@ const createOrder = () => {
                                       watchTax &&
                                       i !== index &&
                                       watchName ===
-                                      watch(`order[${i}].productName`) &&
+                                        watch(`order[${i}].productName`) &&
                                       watchId ===
-                                      watch(`order[${i}].productID`) &&
+                                        watch(`order[${i}].productID`) &&
                                       watchRate === watch(`order[${i}].rate`) &&
                                       watchTax === watch(`order[${i}].tax`)
                                     ) {
@@ -1186,8 +1158,8 @@ const createOrder = () => {
                                       )
                                         ? 1
                                         : parseInt(
-                                          watch(`order[${i}].quantity`)
-                                        );
+                                            watch(`order[${i}].quantity`)
+                                          );
                                       setValue(
                                         `order[${i}].quantity`,
                                         quantityNum + 1
@@ -1337,10 +1309,7 @@ const createOrder = () => {
                                 {taxes && taxes.length ? (
                                   taxes.map((tax, index) =>
                                     tax.status === "Active" ? (
-                                      <MenuItem
-                                        key={index}
-                                        value={tax.value}
-                                      >
+                                      <MenuItem key={index} value={tax.value}>
                                         {tax.value}
                                       </MenuItem>
                                     ) : (
@@ -1471,8 +1440,8 @@ const createOrder = () => {
                               helperText={
                                 errors?.orderDate?.message
                                   ? t(
-                                    `validation:${errors?.orderDate?.message}`
-                                  )
+                                      `validation:${errors?.orderDate?.message}`
+                                    )
                                   : ""
                               }
                               sx={{
@@ -1538,11 +1507,11 @@ const createOrder = () => {
                               minDate={
                                 watchOrderDate
                                   ? new Date().setDate(
-                                    watchOrderDate.getDate() + 1
-                                  )
+                                      watchOrderDate.getDate() + 1
+                                    )
                                   : new Date().setDate(
-                                    new Date().getDate() - 30
-                                  )
+                                      new Date().getDate() - 30
+                                    )
                               }
                               disablePast={true}
                               onChange={(_) => {
@@ -1568,8 +1537,8 @@ const createOrder = () => {
                                   helperText={
                                     errors?.dueDatePaymentLink?.message
                                       ? t(
-                                        `validation:${errors?.dueDatePaymentLink?.message}`
-                                      )
+                                          `validation:${errors?.dueDatePaymentLink?.message}`
+                                        )
                                       : ""
                                   }
                                   sx={{
@@ -1708,14 +1677,14 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                ...customData,
-                                orderBy: "sms",
-                                isCeditCheck: false,
-                              })
+                                  ...customData,
+                                  orderBy: "sms",
+                                  isCeditCheck: false,
+                                })
                               : setCustomData({
-                                ...customData,
-                                orderBy: "sms",
-                              });
+                                  ...customData,
+                                  orderBy: "sms",
+                                });
                           }}
                         >
                           {t("label:sms")}
@@ -1739,14 +1708,14 @@ const createOrder = () => {
                           onClick={() => {
                             !customData.paymentMethod.includes("invoice")
                               ? setCustomData({
-                                ...customData,
-                                orderBy: "email",
-                                isCeditCheck: false,
-                              })
+                                  ...customData,
+                                  orderBy: "email",
+                                  isCeditCheck: false,
+                                })
                               : setCustomData({
-                                ...customData,
-                                orderBy: "email",
-                              });
+                                  ...customData,
+                                  orderBy: "email",
+                                });
                           }}
                         >
                           {t("label:email")}
@@ -2058,8 +2027,8 @@ const createOrder = () => {
                             control={control}
                             name="searchCustomer"
                             render={({
-                                       field: { ref, onChange, ...field },
-                                     }) => (
+                              field: { ref, onChange, ...field },
+                            }) => (
                               <Autocomplete
                                 freeSolo
                                 options={customersList}
@@ -2074,20 +2043,22 @@ const createOrder = () => {
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
                                     setValue("customerName", data.name);
-                                    setValue("orgorPID", data.orgOrPNumber);
+                                    data.type === "Corporate"
+                                      ? setValue("orgID", data.orgOrPNumber)
+                                      : setValue("pNumber", data.orgOrPNumber);
                                     setValue("billingAddress", data.street);
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
                                     setValue("billingCountry", data.country);
                                     data.type === "Corporate"
                                       ? setCustomData({
-                                        ...customData,
-                                        customerType: "corporate",
-                                      })
+                                          ...customData,
+                                          customerType: "corporate",
+                                        })
                                       : setCustomData({
-                                        ...customData,
-                                        customerType: "private",
-                                      });
+                                          ...customData,
+                                          customerType: "private",
+                                        });
                                     data.type === "Corporate"
                                       ? setSelectedFromList("Corporate")
                                       : setSelectedFromList("Private");
@@ -2241,8 +2212,8 @@ const createOrder = () => {
                                   <FormHelperText>
                                     {errors?.primaryPhoneNumber?.message
                                       ? t(
-                                        `validation:${errors?.primaryPhoneNumber?.message}`
-                                      )
+                                          `validation:${errors?.primaryPhoneNumber?.message}`
+                                        )
                                       : ""}
                                   </FormHelperText>
                                 </FormControl>
@@ -2261,8 +2232,8 @@ const createOrder = () => {
                                   helperText={
                                     errors?.email?.message
                                       ? t(
-                                        `validation:${errors?.email?.message}`
-                                      )
+                                          `validation:${errors?.email?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -2291,8 +2262,8 @@ const createOrder = () => {
                                     helperText={
                                       errors?.customerName?.message
                                         ? t(
-                                          `validation:${errors?.customerName?.message}`
-                                        )
+                                            `validation:${errors?.customerName?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
@@ -2302,36 +2273,89 @@ const createOrder = () => {
                                   />
                                 )}
                               />
-                              <Controller
-                                name="orgorPID"
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    {...field}
-                                    label={
-                                      customData.customerType === "private"
-                                        ? t("label:pNumber")
-                                        : t("label:organizationId")
-                                    }
-                                    type="number"
-                                    autoComplete="off"
-                                    error={!!errors.orgorPID}
-                                    required={
-                                      customData.customerType === "corporate"
-                                    }
-                                    helperText={
-                                      errors?.orgorPID?.message
-                                        ? t(
-                                          `validation:${errors?.orgorPID?.message}`
-                                        )
-                                        : ""
-                                    }
-                                    variant="outlined"
-                                    fullWidth
-                                    value={field.value || ""}
-                                  />
-                                )}
-                              />
+                              {customData.customerType === "corporate" && (
+                                <Controller
+                                  name="orgID"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:organizationId")}
+                                      type="number"
+                                      autoComplete="off"
+                                      error={!!errors.orgID}
+                                      required
+                                      helperText={
+                                        errors?.orgID?.message
+                                          ? t(
+                                              `validation:${errors?.orgID?.message}`
+                                            )
+                                          : ""
+                                      }
+                                      variant="outlined"
+                                      fullWidth
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+                              )}
+                              {customData.customerType === "private" && (
+                                <Controller
+                                  name="pNumber"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:pNumber")}
+                                      type="number"
+                                      autoComplete="off"
+                                      error={!!errors.pNumber}
+                                      helperText={
+                                        errors?.pNumber?.message
+                                          ? t(
+                                              `validation:${errors?.pNumber?.message}`
+                                            )
+                                          : ""
+                                      }
+                                      // ref={orgOrPNumberRef}
+                                      variant="outlined"
+                                      fullWidth
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+                              )}
+                              {/*<Controller*/}
+                              {/*  name="orgorPID"*/}
+                              {/*  control={control}*/}
+                              {/*  render={({ field }) => (*/}
+                              {/*    <TextField*/}
+                              {/*      {...field}*/}
+                              {/*      label={*/}
+                              {/*        customData.customerType === "private"*/}
+                              {/*          ? t("label:pNumber")*/}
+                              {/*          : t("label:organizationId")*/}
+                              {/*      }*/}
+                              {/*      type="number"*/}
+                              {/*      autoComplete="off"*/}
+                              {/*      error={!!errors.orgorPID}*/}
+                              {/*      required={*/}
+                              {/*        customData.customerType === "corporate"*/}
+                              {/*      }*/}
+                              {/*      helperText={*/}
+                              {/*        errors?.orgorPID?.message*/}
+                              {/*          ? t(*/}
+                              {/*            `validation:${errors?.orgorPID?.message}`*/}
+                              {/*          )*/}
+                              {/*          : ""*/}
+                              {/*      }*/}
+                              {/*      ref={orgOrPNumberRef}*/}
+                              {/*      variant="outlined"*/}
+                              {/*      fullWidth*/}
+                              {/*      value={field.value || ""}*/}
+                              {/*    />*/}
+                              {/*  )}*/}
+                              {/*/>*/}
                             </div>
                           </div>
                           <div className="">
@@ -2350,8 +2374,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.billingAddress?.message
                                           ? t(
-                                            `validation:${errors?.billingAddress?.message}`
-                                          )
+                                              `validation:${errors?.billingAddress?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2384,8 +2408,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.billingZip?.message
                                           ? t(
-                                            `validation:${errors?.billingZip?.message}`
-                                          )
+                                              `validation:${errors?.billingZip?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2418,8 +2442,8 @@ const createOrder = () => {
                                     helperText={
                                       errors?.billingCity?.message
                                         ? t(
-                                          `validation:${errors?.billingCity?.message}`
-                                        )
+                                            `validation:${errors?.billingCity?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
@@ -2478,8 +2502,8 @@ const createOrder = () => {
                                     <FormHelperText>
                                       {errors?.billingCountry?.message
                                         ? t(
-                                          `validation:${errors?.billingCountry?.message}`
-                                        )
+                                            `validation:${errors?.billingCountry?.message}`
+                                          )
                                         : ""}
                                     </FormHelperText>
                                   </FormControl>
@@ -2549,8 +2573,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.referenceNumber?.message
                                           ? t(
-                                            `validation:${errors?.referenceNumber?.message}`
-                                          )
+                                              `validation:${errors?.referenceNumber?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2577,8 +2601,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.customerReference?.message
                                           ? t(
-                                            `validation:${errors?.customerReference?.message}`
-                                          )
+                                              `validation:${errors?.customerReference?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2604,8 +2628,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.receiptNo?.message
                                           ? t(
-                                            `validation:${errors?.receiptNo?.message}`
-                                          )
+                                              `validation:${errors?.receiptNo?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2635,8 +2659,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.customerNotes?.message
                                           ? t(
-                                            `validation:${errors?.customerNotes?.message}`
-                                          )
+                                              `validation:${errors?.customerNotes?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2659,8 +2683,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.termsConditions?.message
                                           ? t(
-                                            `validation:${errors?.termsConditions?.message}`
-                                          )
+                                              `validation:${errors?.termsConditions?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2730,8 +2754,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.internalReferenceNo?.message
                                           ? t(
-                                            `validation:${errors?.internalReferenceNo?.message}`
-                                          )
+                                              `validation:${errors?.internalReferenceNo?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2759,8 +2783,8 @@ const createOrder = () => {
                                       helperText={
                                         errors?.customerNotesInternal?.message
                                           ? t(
-                                            `validation:${errors?.customerNotesInternal?.message}`
-                                          )
+                                              `validation:${errors?.customerNotesInternal?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
