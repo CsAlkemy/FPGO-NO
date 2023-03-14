@@ -440,7 +440,7 @@ const Onboarding = () => {
                         }
                         loading={loading}
                         loadingPosition="center"
-                        disabled={!isDirty}
+                        disabled={!isValid}
                     >
                       {t("label:approveClient")}
                     </LoadingButton>
