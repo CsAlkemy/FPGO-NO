@@ -97,8 +97,9 @@ const LoginPage = () => {
           setOTP(response[1]);
           setIsCode(true);
           setLoading(false);
+          enqueueSnackbar(t(`message:${response[0].message}`), { variant: "success" });
         } else {
-          enqueueSnackbar(response[0], { variant: "error" });
+          enqueueSnackbar(t(`message:${response[0].message}`), { variant: "error" });
           setLoading(false);
         }
       })

@@ -378,9 +378,8 @@ class AuthService extends FuseUtils.EventEmitter {
         .post(URL, params)
         .then((response) => {
           if (response?.data?.status_code === 201) {
-            resolve(response.data);
+            resolve([response.data, ""]);
           } else reject("somethingWentWrong");
-          resolve(response.data);
         })
         .catch((error) => {
           reject(error.response.data.message);
