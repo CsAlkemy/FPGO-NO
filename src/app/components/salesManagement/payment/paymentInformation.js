@@ -137,6 +137,11 @@ const paymentInformation = () => {
           // navigate("/payment/checkout/status");
           // navigate(`${response?.data?.paymentUrl}`);
           window.location.href = `${response?.data?.paymentUrl}`;
+        } else if(
+          response?.status_code === 202 &&
+          !response?.is_data
+        ){
+          navigate(`/order/details/${orderUuid}/confirmation`)
         }
       })
       .catch((e) => {
