@@ -38,6 +38,7 @@ import { useUpdatePrivateCustomerMutation } from "app/store/api/apiSlice";
 const detailPrivateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
   const [sameAddress, setSameAddress] = React.useState(false);
+  const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
   const queryParams = useParams();
   const [countries, setCountries] = React.useState([
     {
@@ -88,7 +89,11 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
         info?.addresses?.billing?.country === info?.addresses["shipping"]?.country
       ) {
         setSameAddress(true);
-      } else setSameAddress(false);
+        setInitialSameAddressRef(true);
+      } else {
+        setInitialSameAddressRef(false);
+        setSameAddress(false);
+      }
 
       PrivateDefaultValue.customerID = info?.uuid ? info?.uuid : "";
       PrivateDefaultValue.pNumber = info?.personalNumber
@@ -236,7 +241,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                       aria-label="Confirm"
                       size="large"
                       type="submit"
-                      disabled={user.role[0] === FP_ADMIN || !isDirty}
+                      disabled={user.role[0] === FP_ADMIN || (!isDirty && sameAddress === initialSameAddressRef)}
                       loading={loading}
                       loadingPosition="center"
                     >
