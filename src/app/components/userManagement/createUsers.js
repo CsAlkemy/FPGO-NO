@@ -216,6 +216,7 @@ export default function CreateUsers() {
                     type="submit"
                     loading={loading}
                     loadingPosition="center"
+                    disabled={!isValid}
                   >
                     {t("label:createAccount")}
                   </LoadingButton>
