@@ -54,7 +54,7 @@ const Journal = () => {
   };
 
   useEffect(() => {
-    if (defaultJournal) {
+    if (defaultJournal && isFetching) {
       const stDate = new Date(selectedDate).getTime() / 1000;
       CustomersService.getCutomerJournals(id, stDate)
         .then((response) => {
