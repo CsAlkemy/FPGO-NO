@@ -47,7 +47,7 @@ const TimelineLog = () => {
   };
 
   useEffect(() => {
-    if (defaultTimeline) {
+    if (defaultTimeline && isFetching) {
       const prepareSelectedDate = `${
         new Date().getMonth() + 1
       }.09.${new Date().getFullYear()} 00:00:00`;
