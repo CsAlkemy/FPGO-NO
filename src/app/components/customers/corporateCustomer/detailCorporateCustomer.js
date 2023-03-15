@@ -309,6 +309,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
     //   });
   };
 
+  console.log("Pintu :", !sameAddress &&
+    shippingAddress ||
+      shippingZip ||
+      shippingCity ||
+      shippingCountry ||
+      !info?.addresses)
+  console.log("Pintu 2 :",!sameAddress ,!!shippingAddress,!!shippingZip,!!shippingCity ,!!shippingCountry,!info?.addresses)
+  console.log("info : ",info);
+
   return (
     <div>
       <Backdrop
@@ -690,19 +699,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                     </div>
                                   </div>
 
-                                  {!sameAddress &&
-                                    // (billingPhoneNumber &&
-                                    //   billingEmail &&
-                                    //   billingAddress &&
-                                    //   zip &&
-                                    //   city &&
-                                    //   country)
-                                    // ||
-                                    (shippingAddress ||
-                                      shippingZip ||
-                                      shippingCity ||
-                                      shippingCountry ||
-                                      !info?.addresses) && (
+                                  {!sameAddress && (
                                       <div className="">
                                         <div className="form-pair-three-by-one">
                                           <div className="col-span-3">
@@ -792,7 +789,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                   defaultValue={
                                                     info?.addresses &&
                                                     info?.addresses?.shipping &&
-                                                    info?.addresses?.shipping?.country.toLowerCase()
+                                                    info?.addresses?.shipping?.country ? info?.addresses?.shipping?.country.toLowerCase() : ""
                                                   }
                                                 >
                                                   {/*<MenuItem value="" />*/}
