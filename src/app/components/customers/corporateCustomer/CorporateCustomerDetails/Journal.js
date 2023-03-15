@@ -116,10 +116,7 @@ const Journal = () => {
   }
 
   const disableFromNextMonth = (date) => {
-    console.log("disableFromNextMonth");
     const paramMonth = date.getMonth();
-    console.log("paramMonth",paramMonth);
-    console.log("new Date().getMonth() <= paramMonth",new Date().getMonth() <= paramMonth);
     return new Date().getMonth() <= paramMonth;
   };
 
