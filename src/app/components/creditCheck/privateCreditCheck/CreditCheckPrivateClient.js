@@ -144,6 +144,7 @@ export default function CreditCheckPrivateClient() {
                       variant="contained"
                       color="secondary"
                       className="font-semibold rounded-4 w-full min-w-[140px]"
+                      disabled={!isValid}
                     >
                       {t("label:confirm")}
                     </LoadingButton>
