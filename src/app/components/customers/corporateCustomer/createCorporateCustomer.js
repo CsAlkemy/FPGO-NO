@@ -33,7 +33,7 @@ import { useCreateCorporateCustomerMutation } from 'app/store/api/apiSlice';
 
 const createCorporateCustomer = () => {
   const { t } = useTranslation()
-  const [sameAddress, setSameAddress] = React.useState(false);
+  const [sameAddress, setSameAddress] = React.useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
   const [expandedPanel2, setExpandedPanel2] = React.useState(false);
@@ -461,44 +461,13 @@ const createCorporateCustomer = () => {
                                     color="secondary"
                                   />
                                 }
+                                checked={sameAddress}
                                 label={t("label:sameAsBillingAddress")}
                                 labelPlacement="start"
-                                disabled={
-                                  // findOrg
-                                  //   ? getValues("primaryPhoneNumber") === "" ||
-                                  //   getValues("orgEmail") === "" ||
-                                  //   getValues("billingAddress") === "" ||
-                                  //   getValues("billingZip") === "" ||
-                                  //   getValues("billingCity") === ""
-                                  !(
-                                    watchStreet &&
-                                    watchCity &&
-                                    watchZip &&
-                                    watchCountry
-                                    // dirtyFields.billingAddress &&
-                                    // dirtyFields.billingZip &&
-                                    // dirtyFields.billingCity &&
-                                    // dirtyFields.billingCountry
-                                  )
-
-                                }
                               />
                             </div>
                           </div>
-                          {!sameAddress &&
-
-                            (findOrg
-                              ? !(
-                                // getValues("primaryPhoneNumber") === "" ||
-                                // getValues("orgEmail") === "" ||
-                                getValues("billingAddress") === "" ||
-                                getValues("billingZip") === "" ||
-                                getValues("billingCity") === ""
-                              )
-                              : watchStreet &&
-                              watchCity &&
-                              watchZip &&
-                              watchCountry) && (
+                          {!sameAddress && (
                               <div className="">
                                 <div className="form-pair-three-by-one mt-0-i">
                                   <div className="col-span-3">
