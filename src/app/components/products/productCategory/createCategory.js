@@ -115,6 +115,7 @@ const createCategory = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
+                  disabled={!isValid}
                 >
                   {t("label:create")}
                 </LoadingButton>

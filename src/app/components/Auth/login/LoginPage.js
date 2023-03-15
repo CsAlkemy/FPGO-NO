@@ -97,9 +97,13 @@ const LoginPage = () => {
           setOTP(response[1]);
           setIsCode(true);
           setLoading(false);
-          enqueueSnackbar(t(`message:${response[0].message}`), { variant: "success" });
+          enqueueSnackbar(t(`message:${response[0].message}`), {
+            variant: "success",
+          });
         } else {
-          enqueueSnackbar(t(`message:${response[0].message}`), { variant: "error" });
+          enqueueSnackbar(t(`message:${response[0].message}`), {
+            variant: "error",
+          });
           setLoading(false);
         }
       })
@@ -129,6 +133,11 @@ const LoginPage = () => {
   };
 
   const resendOTP = () => {
+    document.getElementById("inputText1").value = "";
+    document.getElementById("inputText2").value = "";
+    document.getElementById("inputText3").value = "";
+    document.getElementById("inputText4").value = "";
+    document.getElementById("inputText5").value = "";
     const cred = JSON.parse(localStorage.getItem("cred"));
     AuthService.sendOtp(cred).then((response) => {
       if (response[0]?.status_code === 201) {
@@ -199,8 +208,8 @@ const LoginPage = () => {
                 error={!!errors.password}
                 helperText={
                   errors?.password?.message
-                      ? t(`validation:${errors?.password?.message}`)
-                      : ""
+                    ? t(`validation:${errors?.password?.message}`)
+                    : ""
                 }
                 variant="outlined"
                 required
@@ -295,6 +304,7 @@ const LoginPage = () => {
                   name="input1"
                   className="twofactor-input-box text-center"
                   maxLength={1}
+                  id="inputText1"
                   tabbable="true"
                   // onChange={(e) => handleInputChange(e, 0)}
                   onBlur={(e) =>
@@ -313,6 +323,7 @@ const LoginPage = () => {
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
+                  id="inputText2"
                   tabbable="true"
                   onBlur={(e) =>
                     e.target.value ? setTwo(true) : setTwo(false)
@@ -331,6 +342,7 @@ const LoginPage = () => {
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
+                  id="inputText3"
                   tabbable="true"
                   // onChange={(e) => handleInputChange(e, 2)}
                   onBlur={(e) =>
@@ -349,6 +361,7 @@ const LoginPage = () => {
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
+                  id="inputText4"
                   tabbable="true"
                   // onChange={(e) => handleInputChange(e, 3)}
                   onBlur={(e) =>
@@ -367,6 +380,7 @@ const LoginPage = () => {
                 <input
                   className="twofactor-input-box text-center"
                   maxLength={1}
+                  id="inputText5"
                   tabbable="true"
                   // onChange={(e) => handleInputChange(e, 4)}
                   onBlur={(e) =>
