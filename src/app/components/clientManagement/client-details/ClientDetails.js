@@ -482,7 +482,7 @@ const ClientDetails = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-          .filter((v) => v.vatValue)
+          .filter((v) => v.vatValue >= 0)
           .map((vat, index) => {
             return {
               uuid:
