@@ -60,9 +60,6 @@ const ClientDetails = () => {
   const [plan, setPlan] = React.useState(1);
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
-  const plan1 = useRef(null);
-  const plan2 = useRef(null);
-  const plan3 = useRef(null);
   const sameAddressRef = useRef(null);
   const [info, setInfo] = useState([]);
   const [tabValue, setTabValue] = React.useState("1");
@@ -121,11 +118,14 @@ const ClientDetails = () => {
           );
           if (planValue) {
             if (planValue === 1) {
-              plan1.current.click();
+              setPlan(1)
+              // plan1.current.click();
             } else if (planValue === 2) {
-              plan2.current.click();
+              setPlan(2)
+              // plan2.current.click();
             } else if (planValue === 3) {
-              plan3.current.click();
+              setPlan(3)
+              // plan3.current.click();
             }
           }
 
@@ -482,7 +482,7 @@ const ClientDetails = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-          .filter((v) => v.vatValue)
+          .filter((v) => v.vatValue >= 0)
           .map((vat, index) => {
             return {
               uuid:
@@ -1039,7 +1039,6 @@ const ClientDetails = () => {
                                     : "create-user-role-button"
                                 }
                                 onClick={() => setPlan(1)}
-                                ref={plan1}
                               >
                                 {t("label:plan1")}
                               </button>
@@ -1051,7 +1050,6 @@ const ClientDetails = () => {
                                     : "create-user-role-button"
                                 }
                                 onClick={() => setPlan(2)}
-                                ref={plan2}
                               >
                                 {t("label:plan2")}
                               </button>
@@ -1063,7 +1061,6 @@ const ClientDetails = () => {
                                     : "create-user-role-button"
                                 }
                                 onClick={() => setPlan(3)}
-                                ref={plan3}
                               >
                                 {t("label:plan3")}
                               </button>

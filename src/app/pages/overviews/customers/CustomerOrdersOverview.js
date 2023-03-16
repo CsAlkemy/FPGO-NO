@@ -83,21 +83,23 @@ export default function CustomerOrdersOverview() {
   const { id } = useParams();
 
   useEffect(() => {
-    CustomersService.customerOrdersList(id)
-      .then((res) => {
-        if (res?.status_code === 200 && res?.is_data) {
-          dispatch(setOverviewMainTableDataSlice(res));
-          setIsLoading(false);
-        } else {
+    if (isLoading) {
+      CustomersService.customerOrdersList(id)
+        .then((res) => {
+          if (res?.status_code === 200 && res?.is_data) {
+            dispatch(setOverviewMainTableDataSlice(res));
+            setIsLoading(false);
+          } else {
+            setIsLoading(false);
+            dispatch(setOverviewMainTableDataSlice([]));
+          }
+        })
+        .catch((e) => {
+          if (isLoading) enqueueSnackbar(t(`message:${e}`), { variant: "error" });
           setIsLoading(false);
           dispatch(setOverviewMainTableDataSlice([]));
-        }
-      })
-      .catch((e) => {
-        if (isLoading) enqueueSnackbar(t(`message:${e}`), { variant: "error" });
-        setIsLoading(false);
-        dispatch(setOverviewMainTableDataSlice([]));
-      });
+        });
+    }
   }, [isLoading]);
 
   return (

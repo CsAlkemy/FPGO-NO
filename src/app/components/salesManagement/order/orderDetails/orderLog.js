@@ -19,33 +19,35 @@ const orderLog = ({ info }) => {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    OrdersService.getOrdersLogByUUID(info.orderUuid)
-      .then((res) => {
-        let orderData = [];
-        let data = res?.data;
-        let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
+    if (loading){
+      OrdersService.getOrdersLogByUUID(info.orderUuid)
+        .then((res) => {
+          let orderData = [];
+          let data = res?.data;
+          let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
 
-        if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
-          orderData.push({
-            "title": t("label:orderExpiredAndWasNotPaid"),
-            "slug":"order-expired",
-            "datetime":info.paymentLinkDueDate,
-            "sentTo": null,
-            "actionBy":null,
-            "note":null,
-            "paymentMethod":null,
-            "refundAmount":null
-          });
-        }
-        orderData.push(...data);
-        
-        setLogs(orderData);
-        setLoading(false);
-      })
-      .catch((e) => {
-        setLogs([]);
-        setLoading(false);
-      });
+          if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
+            orderData.push({
+              "title": t("label:orderExpiredAndWasNotPaid"),
+              "slug":"order-expired",
+              "datetime":info.paymentLinkDueDate,
+              "sentTo": null,
+              "actionBy":null,
+              "note":null,
+              "paymentMethod":null,
+              "refundAmount":null
+            });
+          }
+          orderData.push(...data);
+
+          setLogs(orderData);
+          setLoading(false);
+        })
+        .catch((e) => {
+          setLogs([]);
+          setLoading(false);
+        });
+    }
   }, [loading]);
 
   return (

@@ -49,7 +49,7 @@ export default function Dashboard() {
     // let currentDate = new Date();
     // let prepareStartDate = `${currentDate.getMonth()+1}, ${currentDate.getDay()-(currentDate.getDay() - 1)}, ${currentDate.getFullYear()}`
     // let startDate = new Date(prepareStartDate).getTime()/1000
-    if (isDefault) {
+    if (isDefault && isLoading) {
       DashboardService.getDashboardAnalyticsData({
         startDate,
         endDate: (new Date().getTime() / 1000).toFixed(),
@@ -67,8 +67,8 @@ export default function Dashboard() {
   }, [isLoading]);
 
   const getSelectedRangeAnalyticsData = () => {
-    setIsLoading(true);
     setIsDefault(false);
+    setIsLoading(true);
     const checkIn = new Date(watchCheckIn).getTime() / 1000;
     const checkOut = new Date(watchCheckOut).getTime() / 1000;
     DashboardService.getDashboardAnalyticsData({
