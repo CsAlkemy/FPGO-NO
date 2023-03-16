@@ -1027,7 +1027,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Refund Pending" />
+                  <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "accepted":
@@ -1039,7 +1039,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Accepted" />
+                  <OverviewStatus name="Accepted" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "rejected":
@@ -1051,7 +1051,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Rejected" />
+                  <OverviewStatus name="Rejected" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
           }
