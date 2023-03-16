@@ -1,5 +1,6 @@
 import _ from "@lodash";
 import clsx from "clsx";
+import { useTranslation } from 'react-i18next';
 
 export const overviewStatuses = [
   {
@@ -90,6 +91,8 @@ export const overviewStatuses = [
 ];
 
 function OverviewStatus(props) {
+  const {t} = useTranslation()
+
   let classes = "";
   props.name === "Active"
     ? (classes = "inline text-12 py-4 px-16 rounded-sm min-w-3xl")
@@ -130,7 +133,7 @@ function OverviewStatus(props) {
         _.find(overviewStatuses, { name: props.name }).color
       )}
     >
-      {props.name}
+      {props.translationKey ? t(`label:${props.translationKey}`) : props.name}
     </div>
   );
 }

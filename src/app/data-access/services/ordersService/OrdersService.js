@@ -130,6 +130,7 @@ class OrdersService {
         isCancel: row.status.toLowerCase() === "sent",
         // refundResend: "Resend",
         // isCancel: true,
+        translationKey: row.translation_key
       };
     });
     return d;

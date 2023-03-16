@@ -246,7 +246,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Paid" />
+                  <OverviewStatus name="Paid" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "sent":
@@ -258,7 +258,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Sent" />
+                  <OverviewStatus name="Sent" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "expired":
@@ -270,7 +270,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Expired" />
+                  <OverviewStatus name="Expired" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "invoiced":
@@ -282,7 +282,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Invoiced" />
+                  <OverviewStatus name="Invoiced" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "cancelled":
@@ -294,7 +294,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Cancelled" />
+                  <OverviewStatus name="Cancelled" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "refunded":
@@ -306,7 +306,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Refunded" />
+                  <OverviewStatus name="Refunded" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "refund pending":
@@ -318,7 +318,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Refund Pending" />
+                  <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "partial refunded":
@@ -330,7 +330,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Partial Refunded" />
+                  <OverviewStatus name="Partial Refunded" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "completed":
@@ -342,7 +342,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Completed" />
+                  <OverviewStatus name="Completed" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "reminder sent":
@@ -354,7 +354,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Reminder Sent" />
+                  <OverviewStatus name="Reminder Sent" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "sent to debt collection":
@@ -366,7 +366,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Debt Collection" />
+                  <OverviewStatus name="Debt Collection" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
           }
@@ -679,7 +679,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Paid" />
+                  <OverviewStatus name="Paid" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "sent":
@@ -691,7 +691,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Sent" />
+                  <OverviewStatus name="Sent" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "expired":
@@ -703,7 +703,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Expired" />
+                  <OverviewStatus name="Expired" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "invoiced":
@@ -715,7 +715,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Invoiced" />
+                  <OverviewStatus name="Invoiced" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "cancelled":
@@ -727,7 +727,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Cancelled" />
+                  <OverviewStatus name="Cancelled" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "refunded":
@@ -739,7 +739,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Refunded" />
+                  <OverviewStatus name="Refunded" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "refund pending":
@@ -751,7 +751,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Refund Pending" />
+                  <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "partial refunded":
@@ -763,7 +763,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Partial Refunded" />
+                  <OverviewStatus name="Partial Refunded" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "completed":
@@ -775,7 +775,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Completed" />
+                  <OverviewStatus name="Completed" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "reminder sent":
@@ -787,7 +787,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Reminder Sent" />
+                  <OverviewStatus name="Reminder Sent" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "sent to debt collection":
@@ -799,7 +799,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Debt Collection" />
+                  <OverviewStatus name="Debt Collection" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
           }
@@ -1210,7 +1210,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Paid" />
+                  <OverviewStatus name="Paid" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "sent":
@@ -1222,7 +1222,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Sent" />
+                  <OverviewStatus name="Sent" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "expired":
@@ -1234,7 +1234,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Expired" />
+                  <OverviewStatus name="Expired" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "invoiced":
@@ -1246,7 +1246,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Invoiced" />
+                  <OverviewStatus name="Invoiced" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "cancelled":
@@ -1258,7 +1258,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Cancelled" />
+                  <OverviewStatus name="Cancelled" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "refunded":
@@ -1270,7 +1270,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Refunded" />
+                  <OverviewStatus name="Refunded" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "refund pending":
@@ -1282,7 +1282,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Refund Pending" />
+                  <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "partial refunded":
@@ -1294,7 +1294,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Partial Refunded" />
+                  <OverviewStatus name="Partial Refunded" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "completed":
@@ -1306,7 +1306,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Completed" />
+                  <OverviewStatus name="Completed" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "reminder sent":
@@ -1318,7 +1318,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Reminder Sent" />
+                  <OverviewStatus name="Reminder Sent" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
             case "sent to debt collection":
@@ -1330,7 +1330,7 @@ export default function OverViewMainTableBody(props) {
                     props.rowClickAction(props.row);
                   }}
                 >
-                  <OverviewStatus name="Debt Collection" />
+                  <OverviewStatus name="Debt Collection" translationKey={props.row.translationKey}/>
                 </TableCell>
               );
           }
