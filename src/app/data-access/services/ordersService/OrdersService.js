@@ -118,19 +118,20 @@ class OrdersService {
         //   ? // || row.status.toLowerCase() === "invoiced"
         //     "Refund"
         //   : null,
-        refundResend: row.status.toLowerCase() === "sent"
-          ? "Resend"
-          : row.status.toLowerCase() === "paid" ||
-            row.status.toLowerCase() === "partial refunded" ||
-            row.status.toLowerCase() === "refund pending"
-          ? // || row.status.toLowerCase() === "invoiced"
-            "Refund"
-          : null,
+        refundResend:
+          row.status.toLowerCase() === "sent"
+            ? "Resend"
+            : row.status.toLowerCase() === "paid" ||
+              row.status.toLowerCase() === "partial refunded" ||
+              row.status.toLowerCase() === "refund pending"
+            ? // || row.status.toLowerCase() === "invoiced"
+              "Refund"
+            : null,
         // isCancel: !isExpired && row.status.toLowerCase() === "sent",
         isCancel: row.status.toLowerCase() === "sent",
         // refundResend: "Resend",
         // isCancel: true,
-        translationKey: row.translation_key
+        translationKey: row.translation_key,
       };
     });
     return d;
@@ -819,6 +820,7 @@ class OrdersService {
         stage: row?.status ? row?.status.toLowerCase() : null,
         approveAction: row?.status ? row?.status.toLowerCase() : null,
         isCancel: row?.status.toLowerCase() === "refund pending",
+        translationKey: row?.translation_key ? row?.translation_key : null,
       };
     });
     d.status_code = 200;
@@ -853,6 +855,9 @@ class OrdersService {
                         ? row?.status.toLowerCase()
                         : null,
                       isCancel: row?.status.toLowerCase() === "pending",
+                      translationKey: row?.translation_key
+                        ? row?.translation_key
+                        : null,
                     };
                   });
                   d.status_code = 200;
