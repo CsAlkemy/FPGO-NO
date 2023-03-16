@@ -2066,7 +2066,8 @@ const createOrder = () => {
                                     setValue("primaryPhoneNumber", "");
                                     setValue("email", "");
                                     setValue("customerName", "");
-                                    setValue("orgorPID", "");
+                                    setValue("orgID", "");
+                                    setValue("pNumber", "");
                                     setValue("billingAddress", "");
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
@@ -2156,7 +2157,8 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "private",
                                 });
-                                setValue("orgorPID", "");
+                                setValue("orgID", "");
+                                setValue("pNumber", "");
                               }}
                             >
                               {t("label:private")}
@@ -2173,7 +2175,8 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "corporate",
                                 });
-                                setValue("orgorPID", "");
+                                setValue("orgID", "");
+                                setValue("pNumber", "");
                               }}
                             >
                               {t("label:corporate")}
