@@ -119,7 +119,7 @@ const TimelineLog = () => {
                   <div className="ml-5 mt-10 mb-10">
                     <div className="subtitle3 text-MonochromeGray-700">
                       {/*{log.title}*/}
-                      {t(`label:${log.translation_key}`)}
+                      {t(`label:${log.translationKey}`)}
                     </div>
                     {log.datetime && (
                       <div className="flex gap-5">

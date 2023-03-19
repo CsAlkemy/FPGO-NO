@@ -79,6 +79,7 @@ const createOrder = () => {
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [recheckSchema, setRecheckSchema] = useState(true);
   const [itemLoader, setItemLoader] = useState(false);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
@@ -139,7 +140,20 @@ const createOrder = () => {
     )
       return validateSchemaCreateOrderCorporateOrderBySms;
   };
-  const schema = activeSchema();
+  let schema = activeSchema();
+  useEffect(()=> {
+    schema = activeSchema()
+    if (recheckSchema){
+      if(customData.customerType === "corporate"){
+        clearErrors(["pNumber","orgID"])
+        setValue("orgID","", {shouldValidate: true})
+        setError("orgID", { type: "focus" }, { shouldFocus: true });
+      }else {
+        setValue("pNumber","",{shouldValidate: true})
+        clearErrors(["pNumber","orgID"])
+      }
+    }
+  },[customData.customerType])
 
   const {
     control,
@@ -151,8 +165,12 @@ const createOrder = () => {
     setValue,
     resetField,
     getFieldState,
+    trigger,
+    setError,
+    setFocus,
+    clearErrors
   } = useForm({
-    mode: "onChange",
+    mode: "all",
     CreateOrderDefaultValue,
     // reValidateMode: "all",
     resolver: yupResolver(schema),
@@ -2038,6 +2056,8 @@ const createOrder = () => {
                                 fullWidth
                                 onChange={(_, data) => {
                                   if (data) {
+                                    clearErrors(["pNumber","orgID"])
+                                    setRecheckSchema(false)
                                     setCustomerSearchBy(undefined);
                                     setCustomerSearchBoxLength(0);
                                     setValue("primaryPhoneNumber", data.phone);
@@ -2045,7 +2065,7 @@ const createOrder = () => {
                                     setValue("customerName", data.name);
                                     data.type === "Corporate"
                                       ? setValue("orgID", data.orgOrPNumber)
-                                      : setValue("pNumber", data.orgOrPNumber);
+                                      : setValue("pNumber", data.orgOrPNumber)
                                     setValue("billingAddress", data.street);
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
@@ -2059,9 +2079,9 @@ const createOrder = () => {
                                           ...customData,
                                           customerType: "private",
                                         });
-                                    data.type === "Corporate"
-                                      ? setSelectedFromList("Corporate")
-                                      : setSelectedFromList("Private");
+                                    // data.type === "Corporate"
+                                    //   ? setSelectedFromList("Corporate")
+                                    //   : setSelectedFromList("Private");
                                   } else {
                                     setValue("primaryPhoneNumber", "");
                                     setValue("email", "");
@@ -2072,7 +2092,7 @@ const createOrder = () => {
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
                                     setValue("billingCountry", "");
-                                    setSelectedFromList(null);
+                                    // setSelectedFromList(null);
                                   }
                                   return onChange(data);
                                 }}
@@ -2157,8 +2177,9 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "private",
                                 });
-                                setValue("orgID", "");
-                                setValue("pNumber", "");
+                                setRecheckSchema(true)
+                                // setValue("orgID", "");
+                                // setValue("pNumber", "");
                               }}
                             >
                               {t("label:private")}
@@ -2175,8 +2196,9 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "corporate",
                                 });
-                                setValue("orgID", "");
-                                setValue("pNumber", "");
+                                setRecheckSchema(true)
+                                // setValue("orgID", "");
+                                // setValue("pNumber", "");
                               }}
                             >
                               {t("label:corporate")}

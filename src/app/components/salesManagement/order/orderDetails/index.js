@@ -114,7 +114,7 @@ const createOrder = () => {
                   >
                     {/*{info.status.charAt(0).toUpperCase() +*/}
                     {/*  info.status.slice(1).toLowerCase()}*/}
-                    {info.translation_key}
+                    {t(`label:${info.translationKey}`)}
                   </span>
                 </div>
                 <Hidden smDown>
