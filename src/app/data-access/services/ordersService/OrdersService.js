@@ -131,7 +131,7 @@ class OrdersService {
         isCancel: row.status.toLowerCase() === "sent",
         // refundResend: "Resend",
         // isCancel: true,
-        translationKey: row.translation_key,
+        translationKey: row.translationKey,
       };
     });
     return d;
@@ -820,7 +820,7 @@ class OrdersService {
         stage: row?.status ? row?.status.toLowerCase() : null,
         approveAction: row?.status ? row?.status.toLowerCase() : null,
         isCancel: row?.status.toLowerCase() === "refund pending",
-        translationKey: row?.translation_key ? row?.translation_key : null,
+        translationKey: row?.translationKey ? row?.translationKey : null,
       };
     });
     d.status_code = 200;
@@ -855,8 +855,8 @@ class OrdersService {
                         ? row?.status.toLowerCase()
                         : null,
                       isCancel: row?.status.toLowerCase() === "pending",
-                      translationKey: row?.translation_key
-                        ? row?.translation_key
+                      translationKey: row?.translationKey
+                        ? row?.translationKey
                         : null,
                     };
                   });

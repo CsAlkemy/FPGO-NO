@@ -455,7 +455,7 @@ class ClientService {
                       phoneNo: phone ? "+" + phone[phone.length - 1] : null,
                       amount: row.amount,
                       status: row?.status ? row?.status.toLowerCase() : null,
-                      translationKey: row.translation_key
+                      translationKey: row.translationKey
                     };
                   });
                   d.status_code = 200;

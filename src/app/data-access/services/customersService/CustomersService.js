@@ -1440,7 +1440,7 @@ class CustomersService {
                             "Refund"
                           : null,
                       isCancel: row.status.toLowerCase() === "sent",
-                      translationKey: row.translation_key
+                      translationKey: row.translationKey
                     };
                   });
                   d.status_code = 200;
