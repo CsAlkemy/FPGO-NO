@@ -56,7 +56,7 @@ const TimelineLog = () => {
   };
 
   useEffect(() => {
-    if (defaultTimeline) {
+    if (defaultTimeline && isFetching) {
       const prepareSelectedDate = `${
         new Date().getMonth() + 1
       }.09.${new Date().getFullYear()} 00:00:00`;
@@ -161,7 +161,8 @@ const TimelineLog = () => {
                 <TimelineContent>
                   <div className="ml-5 mt-10 mb-10">
                     <div className="subtitle3 text-MonochromeGray-700">
-                      {log.title}
+                      {/*{log.title}*/}
+                      {t(`label:${log.translation_key}`)}
                     </div>
                     {log.datetime && (
                       <div className="flex gap-5">

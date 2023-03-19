@@ -112,8 +112,9 @@ const createOrder = () => {
                         : "bg-rejected"
                     } rounded-4 px-16 py-4 body3 ml-10`}
                   >
-                    {info.status.charAt(0).toUpperCase() +
-                      info.status.slice(1).toLowerCase()}
+                    {/*{info.status.charAt(0).toUpperCase() +*/}
+                    {/*  info.status.slice(1).toLowerCase()}*/}
+                    {info.translation_key}
                   </span>
                 </div>
                 <Hidden smDown>
