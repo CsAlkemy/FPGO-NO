@@ -125,8 +125,8 @@ const createProducts = () => {
             enqueueSnackbar(t(`message:${error}`), { variant: "error" });
             setIsLoading(false);
           });
-        if (info?.user_data?.organization?.uuid) {
-          ClientService.vateRatesList(info?.user_data?.organization?.uuid, true)
+        if (userInfo?.user_data?.organization?.uuid) {
+          ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid, true)
             .then((res) => {
               if (res?.status_code === 200) {
                 setTaxes(res?.data);

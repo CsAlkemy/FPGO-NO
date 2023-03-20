@@ -4,7 +4,8 @@ import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import {
   Backdrop,
   Box,
-  Button, CircularProgress,
+  Button,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -14,7 +15,7 @@ import {
   Switch,
   Tab,
   TextField,
-} from '@mui/material';
+} from "@mui/material";
 import { selectUser } from "app/store/userSlice";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useRef, useState } from "react";
@@ -24,10 +25,14 @@ import { BsFillCheckCircleFill } from "react-icons/bs";
 import { MdOutlineAdd, MdRemoveCircle } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-import { CreateCorporateDefaultValue, CorporateDetailsDefaultValue, validateSchema } from "../utils/helper";
+import {
+  CreateCorporateDefaultValue,
+  CorporateDetailsDefaultValue,
+  validateSchema,
+} from "../utils/helper";
 import Journal from "./CorporateCustomerDetails/Journal";
 import Orders from "./CorporateCustomerDetails/Orders";
 import Timeline from "./CorporateCustomerDetails/Timeline";
@@ -42,6 +47,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
   const [info, setInfo] = useState([]);
   const [sameAddress, setSameAddress] = React.useState(false);
+  const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
   const sameAddRef = useRef(null);
   const [tabValue, setTabValue] = React.useState("1");
 
@@ -96,16 +102,20 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
 
   useEffect(() => {
     CustomersService.getCustomerDetailsByUUID(queryParams.id)
-      .then((response)=> {
+      .then((response) => {
         setInfo(response?.data);
         CorporateDetailsDefaultValue.customerID = info?.uuid ? info.uuid : "";
         CorporateDetailsDefaultValue.organizationID = info?.organizationId
           ? info.organizationId
           : "";
         CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
-        CorporateDetailsDefaultValue.OrganizationName = info?.name ? info.name : "";
+        CorporateDetailsDefaultValue.OrganizationName = info?.name
+          ? info.name
+          : "";
         CorporateDetailsDefaultValue.primaryPhoneNumber =
-          info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
+          info?.countryCode && info?.msisdn
+            ? info.countryCode + info.msisdn
+            : "";
 
         CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
           ?.street
@@ -114,7 +124,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         CorporateDetailsDefaultValue.billingZip = info?.addresses?.billing?.zip
           ? info.addresses.billing.zip
           : "";
-        CorporateDetailsDefaultValue.billingCity = info?.addresses?.billing?.city
+        CorporateDetailsDefaultValue.billingCity = info?.addresses?.billing
+          ?.city
           ? info.addresses.billing.city
           : "";
         CorporateDetailsDefaultValue.billingCountry = info?.addresses?.billing
@@ -126,10 +137,12 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
           ?.street
           ? info.addresses.shipping?.street
           : "";
-        CorporateDetailsDefaultValue.shippingZip = info?.addresses?.shipping?.zip
+        CorporateDetailsDefaultValue.shippingZip = info?.addresses?.shipping
+          ?.zip
           ? info.addresses.shipping?.zip
           : "";
-        CorporateDetailsDefaultValue.shippingCity = info?.addresses?.shipping?.city
+        CorporateDetailsDefaultValue.shippingCity = info?.addresses?.shipping
+          ?.city
           ? info.addresses.shipping?.city
           : "";
         CorporateDetailsDefaultValue.shippingCountry = info?.addresses?.shipping
@@ -151,13 +164,13 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             // ADC
             setAddContactIndex(
               addContactIndex.filter(
-                (item, index) => item < info?.additionalContactDetails.length - 1
+                (item, index) =>
+                  item < info?.additionalContactDetails.length - 1
               )
             );
-
           }
-          CorporateDetailsDefaultValue.fullName = info?.additionalContactDetails[0]
-            ?.name
+          CorporateDetailsDefaultValue.fullName = info
+            ?.additionalContactDetails[0]?.name
             ? info.additionalContactDetails[0].name
             : "";
           CorporateDetailsDefaultValue.designation = info
@@ -168,7 +181,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             info?.additionalContactDetails[0]?.countryCode &&
             info.additionalContactDetails[0].msisdn
               ? info.additionalContactDetails[0].countryCode +
-              info.additionalContactDetails[0].msisdn
+                info.additionalContactDetails[0].msisdn
               : "";
           CorporateDetailsDefaultValue.email = info?.additionalContactDetails[0]
             ?.email
@@ -198,7 +211,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             setValue(
               `contact[${i}].phone`,
               info.additionalContactDetails[`${i + 1}`].countryCode +
-              info.additionalContactDetails[`${i}`].msisdn
+                info.additionalContactDetails[`${i}`].msisdn
             );
             setValue(
               `contact[${i}].notes`,
@@ -214,23 +227,28 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         if (
           info?.addresses &&
           info?.addresses?.billing?.street ===
-          info?.addresses["shipping"]?.street &&
+            info?.addresses["shipping"]?.street &&
           info?.addresses?.billing?.zip === info?.addresses["shipping"]?.zip &&
-          info?.addresses?.billing?.city === info?.addresses["shipping"]?.city &&
-          info?.addresses?.billing?.country === info?.addresses["shipping"]?.country
+          info?.addresses?.billing?.city ===
+            info?.addresses["shipping"]?.city &&
+          info?.addresses?.billing?.country ===
+            info?.addresses["shipping"]?.country
         ) {
-          setSameAddress(true);
-        } else setSameAddress(false);
+          setSameAddress(true);setInitialSameAddressRef(true);
+        } else {
+          setInitialSameAddressRef(false);
+          setSameAddress(false);
+        }
 
         setIsLoading(false);
       })
-      .catch((e)=> {
-        navigate("/customers/customers-list")
-        enqueueSnackbar(t(`message:${e}`), {variant: "error"})
-      })
-    return ()=> {
-      reset({ ...CorporateDetailsDefaultValue })
-    }
+      .catch((e) => {
+        navigate("/customers/customers-list");
+        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+      });
+    return () => {
+      reset({ ...CorporateDetailsDefaultValue });
+    };
   }, [isLoading]);
 
   const onRawSubmit = (values) => {
@@ -263,11 +281,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
       );
     updateCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
         setLoading(false);
       }
     });
@@ -290,10 +312,14 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   const handleMakeInactive = () => {
     updateCustomerStatus(info.uuid).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate(`/customers/customers-list`);
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
     // CustomersService.makeInactiveCustomerByUUID(info.uuid)
@@ -314,8 +340,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
       <Backdrop
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 2,
-          color: '#0088AE',
-          background: 'white',
+          color: "#0088AE",
+          background: "white",
         }}
         open={isLoading}
       >
@@ -369,7 +395,10 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN || !isDirty}
+                      disabled={
+                        user.role[0] === FP_ADMIN ||
+                        (!isDirty && sameAddress === initialSameAddressRef)
+                      }
                       loadingPosition="center"
                     >
                       {t("label:update")}
@@ -394,9 +423,21 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                           className="subtitle3"
                           value="1"
                         />
-                        <Tab label={t("label:timeline")} className="subtitle3" value="2" />
-                        <Tab label={t("label:orders")} className="subtitle3" value="3" />
-                        <Tab label={t("label:notes")} className="subtitle3" value="4" />
+                        <Tab
+                          label={t("label:timeline")}
+                          className="subtitle3"
+                          value="2"
+                        />
+                        <Tab
+                          label={t("label:orders")}
+                          className="subtitle3"
+                          value="3"
+                        />
+                        <Tab
+                          label={t("label:notes")}
+                          className="subtitle3"
+                          value="4"
+                        />
                       </TabList>
                     </Box>
                     <TabPanel value="1" className="py-20 px-10">
@@ -427,12 +468,18 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.customerID}
-                                      helperText={errors?.customerID?.message ? t(`validation:${errors?.customerID?.message}`) : ""}
+                                      helperText={
+                                        errors?.customerID?.message
+                                          ? t(
+                                              `validation:${errors?.customerID?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth
                                       disabled
-                                      value={field.value || ''}
+                                      value={field.value || ""}
                                     />
                                   )}
                                 />
@@ -446,11 +493,17 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.organizationID}
-                                      helperText={errors?.organizationID?.message ? t(`validation:${errors?.organizationID?.message}`) : ""}
+                                      helperText={
+                                        errors?.organizationID?.message
+                                          ? t(
+                                              `validation:${errors?.organizationID?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth
-                                      value={field.value || ''}
+                                      value={field.value || ""}
                                       //disabled
                                     />
                                   )}
@@ -468,11 +521,17 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.OrganizationName}
-                                      helperText={errors?.OrganizationName?.message ? t(`validation:${errors?.OrganizationName?.message}`) : ""}
+                                      helperText={
+                                        errors?.OrganizationName?.message
+                                          ? t(
+                                              `validation:${errors?.OrganizationName?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       required
-                                      value={field.value || ''}
+                                      value={field.value || ""}
                                       //disabled
                                     />
                                   )}
@@ -488,11 +547,17 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       type="email"
                                       autoComplete="off"
                                       error={!!errors.orgEmail}
-                                      helperText={errors?.orgEmail?.message ? t(`validation:${errors?.orgEmail?.message}`) : ""}
+                                      helperText={
+                                        errors?.orgEmail?.message
+                                          ? t(
+                                              `validation:${errors?.orgEmail?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth
-                                      value={field.value || ''}
+                                      value={field.value || ""}
                                     />
                                   )}
                                 />
@@ -519,7 +584,11 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                         // onBlur={handleOnBlurGetDialCode}
                                       />
                                       <FormHelperText>
-                                        {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
+                                        {errors?.primaryPhoneNumber?.message
+                                          ? t(
+                                              `validation:${errors?.primaryPhoneNumber?.message}`
+                                            )
+                                          : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -566,11 +635,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             autoComplete="off"
                                             error={!!errors.billingAddress}
                                             helperText={
-                                              errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""
+                                              errors?.billingAddress?.message
+                                                ? t(
+                                                    `validation:${errors?.billingAddress?.message}`
+                                                  )
+                                                : ""
                                             }
                                             variant="outlined"
                                             fullWidth
-                                            value={field.value || ''}
+                                            value={field.value || ""}
                                           />
                                         )}
                                       />
@@ -587,10 +660,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             type="text"
                                             autoComplete="off"
                                             error={!!errors.billingZip}
-                                            helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
+                                            helperText={
+                                              errors?.billingZip?.message
+                                                ? t(
+                                                    `validation:${errors?.billingZip?.message}`
+                                                  )
+                                                : ""
+                                            }
                                             variant="outlined"
                                             fullWidth
-                                            value={field.value || ''}
+                                            value={field.value || ""}
                                           />
                                         )}
                                       />
@@ -607,10 +686,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.billingCity}
-                                          helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
+                                          helperText={
+                                            errors?.billingCity?.message
+                                              ? t(
+                                                  `validation:${errors?.billingCity?.message}`
+                                                )
+                                              : ""
+                                          }
                                           variant="outlined"
                                           fullWidth
-                                          value={field.value || ''}
+                                          value={field.value || ""}
                                         />
                                       )}
                                     />
@@ -646,7 +731,11 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             ))}
                                           </Select>
                                           <FormHelperText>
-                                            {errors?.billingCountry?.message ? t(`validation:${errors?.billingCountry?.message}`) : ""}
+                                            {errors?.billingCountry?.message
+                                              ? t(
+                                                  `validation:${errors?.billingCountry?.message}`
+                                                )
+                                              : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -690,19 +779,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                     </div>
                                   </div>
 
-                                  {!sameAddress &&
-                                    // (billingPhoneNumber &&
-                                    //   billingEmail &&
-                                    //   billingAddress &&
-                                    //   zip &&
-                                    //   city &&
-                                    //   country)
-                                    // ||
-                                    (shippingAddress ||
-                                      shippingZip ||
-                                      shippingCity ||
-                                      shippingCountry ||
-                                      !info?.addresses) && (
+                                  {!sameAddress && (
                                       <div className="">
                                         <div className="form-pair-three-by-one">
                                           <div className="col-span-3">
@@ -712,17 +789,26 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               render={({ field }) => (
                                                 <TextField
                                                   {...field}
-                                                  label={t("label:streetAddress")}
+                                                  label={t(
+                                                    "label:streetAddress"
+                                                  )}
                                                   type="text"
                                                   autoComplete="off"
                                                   disabled={sameAddress}
-                                                  error={!!errors.shippingAddress}
+                                                  error={
+                                                    !!errors.shippingAddress
+                                                  }
                                                   helperText={
-                                                    errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
+                                                    errors?.shippingAddress
+                                                      ?.message
+                                                      ? t(
+                                                          `validation:${errors?.shippingAddress?.message}`
+                                                        )
+                                                      : ""
                                                   }
                                                   variant="outlined"
                                                   fullWidth
-                                                  value={field.value || ''}
+                                                  value={field.value || ""}
                                                 />
                                               )}
                                             />
@@ -741,11 +827,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                   disabled={sameAddress}
                                                   error={!!errors.shippingZip}
                                                   helperText={
-                                                    errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
+                                                    errors?.shippingZip?.message
+                                                      ? t(
+                                                          `validation:${errors?.shippingZip?.message}`
+                                                        )
+                                                      : ""
                                                   }
                                                   variant="outlined"
                                                   fullWidth
-                                                  value={field.value || ''}
+                                                  value={field.value || ""}
                                                 />
                                               )}
                                             />
@@ -764,11 +854,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                 disabled={sameAddress}
                                                 error={!!errors.shippingCity}
                                                 helperText={
-                                                  errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
+                                                  errors?.shippingCity?.message
+                                                    ? t(
+                                                        `validation:${errors?.shippingCity?.message}`
+                                                      )
+                                                    : ""
                                                 }
                                                 variant="outlined"
                                                 fullWidth
-                                                value={field.value || ''}
+                                                value={field.value || ""}
                                               />
                                             )}
                                           />
@@ -809,7 +903,12 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                   )}
                                                 </Select>
                                                 <FormHelperText>
-                                                  {errors?.shippingCountry?.message ? t(`validation:${errors?.shippingCountry?.message}`) : ""}
+                                                  {errors?.shippingCountry
+                                                    ?.message
+                                                    ? t(
+                                                        `validation:${errors?.shippingCountry?.message}`
+                                                      )
+                                                    : ""}
                                                 </FormHelperText>
                                               </FormControl>
                                             )}
@@ -852,10 +951,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.fullName}
-                                          helperText={errors?.fullName?.message ? t(`validation:${errors?.fullName?.message}`) : ""}
+                                          helperText={
+                                            errors?.fullName?.message
+                                              ? t(
+                                                  `validation:${errors?.fullName?.message}`
+                                                )
+                                              : ""
+                                          }
                                           variant="outlined"
                                           fullWidth
-                                          value={field.value || ''}
+                                          value={field.value || ""}
                                         />
                                       )}
                                     />
@@ -869,10 +974,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.designation}
-                                          helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
+                                          helperText={
+                                            errors?.designation?.message
+                                              ? t(
+                                                  `validation:${errors?.designation?.message}`
+                                                )
+                                              : ""
+                                          }
                                           variant="outlined"
                                           fullWidth
-                                          value={field.value || ''}
+                                          value={field.value || ""}
                                         />
                                       )}
                                     />
@@ -901,7 +1012,11 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             // onBlur={handleOnBlurGetDialCode}
                                           />
                                           <FormHelperText>
-                                            {errors?.billingPhoneNumber?.message ? t(`validation:${errors?.billingPhoneNumber?.message}`) : ""}
+                                            {errors?.billingPhoneNumber?.message
+                                              ? t(
+                                                  `validation:${errors?.billingPhoneNumber?.message}`
+                                                )
+                                              : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -916,10 +1031,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="email"
                                           autoComplete="off"
                                           error={!!errors.email}
-                                          helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
+                                          helperText={
+                                            errors?.email?.message
+                                              ? t(
+                                                  `validation:${errors?.email?.message}`
+                                                )
+                                              : ""
+                                          }
                                           variant="outlined"
                                           fullWidth
-                                          value={field.value || ''}
+                                          value={field.value || ""}
                                         />
                                       )}
                                     />
@@ -937,10 +1058,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.notes}
-                                          helperText={errors?.notes?.message ? t(`validation:${errors?.notes?.message}`) : ""}
+                                          helperText={
+                                            errors?.notes?.message
+                                              ? t(
+                                                  `validation:${errors?.notes?.message}`
+                                                )
+                                              : ""
+                                          }
                                           variant="outlined"
                                           fullWidth
-                                          value={field.value || ''}
+                                          value={field.value || ""}
                                         />
                                       )}
                                     />
@@ -982,10 +1109,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               type="text"
                                               autoComplete="off"
                                               error={!!errors?.fullName}
-                                              helperText={errors?.fullName ? t(`validation:${errors?.fullName}`) : ""}
+                                              helperText={
+                                                errors?.fullName
+                                                  ? t(
+                                                      `validation:${errors?.fullName}`
+                                                    )
+                                                  : ""
+                                              }
                                               variant="outlined"
                                               fullWidth
-                                              value={field.value || ''}
+                                              value={field.value || ""}
                                               // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].name ? info.additionalContactDetails[index+1].name : ""}
                                             />
                                           )}
@@ -1001,11 +1134,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               autoComplete="off"
                                               error={!!errors?.designation}
                                               helperText={
-                                                errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""
+                                                errors?.designation?.message
+                                                  ? t(
+                                                      `validation:${errors?.designation?.message}`
+                                                    )
+                                                  : ""
                                               }
                                               variant="outlined"
                                               fullWidth
-                                              value={field.value || ''}
+                                              value={field.value || ""}
                                               // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].designation ? info.additionalContactDetails[index+1].designation : ""}
                                             />
                                           )}
@@ -1054,7 +1191,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               // helperText={errors?.contact[index]?.email?.message}
                                               variant="outlined"
                                               fullWidth
-                                              value={field.value || ''}
+                                              value={field.value || ""}
                                               // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].email ? info.additionalContactDetails[index+1].email : ""}
                                             />
                                           )}
@@ -1073,10 +1210,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               type="text"
                                               autoComplete="off"
                                               error={!!errors?.notes}
-                                              helperText={errors?.message ? t(`validation:${errors?.message}`) : ""}
+                                              helperText={
+                                                errors?.message
+                                                  ? t(
+                                                      `validation:${errors?.message}`
+                                                    )
+                                                  : ""
+                                              }
                                               variant="outlined"
                                               fullWidth
-                                              value={field.value || ''}
+                                              value={field.value || ""}
                                               // defaultValue={info.additionalContactDetails[index+1] && info.additionalContactDetails[index+1].notes ? info.additionalContactDetails[index+1].notes : ""}
                                             />
                                           )}
@@ -1101,7 +1244,9 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                             </div>
                           </div>
                         </div>
-                        <div className="col-span-2 hidden">{/* <FAQs /> */}</div>
+                        <div className="col-span-2 hidden">
+                          {/* <FAQs /> */}
+                        </div>
                       </div>
                     </TabPanel>
                     <TabPanel value="2" className="py-20 px-10">

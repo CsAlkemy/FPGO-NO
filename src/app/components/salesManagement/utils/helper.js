@@ -10,7 +10,8 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
   //   .when( "orderDate",
   //     (orderDate, field)=> orderDate ? field.required() : field
   //   )
-  orgorPID: yup
+  // orgorPID: yup
+  pNumber: yup
     .string()
     .matches(/^[0-9]+$/, {
       message: "pNumberMustBeNumber",
@@ -82,7 +83,8 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
   primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
   email: yup.string().email("youMustEnterAValidEmail").required("youMustEnterAEmail"),
-  orgorPID: yup
+  // orgorPID: yup
+  pNumber: yup
     .string()
     .matches(/^[0-9]+$/, {
       message: "pNumberMustBeNumber",
@@ -149,7 +151,8 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
     .string()
     .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  orgorPID: yup
+  // orgorPID: yup
+  orgID: yup
     .string()
     .matches(/^[0-9]+$/, {
       message: "Must be number",
@@ -158,8 +161,8 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
     .required("youMustEnterOrganizationID")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "pNumberMustBeNumber")
-    .max(9, "pNumberMustBeNumber"),
+    .min(9, "mustBeExactlyNineNumbers")
+    .max(9, "mustBeExactlyNineNumbers"),
   email: yup
     .string()
     .required("You must enter email address")
@@ -220,7 +223,8 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
     .string()
     .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  orgorPID: yup
+  // orgorPID: yup
+  orgID: yup
     .string()
     .matches(/^[0-9]+$/, {
       message: "Must be number",
@@ -229,8 +233,8 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
     .required("youMustEnterOrganizationID")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "pNumberMustBeNumber")
-    .max(9, "pNumberMustBeNumber"),
+    .min(9, "mustBeExactlyNineNumbers")
+    .max(9, "mustBeExactlyNineNumbers"),
   customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup
     .string()
@@ -290,6 +294,25 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
 
 export const CreateOrderDefaultValue = {
   order: [],
+  orderDate : "",
+  dueDatePaymentLink : "",
+  primaryPhoneNumber : "",
+  email : "",
+  customerName : "",
+  // orgorPID : "",
+  orgID : "",
+  pNumber : "",
+  billingAddress : "",
+  billingZip : "",
+  billingCity : "",
+  billingCountry : "",
+  referenceNumber : "",
+  customerReference : "",
+  receiptNo : "",
+  customerNotes : "",
+  termsConditions : "",
+  internalReferenceNo : "",
+  customerNotesInternal : "",
 };
 
 export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
