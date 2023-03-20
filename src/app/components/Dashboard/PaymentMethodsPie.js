@@ -126,7 +126,6 @@ function NewVsReturningWidget(props) {
       </div>
 
       <div className="flex flex-col flex-auto mt-24 h-192">
-        {/*<div className="flex flex-col flex-auto mt-24 h-320">*/}
         <ReactApexChart
           className="flex flex-auto items-center justify-center w-full h-full"
           options={chartOptions}
@@ -170,7 +169,6 @@ function NewVsReturningWidget(props) {
                 </Typography>
               </div>
             ))}
-          <div className="h-136"></div>
         </div>
       </div>
     </Paper>

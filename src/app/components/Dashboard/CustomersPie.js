@@ -113,7 +113,6 @@ function Customers(props) {
       </div>
 
       <div className="flex flex-col flex-auto mt-24 h-192">
-        {/*<div className="flex flex-col flex-auto mt-24 h-320">*/}
         <ReactApexChart
           className="flex flex-auto items-center justify-center w-full h-full"
           options={chartOptions}
@@ -154,10 +153,8 @@ function Customers(props) {
               </Typography>
             </div>
           ))}
-          {/*<div className="h-96"></div>*/}
-          <div className="h-224"></div>
+          <div className="h-96"></div>
         </div>
-        <div className="h-4"></div>
       </div>
     </Paper>
   );
