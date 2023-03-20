@@ -52,6 +52,7 @@ const ClientDetails = () => {
   const [hide, setHide] = React.useState(true);
   const [clientType, setClientType] = React.useState(1); // 1 for client, 2 for sub-client
   const [sameAddress, setSameAddress] = React.useState(false);
+  const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
   const [uploadDocuments, setUploadDocuments] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -142,7 +143,11 @@ const ClientDetails = () => {
               info?.addresses["shipping"]?.country
           ) {
             setSameAddress(true);
-          } else setSameAddress(false);
+            setInitialSameAddressRef(true);
+          } else {
+            setInitialSameAddressRef(false);
+            setSameAddress(false);
+          }
           defaultValue.id = info?.organizationDetails?.id
             ? info.organizationDetails.id
             : "";
@@ -708,7 +713,7 @@ const ClientDetails = () => {
                       type="submit"
                       loading={loading}
                       loadingPosition="center"
-                      disabled={!isDirty}
+                      disabled={(!isDirty && sameAddress === initialSameAddressRef)}
                     >
                       {t("label:update")}
                     </LoadingButton>
