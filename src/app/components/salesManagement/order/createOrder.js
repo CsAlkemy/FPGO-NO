@@ -35,7 +35,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
@@ -79,6 +79,7 @@ const createOrder = () => {
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [recheckSchema, setRecheckSchema] = useState(true);
   const [itemLoader, setItemLoader] = useState(false);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
@@ -114,62 +115,6 @@ const createOrder = () => {
 
   const [taxes, setTaxes] = React.useState([]);
 
-  // const activeSchema = () => {
-  //   if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "sms" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderPrivateOrderBySmsPaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "sms"
-  //   )
-  //     return validateSchemaCreateOrderPrivate;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "invoice"
-  //   )
-  //     return validateSchemaCreateOrderPrivateInvoice;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "email" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderPrivateOrderByEmailPaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "private" &&
-  //     customData.orderBy === "email"
-  //   )
-  //     return validateSchemaCreateOrderPrivateOrderByEmail;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "email" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderCorporatePaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "email"
-  //   )
-  //     return validateSchemaCreateOrderCorporate;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "invoice"
-  //   )
-  //     return validateSchemaCreateOrderCorporateInvoice;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "sms" &&
-  //     customData.paymentMethod.includes("invoice")
-  //   )
-  //     return validateSchemaCreateOrderCorporateOrderBySmsPaymentMethodIncludesInvoice;
-  //   else if (
-  //     customData.customerType === "corporate" &&
-  //     customData.orderBy === "sms"
-  //   )
-  //     return validateSchemaCreateOrderCorporateOrderBySms;
-  // };
   const activeSchema = () => {
     if (
       (customData.orderBy === "sms" && customData.customerType === "private") ||
@@ -195,7 +140,20 @@ const createOrder = () => {
     )
       return validateSchemaCreateOrderCorporateOrderBySms;
   };
-  const schema = activeSchema();
+  let schema = activeSchema();
+  useEffect(() => {
+    schema = activeSchema();
+    if (recheckSchema) {
+      if (customData.customerType === "corporate") {
+        clearErrors(["pNumber", "orgID"]);
+        setValue("orgID", "", { shouldValidate: true });
+        setError("orgID", { type: "focus" }, { shouldFocus: true });
+      } else {
+        setValue("pNumber", "", { shouldValidate: true });
+        clearErrors(["pNumber", "orgID"]);
+      }
+    }
+  }, [customData.customerType]);
 
   const {
     control,
@@ -206,8 +164,12 @@ const createOrder = () => {
     watch,
     setValue,
     resetField,
+    trigger,
+    setError,
+    setFocus,
+    clearErrors,
   } = useForm({
-    mode: "onChange",
+    mode: "all",
     CreateOrderDefaultValue,
     // reValidateMode: "onChange",
     resolver: yupResolver(schema),
@@ -250,10 +212,14 @@ const createOrder = () => {
     createOrder(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate(`/sales/orders-list`);
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
     // .then((response) => {
@@ -731,7 +697,10 @@ const createOrder = () => {
                       </Button>
                     </div>
                     {addOrderIndex.map((index) => (
-                      <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
+                      <div
+                        className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
+                        key={`order:${index}`}
+                      >
                         <Controller
                           control={control}
                           required
@@ -1373,17 +1342,19 @@ const createOrder = () => {
                               disabled={disableRowIndexes.includes(index)}
                               fullWidth
                             />
-                          )}  PopperProps={{
-                          sx: {
-                            "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                              borderRadius: '8px',
-                              "&.Mui-selected": {
-                                backgroundColor: "#c9eee7",
-                                color: "#323434",
-                              }
-                            }
-                          }
-                        }}
+                          )}
+                          PopperProps={{
+                            sx: {
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                {
+                                  borderRadius: "8px",
+                                  "&.Mui-selected": {
+                                    backgroundColor: "#c9eee7",
+                                    color: "#323434",
+                                  },
+                                },
+                            },
+                          }}
                         />
                       )}
                     </div>
@@ -1438,14 +1409,15 @@ const createOrder = () => {
                           )}
                           PopperProps={{
                             sx: {
-                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                borderRadius: '8px',
-                                "&.Mui-selected": {
-                                  backgroundColor: "#c9eee7",
-                                  color: "#323434",
-                                }
-                              }
-                            }
+                              "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                {
+                                  borderRadius: "8px",
+                                  "&.Mui-selected": {
+                                    backgroundColor: "#c9eee7",
+                                    color: "#323434",
+                                  },
+                                },
+                            },
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -1456,8 +1428,10 @@ const createOrder = () => {
                               error={!!errors.orderDate}
                               helperText={
                                 errors?.orderDate?.message
-                                    ? t(`validation:${errors?.orderDate?.message}`)
-                                    : ""
+                                  ? t(
+                                      `validation:${errors?.orderDate?.message}`
+                                    )
+                                  : ""
                               }
                               sx={{
                                 svg: { color: "#69C77E" },
@@ -1499,14 +1473,15 @@ const createOrder = () => {
                               ampm={false}
                               PopperProps={{
                                 sx: {
-                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                    borderRadius: '8px',
-                                    "&.Mui-selected": {
-                                      backgroundColor: "#c9eee7",
-                                      color: "#323434",
-                                    }
-                                  }
-                                }
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                    {
+                                      borderRadius: "8px",
+                                      "&.Mui-selected": {
+                                        backgroundColor: "#c9eee7",
+                                        color: "#323434",
+                                      },
+                                    },
+                                },
                               }}
                               disableOpenPicker
                               value={
@@ -1550,8 +1525,10 @@ const createOrder = () => {
                                   error={!!errors.dueDatePaymentLink}
                                   helperText={
                                     errors?.dueDatePaymentLink?.message
-                                        ? t(`validation:${errors?.dueDatePaymentLink?.message}`)
-                                        : ""
+                                      ? t(
+                                          `validation:${errors?.dueDatePaymentLink?.message}`
+                                        )
+                                      : ""
                                   }
                                   sx={{
                                     svg: {
@@ -2050,12 +2027,16 @@ const createOrder = () => {
                                 fullWidth
                                 onChange={(_, data) => {
                                   if (data) {
+                                    clearErrors(["pNumber", "orgID"]);
+                                    setRecheckSchema(false);
                                     setCustomerSearchBy(undefined);
                                     setCustomerSearchBoxLength(0);
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
                                     setValue("customerName", data.name);
-                                    setValue("orgorPID", data.orgOrPNumber);
+                                    data.type === "Corporate"
+                                      ? setValue("orgID", data.orgOrPNumber)
+                                      : setValue("pNumber", data.orgOrPNumber);
                                     setValue("billingAddress", data.street);
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
@@ -2069,19 +2050,20 @@ const createOrder = () => {
                                           ...customData,
                                           customerType: "private",
                                         });
-                                    data.type === "Corporate"
-                                      ? setSelectedFromList("Corporate")
-                                      : setSelectedFromList("Private");
+                                    // data.type === "Corporate"
+                                    //   ? setSelectedFromList("Corporate")
+                                    //   : setSelectedFromList("Private");
                                   } else {
                                     setValue("primaryPhoneNumber", "");
                                     setValue("email", "");
                                     setValue("customerName", "");
-                                    setValue("orgorPID", "");
+                                    setValue("orgID", "");
+                                    setValue("pNumber", "");
                                     setValue("billingAddress", "");
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
                                     setValue("billingCountry", "");
-                                    setSelectedFromList(null);
+                                    // setSelectedFromList(null);
                                   }
                                   return onChange(data);
                                 }}
@@ -2166,7 +2148,9 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "private",
                                 });
-                                setValue("orgorPID", "");
+                                setRecheckSchema(true);
+                                // setValue("orgID", "");
+                                // setValue("pNumber", "");
                               }}
                             >
                               {t("label:private")}
@@ -2183,7 +2167,9 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "corporate",
                                 });
-                                setValue("orgorPID", "");
+                                setRecheckSchema(true);
+                                // setValue("orgID", "");
+                                // setValue("pNumber", "");
                               }}
                             >
                               {t("label:corporate")}
@@ -2220,11 +2206,11 @@ const createOrder = () => {
                                     value={field.value || ""}
                                   />
                                   <FormHelperText>
-                                    {
-                                    errors?.email?.message
-                                        ? t(`validation:${errors?.email?.message}`)
-                                        : ""
-                                  }
+                                    {errors?.email?.message
+                                      ? t(
+                                          `validation:${errors?.email?.message}`
+                                        )
+                                      : ""}
                                   </FormHelperText>
                                 </FormControl>
                               )}
@@ -2241,8 +2227,10 @@ const createOrder = () => {
                                   error={!!errors.email}
                                   helperText={
                                     errors?.email?.message
-                                        ? t(`validation:${errors?.email?.message}`)
-                                        : ""
+                                      ? t(
+                                          `validation:${errors?.email?.message}`
+                                        )
+                                      : ""
                                   }
                                   variant="outlined"
                                   fullWidth
@@ -2269,8 +2257,10 @@ const createOrder = () => {
                                     error={!!errors.customerName}
                                     helperText={
                                       errors?.customerName?.message
-                                          ? t(`validation:${errors?.customerName?.message}`)
-                                          : ""
+                                        ? t(
+                                            `validation:${errors?.customerName?.message}`
+                                          )
+                                        : ""
                                     }
                                     variant="outlined"
                                     fullWidth
@@ -2279,34 +2269,88 @@ const createOrder = () => {
                                   />
                                 )}
                               />
-                              <Controller
-                                name="orgorPID"
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    {...field}
-                                    label={
-                                      customData.customerType === "private"
-                                        ? t("label:pNumber")
-                                        : t("label:organizationId")
-                                    }
-                                    type="number"
-                                    autoComplete="off"
-                                    error={!!errors.orgorPID}
-                                    required={
-                                      customData.customerType === "corporate"
-                                    }
-                                    helperText={
-                                      errors?.orgorPID?.message
-                                          ? t(`validation:${errors?.orgorPID?.message}`)
+                              {customData.customerType === "corporate" && (
+                                <Controller
+                                  name="orgID"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:organizationId")}
+                                      type="number"
+                                      autoComplete="off"
+                                      error={!!errors.orgID}
+                                      required
+                                      helperText={
+                                        errors?.orgID?.message
+                                          ? t(
+                                              `validation:${errors?.orgID?.message}`
+                                            )
                                           : ""
-                                    }
-                                    variant="outlined"
-                                    fullWidth
-                                    value={field.value || ""}
-                                  />
-                                )}
-                              />
+                                      }
+                                      variant="outlined"
+                                      fullWidth
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+                              )}
+                              {customData.customerType === "private" && (
+                                <Controller
+                                  name="pNumber"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:pNumber")}
+                                      type="number"
+                                      autoComplete="off"
+                                      error={!!errors.pNumber}
+                                      helperText={
+                                        errors?.pNumber?.message
+                                          ? t(
+                                              `validation:${errors?.pNumber?.message}`
+                                            )
+                                          : ""
+                                      }
+                                      // ref={orgOrPNumberRef}
+                                      variant="outlined"
+                                      fullWidth
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+                              )}
+                              {/*<Controller*/}
+                              {/*  name="orgorPID"*/}
+                              {/*  control={control}*/}
+                              {/*  render={({ field }) => (*/}
+                              {/*    <TextField*/}
+                              {/*      {...field}*/}
+                              {/*      label={*/}
+                              {/*        customData.customerType === "private"*/}
+                              {/*          ? t("label:pNumber")*/}
+                              {/*          : t("label:organizationId")*/}
+                              {/*      }*/}
+                              {/*      type="number"*/}
+                              {/*      autoComplete="off"*/}
+                              {/*      error={!!errors.orgorPID}*/}
+                              {/*      required={*/}
+                              {/*        customData.customerType === "corporate"*/}
+                              {/*      }*/}
+                              {/*      helperText={*/}
+                              {/*        errors?.orgorPID?.message*/}
+                              {/*          ? t(*/}
+                              {/*              `validation:${errors?.orgorPID?.message}`*/}
+                              {/*            )*/}
+                              {/*          : ""*/}
+                              {/*      }*/}
+                              {/*      variant="outlined"*/}
+                              {/*      fullWidth*/}
+                              {/*      value={field.value || ""}*/}
+                              {/*    />*/}
+                              {/*  )}*/}
+                              {/*/>*/}
                             </div>
                           </div>
                           <div className="">
@@ -2324,10 +2368,11 @@ const createOrder = () => {
                                       error={!!errors.billingAddress}
                                       helperText={
                                         errors?.billingAddress?.message
-                                            ? t(`validation:${errors?.billingAddress?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.billingAddress?.message}`
+                                            )
+                                          : ""
                                       }
-
                                       variant="outlined"
                                       fullWidth
                                       inputlabelprops={{
@@ -2357,8 +2402,10 @@ const createOrder = () => {
                                       error={!!errors.billingZip}
                                       helperText={
                                         errors?.billingZip?.message
-                                            ? t(`validation:${errors?.billingZip?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.billingZip?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2389,8 +2436,10 @@ const createOrder = () => {
                                     error={!!errors.billingCity}
                                     helperText={
                                       errors?.billingCity?.message
-                                          ? t(`validation:${errors?.billingCity?.message}`)
-                                          : ""
+                                        ? t(
+                                            `validation:${errors?.billingCity?.message}`
+                                          )
+                                        : ""
                                     }
                                     variant="outlined"
                                     fullWidth
@@ -2446,11 +2495,11 @@ const createOrder = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
-                                      {
-                                      errors?.billingCity?.message
-                                          ? t(`validation:${errors?.billingCity?.message}`)
-                                          : ""
-                                    }
+                                      {errors?.billingCity?.message
+                                        ? t(
+                                            `validation:${errors?.billingCity?.message}`
+                                          )
+                                        : ""}
                                       {errors?.billingCountry?.message}
                                     </FormHelperText>
                                   </FormControl>
@@ -2519,8 +2568,10 @@ const createOrder = () => {
                                       error={!!errors.referenceNumber}
                                       helperText={
                                         errors?.referenceNumber?.message
-                                            ? t(`validation:${errors?.referenceNumber?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.referenceNumber?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2545,8 +2596,10 @@ const createOrder = () => {
                                       error={!!errors.customerReference}
                                       helperText={
                                         errors?.customerReference?.message
-                                            ? t(`validation:${errors?.customerReference?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.customerReference?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2570,8 +2623,10 @@ const createOrder = () => {
                                       error={!!errors.receiptNo}
                                       helperText={
                                         errors?.receiptNo?.message
-                                            ? t(`validation:${errors?.receiptNo?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.receiptNo?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2599,8 +2654,10 @@ const createOrder = () => {
                                       error={!!errors.customerNotes}
                                       helperText={
                                         errors?.customerNotes?.message
-                                            ? t(`validation:${errors?.customerNotes?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.customerNotes?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2621,10 +2678,11 @@ const createOrder = () => {
                                       error={!!errors.termsConditions}
                                       helperText={
                                         errors?.termsConditions?.message
-                                            ? t(`validation:${errors?.termsConditions?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.termsConditions?.message}`
+                                            )
+                                          : ""
                                       }
-
                                       variant="outlined"
                                       fullWidth
                                     />
@@ -2691,8 +2749,10 @@ const createOrder = () => {
                                       error={!!errors.internalReferenceNo}
                                       helperText={
                                         errors?.internalReferenceNo?.message
-                                            ? t(`validation:${errors?.internalReferenceNo?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.internalReferenceNo?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2718,8 +2778,10 @@ const createOrder = () => {
                                       error={!!errors.customerNotesInternal}
                                       helperText={
                                         errors?.customerNotesInternal?.message
-                                            ? t(`validation:${errors?.customerNotesInternal?.message}`)
-                                            : ""
+                                          ? t(
+                                              `validation:${errors?.customerNotesInternal?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
