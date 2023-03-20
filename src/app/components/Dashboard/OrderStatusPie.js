@@ -17,17 +17,23 @@ function OrderStatus(props) {
   const theme = useTheme();
   const [series] = useState([
     orderStatus?.paid ? orderStatus?.paid : 0,
-    orderStatus.sent ? orderStatus?.sent : 0,
-    orderStatus.invoiced ? orderStatus?.invoiced : 0,
-    orderStatus.debtCollection ? orderStatus?.debtCollection : 0,
+    orderStatus?.sent ? orderStatus?.sent : 0,
+    orderStatus?.invoiced ? orderStatus?.invoiced : 0,
+    orderStatus?.debtCollection ? orderStatus?.debtCollection : 0,
+    orderStatus?.partialRefunded ? orderStatus?.partialRefunded : 0,
+    orderStatus?.refundPending ? orderStatus?.refundPending : 0,
+    orderStatus?.refunded ? orderStatus?.refunded : 0,
   ]);
   const [chartSeries] = useState([
     Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
     Math.ceil((series[1] / series.reduce((a, b) => a + b, 0)) * 100),
     Math.ceil((series[2] / series.reduce((a, b) => a + b, 0)) * 100),
     Math.ceil((series[3] / series.reduce((a, b) => a + b, 0)) * 100),
+    Math.ceil((series[4] / series.reduce((a, b) => a + b, 0)) * 100),
+    Math.ceil((series[5] / series.reduce((a, b) => a + b, 0)) * 100),
+    Math.ceil((series[6] / series.reduce((a, b) => a + b, 0)) * 100),
   ]);
-  const [labels] = useState(["paid", "sent", "invoiced", "debtCollection"]);
+  const [labels] = useState(["paid", "sent", "invoiced", "debtCollection", "partialRefunded", "refundPending", "refunded"]);
 
   const chartOptions = {
     chart: {
@@ -45,9 +51,9 @@ function OrderStatus(props) {
         enabled: true,
       },
     },
-    colors: ["#3D388B", "#7067F0", "#524AC9", "#C6C2FF"],
+    colors: ["#3D388B", "#7067F0", "#524AC9", "#C6C2FF", "#865DFF", "#9C9EFE", "#645CBB"],
     labels:
-      chartSeries.toString() === [0, 0, 0, 0].toString()
+      chartSeries.toString() === [0, 0, 0, 0, 0, 0, 0].toString()
         ? [t("label:notFound")]
         : labels,
     plotOptions: {
@@ -120,7 +126,7 @@ function OrderStatus(props) {
           className="flex flex-auto items-center justify-center w-full h-full"
           options={chartOptions}
           series={
-            chartSeries.toString() === [0, 0, 0, 0].toString()
+            chartSeries.toString() === [0, 0, 0, 0, 0, 0,0].toString()
               ? [100]
               : chartSeries
           }
