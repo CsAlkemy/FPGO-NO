@@ -35,7 +35,7 @@ import {
 
 const createPrivateCustomer = () => {
   const { t } = useTranslation();
-  const [sameAddress, setSameAddress] = React.useState(false);
+  const [sameAddress, setSameAddress] = React.useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -361,6 +361,7 @@ const createPrivateCustomer = () => {
                                     onChange={() =>
                                       setSameAddress(!sameAddress)
                                     }
+                                    checked={sameAddress}
                                     name="jason"
                                     color="secondary"
                                   />

@@ -327,15 +327,22 @@ class CustomersService {
       !params.shippingZip &&
       !params.shippingCity &&
       !params.shippingCountry
-        ? null
+        ? addresses0
         : {
-          // countryCode: sh_countryCode,
-          // msisdn: sh_msisdn,
-          // email: params.shippingEmail ? params.shippingEmail : null,
-          street: params.shippingAddress ? params.shippingAddress : null,
-          zip: params.shippingZip ? params.shippingZip : null,
-          city: params.shippingCity ? params.shippingCity : null,
-          country: params.shippingCountry ? params.shippingCountry : null,
+          // street: params.shippingAddress ? params.shippingAddress : null,
+          // zip: params.shippingZip ? params.shippingZip : null,
+          // city: params.shippingCity ? params.shippingCity : null,
+          // country: params.shippingCountry ? params.shippingCountry : null,
+          street: params?.shippingAddress
+            ? params.shippingAddress
+            : params?.billingAddress,
+          zip: params?.shippingZip ? params.shippingZip : params?.billingZip,
+          city: params?.shippingCity
+            ? params.shippingCity
+            : params?.billingCity,
+          country: params?.shippingCountry
+            ? params.shippingCountry
+            : params?.billingCountry,
         };
     const mainAddress =
       !addresses0 && !addresses1
@@ -345,7 +352,10 @@ class CustomersService {
             billing: {
               ...addresses0,
             },
-            shipping: null,
+            // shipping: null,
+            shipping: {
+              ...addresses0,
+            },
           }
           : {
             // 0: addresses0,
@@ -633,7 +643,7 @@ class CustomersService {
 
   customersList = async (isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      if (isSkipIsAuthenticated){
+      if (isSkipIsAuthenticated) {
         const URL = `${EnvVariable.BASEURL}/customers/list`;
         return axios
           .get(URL)
@@ -683,7 +693,7 @@ class CustomersService {
               resolve(e.response.data);
             reject(e?.response?.data?.message);
           });
-      }else {
+      } else {
         return AuthService.axiosRequestHelper()
           .then((status) => {
             if (status) {
@@ -911,7 +921,7 @@ class CustomersService {
               name: params.customerName,
               countryCode: primaryPhoneNumber
                 ? "+" +
-                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+                  primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
                 : null,
               msisdn: primaryPhoneNumber
                 ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
@@ -967,7 +977,11 @@ class CustomersService {
     });
   };
 
-  prepareUpdateCorporateCustomerPayload = (params, sameAddress, detailsInfo)=> {
+  prepareUpdateCorporateCustomerPayload = (
+    params,
+    sameAddress,
+    detailsInfo
+  ) => {
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
       : null;
@@ -983,22 +997,19 @@ class CustomersService {
       ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
       : null;
     const countryCode = primaryPhoneNumber
-      ? "+" +
-      primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
       : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
     const bl_countryCode = billingPhoneNumber
-      ? "+" +
-      billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
+      ? "+" + billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
       : null;
     const sh_msisdn = shippingPhoneNumber
       ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
       : null;
     const sh_countryCode = shippingPhoneNumber
-      ? "+" +
-      shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+      ? "+" + shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
       : null;
     const ad_p_msisdn = phone ? phone[phone.length - 1].slice(2) : null;
     const ad_p_countryCode = phone
@@ -1013,20 +1024,20 @@ class CustomersService {
       !params.notes
         ? null
         : {
-          0: {
-            uuid:
-              detailsInfo?.additionalContactDetails &&
-              detailsInfo?.additionalContactDetails[0]?.uuid
-                ? detailsInfo?.additionalContactDetails[0]?.uuid
-                : null,
-            name: params.fullName,
-            email: params.email,
-            designation: params.designation,
-            countryCode: ad_p_countryCode,
-            msisdn: ad_p_msisdn,
-            note: params.notes,
-          },
-        };
+            0: {
+              uuid:
+                detailsInfo?.additionalContactDetails &&
+                detailsInfo?.additionalContactDetails[0]?.uuid
+                  ? detailsInfo?.additionalContactDetails[0]?.uuid
+                  : null,
+              name: params.fullName,
+              email: params.email,
+              designation: params.designation,
+              countryCode: ad_p_countryCode,
+              msisdn: ad_p_msisdn,
+              note: params.notes,
+            },
+          };
     const paramsContact = params.contact;
     if (params.contact.length) {
       for (let i = 0; i < params.contact.length; i++) {
@@ -1042,23 +1053,21 @@ class CustomersService {
     }
     const additionalData = paramsContact
       ? paramsContact.map((row) => {
-        const phone = row?.phone ? row.phone.split("+") : null;
-        const msisdn = phone
-          ? phone[phone.length - 1].slice(2)
-          : null;
-        const countryCode = phone
-          ? "+" + phone[phone.length - 1].slice(0, 2)
-          : null;
+          const phone = row?.phone ? row.phone.split("+") : null;
+          const msisdn = phone ? phone[phone.length - 1].slice(2) : null;
+          const countryCode = phone
+            ? "+" + phone[phone.length - 1].slice(0, 2)
+            : null;
 
-        return {
-          name: row?.fullName ? row?.fullName : "",
-          email: row?.email ? row?.email : "",
-          designation: row?.designation ? row?.designation : "",
-          countryCode,
-          msisdn,
-          note: row?.notes ? row?.notes : "",
-        };
-      })
+          return {
+            name: row?.fullName ? row?.fullName : "",
+            email: row?.email ? row?.email : "",
+            designation: row?.designation ? row?.designation : "",
+            countryCode,
+            msisdn,
+            note: row?.notes ? row?.notes : "",
+          };
+        })
       : null;
 
     if (additionalData.length) {
@@ -1078,14 +1087,11 @@ class CustomersService {
       countryCode: countryCode,
       msisdn: msisdn,
       email: params.orgEmail ? params.orgEmail : null,
-      organizationId: params.organizationID
-        ? params.organizationID
-        : null,
+      organizationId: params.organizationID ? params.organizationID : null,
       addresses: {
         billing: {
           uuid:
-            detailsInfo?.addresses &&
-            detailsInfo?.addresses?.billing?.uuid
+            detailsInfo?.addresses && detailsInfo?.addresses?.billing?.uuid
               ? detailsInfo?.addresses?.billing?.uuid
               : null,
           street: params.billingAddress,
@@ -1101,9 +1107,8 @@ class CustomersService {
     if (sameAddress) {
       data.addresses["shipping"] = {
         uuid:
-          detailsInfo?.addresses &&
-          detailsInfo?.addresses?.billing?.uuid
-            ? detailsInfo?.addresses?.billing?.uuid
+          detailsInfo?.addresses && detailsInfo?.addresses?.shipping?.uuid
+            ? detailsInfo?.addresses?.shipping?.uuid
             : null,
         street: params.billingAddress,
         zip: params.billingZip,
@@ -1113,8 +1118,7 @@ class CustomersService {
     } else if (!sameAddress) {
       data.addresses["shipping"] = {
         uuid:
-          detailsInfo?.addresses &&
-          detailsInfo?.addresses?.shipping?.uuid
+          detailsInfo?.addresses && detailsInfo?.addresses?.shipping?.uuid
             ? detailsInfo?.addresses?.shipping?.uuid
             : null,
         street: params.shippingAddress,
@@ -1124,10 +1128,8 @@ class CustomersService {
       };
     }
 
-    return  data;
-
-
-  }
+    return data;
+  };
 
   updateCorporateCustomerByUUID = async (params, sameAddress, detailsInfo) => {
     return new Promise((resolve, reject) => {
@@ -1150,21 +1152,21 @@ class CustomersService {
               : null;
             const countryCode = primaryPhoneNumber
               ? "+" +
-              primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
               : null;
             const bl_msisdn = billingPhoneNumber
               ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
               : null;
             const bl_countryCode = billingPhoneNumber
               ? "+" +
-              billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
+                billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const sh_msisdn = shippingPhoneNumber
               ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
               : null;
             const sh_countryCode = shippingPhoneNumber
               ? "+" +
-              shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+                shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const ad_p_msisdn = phone ? phone[phone.length - 1].slice(2) : null;
             const ad_p_countryCode = phone
@@ -1179,20 +1181,20 @@ class CustomersService {
               !params.notes
                 ? null
                 : {
-                  0: {
-                    uuid:
-                      detailsInfo?.additionalContactDetails &&
-                      detailsInfo?.additionalContactDetails[0]?.uuid
-                        ? detailsInfo?.additionalContactDetails[0]?.uuid
-                        : null,
-                    name: params.fullName,
-                    email: params.email,
-                    designation: params.designation,
-                    countryCode: ad_p_countryCode,
-                    msisdn: ad_p_msisdn,
-                    note: params.notes,
-                  },
-                };
+                    0: {
+                      uuid:
+                        detailsInfo?.additionalContactDetails &&
+                        detailsInfo?.additionalContactDetails[0]?.uuid
+                          ? detailsInfo?.additionalContactDetails[0]?.uuid
+                          : null,
+                      name: params.fullName,
+                      email: params.email,
+                      designation: params.designation,
+                      countryCode: ad_p_countryCode,
+                      msisdn: ad_p_msisdn,
+                      note: params.notes,
+                    },
+                  };
 
             const paramsContact = params.contact;
             if (params.contact.length) {
@@ -1210,23 +1212,23 @@ class CustomersService {
 
             const additionalData = paramsContact
               ? paramsContact.map((row) => {
-                const phone = row?.phone ? row.phone.split("+") : null;
-                const msisdn = phone
-                  ? phone[phone.length - 1].slice(2)
-                  : null;
-                const countryCode = phone
-                  ? "+" + phone[phone.length - 1].slice(0, 2)
-                  : null;
+                  const phone = row?.phone ? row.phone.split("+") : null;
+                  const msisdn = phone
+                    ? phone[phone.length - 1].slice(2)
+                    : null;
+                  const countryCode = phone
+                    ? "+" + phone[phone.length - 1].slice(0, 2)
+                    : null;
 
-                return {
-                  name: row?.fullName ? row?.fullName : "",
-                  email: row?.email ? row?.email : "",
-                  designation: row?.designation ? row?.designation : "",
-                  countryCode,
-                  msisdn,
-                  note: row?.notes ? row?.notes : "",
-                };
-              })
+                  return {
+                    name: row?.fullName ? row?.fullName : "",
+                    email: row?.email ? row?.email : "",
+                    designation: row?.designation ? row?.designation : "",
+                    countryCode,
+                    msisdn,
+                    note: row?.notes ? row?.notes : "",
+                  };
+                })
               : null;
 
             if (additionalData.length) {
@@ -1429,10 +1431,10 @@ class CustomersService {
                         row.status.toLowerCase() === "sent"
                           ? "Resend"
                           : row.status.toLowerCase() === "paid" ||
-                          row.status.toLowerCase() === "partial refunded"
-                          // || row.status.toLowerCase() === "invoiced"
-                            ? "Refund"
-                            : null,
+                            row.status.toLowerCase() === "partial refunded"
+                          ? // || row.status.toLowerCase() === "invoiced"
+                            "Refund"
+                          : null,
                       isCancel: row.status.toLowerCase() === "sent",
                     };
                   });
