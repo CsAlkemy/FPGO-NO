@@ -639,7 +639,7 @@ const no = {
     youMustEnterPassword: "Du må oppgi passord",
     enterZIP: "Skriv inn ZIP",
     youMustEnterYourAddress: "Du må oppgi adressen din",
-    "  youMustSelectYourCountry": "Du må velge land",
+    youMustSelectYourCountry: "Du må velge land",
     youMustEnterOrganizationID: "Du må oppgi organisasjons-ID",
     youMustEnterPhoneNumberAsSelectedOrderBySMS:
       "Du må oppgi telefonnummer som valgt Bestill via SMS",

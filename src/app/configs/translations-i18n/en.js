@@ -640,7 +640,7 @@ const en = {
     youMustEnterPassword: "You must enter password",
     enterZIP: "Enter ZIP",
     youMustEnterYourAddress: "You must enter your address",
-    "  youMustSelectYourCountry": "You must select your country",
+    youMustSelectYourCountry: "You must select your country",
     youMustEnterOrganizationID: "You must enter organization ID",
     youMustEnterPhoneNumberAsSelectedOrderBySMS:
       "You must enter phone number as selected Order by SMS",

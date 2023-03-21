@@ -97,7 +97,7 @@ class CustomersService {
           ? {
             // 0: addresses0,
             billing: { ...addresses0 },
-            shipping: null,
+            shipping: { ...addresses0 },
           }
           : {
             // 0: addresses0,
@@ -224,7 +224,7 @@ class CustomersService {
                   ? {
                     // 0: addresses0,
                     billing: { ...addresses0 },
-                    shipping: null,
+                    shipping: { ...addresses0 },
                   }
                   : {
                     // 0: addresses0,
