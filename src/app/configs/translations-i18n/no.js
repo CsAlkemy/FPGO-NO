@@ -192,6 +192,7 @@ const no = {
     userCount: "Antall brukere",
     nameOrganizationId: "Navn (Organisasjons-ID)",
     role: "Rolle",
+    passwordUpdatedSuccessfully: "Passord oppdatert med suksess",
     passwordRules:
       "Passordet må være mellom 8-15 sifre og inneholde både tall og bokstaver",
     forgotPassword: "Glemt Passord",
