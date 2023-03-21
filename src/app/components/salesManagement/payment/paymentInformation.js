@@ -531,6 +531,7 @@ const paymentInformation = () => {
                                         helperText={
                                           errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""
                                         }
+                                        required
                                         variant="outlined"
                                         fullWidth
                                         value={field.value || ""}
@@ -594,9 +595,10 @@ const paymentInformation = () => {
                                       //         touchedFields.billingAddress,
                                       // }}
                                       value={field.value || ""}
-                                      required={customData.paymentMethod.includes(
-                                        "invoice"
-                                      )}
+                                      // required={customData.paymentMethod.includes(
+                                      //   "invoice"
+                                      // )}
+                                      required
                                     />
                                   )}
                                 />
@@ -622,9 +624,10 @@ const paymentInformation = () => {
                                       //         touchedFields.billingZip,
                                       // }}
                                       value={field.value || ""}
-                                      required={customData.paymentMethod.includes(
-                                        "invoice"
-                                      )}
+                                      // required={customData.paymentMethod.includes(
+                                      //   "invoice"
+                                      // )}
+                                      required
                                     />
                                   )}
                                 />
@@ -645,9 +648,10 @@ const paymentInformation = () => {
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
-                                    required={customData.paymentMethod.includes(
-                                      "invoice"
-                                    )}
+                                    // required={customData.paymentMethod.includes(
+                                    //   "invoice"
+                                    // )}
+                                    required
                                   />
                                 )}
                               />
