@@ -467,12 +467,7 @@ const paymentInformation = () => {
                                         // enableSearch
                                         // autocompleteSearch
                                         countryCodeEditable={false}
-                                        specialLabel={
-                                          customData.customerType ===
-                                          "corporate"
-                                            ? t("label:phone")
-                                            : `${t("label:phone")}*`
-                                        }
+                                        specialLabel={ `${t("label:phone")}*`}
                                         // onBlur={handleOnBlurGetDialCode}
                                         // disabled={!customData.isNewCustomer}
                                         value={field.value || ""}
@@ -497,11 +492,12 @@ const paymentInformation = () => {
                                       helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
-                                      required={
-                                        customData.customerType ===
-                                          "corporate" ||
-                                        customData.orderBy === "email"
-                                      }
+                                      // required={
+                                      //   customData.customerType ===
+                                      //     "corporate" ||
+                                      //   customData.orderBy === "email"
+                                      // }
+                                      required
                                       value={field.value || ""}
                                     />
                                   )}
@@ -522,6 +518,7 @@ const paymentInformation = () => {
                                         helperText={
                                           errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""
                                         }
+                                        required
                                         variant="outlined"
                                         fullWidth
                                         value={field.value || ""}
@@ -542,10 +539,7 @@ const paymentInformation = () => {
                                         type="number"
                                         autoComplete="off"
                                         error={!!errors.orgIdOrPNumber}
-                                        required={
-                                          customData.customerType ===
-                                          "corporate"
-                                        }
+                                        required
                                         helperText={
                                           errors?.orgIdOrPNumber?.message ? t(`validation:${errors?.orgIdOrPNumber?.message}`) : ""
                                         }
@@ -585,9 +579,7 @@ const paymentInformation = () => {
                                       //         touchedFields.billingAddress,
                                       // }}
                                       value={field.value || ""}
-                                      required={customData.paymentMethod.includes(
-                                        "invoice"
-                                      )}
+                                      required
                                     />
                                   )}
                                 />
@@ -613,9 +605,7 @@ const paymentInformation = () => {
                                       //         touchedFields.billingZip,
                                       // }}
                                       value={field.value || ""}
-                                      required={customData.paymentMethod.includes(
-                                        "invoice"
-                                      )}
+                                      required
                                     />
                                   )}
                                 />
@@ -636,9 +626,7 @@ const paymentInformation = () => {
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
-                                    required={customData.paymentMethod.includes(
-                                      "invoice"
-                                    )}
+                                    required
                                   />
                                 )}
                               />
