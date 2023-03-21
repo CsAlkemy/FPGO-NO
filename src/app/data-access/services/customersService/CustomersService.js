@@ -224,7 +224,7 @@ class CustomersService {
                   ? {
                     // 0: addresses0,
                     billing: { ...addresses0 },
-                    shipping: { ...addresses1 },
+                    shipping: { ...addresses0 },
                   }
                   : {
                     // 0: addresses0,
