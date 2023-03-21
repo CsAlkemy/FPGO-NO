@@ -166,6 +166,7 @@ const en = {
     noOfProducts: "No. of Products",
     createCategory: "Create Category",
     assignToProducts: "Assign To Products",
+    passwordUpdatedSuccessfully: "Password Updated Successfully",
     searchProductToAssignThisCategory: "Search Product To Assign This Category",
     date: "Date",
     probabilityToDefault: "Probability To Default",
