@@ -46,6 +46,7 @@ const paymentInformation = () => {
   const [creditCheckMessage, setCreditCheckMessage] = useState("");
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
+  const [isCreditChecked, setIsCreditChecked] = React.useState(false);
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -137,6 +138,11 @@ const paymentInformation = () => {
           // navigate("/payment/checkout/status");
           // navigate(`${response?.data?.paymentUrl}`);
           window.location.href = `${response?.data?.paymentUrl}`;
+        } else if(
+          response?.status_code === 202 &&
+          !response?.is_data
+        ){
+          navigate(`/order/details/${orderUuid}/confirmation`)
         }
       })
       .catch((e) => {
@@ -248,6 +254,7 @@ const paymentInformation = () => {
         setIsApproved(true);
         setCreditCheckMessage("Credit check was successful");
         setApiLoading(false);
+        setIsCreditChecked(true)
       } else {
         setIsApproved(false);
         setCreditCheckMessage("Credit check was declined");
@@ -467,12 +474,13 @@ const paymentInformation = () => {
                                         // enableSearch
                                         // autocompleteSearch
                                         countryCodeEditable={false}
-                                        specialLabel={
-                                          customData.customerType ===
-                                          "corporate"
-                                            ? t("label:phone")
-                                            : `${t("label:phone")}*`
-                                        }
+                                        // specialLabel={
+                                        //   customData.customerType ===
+                                        //   "corporate"
+                                        //     ? t("label:phone")
+                                        //     : `${t("label:phone")}*`
+                                        // }
+                                        specialLabel={`${t("label:phone")}*`}
                                         // onBlur={handleOnBlurGetDialCode}
                                         // disabled={!customData.isNewCustomer}
                                         value={field.value || ""}
@@ -497,11 +505,12 @@ const paymentInformation = () => {
                                       helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
-                                      required={
-                                        customData.customerType ===
-                                          "corporate" ||
-                                        customData.orderBy === "email"
-                                      }
+                                      // required={
+                                      //   customData.customerType ===
+                                      //     "corporate" ||
+                                      //   customData.orderBy === "email"
+                                      // }
+                                      required
                                       value={field.value || ""}
                                     />
                                   )}
@@ -934,6 +943,8 @@ const paymentInformation = () => {
                       isCeditCheck: false,
                     })
                   }
+
+                  disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
                 >
                   {t("label:payNow")}
                 </Button>
@@ -963,6 +974,7 @@ const paymentInformation = () => {
                     isCeditCheck: false,
                   })
                 }
+                disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
               >
                 {t("label:payNow")}
               </Button>
