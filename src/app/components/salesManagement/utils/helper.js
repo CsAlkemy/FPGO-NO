@@ -330,8 +330,9 @@ export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
     .required("youMustEnterOrganizationID")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "pNumberMustBeNumber")
-    .max(9, "pNumberMustBeNumber"),
+    .min(9, "mustBeExactlyNineNumbers")
+    .max(9, "mustBeExactlyNineNumbers"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
@@ -354,6 +355,7 @@ export const validateSchemaPaymentCheckout = yup.object().shape({
     .transform((o, c) => (o === "" ? null : c))
     .min(11, "mustBeExactlyElevenNumbers")
     .max(11, "mustBeExactlyElevenNumbers"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
