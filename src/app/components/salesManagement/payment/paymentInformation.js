@@ -474,12 +474,13 @@ const paymentInformation = () => {
                                         // enableSearch
                                         // autocompleteSearch
                                         countryCodeEditable={false}
-                                        specialLabel={
-                                          customData.customerType ===
-                                          "corporate"
-                                            ? t("label:phone")
-                                            : `${t("label:phone")}*`
-                                        }
+                                        // specialLabel={
+                                        //   customData.customerType ===
+                                        //   "corporate"
+                                        //     ? t("label:phone")
+                                        //     : `${t("label:phone")}*`
+                                        // }
+                                        specialLabel={`${t("label:phone")}*`}
                                         // onBlur={handleOnBlurGetDialCode}
                                         // disabled={!customData.isNewCustomer}
                                         value={field.value || ""}
@@ -504,11 +505,12 @@ const paymentInformation = () => {
                                       helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
-                                      required={
-                                        customData.customerType ===
-                                          "corporate" ||
-                                        customData.orderBy === "email"
-                                      }
+                                      // required={
+                                      //   customData.customerType ===
+                                      //     "corporate" ||
+                                      //   customData.orderBy === "email"
+                                      // }
+                                      required
                                       value={field.value || ""}
                                     />
                                   )}

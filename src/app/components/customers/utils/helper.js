@@ -16,6 +16,7 @@ export const validateSchema2 = yup.object().shape({
 
 });
 export const validateSchemaUpdatePrivateCustomer = yup.object().shape({
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
   customerEmail: yup.string().required("youMustEnterAEmail").email("youMustEnterAValidEmail"),
   pNumber: yup
     .string()
@@ -104,7 +105,7 @@ export const CorporateDetailsDefaultValue = {
 export const PrivateDefaultValue = {
   customerID: "",
 
-  primaryPhoneNumber: "47",
+  primaryPhoneNumber: "",
   customerName: "",
   customerEmail: "",
   pNumber: "",

@@ -2197,11 +2197,12 @@ const createOrder = () => {
                                     enableSearch
                                     autocompleteSearch
                                     countryCodeEditable={false}
-                                    specialLabel={
-                                      customData.customerType === "corporate"
-                                        ? t("label:phone")
-                                        : `${t("label:phone")}*`
-                                    }
+                                    // specialLabel={
+                                    //   customData.customerType === "corporate"
+                                    //     ? t("label:phone")
+                                    //     : `${t("label:phone")}*`
+                                    // }
+                                    specialLabel={`${t("label:phone")}*`}
                                     // onBlur={handleOnBlurGetDialCode}
                                     value={field.value || ""}
                                   />
@@ -2234,10 +2235,11 @@ const createOrder = () => {
                                   }
                                   variant="outlined"
                                   fullWidth
-                                  required={
-                                    customData.customerType === "corporate" ||
-                                    customData.orderBy === "email"
-                                  }
+                                  // required={
+                                  //   customData.customerType === "corporate" ||
+                                  //   customData.orderBy === "email"
+                                  // }
+                                  required
                                   value={field.value || ""}
                                 />
                               )}

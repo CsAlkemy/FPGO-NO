@@ -163,6 +163,7 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
     .transform((o, c) => (o === "" ? null : c))
     .min(9, "mustBeExactlyNineNumbers")
     .max(9, "mustBeExactlyNineNumbers"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
   email: yup
     .string()
     .required("You must enter email address")
