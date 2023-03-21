@@ -333,7 +333,8 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                         // onBlur={handleOnBlurGetDialCode}
                                       />
                                       <FormHelperText>
-                                        {errors?.primaryPhoneNumber?.message}
+                                        {/*{errors?.primaryPhoneNumber?.message}*/}
+                                        {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
