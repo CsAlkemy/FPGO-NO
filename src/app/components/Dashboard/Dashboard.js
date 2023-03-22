@@ -1,13 +1,13 @@
-import {DesktopDatePicker} from "@mui/lab";
-import {Backdrop, Button, CircularProgress, TextField} from "@mui/material";
-import {Controller, useForm} from "react-hook-form";
-import {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import { DesktopDatePicker } from "@mui/lab";
+import { Backdrop, Button, CircularProgress, TextField } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import PaymentMethodsPie from "./PaymentMethodsPie";
 import OrderStatusPie from "./OrderStatusPie";
 import CustomersPie from "./CustomersPie";
 import RevenuePerDay from "./RevenuePerDayChart";
-import {StatTiles} from "./StatTiles";
+import { StatTiles } from "./StatTiles";
 import TopCustomers from "./TopCustomers";
 import DashboardService from "../../data-access/services/dashboard/DashboardService";
 
@@ -56,7 +56,25 @@ export default function Dashboard() {
       })
         .then((response) => {
           if (response?.status_code === 200 && response?.is_data) {
-            setAnalyticsData(response?.data);
+            let responseData = response?.data;
+            responseData = {
+              ...responseData,
+              orderStatus: {
+                ...responseData.orderStatus,
+                refunded:
+                  responseData?.orderStatus?.refunded &&
+                  responseData?.orderStatus?.partialRefunded
+                    ? parseInt(responseData?.orderStatus?.refunded) +
+                      parseInt(responseData?.orderStatus?.partialRefunded)
+                    : responseData?.orderStatus?.refunded
+                    ? responseData?.orderStatus?.refunded
+                    : responseData?.orderStatus?.partialRefunded
+                    ? responseData?.orderStatus?.partialRefunded
+                    : 0,
+              },
+            };
+            // setAnalyticsData(response?.data);
+            setAnalyticsData(responseData);
           }
           setIsLoading(false);
         })
@@ -77,7 +95,25 @@ export default function Dashboard() {
     })
       .then((response) => {
         if (response?.status_code === 200 && response?.is_data) {
-          setAnalyticsData(response?.data);
+          let responseData = response?.data;
+          responseData = {
+            ...responseData,
+            orderStatus: {
+              ...responseData.orderStatus,
+              refunded:
+                responseData?.orderStatus?.refunded &&
+                responseData?.orderStatus?.partialRefunded
+                  ? parseInt(responseData?.orderStatus?.refunded) +
+                  parseInt(responseData?.orderStatus?.partialRefunded)
+                  : responseData?.orderStatus?.refunded
+                    ? responseData?.orderStatus?.refunded
+                    : responseData?.orderStatus?.partialRefunded
+                      ? responseData?.orderStatus?.partialRefunded
+                      : 0,
+            },
+          };
+          // setAnalyticsData(response?.data);
+          setAnalyticsData(responseData);
         }
         setIsLoading(false);
       })
@@ -130,14 +166,15 @@ export default function Dashboard() {
                       }}
                       PopperProps={{
                         sx: {
-                          "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                            borderRadius: '8px',
-                            "&.Mui-selected": {
-                              backgroundColor: "#c9eee7",
-                              color: "#323434",
-                            }
-                          }
-                        }
+                          "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                            {
+                              borderRadius: "8px",
+                              "&.Mui-selected": {
+                                backgroundColor: "#c9eee7",
+                                color: "#323434",
+                              },
+                            },
+                        },
                       }}
                       disableFuture
                       shouldDisableDate={disableAfterOfEndDate}
@@ -164,14 +201,15 @@ export default function Dashboard() {
                       }}
                       PopperProps={{
                         sx: {
-                          "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                            borderRadius: '8px',
-                            "&.Mui-selected": {
-                              backgroundColor: "#c9eee7",
-                              color: "#323434",
-                            }
-                          }
-                        }
+                          "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                            {
+                              borderRadius: "8px",
+                              "&.Mui-selected": {
+                                backgroundColor: "#c9eee7",
+                                color: "#323434",
+                              },
+                            },
+                        },
                       }}
                       disableFuture
                       shouldDisableDate={disableBeforeOfStartDate}
@@ -199,7 +237,7 @@ export default function Dashboard() {
             <RevenuePerDay datas={analyticsData} />
           </div>
           <div className="my-20">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-20 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-20 w-full">
               <PaymentMethodsPie datas={analyticsData} />{" "}
               <OrderStatusPie datas={analyticsData} />{" "}
               <CustomersPie datas={analyticsData} />
