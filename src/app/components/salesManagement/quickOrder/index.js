@@ -18,7 +18,7 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
-import { defaultValueCreateProduct } from "../../products/utils/helper";
+import {quickOrderDefaultValue, quickOrderValidation} from "../utils/helper";
 import InfoIcon from "@mui/icons-material/Info";
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
@@ -27,6 +27,8 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import CharCount from "../../common/charCount";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import SendInvoiceModal from "./sendInvoiceModal";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 const customerData = [
   { name: "The Shawshank Redemption", phone: "+47 1994" },
@@ -66,7 +68,6 @@ const createProducts = () => {
   };
   const onDelete = (index) => {
     setItemLoader(true);
-    //resetField(``)
     setValue(`order[${index}].productName`, "");
     setValue(`order[${index}].productID`, "");
     setValue(`order[${index}].quantity`, "");
@@ -81,14 +82,11 @@ const createProducts = () => {
       setItemLoader(false);
     }, [500]);
   };
-  const disableCurrentProductRow = (index) => {
-    setDisableRowIndexes([...disableRowIndexes, index]);
-  };
   const enableCurrentProductRow = (ind) => {
     setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
   };
-
   const [open, setOpen] = React.useState(false);
+  const [editOpen, setEditOpen] = React.useState(false);
 
   const {
     control,
@@ -100,8 +98,8 @@ const createProducts = () => {
     resetField,
   } = useForm({
     mode: "onChange",
-    // defaultValueCreateProduct,
-    // resolver: yupResolver(validateSchemaProductCreate),
+    quickOrderDefaultValue,
+    resolver: yupResolver(quickOrderValidation),
   });
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
@@ -113,6 +111,7 @@ const createProducts = () => {
   const onSubmit = (values) => {
     setLoading(true);
     console.log(values);
+    setLoading(false)
   };
   const handleDelete = () => {
     console.info("Clicked.");
@@ -147,7 +146,7 @@ const createProducts = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
-                  disabled={!isValid}
+                  // disabled={!isValid}
                 >
                   {t("label:sendOrder")}
                 </LoadingButton>
@@ -956,7 +955,7 @@ const createProducts = () => {
                         )}
                       </div>
                       <div className="my-auto">
-                        <div className="body3 text-right">
+                        <div className="body3 text-right" onClick={()=>setEditOpen(true)}>
                           {t("label:nok")} 45544
                           {/*{ThousandSeparator(productWiseTotal(index))}*/}
                         </div>
@@ -1101,12 +1100,14 @@ const createProducts = () => {
       </div>
       <DiscardConfirmModal
         open={open}
-        defaultValue={defaultValueCreateProduct}
         setOpen={setOpen}
         reset={reset}
         title={t("label:areYouSureThatYouWouldLikeToDiscardTheProcess")}
         subTitle={t("label:onceConfirmedThisActionCannotBeReverted")}
         route={-1}
+      />
+      <SendInvoiceModal
+          editOpen={editOpen} setEditOpen={setEditOpen}
       />
     </div>
   );
