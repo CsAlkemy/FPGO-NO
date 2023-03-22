@@ -1,4 +1,4 @@
-import {DesktopDatePicker, LoadingButton} from "@mui/lab";
+import { DesktopDatePicker, LoadingButton } from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
@@ -14,17 +14,19 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, {useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {useTranslation} from "react-i18next";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
-import {defaultValueCreateProduct} from "../../products/utils/helper";
+import { defaultValueCreateProduct } from "../../products/utils/helper";
 import InfoIcon from "@mui/icons-material/Info";
-import {IoMdAdd} from "react-icons/io";
-import {FiMinus} from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
+import { FiMinus } from "react-icons/fi";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import CharCount from "../../common/charCount";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 
 const customerData = [
   { name: "The Shawshank Redemption", phone: "+47 1994" },
@@ -112,13 +114,16 @@ const createProducts = () => {
     setLoading(true);
     console.log(values);
   };
+  const handleDelete = () => {
+    console.info("Clicked.");
+  };
 
   return (
     <div className="create-product-container">
       <div className="inside-div-product">
         <div className="rounded-sm bg-white">
           <form
-            name="createProductForm"
+            name="quickOrderForm"
             noValidate
             onSubmit={handleSubmit(onSubmit)}
           >
@@ -187,6 +192,27 @@ const createProducts = () => {
                   Multiple customers can be added
                 </span>
               </div>
+              <div className="my-20">
+                <Stack direction="row" spacing={1}>
+                  <Chip
+                    label="Arlene McCoy"
+                    className="body3"
+                    onDelete={handleDelete}
+                    sx={{
+                      backgroundColor: "#E6F3F7",
+                    }}
+                  />
+                  <Chip
+                    label="+47 474 34 668"
+                    className="body3"
+                    onDelete={handleDelete}
+                    sx={{
+                      backgroundColor: "#EFEFEF",
+                    }}
+                  />
+                </Stack>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-4 gap-20 my-32">
                 <Controller
                   name="orderDate"
