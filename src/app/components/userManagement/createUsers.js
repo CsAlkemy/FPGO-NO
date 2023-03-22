@@ -220,7 +220,8 @@ export default function CreateUsers() {
                     type="submit"
                     loading={loading}
                     loadingPosition="center"
-                    disabled={!isValid || watch("phoneNumber").length <= 2}
+                    // disabled={!isValid || watch("phoneNumber").length <= 2}
+                    disabled={!isValid}
                   >
                     {t("label:createAccount")}
                   </LoadingButton>
@@ -332,12 +333,12 @@ export default function CreateUsers() {
                                     `validation:${errors?.phoneNumber?.message}`
                                   )
                                 : ""}
-                              {watch("phoneNumber").length === 2 && (
-                                <span className="text-red-500">
-                                  {" "}
-                                  {t("validation:youMustEnterYourPhoneNumber")}
-                                </span>
-                              )}
+                              {/*{watch("phoneNumber").length === 2 && (*/}
+                              {/*  <span className="text-red-500">*/}
+                              {/*    {" "}*/}
+                              {/*    {t("validation:youMustEnterYourPhoneNumber")}*/}
+                              {/*  </span>*/}
+                              {/*)}*/}
                             </FormHelperText>
                           </FormControl>
                         )}
