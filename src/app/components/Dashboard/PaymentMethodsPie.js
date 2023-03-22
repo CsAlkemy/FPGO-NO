@@ -49,7 +49,7 @@ function NewVsReturningWidget(props) {
       },
       fontFamily: "inherit",
       foreColor: "inherit",
-      height: "100%",
+      height: "80%",
       type: "donut",
       sparkline: {
         enabled: true,
