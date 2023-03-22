@@ -119,10 +119,6 @@ function OrderStatus(props) {
     return null;
   }
 
-  console.log("notFound : ", chartSeries.toString() === [0, 0, 0, 0, 0].toString());
-  console.log("notFound 0 : ", chartSeries);
-  console.log("notFound 1 : ", chartSeries.toString());
-  console.log("notFound 2 : ",  [0, 0, 0, 0, 0].toString());
   return (
     <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden p-24">
       <div className="flex flex-row items-start justify-between">
