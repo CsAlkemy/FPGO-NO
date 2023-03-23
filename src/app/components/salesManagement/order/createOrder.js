@@ -141,19 +141,19 @@ const createOrder = () => {
       return validateSchemaCreateOrderCorporateOrderBySms;
   };
   let schema = activeSchema();
-  useEffect(()=> {
-    schema = activeSchema()
-    if (recheckSchema){
-      if(customData.customerType === "corporate"){
-        clearErrors(["pNumber","orgID"])
-        setValue("orgID","", {shouldValidate: true})
+  useEffect(() => {
+    schema = activeSchema();
+    if (recheckSchema) {
+      if (customData.customerType === "corporate") {
+        clearErrors(["pNumber", "orgID"]);
+        setValue("orgID", "", { shouldValidate: true });
         setError("orgID", { type: "focus" }, { shouldFocus: true });
-      }else {
-        setValue("pNumber","",{shouldValidate: true})
-        clearErrors(["pNumber","orgID"])
+      } else {
+        setValue("pNumber", "", { shouldValidate: true });
+        clearErrors(["pNumber", "orgID"]);
       }
     }
-  },[customData.customerType])
+  }, [customData.customerType]);
 
   const {
     control,
@@ -168,7 +168,7 @@ const createOrder = () => {
     trigger,
     setError,
     setFocus,
-    clearErrors
+    clearErrors,
   } = useForm({
     mode: "all",
     CreateOrderDefaultValue,
@@ -1137,8 +1137,17 @@ const createOrder = () => {
                                     `order[${index}].productID`,
                                     data.id
                                   );
-                                  const preparedPrice = data.price.toString().includes(".") ? `${data.price.toString().split(".")[0]},${data.price.toString().split(".")[1]}` : data.price;
-                                  setValue(`order[${index}].rate`, preparedPrice);
+                                  const preparedPrice = data.price
+                                    .toString()
+                                    .includes(".")
+                                    ? `${data.price.toString().split(".")[0]},${
+                                        data.price.toString().split(".")[1]
+                                      }`
+                                    : data.price;
+                                  setValue(
+                                    `order[${index}].rate`,
+                                    preparedPrice
+                                  );
                                   setValue(`order[${index}].tax`, data.tax);
                                   disableCurrentProductRow(index);
 
@@ -2056,8 +2065,8 @@ const createOrder = () => {
                                 fullWidth
                                 onChange={(_, data) => {
                                   if (data) {
-                                    clearErrors(["pNumber","orgID"])
-                                    setRecheckSchema(false)
+                                    clearErrors(["pNumber", "orgID"]);
+                                    setRecheckSchema(false);
                                     setCustomerSearchBy(undefined);
                                     setCustomerSearchBoxLength(0);
                                     setValue("primaryPhoneNumber", data.phone);
@@ -2065,7 +2074,7 @@ const createOrder = () => {
                                     setValue("customerName", data.name);
                                     data.type === "Corporate"
                                       ? setValue("orgID", data.orgOrPNumber)
-                                      : setValue("pNumber", data.orgOrPNumber)
+                                      : setValue("pNumber", data.orgOrPNumber);
                                     setValue("billingAddress", data.street);
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
@@ -2177,7 +2186,7 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "private",
                                 });
-                                setRecheckSchema(true)
+                                setRecheckSchema(true);
                                 // setValue("orgID", "");
                                 // setValue("pNumber", "");
                               }}
@@ -2196,7 +2205,7 @@ const createOrder = () => {
                                   ...customData,
                                   customerType: "corporate",
                                 });
-                                setRecheckSchema(true)
+                                setRecheckSchema(true);
                                 // setValue("orgID", "");
                                 // setValue("pNumber", "");
                               }}
@@ -2343,37 +2352,6 @@ const createOrder = () => {
                                   )}
                                 />
                               )}
-                              {/*<Controller*/}
-                              {/*  name="orgorPID"*/}
-                              {/*  control={control}*/}
-                              {/*  render={({ field }) => (*/}
-                              {/*    <TextField*/}
-                              {/*      {...field}*/}
-                              {/*      label={*/}
-                              {/*        customData.customerType === "private"*/}
-                              {/*          ? t("label:pNumber")*/}
-                              {/*          : t("label:organizationId")*/}
-                              {/*      }*/}
-                              {/*      type="number"*/}
-                              {/*      autoComplete="off"*/}
-                              {/*      error={!!errors.orgorPID}*/}
-                              {/*      required={*/}
-                              {/*        customData.customerType === "corporate"*/}
-                              {/*      }*/}
-                              {/*      helperText={*/}
-                              {/*        errors?.orgorPID?.message*/}
-                              {/*          ? t(*/}
-                              {/*            `validation:${errors?.orgorPID?.message}`*/}
-                              {/*          )*/}
-                              {/*          : ""*/}
-                              {/*      }*/}
-                              {/*      ref={orgOrPNumberRef}*/}
-                              {/*      variant="outlined"*/}
-                              {/*      fullWidth*/}
-                              {/*      value={field.value || ""}*/}
-                              {/*    />*/}
-                              {/*  )}*/}
-                              {/*/>*/}
                             </div>
                           </div>
                           <div className="">

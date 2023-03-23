@@ -105,10 +105,148 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
       CustomersService.getCustomerDetailsByUUID(queryParams.id)
         .then((response) => {
           setInfo(response?.data);
+          CorporateDetailsDefaultValue.customerID = info?.uuid ? info.uuid : "";
+          CorporateDetailsDefaultValue.organizationID = info?.organizationId
+            ? info.organizationId
+            : "";
+          CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
+          CorporateDetailsDefaultValue.OrganizationName = info?.name
+            ? info.name
+            : "";
+          CorporateDetailsDefaultValue.primaryPhoneNumber =
+            info?.countryCode && info?.msisdn
+              ? info.countryCode + info.msisdn
+              : "";
+
+          CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
+            ?.street
+            ? info.addresses.billing.street
+            : "";
+          CorporateDetailsDefaultValue.billingZip = info?.addresses?.billing
+            ?.zip
+            ? info.addresses.billing.zip
+            : "";
+          CorporateDetailsDefaultValue.billingCity = info?.addresses?.billing
+            ?.city
+            ? info.addresses.billing.city
+            : "";
+          CorporateDetailsDefaultValue.billingCountry = info?.addresses?.billing
+            ?.country
+            ? info.addresses.billing.country
+            : "";
+
+          CorporateDetailsDefaultValue.shippingAddress = info?.addresses
+            ?.shipping?.street
+            ? info.addresses.shipping?.street
+            : "";
+          CorporateDetailsDefaultValue.shippingZip = info?.addresses?.shipping
+            ?.zip
+            ? info.addresses.shipping?.zip
+            : "";
+          CorporateDetailsDefaultValue.shippingCity = info?.addresses?.shipping
+            ?.city
+            ? info.addresses.shipping?.city
+            : "";
+          CorporateDetailsDefaultValue.shippingCountry = info?.addresses
+            ?.shipping?.country
+            ? info.addresses.shipping?.country
+            : "";
+
+          if (
+            info?.additionalContactDetails &&
+            info?.additionalContactDetails.length
+          ) {
+            if (
+              info?.additionalContactDetails &&
+              info?.additionalContactDetails.length >= 2
+            ) {
+              // for (let i=0; i<info?.additionalContactDetails.length -1; i++){
+              //   addNewContact()
+              // }
+              // ADC
+              setAddContactIndex(
+                addContactIndex.filter(
+                  (item, index) =>
+                    item < info?.additionalContactDetails.length - 1
+                )
+              );
+            }
+            CorporateDetailsDefaultValue.fullName = info
+              ?.additionalContactDetails[0]?.name
+              ? info.additionalContactDetails[0].name
+              : "";
+            CorporateDetailsDefaultValue.designation = info
+              ?.additionalContactDetails[0]?.designation
+              ? info.additionalContactDetails[0].designation
+              : "";
+            CorporateDetailsDefaultValue.phone =
+              info?.additionalContactDetails[0]?.countryCode &&
+              info.additionalContactDetails[0].msisdn
+                ? info.additionalContactDetails[0].countryCode +
+                  info.additionalContactDetails[0].msisdn
+                : "";
+            CorporateDetailsDefaultValue.email = info
+              ?.additionalContactDetails[0]?.email
+              ? info.additionalContactDetails[0].email
+              : "";
+            CorporateDetailsDefaultValue.notes = info
+              ?.additionalContactDetails[0]?.notes
+              ? info.additionalContactDetails[0].notes
+              : "";
+          } else setAddContactIndex([]);
+          reset({ ...CorporateDetailsDefaultValue });
+          // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
+
+          if (
+            info?.additionalContactDetails &&
+            info?.additionalContactDetails.length
+          ) {
+            for (let i = 0; i < info.additionalContactDetails.length - 1; i++) {
+              setValue(
+                `contact[${i}].fullName`,
+                info.additionalContactDetails[`${i + 1}`].name
+              );
+              setValue(
+                `contact[${i}].designation`,
+                info.additionalContactDetails[`${i + 1}`].designation
+              );
+              setValue(
+                `contact[${i}].phone`,
+                info.additionalContactDetails[`${i + 1}`].countryCode +
+                  info.additionalContactDetails[`${i}`].msisdn
+              );
+              setValue(
+                `contact[${i}].notes`,
+                info.additionalContactDetails[`${i + 1}`].notes
+              );
+              setValue(
+                `contact[${i}].email`,
+                info.additionalContactDetails[`${i + 1}`].email
+              );
+            }
+          }
+
+          if (
+            info?.addresses &&
+            info?.addresses?.billing?.street ===
+              info?.addresses["shipping"]?.street &&
+            info?.addresses?.billing?.zip ===
+              info?.addresses["shipping"]?.zip &&
+            info?.addresses?.billing?.city ===
+              info?.addresses["shipping"]?.city &&
+            info?.addresses?.billing?.country ===
+              info?.addresses["shipping"]?.country
+          ) {
+            setSameAddress(true);
+            setInitialSameAddressRef(true);
+          } else {
+            setInitialSameAddressRef(false);
+            setSameAddress(false);
+          }
+
           setIsLoading(false);
         })
         .catch((e) => {
-          setIsLoading(false);
           navigate("/customers/customers-list");
           enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });

@@ -101,9 +101,7 @@ const LoginPage = () => {
             variant: "success",
           });
         } else {
-          enqueueSnackbar(t(`message:${response[0].message}`), {
-            variant: "error",
-          });
+          enqueueSnackbar(t(`message:${response[0].message}`), { variant: "error" });
           setLoading(false);
         }
       })

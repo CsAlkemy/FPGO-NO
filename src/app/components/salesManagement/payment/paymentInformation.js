@@ -483,8 +483,6 @@ const paymentInformation = () => {
                                         // autocompleteSearch
                                         countryCodeEditable={false}
                                         specialLabel={`${t("label:phone")}*`}
-                                        // onBlur={handleOnBlurGetDialCode}
-                                        // disabled={!customData.isNewCustomer}
                                         value={field.value || ""}
                                       />
                                       <FormHelperText>
@@ -610,11 +608,6 @@ const paymentInformation = () => {
                                       }
                                       variant="outlined"
                                       fullWidth
-                                      // inputlabelprops={{
-                                      //     shrink:
-                                      //         !!field.value ||
-                                      //         touchedFields.billingAddress,
-                                      // }}
                                       value={field.value || ""}
                                       required
                                     />
@@ -642,11 +635,6 @@ const paymentInformation = () => {
                                       }
                                       variant="outlined"
                                       fullWidth
-                                      // inputlabelprops={{
-                                      //     shrink:
-                                      //         !!field.value ||
-                                      //         touchedFields.billingZip,
-                                      // }}
                                       value={field.value || ""}
                                       required
                                     />
@@ -991,7 +979,9 @@ const paymentInformation = () => {
                       isCeditCheck: false,
                     })
                   }
-                  disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
+                  disabled={
+                    customData.paymentMethod === "invoice" && !isCreditChecked
+                  }
                 >
                   {t("label:payNow")}
                 </Button>
@@ -1021,7 +1011,9 @@ const paymentInformation = () => {
                     isCeditCheck: false,
                   })
                 }
-                disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
+                disabled={
+                  customData.paymentMethod === "invoice" && !isCreditChecked
+                }
               >
                 {t("label:payNow")}
               </Button>

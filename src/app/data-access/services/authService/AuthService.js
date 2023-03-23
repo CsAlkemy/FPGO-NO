@@ -358,6 +358,7 @@ class AuthService extends FuseUtils.EventEmitter {
         Location === "dev.frontpayment.no" ||
         Location === "stg.frontpayment.no" ||
         Location === "demo.frontpayment.no"
+        // || Location === "go.frontpayment.no"
       ) {
         return axios
           .post(URL, params)
