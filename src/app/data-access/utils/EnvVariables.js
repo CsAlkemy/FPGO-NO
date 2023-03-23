@@ -8,7 +8,7 @@ export const EnvVariable = {
       ? `${process.env.REACT_APP_PUBLIC_BASE_API_URL_STG}`
       : window.location.hostname === "demo.frontpayment.no"
       ? `${process.env.REACT_APP_PUBLIC_BASE_API_URL_DEMO}`
-      : window.location.hostname === "apigo.frontpayment.no"
+      : window.location.hostname === "go.frontpayment.no"
       ? `${process.env.REACT_APP_PUBLIC_BASE_API_URL_PROD}`
       : "",
   USER_MANAGEMENT: `${process.env.REACT_APP_PUBLIC_API_URL_USER_MANAGEMENT}`,
