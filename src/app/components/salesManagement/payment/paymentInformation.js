@@ -46,6 +46,7 @@ const paymentInformation = () => {
   const [creditCheckMessage, setCreditCheckMessage] = useState("");
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
+  const [isCreditChecked, setIsCreditChecked] = React.useState(false);
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -261,6 +262,7 @@ const paymentInformation = () => {
         setIsApproved(true);
         setCreditCheckMessage("Credit check was successful");
         setApiLoading(false);
+        setIsCreditChecked(true);
       } else {
         setIsApproved(false);
         setCreditCheckMessage("Credit check was declined");
@@ -989,6 +991,7 @@ const paymentInformation = () => {
                       isCeditCheck: false,
                     })
                   }
+                  disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
                 >
                   {t("label:payNow")}
                 </Button>
@@ -1018,6 +1021,7 @@ const paymentInformation = () => {
                     isCeditCheck: false,
                   })
                 }
+                disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
               >
                 {t("label:payNow")}
               </Button>
