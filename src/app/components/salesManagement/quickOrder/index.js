@@ -14,7 +14,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
@@ -29,26 +29,49 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import SendInvoiceModal from "./sendInvoiceModal";
 import { yupResolver } from "@hookform/resolvers/yup";
+import AuthService from "../../../data-access/services/authService";
+import ProductService from "../../../data-access/services/productsService/ProductService";
+import CustomersService from "../../../data-access/services/customersService/CustomersService";
+import ClientService from "../../../data-access/services/clientsService/ClientService";
+import UtilsServices from "../../../data-access/utils/UtilsServices";
+import { useCreateQuickOrderMutation } from "app/store/api/apiSlice";
+import OrdersService from "../../../data-access/services/ordersService/OrdersService";
+import { useSnackbar } from "notistack";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
+import { useNavigate } from "react-router-dom";
 
 const customerData = [
-  { label: "The Shawshank Redemption", value: "+47 1994" },
-  { label: "The Godfather", value: "+47 1994" },
-  { label: "The Godfather: Part II", value: "+47 1994" },
-  { label: "The Dark Knight", value: "+47 1994" },
-  { label: "12 Angry Men", value: "+47 1994" },
-  { label: "Schindler's List", value: "+47 1994" },
-  { label: "Pulp Fiction", value: "+47 1994" },
+  { label: "The Shawshank Redemption", phone: "+47 1994" },
+  { label: "The Godfather", phone: "+47 1994" },
+  { label: "The Godfather: Part II", phone: "+47 1994" },
+  { label: "The Dark Knight", phone: "+47 1994" },
+  { label: "12 Angry Men", phone: "+47 1994" },
+  { label: "Schindler's List", phone: "+47 1994" },
+  { label: "Pulp Fiction", phone: "+47 1994" },
 ];
 
 const createProducts = () => {
   const { t } = useTranslation();
+  const userInfo = UtilsServices.getFPUserData();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
   const [productsList, setProductsList] = useState([]);
+  const [customersList, setCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
+  const [val, setVal] = useState([]);
+  const [newCustomer, setNewCustomer] = useState("");
+  const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
+  const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
+  const [createQuickOrder, response] = useCreateQuickOrderMutation();
+  let subTotal = 0;
+  let totalTax = 0;
+  let totalDiscount = 0;
+  let grandTotal = 0;
 
   let defaultTaxValue;
 
@@ -103,6 +126,79 @@ const createProducts = () => {
   });
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
+  useEffect(() => {
+    AuthService.axiosRequestHelper().then((isAuthenticated) => {
+      ProductService.productsList(true)
+        .then((res) => {
+          let data = [];
+          if (res?.status_code === 200 && res.length) {
+            res
+              .filter((r) => r.status === "Active")
+              .map((row) => {
+                return data.push({
+                  uuid: row.uuid,
+                  name: row.name,
+                  id: row.id,
+                  price: row.pricePerUnit,
+                  tax: row.taxRate,
+                });
+              });
+          }
+          setProductsList(data);
+        })
+        .catch((e) => {
+          setProductsList([]);
+        });
+      CustomersService.customersList(true)
+        .then((res) => {
+          let data = [];
+          if (res?.status_code === 200 && res.length) {
+            res
+              .filter((item) => {
+                return item.status === "Active";
+              })
+              .map((row) => {
+                return data.push({
+                  uuid: row.uuid,
+                  name: row?.name ? row?.name : null,
+                  orgOrPNumber: row?.orgIdOrPNumber
+                    ? row?.orgIdOrPNumber
+                    : null,
+                  email: row?.email ? row?.email : null,
+                  phone: row?.phone ? row?.phone : null,
+                  type: row.type,
+                  street: row?.street,
+                  city: row?.city,
+                  zip: row?.zip,
+                  country: row?.country,
+                  searchString: row?.name + " ( " + row?.phone + " )",
+                });
+              });
+          }
+          setCustomersList(data);
+        })
+        .catch((e) => {
+          setCustomersList([]);
+        });
+      if (userInfo?.user_data?.organization?.uuid) {
+        ClientService.vateRatesList(
+          userInfo?.user_data?.organization?.uuid,
+          true
+        )
+          .then((res) => {
+            if (res?.status_code === 200) {
+              setTaxes(res?.data);
+            } else {
+              setTaxes([]);
+            }
+          })
+          .catch((e) => {
+            setTaxes([]);
+          });
+      }
+    });
+  }, []);
+
   const pnameOnBlur = (e) => {
     if (!e.target.value.length) {
       resetField(`${e.target.name}`);
@@ -110,11 +206,182 @@ const createProducts = () => {
   };
   const onSubmit = (values) => {
     setLoading(true);
-    console.log(values);
-    setLoading(false);
+    subTotal = (subTotal / 2).toFixed(2);
+    totalTax = (totalTax / 2).toFixed(2);
+    totalDiscount = (totalDiscount / 2).toFixed(2);
+    grandTotal = (grandTotal / 2).toFixed(2);
+    const data = OrdersService.prepareCreateQuickOrderPayload({
+      ...values,
+      orderSummary: {
+        subTotal,
+        totalTax,
+        totalDiscount,
+        grandTotal,
+      },
+      customers: [
+        ...val
+      ]
+    });
+    createQuickOrder(data).then((response) => {
+      setLoading(false);
+      if (response?.data?.status_code === 201) {
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
+        navigate(`/sales/orders-list`);
+      } else {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
+      }
+    });
+    // setLoading(false);
   };
   const handleDelete = () => {
     console.info("Clicked.");
+  };
+
+  const searchCustomerOnFocus = (e) => {
+    const searchByPhone =
+      customersList.filter((customer) =>
+        customer.phone.startsWith(e.target.value)
+      ) || [];
+    const searchByName =
+      customersList.filter((customer) =>
+        customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+      ) || [];
+    setCustomerSearchBy(
+      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
+    );
+    setCustomerSearchBoxLength(e.target.value.length);
+  };
+
+  const valHtml = val.map((option, index) => {
+    // This is to handle new options added by the user (allowed by freeSolo prop).
+    const label = option.name || option.phone;
+    const isExistingCustomer = option?.name || null;
+    return isExistingCustomer ? (
+      <Chip
+        label={label}
+        className="body3"
+        onDelete={() => {
+          setVal(val.filter((entry) => entry !== option));
+        }}
+        sx={{
+          backgroundColor: "#E6F3F7",
+        }}
+      />
+    ) : (
+      <Chip
+        label={label}
+        className="body3"
+        onDelete={() => {
+          setVal(val.filter((entry) => entry !== option));
+        }}
+        sx={{
+          backgroundColor: "#EFEFEF",
+        }}
+      />
+    );
+  });
+
+  const disableCurrentProductRow = (index) => {
+    setDisableRowIndexes([...disableRowIndexes, index]);
+  };
+
+  const onSameRowAction = (index) => {
+    setValue(`order[${index}].productName`, "");
+    resetField(`order[${index}].productName`);
+    resetField(`order[${index}].productID`);
+    resetField(`order[${index}].quantity`);
+    resetField(`order[${index}].rate`);
+    resetField(`order[${index}].discount`);
+    resetField(`order[${index}].tax`);
+
+    setValue(`order[${index}].productName`, "");
+    setValue(`order[${index}].productID`, "");
+    setValue(`order[${index}].quantity`, "");
+    setValue(`order[${index}].rate`, "");
+    setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].tax`, "");
+    enableCurrentProductRow(index);
+    // addNewOrder()
+    // addOrderIndex.length > 1
+    //   ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
+    //   : setAddOrderIndex([...addOrderIndex]);
+  };
+
+  const productWiseTotal = (index) => {
+    const watchQuantity = watch(`order[${index}].quantity`);
+    const watchRate = watch(`order[${index}].rate`);
+    const watchDiscount = watch(`order[${index}].discount`) || 0;
+    const watchTax = watch(`order[${index}].tax`);
+    const watchName = watch(`order[${index}].productName`);
+    const watchId = watch(`order[${index}].productID`);
+    //%%%%%%%%%%%%%%%%%%%%%%
+    //Vat Exclusive Calculation
+    //----------------------------------------
+    // const total =
+    //   parseInt(watchQuantity) * parseFloat(watchRate) -
+    //   parseFloat(watchDiscount) +
+    //   (parseInt(watchQuantity) * parseFloat(watchRate) -
+    //     parseFloat(watchDiscount)) *
+    //   (watchTax / 100);
+    // const subTotalCalculation = parseInt(watchQuantity) * parseFloat(watchRate);
+    // const totalTaxCalculation =
+    //   (parseInt(watchQuantity) * parseFloat(watchRate) -
+    //     parseFloat(watchDiscount)) *
+    //   (watchTax / 100);
+    // const grandTotalCalculation =
+    //   parseInt(watchQuantity) * parseFloat(watchRate) -
+    //   parseFloat(watchDiscount) +
+    //   (parseInt(watchQuantity) * parseFloat(watchRate) -
+    //     parseFloat(watchDiscount)) *
+    //   (watchTax / 100);
+    // if (watchTax) defaultTaxValue = watchTax;
+    // if (subTotalCalculation)
+    //   subTotal = subTotal + parseFloat(subTotalCalculation);
+    // if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
+    // if (watchDiscount)
+    //   totalDiscount = totalDiscount + parseFloat(watchDiscount);
+    // if (grandTotalCalculation) grandTotal = grandTotal + grandTotalCalculation;
+    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    // Vat Inclusive Calculation
+    // Subtotal : (Qty*Rate*100%)/(100+Tax)%
+    // Tax : subtotal * (tax/100)
+    //Amount : (Rate * Qty) - discount
+    //Discount : Sum of discounts
+    //Grand Total : Sum of amounts
+    let rate, splitedRate, dotFormatRate, floatRate;
+    if (!!watchRate) {
+      rate = watchRate;
+      splitedRate = rate.toString().includes(",") ? rate.split(",") : rate;
+      dotFormatRate =
+        typeof splitedRate === "object"
+          ? `${splitedRate[0]}.${splitedRate[1]}`
+          : splitedRate;
+      floatRate = parseFloat(dotFormatRate);
+    }
+
+    const total =
+      parseInt(watchQuantity) * floatRate - parseFloat(watchDiscount);
+    const subTotalCalculation =
+      (parseInt(watchQuantity) * floatRate) / ((100 + watchTax) / 100);
+    const totalTaxCalculation = subTotalCalculation
+      ? (subTotalCalculation * (watchTax / 100)) / 2
+      : 0;
+
+    if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
+    if (subTotalCalculation)
+      subTotal = subTotal + parseFloat(subTotalCalculation);
+    if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
+    if (watchDiscount)
+      totalDiscount = totalDiscount + parseFloat(watchDiscount);
+    if (total) grandTotal = grandTotal + total;
+    if (total > 0) {
+      return ` ${total}`;
+    }
   };
 
   return (
@@ -146,7 +413,7 @@ const createProducts = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
-                  disabled={!isValid}
+                  // disabled={!isValid}
                 >
                   {t("label:sendOrder")}
                 </LoadingButton>
@@ -158,11 +425,21 @@ const createProducts = () => {
                 name="searchCustomer"
                 render={({ field: { ref, onChange, ...field } }) => (
                   <Autocomplete
+                    multiple
                     disablePortal
-                    options={customerData}
-                    getOptionLabel={(option) => option.label}
-                    className=""
+                    // freeSolo
+                    // filterSelectedOptions
+                    options={customersList}
+                    getOptionLabel={(option) => option.searchString}
+                    renderTags={() => {}}
                     fullWidth
+                    onChange={(e, newValue) => {
+                      setCustomerSearchBy(undefined);
+                      setCustomerSearchBoxLength(0);
+                      setVal(newValue);
+                    }}
+                    onInputChange={(event, value) => setNewCustomer(value)}
+                    value={val}
                     noOptionsText={
                       <div className="flex items-center justify-between my-2">
                         <span className="subtitle3 font-600">
@@ -175,7 +452,12 @@ const createProducts = () => {
                           className="rounded-4 button2 min-w-[104px]"
                           type="button"
                           startIcon={<AddIcon fontSize="small" />}
-                          onClick={() => console.log("add")}
+                          onClick={() => {
+                            setVal([
+                              ...val,
+                              { name: "", phone: `${newCustomer}` },
+                            ]);
+                          }}
                         >
                           {t(`label:add`)}
                         </Button>
@@ -183,24 +465,110 @@ const createProducts = () => {
                     }
                     renderOption={(props, option, { selected }) => (
                       <MenuItem {...props}>
-                        <div>
-                          <div>{option.value}</div>
-                          <div>{option.label}</div>
-                        </div>
+                        {/*{`${option.name}`}*/}
+                        {customerSearchBy ? (
+                          <div>
+                            {customerSearchBy === "name" &&
+                            customerSearchBoxLength > 0 ? (
+                              <div>
+                                <span
+                                  style={{ color: "#0088AE" }}
+                                >{`${option.name.slice(
+                                  0,
+                                  customerSearchBoxLength
+                                )}`}</span>
+                                <span>{`${option.name.slice(
+                                  customerSearchBoxLength
+                                )}`}</span>
+                              </div>
+                            ) : (
+                              <div>{`${option.name}`}</div>
+                            )}
+                            {customerSearchBy === "phone" &&
+                            customerSearchBoxLength > 0 ? (
+                              <div>
+                                <span
+                                  style={{ color: "#0088AE" }}
+                                >{`${option.phone.slice(
+                                  0,
+                                  customerSearchBoxLength
+                                )}`}</span>
+                                <span>{`${option.phone.slice(
+                                  customerSearchBoxLength
+                                )}`}</span>
+                              </div>
+                            ) : (
+                              <div>{`${option.phone}`}</div>
+                            )}
+                          </div>
+                        ) : (
+                          <div>
+                            <div>{`${option.name}`}</div>
+                            <div>{`${option.phone}`}</div>
+                          </div>
+                        )}
                       </MenuItem>
                     )}
                     renderInput={(params) => (
                       <TextField
-                        id="searchBox"
-                        className="mt-10 w-full sm:w-2/4"
                         {...params}
-                        {...field}
-                        inputRef={ref}
-                        // onChange={}
+                        onChange={searchCustomerOnFocus}
+                        className="mt-10 w-full sm:w-2/4"
                         placeholder={t("label:searchByNameOrPhoneNo")}
                       />
                     )}
                   />
+                  // <Autocomplete
+                  //   disablePortal
+                  //   options={customerData}
+                  //   getOptionLabel={(option) => option.label}
+                  //   className=""
+                  //   fullWidth
+                  //   noOptionsText={
+                  //     <div className="flex items-center justify-between my-2">
+                  //       <span className="subtitle3 font-600">
+                  //         No customers found
+                  //       </span>
+                  //       <Button
+                  //         variant="contained"
+                  //         color="secondary"
+                  //         size={"medium"}
+                  //         className="rounded-4 button2 min-w-[104px]"
+                  //         type="button"
+                  //         startIcon={<AddIcon fontSize="small" />}
+                  //         onClick={() => console.log("add")}
+                  //       >
+                  //         {t(`label:add`)}
+                  //       </Button>
+                  //     </div>
+                  //   }
+                  //   onChange={(_, data) => onChange}
+                  //   renderOption={(props, option, { selected }) => (
+                  //     <MenuItem {...props}>
+                  //       <div>
+                  //         <div>{option.value}</div>
+                  //         <div>{option.label}</div>
+                  //       </div>
+                  //     </MenuItem>
+                  //   )}
+                  //   renderInput={(params) => (
+                  //     <TextField
+                  //       id="searchBox"
+                  //       className="mt-10 w-full sm:w-2/4"
+                  //       {...params}
+                  //       {...field}
+                  //       inputRef={ref}
+                  //       // onChange={}
+                  //       placeholder={t("label:searchByNameOrPhoneNo")}
+                  //       error={!!errors.searchCustomer}
+                  //       helperText={
+                  //         errors?.searchCustomer?.message
+                  //           ? t(`validation:${errors?.searchCustomer?.message}`)
+                  //           : ""
+                  //       }
+                  //     />
+                  //   )}
+                  // />
                 )}
               />
               <div className="flex gap-5 m-5 items-center">
@@ -211,22 +579,23 @@ const createProducts = () => {
               </div>
               <div className="my-20">
                 <Stack direction="row" spacing={1}>
-                  <Chip
-                    label="Arlene McCoy"
-                    className="body3"
-                    onDelete={handleDelete}
-                    sx={{
-                      backgroundColor: "#E6F3F7",
-                    }}
-                  />
-                  <Chip
-                    label="+47 474 34 668"
-                    className="body3"
-                    onDelete={handleDelete}
-                    sx={{
-                      backgroundColor: "#EFEFEF",
-                    }}
-                  />
+                  {/*<Chip*/}
+                  {/*  label="Arlene McCoy"*/}
+                  {/*  className="body3"*/}
+                  {/*  onDelete={handleDelete}*/}
+                  {/*  sx={{*/}
+                  {/*    backgroundColor: "#E6F3F7",*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  {/*<Chip*/}
+                  {/*  label="+47 474 34 668"*/}
+                  {/*  className="body3"*/}
+                  {/*  onDelete={handleDelete}*/}
+                  {/*  sx={{*/}
+                  {/*    backgroundColor: "#EFEFEF",*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  <div className="selectedTags">{valHtml}</div>
                 </Stack>
               </div>
 
@@ -420,22 +789,22 @@ const createProducts = () => {
                               field: { ref, onChange, ...field },
                             }) => (
                               <Autocomplete
-                                // disabled={
-                                //     index === 0 ||
-                                //     index === Math.min(...addOrderIndex)
-                                //         ? false
-                                //         : !watch(
-                                //             `order[${
-                                //                 index -
-                                //                 (addOrderIndex[
-                                //                         addOrderIndex.indexOf(index)
-                                //                         ] -
-                                //                     addOrderIndex[
-                                //                     addOrderIndex.indexOf(index) - 1
-                                //                         ])
-                                //             }].productName`
-                                //         )
-                                // }
+                                disabled={
+                                    index === 0 ||
+                                    index === Math.min(...addOrderIndex)
+                                        ? false
+                                        : !watch(
+                                            `order[${
+                                                index -
+                                                (addOrderIndex[
+                                                        addOrderIndex.indexOf(index)
+                                                        ] -
+                                                    addOrderIndex[
+                                                    addOrderIndex.indexOf(index) - 1
+                                                        ])
+                                            }].productName`
+                                        )
+                                }
                                 freeSolo
                                 autoSelect
                                 onBlur={pnameOnBlur}
@@ -449,6 +818,93 @@ const createProducts = () => {
                                     : ""
                                 }
                                 size="small"
+                                onChange={(_, data) => {
+                                  if (data) {
+                                    if (data?.name) {
+                                      setValue(
+                                        `order[${index}].productName`,
+                                        data.name
+                                      );
+                                      setValue(
+                                        `order[${index}].productID`,
+                                        data.id
+                                      );
+                                      setValue(
+                                        `order[${index}].rate`,
+                                        data.price
+                                      );
+                                      setValue(`order[${index}].tax`, data.tax);
+                                      disableCurrentProductRow(index);
+
+                                      const watchRate = watch(
+                                        `order[${index}].rate`
+                                      );
+                                      const watchTax = watch(
+                                        `order[${index}].tax`
+                                      );
+                                      const watchName = watch(
+                                        `order[${index}].productName`
+                                      );
+                                      const watchId = watch(
+                                        `order[${index}].productID`
+                                      );
+
+                                      for (
+                                        let i = 0;
+                                        i < addOrderIndex.length;
+                                        i++
+                                      ) {
+                                        if (
+                                          watchName &&
+                                          watchId &&
+                                          watchRate &&
+                                          watchTax &&
+                                          i !== index &&
+                                          watchName ===
+                                          watch(`order[${i}].productName`) &&
+                                          watchId ===
+                                          watch(`order[${i}].productID`) &&
+                                          watchRate ===
+                                          watch(`order[${i}].rate`) &&
+                                          watchTax === watch(`order[${i}].tax`)
+                                        ) {
+                                          let quantityNum = isNaN(
+                                            parseInt(
+                                              watch(`order[${i}].quantity`)
+                                            )
+                                          )
+                                            ? 1
+                                            : parseInt(
+                                              watch(`order[${i}].quantity`)
+                                            );
+                                          setValue(
+                                            `order[${i}].quantity`,
+                                            quantityNum + 1
+                                          );
+                                          // onDelete(index);
+                                          onSameRowAction(index);
+                                          enqueueSnackbar(
+                                            `Same product found in Row ${
+                                              i + 1
+                                            } and ${index + 1}, merged together!`,
+                                            { variant: "success" }
+                                          );
+                                        }
+                                      }
+                                    } else
+                                      setValue(
+                                        `order[${index}].productName`,
+                                        data ? data : ""
+                                      );
+                                  } else {
+                                    setValue(`order[${index}].productName`, "");
+                                    setValue(`order[${index}].productID`, "");
+                                    setValue(`order[${index}].rate`, "");
+                                    setValue(`order[${index}].tax`, "");
+                                    enableCurrentProductRow(index);
+                                  }
+                                  return onChange(data);
+                                }}
                                 renderOption={(props, option, { selected }) => (
                                   <MenuItem
                                     {...props}
@@ -609,7 +1065,7 @@ const createProducts = () => {
                           </div>
                           <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
                             <div>{t("label:total")}</div>
-                            <div>{t("label:nok")} 546</div>
+                            <div>{t("label:nok")}{" "} {productWiseTotal(index)}</div>
                           </div>
                           <Button
                             variant="outlined"
@@ -625,8 +1081,7 @@ const createProducts = () => {
                         </div>
                       ))}
                       <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
-                        {/*TODO: joni vai please add grandtotal here*/}
-                        {t("label:grandTotal")} : {t("label:nok")} 50000
+                        {t("label:grandTotal")} : {t("label:nok")}{" "}  {ThousandSeparator(grandTotal.toFixed(2) / 2)}
                       </div>
                     </AccordionDetails>
                   </Accordion>
@@ -700,94 +1155,94 @@ const createProducts = () => {
                               }
                               size="small"
                               //className="custom-input-height"
-                              // onChange={(_, data) => {
-                              //   if (data) {
-                              //     if (data?.name) {
-                              //       setValue(
-                              //         `order[${index}].productName`,
-                              //         data.name
-                              //       );
-                              //       setValue(
-                              //         `order[${index}].productID`,
-                              //         data.id
-                              //       );
-                              //       const preparedPrice = data.price
-                              //         .toString()
-                              //         .includes(".")
-                              //         ? `${data.price.toString().split(".")[0]},${
-                              //             data.price.toString().split(".")[1]
-                              //           }`
-                              //         : data.price;
-                              //       setValue(
-                              //         `order[${index}].rate`,
-                              //         preparedPrice
-                              //       );
-                              //       setValue(`order[${index}].tax`, data.tax);
-                              //       disableCurrentProductRow(index);
-                              //
-                              //       const watchRate = watch(
-                              //         `order[${index}].rate`
-                              //       );
-                              //       const watchTax = watch(`order[${index}].tax`);
-                              //       const watchName = watch(
-                              //         `order[${index}].productName`
-                              //       );
-                              //       const watchId = watch(
-                              //         `order[${index}].productID`
-                              //       );
-                              //
-                              //       for (
-                              //         let i = 0;
-                              //         i < addOrderIndex.length;
-                              //         i++
-                              //       ) {
-                              //         if (
-                              //           watchName &&
-                              //           watchId &&
-                              //           watchRate &&
-                              //           watchTax &&
-                              //           i !== index &&
-                              //           watchName ===
-                              //             watch(`order[${i}].productName`) &&
-                              //           watchId ===
-                              //             watch(`order[${i}].productID`) &&
-                              //           watchRate === watch(`order[${i}].rate`) &&
-                              //           watchTax === watch(`order[${i}].tax`)
-                              //         ) {
-                              //           let quantityNum = isNaN(
-                              //             parseInt(watch(`order[${i}].quantity`))
-                              //           )
-                              //             ? 1
-                              //             : parseInt(
-                              //                 watch(`order[${i}].quantity`)
-                              //               );
-                              //           setValue(
-                              //             `order[${i}].quantity`,
-                              //             quantityNum + 1
-                              //           );
-                              //           onSameRowAction(index);
-                              //           enqueueSnackbar(
-                              //             `Same product found in Row ${
-                              //               i + 1
-                              //             } and ${index + 1}, merged together!`,
-                              //             { variant: "success" }
-                              //           );
-                              //         }
-                              //       }
-                              //     } else
-                              //       setValue(
-                              //         `order[${index}].productName`,
-                              //         data ? data : ""
-                              //       );
-                              //   } else {
-                              //     setValue(`order[${index}].productName`, "");
-                              //     setValue(`order[${index}].productID`, "");
-                              //     setValue(`order[${index}].rate`, "");
-                              //     setValue(`order[${index}].tax`, "");
-                              //     enableCurrentProductRow(index);
-                              //   }
-                              //   return onChange(data);
-                              // }}
+                              onChange={(_, data) => {
+                                if (data) {
+                                  if (data?.name) {
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data.name
+                                    );
+                                    setValue(
+                                      `order[${index}].productID`,
+                                      data.id
+                                    );
+                                    const preparedPrice = data.price
+                                      .toString()
+                                      .includes(".")
+                                      ? `${data.price.toString().split(".")[0]},${
+                                          data.price.toString().split(".")[1]
+                                        }`
+                                      : data.price;
+                                    setValue(
+                                      `order[${index}].rate`,
+                                      preparedPrice
+                                    );
+                                    setValue(`order[${index}].tax`, data.tax);
+                                    disableCurrentProductRow(index);
+
+                                    const watchRate = watch(
+                                      `order[${index}].rate`
+                                    );
+                                    const watchTax = watch(`order[${index}].tax`);
+                                    const watchName = watch(
+                                      `order[${index}].productName`
+                                    );
+                                    const watchId = watch(
+                                      `order[${index}].productID`
+                                    );
+
+                                    for (
+                                      let i = 0;
+                                      i < addOrderIndex.length;
+                                      i++
+                                    ) {
+                                      if (
+                                        watchName &&
+                                        watchId &&
+                                        watchRate &&
+                                        watchTax &&
+                                        i !== index &&
+                                        watchName ===
+                                          watch(`order[${i}].productName`) &&
+                                        watchId ===
+                                          watch(`order[${i}].productID`) &&
+                                        watchRate === watch(`order[${i}].rate`) &&
+                                        watchTax === watch(`order[${i}].tax`)
+                                      ) {
+                                        let quantityNum = isNaN(
+                                          parseInt(watch(`order[${i}].quantity`))
+                                        )
+                                          ? 1
+                                          : parseInt(
+                                              watch(`order[${i}].quantity`)
+                                            );
+                                        setValue(
+                                          `order[${i}].quantity`,
+                                          quantityNum + 1
+                                        );
+                                        onSameRowAction(index);
+                                        enqueueSnackbar(
+                                          `Same product found in Row ${
+                                            i + 1
+                                          } and ${index + 1}, merged together!`,
+                                          { variant: "success" }
+                                        );
+                                      }
+                                    }
+                                  } else
+                                    setValue(
+                                      `order[${index}].productName`,
+                                      data ? data : ""
+                                    );
+                                } else {
+                                  setValue(`order[${index}].productName`, "");
+                                  setValue(`order[${index}].productID`, "");
+                                  setValue(`order[${index}].rate`, "");
+                                  setValue(`order[${index}].tax`, "");
+                                  enableCurrentProductRow(index);
+                                }
+                                return onChange(data);
+                              }}
                               renderOption={(props, option, { selected }) => (
                                 <MenuItem
                                   {...props}
@@ -977,8 +1432,8 @@ const createProducts = () => {
                           className="body3 text-right"
                           onClick={() => setEditOpen(true)}
                         >
-                          {t("label:nok")} 45544
-                          {/*{ThousandSeparator(productWiseTotal(index))}*/}
+                          {t("label:nok")}{" "}
+                          {ThousandSeparator(productWiseTotal(index))}
                         </div>
                       </div>
                       <div className="my-auto">
@@ -1075,8 +1530,8 @@ const createProducts = () => {
                           {t("label:subTotal")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} 4848
-                          {/*{ThousandSeparator(subTotal.toFixed(2) / 2)}*/}
+                          {t("label:nok")}{" "}
+                          {ThousandSeparator(subTotal.toFixed(2) / 2)}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-10">
@@ -1084,8 +1539,8 @@ const createProducts = () => {
                           {t("label:tax")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} 85944
-                          {/*{ThousandSeparator(totalTax.toFixed(2) / 2)}*/}
+                          {t("label:nok")}{" "}
+                          {ThousandSeparator(totalTax.toFixed(2) / 2)}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-10">
@@ -1093,8 +1548,8 @@ const createProducts = () => {
                           {t("label:discount")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} 85859
-                          {/*{ThousandSeparator(totalDiscount.toFixed(2) / 2)}*/}
+                          {t("label:nok")}{" "}
+                          {ThousandSeparator(totalDiscount.toFixed(2) / 2)}
                         </div>
                       </div>
                     </div>
@@ -1107,8 +1562,8 @@ const createProducts = () => {
                           {t("label:grandTotal")}
                         </div>
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:nok")} 70000
-                          {/*{ThousandSeparator(grandTotal.toFixed(2) / 2)}*/}
+                          {t("label:nok")}{" "}
+                          {ThousandSeparator(grandTotal.toFixed(2) / 2)}
                         </div>
                       </div>
                     </div>

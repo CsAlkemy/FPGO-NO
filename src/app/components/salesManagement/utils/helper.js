@@ -433,18 +433,63 @@ export const sendInvoiceDefaultValue = {
 };
 
 export const quickOrderValidation = yup.object().shape({
-  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
+  // searchCustomer: yup.string().required("youMustSelectACustomer"),
   orderDate: yup
     .string()
     .typeError("youMustEnterOrderDate")
     .required("youMustEnterOrderDate"),
+  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
+  order: yup.array().of(
+    yup.object().shape({
+      // productName: yup.string().required('name'),
+      productName: yup.lazy(() =>
+        yup.string().when(["quantity", "rate", "tax"], {
+          is: (quantity, rate, tax) => quantity || rate || tax,
+          // is: "",
+          then: yup.string().required(""),
+          // otherwise: yup.string()
+        })
+      ),
+      quantity: yup.lazy(() =>
+        yup.string().when(["productName", "rate", "tax"], {
+          is: (productName, rate, tax) => productName || rate || tax,
+          // is: "",
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9]+$/),
+          // otherwise: yup.string()
+        })
+      ),
+      rate: yup.lazy(() =>
+        yup.string().when(["productName", "quantity", "tax"], {
+          is: (productName, quantity, tax) => productName || quantity || tax,
+          // is: "",
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9,]+$/),
+          // otherwise: yup.string()
+        })
+      ),
+      tax: yup.lazy(() =>
+        yup.string().when(["productName", "quantity", "rate"], {
+          is: (productName, quantity, rate) => productName || quantity || rate,
+          // is:"",
+          then: yup.string().required(""),
+          // otherwise: yup.string()
+        })
+      ),
+    })
+  ),
 });
 export const quickOrderDefaultValue = {
-  customerNotes: "",
-  customerReference: "",
-  dueDatePaymentLink: "",
-  orderDate: "",
-  referenceNumber: "",
   searchCustomer: "",
+  orderDate: "",
+  dueDatePaymentLink: "",
+  referenceNumber: "",
+  customerReference: "",
+  order: [],
+  customerNotes: "",
   termsConditions: "",
 };

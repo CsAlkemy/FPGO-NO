@@ -377,6 +377,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["RefundRequestsList"],
     }),
+    createQuickOrder: builder.mutation({
+      query: (payload) => ({
+        url: "/orders/quick",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["OrdersList"],
+    }),
   }),
 });
 
@@ -421,5 +429,5 @@ export const {
   useGetRefundRequestsListQuery,
   useRefundRequestDecisionMutation,
   useRequestRefundApprovalMutation,
-
+  useCreateQuickOrderMutation,
 } = apiSlice;

@@ -936,6 +936,82 @@ class OrdersService {
         });
     });
   };
+
+  prepareCreateQuickOrderPayload = (params) => {
+    console.log("PARAMS : ", params);
+    const products =
+      params.order.length &&
+      params.order
+        .filter(
+          (ordr) =>
+            ordr.productName !== undefined &&
+            ordr.quantity !== undefined &&
+            ordr.rate !== undefined &&
+            ordr.tax !== undefined &&
+            ordr.productName !== null &&
+            ordr.quantity !== null &&
+            ordr.rate !== null &&
+            ordr.tax !== null &&
+            ordr.productName !== "" &&
+            ordr.quantity !== "" &&
+            ordr.rate !== "" &&
+            ordr.tax !== ""
+        )
+        .map((order) => {
+          //Decimal comma to dot separator conversion logic
+          const rate = order.rate;
+          const splitedRate = rate.toString().includes(",")
+            ? rate.split(",")
+            : rate;
+          const dotFormatRate =
+            typeof splitedRate === "object"
+              ? `${splitedRate[0]}.${splitedRate[1]}`
+              : splitedRate;
+          const floatRate = parseFloat(dotFormatRate);
+
+          return {
+            name: order?.productName ? order?.productName : null,
+            productId: order?.productID ? order?.productID : null,
+            quantity: order.quantity,
+            // rate: order.rate,
+            rate: floatRate,
+            discount: order?.discount ? order?.discount : 0,
+            tax: order.tax,
+            amount:
+              order.quantity && order.rate
+                ? parseInt(order.quantity) * parseFloat(floatRate) -
+                  parseFloat(order?.discount ? order.discount : 0)
+                : null,
+          };
+        });
+    const customers = params?.customers.length
+      ? params.customers.map((customer) => {
+          return customer?.uuid ? customer?.uuid : customer?.phone;
+        })
+      : [];
+
+    return {
+      customers,
+      orderDate: this.prepareDate(params.orderDate),
+      dueDateForPaymentLink: isNaN(
+        `${new Date(params.dueDatePaymentLink).getTime() / 1000}`
+      )
+        ? `${new Date(parseInt(params.dueDatePaymentLink)) / 1000}`
+        : `${new Date(params.dueDatePaymentLink).getTime() / 1000}`,
+      referenceNo: params?.referenceNumber
+        ? `${params?.referenceNumber}`
+        : null,
+      customerReference: params?.customerReference
+        ? `${params?.customerReference}`
+        : null,
+      products: {
+        ...products,
+      },
+      orderSummary: params.orderSummary,
+      customerNotes: params?.customerNotes ? `${params?.customerNotes}` : null,
+      tnc: params?.termsConditions ? `${params?.termsConditions}` : null,
+    };
+  };
 }
 
 const instance = new OrdersService();
