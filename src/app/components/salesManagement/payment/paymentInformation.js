@@ -46,6 +46,7 @@ const paymentInformation = () => {
   const [creditCheckMessage, setCreditCheckMessage] = useState("");
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
+  const [isCreditChecked, setIsCreditChecked] = React.useState(false);
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -143,11 +144,13 @@ const paymentInformation = () => {
               sentBy: orderDetails?.sendOrderBy?.sms ? "sms" : "email",
               phoneOrEmail: orderDetails?.sendOrderBy?.sms
                 ? orderDetails?.customerDetails?.countryCode +
-                orderDetails?.customerDetails?.msisdn
+                  orderDetails?.customerDetails?.msisdn
                 : orderDetails?.customerDetails?.email,
             })
           );
           window.location.href = `${response?.data?.paymentUrl}`;
+        } else if (response?.status_code === 202 && !response?.is_data) {
+          navigate(`/order/details/${orderUuid}/confirmation`);
         }
       })
       .catch((e) => {
@@ -259,6 +262,7 @@ const paymentInformation = () => {
         setIsApproved(true);
         setCreditCheckMessage("Credit check was successful");
         setApiLoading(false);
+        setIsCreditChecked(true);
       } else {
         setIsApproved(false);
         setCreditCheckMessage("Credit check was declined");
@@ -987,6 +991,7 @@ const paymentInformation = () => {
                       isCeditCheck: false,
                     })
                   }
+                  disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
                 >
                   {t("label:payNow")}
                 </Button>
@@ -1016,6 +1021,7 @@ const paymentInformation = () => {
                     isCeditCheck: false,
                   })
                 }
+                disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
               >
                 {t("label:payNow")}
               </Button>
