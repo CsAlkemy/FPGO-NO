@@ -143,11 +143,13 @@ const paymentInformation = () => {
               sentBy: orderDetails?.sendOrderBy?.sms ? "sms" : "email",
               phoneOrEmail: orderDetails?.sendOrderBy?.sms
                 ? orderDetails?.customerDetails?.countryCode +
-                orderDetails?.customerDetails?.msisdn
+                  orderDetails?.customerDetails?.msisdn
                 : orderDetails?.customerDetails?.email,
             })
           );
           window.location.href = `${response?.data?.paymentUrl}`;
+        } else if (response?.status_code === 202 && !response?.is_data) {
+          navigate(`/order/details/${orderUuid}/confirmation`);
         }
       })
       .catch((e) => {
