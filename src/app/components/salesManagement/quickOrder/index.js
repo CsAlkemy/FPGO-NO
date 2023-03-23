@@ -18,7 +18,7 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
-import {quickOrderDefaultValue, quickOrderValidation} from "../utils/helper";
+import { quickOrderDefaultValue, quickOrderValidation } from "../utils/helper";
 import InfoIcon from "@mui/icons-material/Info";
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
@@ -28,16 +28,16 @@ import CharCount from "../../common/charCount";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import SendInvoiceModal from "./sendInvoiceModal";
-import {yupResolver} from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const customerData = [
-  { name: "The Shawshank Redemption", phone: "+47 1994" },
-  { name: "The Godfather", phone: "+47 1994" },
-  { name: "The Godfather: Part II", phone: "+47 1994" },
-  { name: "The Dark Knight", phone: "+47 1994" },
-  { name: "12 Angry Men", phone: "+47 1994" },
-  { name: "Schindler's List", phone: "+47 1994" },
-  { name: "Pulp Fiction", phone: "+47 1994" },
+  { label: "The Shawshank Redemption", value: "+47 1994" },
+  { label: "The Godfather", value: "+47 1994" },
+  { label: "The Godfather: Part II", value: "+47 1994" },
+  { label: "The Dark Knight", value: "+47 1994" },
+  { label: "12 Angry Men", value: "+47 1994" },
+  { label: "Schindler's List", value: "+47 1994" },
+  { label: "Pulp Fiction", value: "+47 1994" },
 ];
 
 const createProducts = () => {
@@ -111,7 +111,7 @@ const createProducts = () => {
   const onSubmit = (values) => {
     setLoading(true);
     console.log(values);
-    setLoading(false)
+    setLoading(false);
   };
   const handleDelete = () => {
     console.info("Clicked.");
@@ -146,7 +146,7 @@ const createProducts = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
-                  // disabled={!isValid}
+                  disabled={!isValid}
                 >
                   {t("label:sendOrder")}
                 </LoadingButton>
@@ -158,16 +158,34 @@ const createProducts = () => {
                 name="searchCustomer"
                 render={({ field: { ref, onChange, ...field } }) => (
                   <Autocomplete
-                    freeSolo
+                    disablePortal
                     options={customerData}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) => option.label}
                     className=""
                     fullWidth
+                    noOptionsText={
+                      <div className="flex items-center justify-between my-2">
+                        <span className="subtitle3 font-600">
+                          No customers found
+                        </span>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          size={"medium"}
+                          className="rounded-4 button2 min-w-[104px]"
+                          type="button"
+                          startIcon={<AddIcon fontSize="small" />}
+                          onClick={() => console.log("add")}
+                        >
+                          {t(`label:add`)}
+                        </Button>
+                      </div>
+                    }
                     renderOption={(props, option, { selected }) => (
                       <MenuItem {...props}>
                         <div>
-                          <div>{option.name}</div>
-                          <div>{option.phone}</div>
+                          <div>{option.value}</div>
+                          <div>{option.label}</div>
                         </div>
                       </MenuItem>
                     )}
@@ -955,7 +973,10 @@ const createProducts = () => {
                         )}
                       </div>
                       <div className="my-auto">
-                        <div className="body3 text-right" onClick={()=>setEditOpen(true)}>
+                        <div
+                          className="body3 text-right"
+                          onClick={() => setEditOpen(true)}
+                        >
                           {t("label:nok")} 45544
                           {/*{ThousandSeparator(productWiseTotal(index))}*/}
                         </div>
@@ -1106,9 +1127,7 @@ const createProducts = () => {
         subTitle={t("label:onceConfirmedThisActionCannotBeReverted")}
         route={-1}
       />
-      <SendInvoiceModal
-          editOpen={editOpen} setEditOpen={setEditOpen}
-      />
+      <SendInvoiceModal editOpen={editOpen} setEditOpen={setEditOpen} />
     </div>
   );
 };

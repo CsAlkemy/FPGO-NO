@@ -1,25 +1,29 @@
 import React from "react";
 import {
-    Button,
-    Dialog,
-    DialogContent,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
+  Button,
+  Dialog,
+  DialogContent,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
 } from "@mui/material";
-import {Controller, useForm} from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
-import {sendInvoiceDefaultValue, sendInvoiceValidation,} from "../utils/helper";
-import {useTranslation} from "react-i18next";
-import {yupResolver} from "@hookform/resolvers/yup";
+import {
+  sendInvoiceDefaultValue,
+  sendInvoiceValidation,
+} from "../utils/helper";
+import { useTranslation } from "react-i18next";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { LoadingButton } from "@mui/lab";
 
 const SendInvoiceModal = (props) => {
   const { t } = useTranslation();
   const { editOpen, setEditOpen } = props;
-    const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -37,16 +41,16 @@ const SendInvoiceModal = (props) => {
   });
   const { isValid, errors } = formState;
   const onSubmit = (values) => {
-      setLoading(true);
-      console.log(values);
-      setLoading(false)
+    setLoading(true);
+    console.log(values);
+    setLoading(false);
   };
 
   return (
     <div>
       <Dialog
         open={editOpen}
-        maxWidth={"md"}
+        maxWidth={"sm"}
         onClose={() => setEditOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -83,7 +87,7 @@ const SendInvoiceModal = (props) => {
                     <div className="flex gap-20 w-full md:w-3/4">
                       <Button
                         variant="outlined"
-                        className="create-order-capsule-button-active"
+                        className="create-order-capsule-button-active items-center my-auto"
                         // onClick={() => {
                         //   setCustomData({
                         //     ...customData,
@@ -151,7 +155,7 @@ const SendInvoiceModal = (props) => {
                             {...field}
                             label={t("label:email")}
                             type="email"
-                            className="mb-32 md:mb-auto"
+                            className=""
                             autoComplete="off"
                             error={!!errors.email}
                             helperText={
@@ -204,7 +208,7 @@ const SendInvoiceModal = (props) => {
                           render={({ field }) => (
                             <TextField
                               {...field}
-                              label={"Org"}
+                              label={"P-Number"}
                               // label={
                               //   customData.customerType === "private"
                               //     ? t("label:pNumber")
@@ -255,11 +259,6 @@ const SendInvoiceModal = (props) => {
                             }
                             variant="outlined"
                             fullWidth
-                            // inputlabelprops={{
-                            //     shrink:
-                            //         !!field.value ||
-                            //         touchedFields.streetAddress,
-                            // }}
                             value={field.value || ""}
                             required
                           />
@@ -285,11 +284,6 @@ const SendInvoiceModal = (props) => {
                             }
                             variant="outlined"
                             fullWidth
-                            // inputlabelprops={{
-                            //     shrink:
-                            //         !!field.value ||
-                            //         touchedFields.zipCode,
-                            // }}
                             value={field.value || ""}
                             required
                           />
@@ -370,15 +364,19 @@ const SendInvoiceModal = (props) => {
                   >
                     {t("label:cancel")}
                   </Button>
-                  <Button
+                  <LoadingButton
                     variant="contained"
+                    color="secondary"
+                    className="rounded-4 button2 min-w-[153px] h-full"
+                    aria-label="Confirm"
+                    size="large"
                     type="submit"
-                    className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40"
-                    // onClick={() => handleUpdate()}
+                    loading={loading}
+                    loadingPosition="center"
                     disabled={!isValid}
                   >
                     {t("label:update")}
-                  </Button>
+                  </LoadingButton>
                 </div>
               </div>
             </form>
