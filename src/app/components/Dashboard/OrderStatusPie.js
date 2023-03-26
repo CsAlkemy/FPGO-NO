@@ -28,18 +28,18 @@ function OrderStatus(props) {
     series[0] === 0
       ? 0
       : Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
-    series[0] === 0
+    series[1] === 0
       ? 0
-      : Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
-    series[0] === 0
+      : Math.ceil((series[1] / series.reduce((a, b) => a + b, 0)) * 100),
+    series[2] === 0
       ? 0
-      : Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
-    series[0] === 0
+      : Math.ceil((series[2] / series.reduce((a, b) => a + b, 0)) * 100),
+    series[3] === 0
       ? 0
-      : Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
-    series[0] === 0
+      : Math.ceil((series[3] / series.reduce((a, b) => a + b, 0)) * 100),
+    series[4] === 0
       ? 0
-      : Math.ceil((series[0] / series.reduce((a, b) => a + b, 0)) * 100),
+      : Math.ceil((series[4] / series.reduce((a, b) => a + b, 0)) * 100),
     // Math.ceil((series[5] / series.reduce((a, b) => a + b, 0)) * 100),
     // Math.ceil((series[6] / series.reduce((a, b) => a + b, 0)) * 100),
   ]);
