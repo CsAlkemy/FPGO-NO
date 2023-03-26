@@ -170,6 +170,8 @@ function NewVsReturningWidget(props) {
               </div>
             ))}
         </div>
+        <div className="h-44">
+        </div>
       </div>
     </Paper>
   );
