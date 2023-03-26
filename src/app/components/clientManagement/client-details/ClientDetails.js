@@ -60,9 +60,6 @@ const ClientDetails = () => {
   const [plan, setPlan] = React.useState(1);
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
-  const plan1 = useRef(null);
-  const plan2 = useRef(null);
-  const plan3 = useRef(null);
   const sameAddressRef = useRef(null);
   const [info, setInfo] = useState([]);
   const [tabValue, setTabValue] = React.useState("1");
@@ -121,11 +118,14 @@ const ClientDetails = () => {
           );
           if (planValue) {
             if (planValue === 1) {
-              plan1.current.click();
+              setPlan(1);
+              // plan1.current.click();
             } else if (planValue === 2) {
-              plan2.current.click();
+              setPlan(2);
+              // plan2.current.click();
             } else if (planValue === 3) {
-              plan3.current.click();
+              setPlan(3);
+              // plan3.current.click();
             }
           }
 
@@ -148,6 +148,7 @@ const ClientDetails = () => {
             setInitialSameAddressRef(false);
             setSameAddress(false);
           }
+
           defaultValue.id = info?.organizationDetails?.id
             ? info.organizationDetails.id
             : "";
@@ -481,7 +482,7 @@ const ClientDetails = () => {
 
     const vatRates = values.vat.length
       ? values.vat
-          .filter((v) => v.vatValue)
+          .filter((v) => v.vatValue >= 0)
           .map((vat, index) => {
             return {
               uuid:
@@ -737,15 +738,15 @@ const ClientDetails = () => {
                           className="subtitle3"
                           value="1"
                         />
-                        <Tab 
-                          label={ t("label:clientTimeline") } 
-                          className="subtitle3" 
-                          value="2" 
+                        <Tab
+                          label={ t("label:clientTimeline") }
+                          className="subtitle3"
+                          value="2"
                         />
-                        <Tab 
-                          label={ t("label:clientOrders") } 
-                          className="subtitle3" 
-                          value="3" 
+                        <Tab
+                          label={ t("label:clientOrders") }
+                          className="subtitle3"
+                          value="3"
                         />
                       </TabList>
                     </Box>
@@ -799,8 +800,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.clientName?.message
                                         ? t(
-                                            `validation:${errors?.clientName?.message}`
-                                          )
+                                          `validation:${errors?.clientName?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -844,8 +845,8 @@ const ClientDetails = () => {
                                     <FormHelperText>
                                       {errors?.organizationType?.message
                                         ? t(
-                                            `validation:${errors?.organizationType?.message}`
-                                          )
+                                          `validation:${errors?.organizationType?.message}`
+                                        )
                                         : ""}
                                     </FormHelperText>
                                   </FormControl>
@@ -865,8 +866,8 @@ const ClientDetails = () => {
                                       helperText={
                                         errors?.parentClientName?.message
                                           ? t(
-                                              `validation:${errors?.parentClientName?.message}`
-                                            )
+                                            `validation:${errors?.parentClientName?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -917,8 +918,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.fullName?.message
                                         ? t(
-                                            `validation:${errors?.fullName?.message}`
-                                          )
+                                          `validation:${errors?.fullName?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -954,8 +955,8 @@ const ClientDetails = () => {
                                     <FormHelperText>
                                       {errors?.primaryPhoneNumber?.message
                                         ? t(
-                                            `validation:${errors?.primaryPhoneNumber?.message}`
-                                          )
+                                          `validation:${errors?.primaryPhoneNumber?.message}`
+                                        )
                                         : ""}
                                     </FormHelperText>
                                   </FormControl>
@@ -974,8 +975,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.designation?.message
                                         ? t(
-                                            `validation:${errors?.designation?.message}`
-                                          )
+                                          `validation:${errors?.designation?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -997,8 +998,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.email?.message
                                         ? t(
-                                            `validation:${errors?.email?.message}`
-                                          )
+                                          `validation:${errors?.email?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -1038,7 +1039,6 @@ const ClientDetails = () => {
                                     : "create-user-role-button"
                                 }
                                 onClick={() => setPlan(1)}
-                                ref={plan1}
                               >
                                 {t("label:plan1")}
                               </button>
@@ -1050,7 +1050,6 @@ const ClientDetails = () => {
                                     : "create-user-role-button"
                                 }
                                 onClick={() => setPlan(2)}
-                                ref={plan2}
                               >
                                 {t("label:plan2")}
                               </button>
@@ -1062,7 +1061,6 @@ const ClientDetails = () => {
                                     : "create-user-role-button"
                                 }
                                 onClick={() => setPlan(3)}
-                                ref={plan3}
                               >
                                 {t("label:plan3")}
                               </button>
@@ -1072,8 +1070,8 @@ const ClientDetails = () => {
                                 name="contactEndDate"
                                 control={control}
                                 render={({
-                                  field: { onChange, value, onBlur },
-                                }) => (
+                                           field: { onChange, value, onBlur },
+                                         }) => (
                                   <DesktopDatePicker
                                     label={t("label:contractEndDate")}
                                     mask=""
@@ -1102,8 +1100,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.contactEndDate?.message
                                             ? t(
-                                                `validation:${errors?.contactEndDate?.message}`
-                                              )
+                                              `validation:${errors?.contactEndDate?.message}`
+                                            )
                                             : ""
                                         }
                                       />
@@ -1124,8 +1122,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.commision?.message
                                         ? t(
-                                            `validation:${errors?.commision?.message}`
-                                          )
+                                          `validation:${errors?.commision?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -1155,8 +1153,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.smsCost?.message
                                         ? t(
-                                            `validation:${errors?.smsCost?.message}`
-                                          )
+                                          `validation:${errors?.smsCost?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -1186,8 +1184,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.emailCost?.message
                                         ? t(
-                                            `validation:${errors?.emailCost?.message}`
-                                          )
+                                          `validation:${errors?.emailCost?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -1217,8 +1215,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.creditCheckCost?.message
                                         ? t(
-                                            `validation:${errors?.creditCheckCost?.message}`
-                                          )
+                                          `validation:${errors?.creditCheckCost?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -1536,11 +1534,11 @@ const ClientDetails = () => {
                             </div>
                             {!sameAddress &&
                               ((billingPhoneNumber &&
-                                billingEmail &&
-                                billingAddress &&
-                                zip &&
-                                city &&
-                                country) ||
+                                  billingEmail &&
+                                  billingAddress &&
+                                  zip &&
+                                  city &&
+                                  country) ||
                                 shippingPhoneNumber ||
                                 shippingEmail ||
                                 shippingAddress ||
@@ -1693,7 +1691,7 @@ const ClientDetails = () => {
                                               info?.addresses["shipping"]
                                                 ?.country
                                                 ? info.addresses["shipping"]
-                                                    .country
+                                                  .country
                                                 : ""
                                             }
                                           >
@@ -2519,13 +2517,13 @@ const ClientDetails = () => {
                                         type="checkbox"
                                         control={control}
                                         render={({
-                                          field: {
-                                            onChange,
-                                            value,
-                                            ref,
-                                            onBlur,
-                                          },
-                                        }) => (
+                                                   field: {
+                                                     onChange,
+                                                     value,
+                                                     ref,
+                                                     onBlur,
+                                                   },
+                                                 }) => (
                                           <FormControl
                                             required
                                             error={!!errors.Switch}

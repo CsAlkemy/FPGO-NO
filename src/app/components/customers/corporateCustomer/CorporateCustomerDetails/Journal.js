@@ -54,7 +54,7 @@ const Journal = () => {
   };
 
   useEffect(() => {
-    if (defaultJournal) {
+    if (defaultJournal && isFetching) {
       const stDate = new Date(selectedDate).getTime() / 1000;
       CustomersService.getCutomerJournals(id, stDate)
         .then((response) => {
@@ -116,10 +116,7 @@ const Journal = () => {
   }
 
   const disableFromNextMonth = (date) => {
-    console.log("disableFromNextMonth");
     const paramMonth = date.getMonth();
-    console.log("paramMonth",paramMonth);
-    console.log("new Date().getMonth() <= paramMonth",new Date().getMonth() <= paramMonth);
     return new Date().getMonth() <= paramMonth;
   };
 

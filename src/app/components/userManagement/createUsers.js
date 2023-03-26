@@ -1,35 +1,39 @@
-import {yupResolver} from "@hookform/resolvers/yup";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {LoadingButton} from "@mui/lab";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
-    Button,
-    FormControl,
-    FormHelperText,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
+  Button,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
 } from "@mui/material";
-import {selectUser} from "app/store/userSlice";
-import {useSnackbar} from "notistack";
-import React, {useEffect, useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {useTranslation} from "react-i18next";
+import { selectUser } from "app/store/userSlice";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
-import {useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import UserService from "../../data-access/services/userService/UserService";
-import {BUSINESS_ADMIN, FP_ADMIN, GENERAL_USER,} from "../../utils/user-roles/UserRoles";
+import {
+  BUSINESS_ADMIN,
+  FP_ADMIN,
+  GENERAL_USER,
+} from "../../utils/user-roles/UserRoles";
 import DiscardConfirmModal from "../common/confirmDiscard";
 import {
-    defaultValues,
-    validateSchemaCreateBusinessAdmin,
-    validateSchemaCreateCompanyAdmin,
-    validateSchemaGeneralAdmin,
+  defaultValues,
+  validateSchemaCreateBusinessAdmin,
+  validateSchemaCreateCompanyAdmin,
+  validateSchemaGeneralAdmin,
 } from "./utils/helper";
-import {useCreateUserMutation} from "app/store/api/apiSlice";
+import { useCreateUserMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../data-access/utils/UtilsServices";
 import AuthService from "../../data-access/services/authService";
 import _ from "lodash";
@@ -216,6 +220,8 @@ export default function CreateUsers() {
                     type="submit"
                     loading={loading}
                     loadingPosition="center"
+                    // disabled={!isValid || watch("phoneNumber").length <= 2}
+                    disabled={!isValid}
                   >
                     {t("label:createAccount")}
                   </LoadingButton>
@@ -327,6 +333,12 @@ export default function CreateUsers() {
                                     `validation:${errors?.phoneNumber?.message}`
                                   )
                                 : ""}
+                              {/*{watch("phoneNumber").length === 2 && (*/}
+                              {/*  <span className="text-red-500">*/}
+                              {/*    {" "}*/}
+                              {/*    {t("validation:youMustEnterYourPhoneNumber")}*/}
+                              {/*  </span>*/}
+                              {/*)}*/}
                             </FormHelperText>
                           </FormControl>
                         )}

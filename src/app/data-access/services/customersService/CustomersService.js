@@ -51,7 +51,18 @@ class CustomersService {
       !params.billingCountry
         ? null
         : {
-          // type: "billing",
+            // type: "billing",
+            // countryCode: bl_countryCode,
+            // msisdn: bl_msisdn,
+            // email: params.billingEmail ? params.billingEmail : null,
+            street: params.billingAddress ? params.billingAddress : null,
+            zip: params.billingZip ? params.billingZip : null,
+            city: params.billingCity ? params.billingCity : null,
+            country: params.billingCountry ? params.billingCountry : null,
+          };
+    const addresses1 = sameAddress
+      ? {
+          // type: "Shipping",
           // countryCode: bl_countryCode,
           // msisdn: bl_msisdn,
           // email: params.billingEmail ? params.billingEmail : null,
@@ -59,27 +70,16 @@ class CustomersService {
           zip: params.billingZip ? params.billingZip : null,
           city: params.billingCity ? params.billingCity : null,
           country: params.billingCountry ? params.billingCountry : null,
-        };
-    const addresses1 = sameAddress
-      ? {
-        // type: "Shipping",
-        // countryCode: bl_countryCode,
-        // msisdn: bl_msisdn,
-        // email: params.billingEmail ? params.billingEmail : null,
-        street: params.billingAddress ? params.billingAddress : null,
-        zip: params.billingZip ? params.billingZip : null,
-        city: params.billingCity ? params.billingCity : null,
-        country: params.billingCountry ? params.billingCountry : null,
-      }
+        }
       : !sh_msisdn &&
-      !sh_countryCode &&
-      !params?.shippingEmail &&
-      !params?.shippingAddress &&
-      !params?.shippingZip &&
-      !params?.shippingCity &&
-      !params?.shippingCountry
-        ? null
-        : {
+        !sh_countryCode &&
+        !params?.shippingEmail &&
+        !params?.shippingAddress &&
+        !params?.shippingZip &&
+        !params?.shippingCity &&
+        !params?.shippingCountry
+      ? null
+      : {
           // type: "Shipping",
           // countryCode: sh_countryCode,
           // msisdn: sh_msisdn,
@@ -94,12 +94,12 @@ class CustomersService {
       !addresses0 && !addresses1
         ? null
         : !addresses1 && addresses0
-          ? {
+        ? {
             // 0: addresses0,
             billing: { ...addresses0 },
             shipping: { ...addresses0 },
           }
-          : {
+        : {
             // 0: addresses0,
             // 1: addresses1,
             billing: { ...addresses0 },
@@ -141,21 +141,21 @@ class CustomersService {
               : null;
             const countryCode = primaryPhoneNumber
               ? "+" +
-              primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
               : null;
             const bl_msisdn = billingPhoneNumber
               ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
               : null;
             const bl_countryCode = billingPhoneNumber
               ? "+" +
-              billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
+                billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const sh_msisdn = shippingPhoneNumber
               ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
               : null;
             const sh_countryCode = shippingPhoneNumber
               ? "+" +
-              shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+                shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
 
             const URL = `${EnvVariable.BASEURL}/customers/create/private`;
@@ -170,39 +170,39 @@ class CustomersService {
               !params.billingCountry
                 ? null
                 : {
-                  // type: "billing",
+                    // type: "billing",
+                    // countryCode: bl_countryCode,
+                    // msisdn: bl_msisdn,
+                    // email: params.billingEmail ? params.billingEmail : null,
+                    street: params.billingAddress
+                      ? params.billingAddress
+                      : null,
+                    zip: params.billingZip ? params.billingZip : null,
+                    city: params.billingCity ? params.billingCity : null,
+                    country: params.billingCountry
+                      ? params.billingCountry
+                      : null,
+                  };
+            const addresses1 = sameAddress
+              ? {
+                  // type: "Shipping",
                   // countryCode: bl_countryCode,
                   // msisdn: bl_msisdn,
                   // email: params.billingEmail ? params.billingEmail : null,
-                  street: params.billingAddress
-                    ? params.billingAddress
-                    : null,
+                  street: params.billingAddress ? params.billingAddress : null,
                   zip: params.billingZip ? params.billingZip : null,
                   city: params.billingCity ? params.billingCity : null,
-                  country: params.billingCountry
-                    ? params.billingCountry
-                    : null,
-                };
-            const addresses1 = sameAddress
-              ? {
-                // type: "Shipping",
-                // countryCode: bl_countryCode,
-                // msisdn: bl_msisdn,
-                // email: params.billingEmail ? params.billingEmail : null,
-                street: params.billingAddress ? params.billingAddress : null,
-                zip: params.billingZip ? params.billingZip : null,
-                city: params.billingCity ? params.billingCity : null,
-                country: params.billingCountry ? params.billingCountry : null,
-              }
+                  country: params.billingCountry ? params.billingCountry : null,
+                }
               : !sh_msisdn &&
-              !sh_countryCode &&
-              !params?.shippingEmail &&
-              !params?.shippingAddress &&
-              !params?.shippingZip &&
-              !params?.shippingCity &&
-              !params?.shippingCountry
-                ? null
-                : {
+                !sh_countryCode &&
+                !params?.shippingEmail &&
+                !params?.shippingAddress &&
+                !params?.shippingZip &&
+                !params?.shippingCity &&
+                !params?.shippingCountry
+              ? null
+              : {
                   // type: "Shipping",
                   // countryCode: sh_countryCode,
                   // msisdn: sh_msisdn,
@@ -221,12 +221,12 @@ class CustomersService {
               !addresses0 && !addresses1
                 ? null
                 : !addresses1 && addresses0
-                  ? {
+                ? {
                     // 0: addresses0,
                     billing: { ...addresses0 },
                     shipping: { ...addresses0 },
                   }
-                  : {
+                : {
                     // 0: addresses0,
                     // 1: addresses1,
                     billing: { ...addresses0 },
@@ -301,6 +301,17 @@ class CustomersService {
       !params.billingCountry
         ? null
         : {
+            // countryCode: bl_countryCode,
+            // msisdn: bl_msisdn,
+            // email: params.billingEmail ? params.billingEmail : null,
+            street: params.billingAddress ? params.billingAddress : null,
+            zip: params.billingZip ? params.billingZip : null,
+            city: params.billingCity ? params.billingCity : null,
+            country: params.billingCountry ? params.billingCountry : null,
+          };
+
+    const addresses1 = sameAddress
+      ? {
           // countryCode: bl_countryCode,
           // msisdn: bl_msisdn,
           // email: params.billingEmail ? params.billingEmail : null,
@@ -308,27 +319,16 @@ class CustomersService {
           zip: params.billingZip ? params.billingZip : null,
           city: params.billingCity ? params.billingCity : null,
           country: params.billingCountry ? params.billingCountry : null,
-        };
-
-    const addresses1 = sameAddress
-      ? {
-        // countryCode: bl_countryCode,
-        // msisdn: bl_msisdn,
-        // email: params.billingEmail ? params.billingEmail : null,
-        street: params.billingAddress ? params.billingAddress : null,
-        zip: params.billingZip ? params.billingZip : null,
-        city: params.billingCity ? params.billingCity : null,
-        country: params.billingCountry ? params.billingCountry : null,
-      }
+        }
       : !sh_msisdn &&
-      !sh_countryCode &&
-      !params.shippingEmail &&
-      !params.shippingAddress &&
-      !params.shippingZip &&
-      !params.shippingCity &&
-      !params.shippingCountry
-        ? addresses0
-        : {
+        !sh_countryCode &&
+        !params.shippingEmail &&
+        !params.shippingAddress &&
+        !params.shippingZip &&
+        !params.shippingCity &&
+        !params.shippingCountry
+      ? addresses0
+      : {
           // street: params.shippingAddress ? params.shippingAddress : null,
           // zip: params.shippingZip ? params.shippingZip : null,
           // city: params.shippingCity ? params.shippingCity : null,
@@ -348,7 +348,7 @@ class CustomersService {
       !addresses0 && !addresses1
         ? null
         : !addresses1 && addresses0
-          ? {
+        ? {
             billing: {
               ...addresses0,
             },
@@ -357,7 +357,7 @@ class CustomersService {
               ...addresses0,
             },
           }
-          : {
+        : {
             // 0: addresses0,
             // 1: addresses1,
             billing: {
@@ -375,34 +375,34 @@ class CustomersService {
       !params?.notes
         ? null
         : {
-          0: {
-            name: params.fullName,
-            email: params.email,
-            designation: params.designation,
-            countryCode: "+" + params.phone.slice(0, 2),
-            msisdn: params.phone.slice(2),
-            note: params.notes,
-          },
-        };
+            0: {
+              name: params.fullName,
+              email: params.email,
+              designation: params.designation,
+              countryCode: "+" + params.phone.slice(0, 2),
+              msisdn: params.phone.slice(2),
+              note: params.notes,
+            },
+          };
 
     const additionalData = params?.contact
       ? params.contact.map((row) => {
-        const phone = row?.phone ? row.phone.split("+") : null;
+          const phone = row?.phone ? row.phone.split("+") : null;
 
-        const msisdn = phone ? phone[phone.length - 1].slice(2) : null;
-        const countryCode = phone
-          ? "+" + phone[phone.length - 1].slice(0, 2)
-          : null;
+          const msisdn = phone ? phone[phone.length - 1].slice(2) : null;
+          const countryCode = phone
+            ? "+" + phone[phone.length - 1].slice(0, 2)
+            : null;
 
-        return {
-          name: row.fullName,
-          email: row.email,
-          designation: row.designation,
-          countryCode,
-          msisdn,
-          note: row.notes,
-        };
-      })
+          return {
+            name: row.fullName,
+            email: row.email,
+            designation: row.designation,
+            countryCode,
+            msisdn,
+            note: row.notes,
+          };
+        })
       : null;
 
     if (additionalData) {
@@ -442,21 +442,21 @@ class CustomersService {
               : null;
             const countryCode = primaryPhoneNumber
               ? "+" +
-              primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+                primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
               : null;
             const bl_msisdn = billingPhoneNumber
               ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
               : null;
             const bl_countryCode = billingPhoneNumber
               ? "+" +
-              billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
+                billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
               : null;
             const sh_msisdn = shippingPhoneNumber
               ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
               : null;
             const sh_countryCode = shippingPhoneNumber
               ? "+" +
-              shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+                shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
               : null;
 
             const URL = `${EnvVariable.BASEURL}/customers/create/corporate`;
@@ -471,38 +471,38 @@ class CustomersService {
               !params.billingCountry
                 ? null
                 : {
-                  // countryCode: bl_countryCode,
-                  // msisdn: bl_msisdn,
-                  // email: params.billingEmail ? params.billingEmail : null,
-                  street: params.billingAddress
-                    ? params.billingAddress
-                    : null,
-                  zip: params.billingZip ? params.billingZip : null,
-                  city: params.billingCity ? params.billingCity : null,
-                  country: params.billingCountry
-                    ? params.billingCountry
-                    : null,
-                };
+                    // countryCode: bl_countryCode,
+                    // msisdn: bl_msisdn,
+                    // email: params.billingEmail ? params.billingEmail : null,
+                    street: params.billingAddress
+                      ? params.billingAddress
+                      : null,
+                    zip: params.billingZip ? params.billingZip : null,
+                    city: params.billingCity ? params.billingCity : null,
+                    country: params.billingCountry
+                      ? params.billingCountry
+                      : null,
+                  };
 
             const addresses1 = sameAddress
               ? {
-                // countryCode: bl_countryCode,
-                // msisdn: bl_msisdn,
-                // email: params.billingEmail ? params.billingEmail : null,
-                street: params.billingAddress ? params.billingAddress : null,
-                zip: params.billingZip ? params.billingZip : null,
-                city: params.billingCity ? params.billingCity : null,
-                country: params.billingCountry ? params.billingCountry : null,
-              }
+                  // countryCode: bl_countryCode,
+                  // msisdn: bl_msisdn,
+                  // email: params.billingEmail ? params.billingEmail : null,
+                  street: params.billingAddress ? params.billingAddress : null,
+                  zip: params.billingZip ? params.billingZip : null,
+                  city: params.billingCity ? params.billingCity : null,
+                  country: params.billingCountry ? params.billingCountry : null,
+                }
               : !sh_msisdn &&
-              !sh_countryCode &&
-              !params.shippingEmail &&
-              !params.shippingAddress &&
-              !params.shippingZip &&
-              !params.shippingCity &&
-              !params.shippingCountry
-                ? null
-                : {
+                !sh_countryCode &&
+                !params.shippingEmail &&
+                !params.shippingAddress &&
+                !params.shippingZip &&
+                !params.shippingCity &&
+                !params.shippingCountry
+              ? null
+              : {
                   // countryCode: sh_countryCode,
                   // msisdn: sh_msisdn,
                   // email: params.shippingEmail ? params.shippingEmail : null,
@@ -519,13 +519,13 @@ class CustomersService {
               !addresses0 && !addresses1
                 ? null
                 : !addresses1 && addresses0
-                  ? {
+                ? {
                     billing: {
                       ...addresses0,
                     },
                     shipping: null,
                   }
-                  : {
+                : {
                     // 0: addresses0,
                     // 1: addresses1,
                     billing: {
@@ -543,36 +543,36 @@ class CustomersService {
               !params?.notes
                 ? null
                 : {
-                  0: {
-                    name: params.fullName,
-                    email: params.email,
-                    designation: params.designation,
-                    countryCode: "+" + params.phone.slice(0, 2),
-                    msisdn: params.phone.slice(2),
-                    note: params.notes,
-                  },
-                };
+                    0: {
+                      name: params.fullName,
+                      email: params.email,
+                      designation: params.designation,
+                      countryCode: "+" + params.phone.slice(0, 2),
+                      msisdn: params.phone.slice(2),
+                      note: params.notes,
+                    },
+                  };
 
             const additionalData = params?.contact
               ? params.contact.map((row) => {
-                const phone = row?.phone ? row.phone.split("+") : null;
+                  const phone = row?.phone ? row.phone.split("+") : null;
 
-                const msisdn = phone
-                  ? phone[phone.length - 1].slice(2)
-                  : null;
-                const countryCode = phone
-                  ? "+" + phone[phone.length - 1].slice(0, 2)
-                  : null;
+                  const msisdn = phone
+                    ? phone[phone.length - 1].slice(2)
+                    : null;
+                  const countryCode = phone
+                    ? "+" + phone[phone.length - 1].slice(0, 2)
+                    : null;
 
-                return {
-                  name: row.fullName,
-                  email: row.email,
-                  designation: row.designation,
-                  countryCode,
-                  msisdn,
-                  note: row.notes,
-                };
-              })
+                  return {
+                    name: row.fullName,
+                    email: row.email,
+                    designation: row.designation,
+                    countryCode,
+                    msisdn,
+                    note: row.notes,
+                  };
+                })
               : null;
 
             if (additionalData) {
@@ -1106,6 +1106,10 @@ class CustomersService {
 
     if (sameAddress) {
       data.addresses["shipping"] = {
+        // uuid:
+        //   detailsInfo?.addresses && detailsInfo?.addresses?.billing?.uuid
+        //     ? detailsInfo?.addresses?.billing?.uuid
+        //     : null,
         uuid:
           detailsInfo?.addresses && detailsInfo?.addresses?.shipping?.uuid
             ? detailsInfo?.addresses?.shipping?.uuid
@@ -1436,6 +1440,7 @@ class CustomersService {
                             "Refund"
                           : null,
                       isCancel: row.status.toLowerCase() === "sent",
+                      translationKey: row.translationKey
                     };
                   });
                   d.status_code = 200;

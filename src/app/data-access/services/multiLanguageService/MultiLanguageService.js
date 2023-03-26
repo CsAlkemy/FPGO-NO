@@ -5,7 +5,7 @@ import { EnvVariable } from "../../utils/EnvVariables";
 class MultiLanguageService {
   translations = async () => {
     return new Promise((resolve, reject) => {
-      const URL = `${EnvVariable.BASEURL}/translations`;
+      const URL = `${EnvVariable.PROD_BASE_URL}/translations`;
       return axios
         .get(URL)
         .then((response) => {

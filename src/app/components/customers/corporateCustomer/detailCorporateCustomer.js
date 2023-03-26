@@ -101,155 +101,295 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   const shippingCountry = watch("shippingCountry") || "";
 
   useEffect(() => {
-    CustomersService.getCustomerDetailsByUUID(queryParams.id)
-      .then((response) => {
-        setInfo(response?.data);
-        CorporateDetailsDefaultValue.customerID = info?.uuid ? info.uuid : "";
-        CorporateDetailsDefaultValue.organizationID = info?.organizationId
-          ? info.organizationId
-          : "";
-        CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
-        CorporateDetailsDefaultValue.OrganizationName = info?.name
-          ? info.name
-          : "";
-        CorporateDetailsDefaultValue.primaryPhoneNumber =
-          info?.countryCode && info?.msisdn
-            ? info.countryCode + info.msisdn
+    if (isLoading) {
+      CustomersService.getCustomerDetailsByUUID(queryParams.id)
+        .then((response) => {
+          setInfo(response?.data);
+          CorporateDetailsDefaultValue.customerID = info?.uuid ? info.uuid : "";
+          CorporateDetailsDefaultValue.organizationID = info?.organizationId
+            ? info.organizationId
+            : "";
+          CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
+          CorporateDetailsDefaultValue.OrganizationName = info?.name
+            ? info.name
+            : "";
+          CorporateDetailsDefaultValue.primaryPhoneNumber =
+            info?.countryCode && info?.msisdn
+              ? info.countryCode + info.msisdn
+              : "";
+
+          CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
+            ?.street
+            ? info.addresses.billing.street
+            : "";
+          CorporateDetailsDefaultValue.billingZip = info?.addresses?.billing
+            ?.zip
+            ? info.addresses.billing.zip
+            : "";
+          CorporateDetailsDefaultValue.billingCity = info?.addresses?.billing
+            ?.city
+            ? info.addresses.billing.city
+            : "";
+          CorporateDetailsDefaultValue.billingCountry = info?.addresses?.billing
+            ?.country
+            ? info.addresses.billing.country
             : "";
 
-        CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
-          ?.street
-          ? info.addresses.billing.street
-          : "";
-        CorporateDetailsDefaultValue.billingZip = info?.addresses?.billing?.zip
-          ? info.addresses.billing.zip
-          : "";
-        CorporateDetailsDefaultValue.billingCity = info?.addresses?.billing
-          ?.city
-          ? info.addresses.billing.city
-          : "";
-        CorporateDetailsDefaultValue.billingCountry = info?.addresses?.billing
-          ?.country
-          ? info.addresses.billing.country
-          : "";
+          CorporateDetailsDefaultValue.shippingAddress = info?.addresses
+            ?.shipping?.street
+            ? info.addresses.shipping?.street
+            : "";
+          CorporateDetailsDefaultValue.shippingZip = info?.addresses?.shipping
+            ?.zip
+            ? info.addresses.shipping?.zip
+            : "";
+          CorporateDetailsDefaultValue.shippingCity = info?.addresses?.shipping
+            ?.city
+            ? info.addresses.shipping?.city
+            : "";
+          CorporateDetailsDefaultValue.shippingCountry = info?.addresses
+            ?.shipping?.country
+            ? info.addresses.shipping?.country
+            : "";
 
-        CorporateDetailsDefaultValue.shippingAddress = info?.addresses?.shipping
-          ?.street
-          ? info.addresses.shipping?.street
-          : "";
-        CorporateDetailsDefaultValue.shippingZip = info?.addresses?.shipping
-          ?.zip
-          ? info.addresses.shipping?.zip
-          : "";
-        CorporateDetailsDefaultValue.shippingCity = info?.addresses?.shipping
-          ?.city
-          ? info.addresses.shipping?.city
-          : "";
-        CorporateDetailsDefaultValue.shippingCountry = info?.addresses?.shipping
-          ?.country
-          ? info.addresses.shipping?.country
-          : "";
-
-        if (
-          info?.additionalContactDetails &&
-          info?.additionalContactDetails.length
-        ) {
           if (
             info?.additionalContactDetails &&
-            info?.additionalContactDetails.length >= 2
+            info?.additionalContactDetails.length
           ) {
-            // for (let i=0; i<info?.additionalContactDetails.length -1; i++){
-            //   addNewContact()
-            // }
-            // ADC
-            setAddContactIndex(
-              addContactIndex.filter(
-                (item, index) =>
-                  item < info?.additionalContactDetails.length - 1
-              )
-            );
-          }
-          CorporateDetailsDefaultValue.fullName = info
-            ?.additionalContactDetails[0]?.name
-            ? info.additionalContactDetails[0].name
-            : "";
-          CorporateDetailsDefaultValue.designation = info
-            ?.additionalContactDetails[0]?.designation
-            ? info.additionalContactDetails[0].designation
-            : "";
-          CorporateDetailsDefaultValue.phone =
-            info?.additionalContactDetails[0]?.countryCode &&
-            info.additionalContactDetails[0].msisdn
-              ? info.additionalContactDetails[0].countryCode +
-                info.additionalContactDetails[0].msisdn
+            if (
+              info?.additionalContactDetails &&
+              info?.additionalContactDetails.length >= 2
+            ) {
+              // for (let i=0; i<info?.additionalContactDetails.length -1; i++){
+              //   addNewContact()
+              // }
+              // ADC
+              setAddContactIndex(
+                addContactIndex.filter(
+                  (item, index) =>
+                    item < info?.additionalContactDetails.length - 1
+                )
+              );
+            }
+            CorporateDetailsDefaultValue.fullName = info
+              ?.additionalContactDetails[0]?.name
+              ? info.additionalContactDetails[0].name
               : "";
-          CorporateDetailsDefaultValue.email = info?.additionalContactDetails[0]
-            ?.email
-            ? info.additionalContactDetails[0].email
-            : "";
-          CorporateDetailsDefaultValue.notes = info?.additionalContactDetails[0]
-            ?.notes
-            ? info.additionalContactDetails[0].notes
-            : "";
-        } else setAddContactIndex([]);
-        reset({ ...CorporateDetailsDefaultValue });
-        // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
+            CorporateDetailsDefaultValue.designation = info
+              ?.additionalContactDetails[0]?.designation
+              ? info.additionalContactDetails[0].designation
+              : "";
+            CorporateDetailsDefaultValue.phone =
+              info?.additionalContactDetails[0]?.countryCode &&
+              info.additionalContactDetails[0].msisdn
+                ? info.additionalContactDetails[0].countryCode +
+                  info.additionalContactDetails[0].msisdn
+                : "";
+            CorporateDetailsDefaultValue.email = info
+              ?.additionalContactDetails[0]?.email
+              ? info.additionalContactDetails[0].email
+              : "";
+            CorporateDetailsDefaultValue.notes = info
+              ?.additionalContactDetails[0]?.notes
+              ? info.additionalContactDetails[0].notes
+              : "";
+          } else setAddContactIndex([]);
+          reset({ ...CorporateDetailsDefaultValue });
+          // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
 
-        if (
-          info?.additionalContactDetails &&
-          info?.additionalContactDetails.length
-        ) {
-          for (let i = 0; i < info.additionalContactDetails.length - 1; i++) {
-            setValue(
-              `contact[${i}].fullName`,
-              info.additionalContactDetails[`${i + 1}`].name
-            );
-            setValue(
-              `contact[${i}].designation`,
-              info.additionalContactDetails[`${i + 1}`].designation
-            );
-            setValue(
-              `contact[${i}].phone`,
-              info.additionalContactDetails[`${i + 1}`].countryCode +
-                info.additionalContactDetails[`${i}`].msisdn
-            );
-            setValue(
-              `contact[${i}].notes`,
-              info.additionalContactDetails[`${i + 1}`].notes
-            );
-            setValue(
-              `contact[${i}].email`,
-              info.additionalContactDetails[`${i + 1}`].email
-            );
+          if (
+            info?.additionalContactDetails &&
+            info?.additionalContactDetails.length
+          ) {
+            for (let i = 0; i < info.additionalContactDetails.length - 1; i++) {
+              setValue(
+                `contact[${i}].fullName`,
+                info.additionalContactDetails[`${i + 1}`].name
+              );
+              setValue(
+                `contact[${i}].designation`,
+                info.additionalContactDetails[`${i + 1}`].designation
+              );
+              setValue(
+                `contact[${i}].phone`,
+                info.additionalContactDetails[`${i + 1}`].countryCode +
+                  info.additionalContactDetails[`${i}`].msisdn
+              );
+              setValue(
+                `contact[${i}].notes`,
+                info.additionalContactDetails[`${i + 1}`].notes
+              );
+              setValue(
+                `contact[${i}].email`,
+                info.additionalContactDetails[`${i + 1}`].email
+              );
+            }
           }
-        }
 
-        if (
-          info?.addresses &&
-          info?.addresses?.billing?.street ===
-            info?.addresses["shipping"]?.street &&
-          info?.addresses?.billing?.zip === info?.addresses["shipping"]?.zip &&
-          info?.addresses?.billing?.city ===
-            info?.addresses["shipping"]?.city &&
-          info?.addresses?.billing?.country ===
-            info?.addresses["shipping"]?.country
-        ) {
-          setSameAddress(true);setInitialSameAddressRef(true);
-        } else {
-          setInitialSameAddressRef(false);
-          setSameAddress(false);
-        }
+          if (
+            info?.addresses &&
+            info?.addresses?.billing?.street ===
+              info?.addresses["shipping"]?.street &&
+            info?.addresses?.billing?.zip ===
+              info?.addresses["shipping"]?.zip &&
+            info?.addresses?.billing?.city ===
+              info?.addresses["shipping"]?.city &&
+            info?.addresses?.billing?.country ===
+              info?.addresses["shipping"]?.country
+          ) {
+            setSameAddress(true);
+            setInitialSameAddressRef(true);
+          } else {
+            setInitialSameAddressRef(false);
+            setSameAddress(false);
+          }
 
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        navigate("/customers/customers-list");
-        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
-      });
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          navigate("/customers/customers-list");
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        });
+    }
     return () => {
       reset({ ...CorporateDetailsDefaultValue });
     };
   }, [isLoading]);
+
+  useEffect(() => {
+    if (!!info) {
+      CorporateDetailsDefaultValue.customerID = info?.uuid ? info.uuid : "";
+      CorporateDetailsDefaultValue.organizationID = info?.organizationId
+        ? info.organizationId
+        : "";
+      CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
+      CorporateDetailsDefaultValue.OrganizationName = info?.name
+        ? info.name
+        : "";
+      CorporateDetailsDefaultValue.primaryPhoneNumber =
+        info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
+
+      CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
+        ?.street
+        ? info.addresses.billing.street
+        : "";
+      CorporateDetailsDefaultValue.billingZip = info?.addresses?.billing?.zip
+        ? info.addresses.billing.zip
+        : "";
+      CorporateDetailsDefaultValue.billingCity = info?.addresses?.billing?.city
+        ? info.addresses.billing.city
+        : "";
+      CorporateDetailsDefaultValue.billingCountry = info?.addresses?.billing
+        ?.country
+        ? info.addresses.billing.country
+        : "";
+
+      CorporateDetailsDefaultValue.shippingAddress = info?.addresses?.shipping
+        ?.street
+        ? info.addresses.shipping?.street
+        : "";
+      CorporateDetailsDefaultValue.shippingZip = info?.addresses?.shipping?.zip
+        ? info.addresses.shipping?.zip
+        : "";
+      CorporateDetailsDefaultValue.shippingCity = info?.addresses?.shipping
+        ?.city
+        ? info.addresses.shipping?.city
+        : "";
+      CorporateDetailsDefaultValue.shippingCountry = info?.addresses?.shipping
+        ?.country
+        ? info.addresses.shipping?.country
+        : "";
+
+      if (
+        info?.additionalContactDetails &&
+        info?.additionalContactDetails.length
+      ) {
+        if (
+          info?.additionalContactDetails &&
+          info?.additionalContactDetails.length >= 2
+        ) {
+          // for (let i=0; i<info?.additionalContactDetails.length -1; i++){
+          //   addNewContact()
+          // }
+          // ADC
+          setAddContactIndex(
+            addContactIndex.filter(
+              (item, index) => item < info?.additionalContactDetails.length - 1
+            )
+          );
+        }
+        CorporateDetailsDefaultValue.fullName = info
+          ?.additionalContactDetails[0]?.name
+          ? info.additionalContactDetails[0].name
+          : "";
+        CorporateDetailsDefaultValue.designation = info
+          ?.additionalContactDetails[0]?.designation
+          ? info.additionalContactDetails[0].designation
+          : "";
+        CorporateDetailsDefaultValue.phone =
+          info?.additionalContactDetails[0]?.countryCode &&
+          info.additionalContactDetails[0].msisdn
+            ? info.additionalContactDetails[0].countryCode +
+              info.additionalContactDetails[0].msisdn
+            : "";
+        CorporateDetailsDefaultValue.email = info?.additionalContactDetails[0]
+          ?.email
+          ? info.additionalContactDetails[0].email
+          : "";
+        CorporateDetailsDefaultValue.notes = info?.additionalContactDetails[0]
+          ?.notes
+          ? info.additionalContactDetails[0].notes
+          : "";
+      } else setAddContactIndex([]);
+      reset({ ...CorporateDetailsDefaultValue });
+      // setValue(`contact[0].fullName`, info.additionalContactDetails[1].name) ;
+
+      if (
+        info?.additionalContactDetails &&
+        info?.additionalContactDetails.length
+      ) {
+        for (let i = 0; i < info.additionalContactDetails.length - 1; i++) {
+          setValue(
+            `contact[${i}].fullName`,
+            info.additionalContactDetails[`${i + 1}`].name
+          );
+          setValue(
+            `contact[${i}].designation`,
+            info.additionalContactDetails[`${i + 1}`].designation
+          );
+          setValue(
+            `contact[${i}].phone`,
+            info.additionalContactDetails[`${i + 1}`].countryCode +
+              info.additionalContactDetails[`${i}`].msisdn
+          );
+          setValue(
+            `contact[${i}].notes`,
+            info.additionalContactDetails[`${i + 1}`].notes
+          );
+          setValue(
+            `contact[${i}].email`,
+            info.additionalContactDetails[`${i + 1}`].email
+          );
+        }
+      }
+
+      if (
+        info?.addresses &&
+        info?.addresses?.billing?.street ===
+          info?.addresses["shipping"]?.street &&
+        info?.addresses?.billing?.zip === info?.addresses["shipping"]?.zip &&
+        info?.addresses?.billing?.city === info?.addresses["shipping"]?.city &&
+        info?.addresses?.billing?.country ===
+          info?.addresses["shipping"]?.country
+      ) {
+        setSameAddress(true);
+        setInitialSameAddressRef(true);
+      } else {
+        setInitialSameAddressRef(false);
+        setSameAddress(false);
+      }
+    }
+  }, [info]);
 
   const onRawSubmit = (values) => {
     // onSubmit({
@@ -780,83 +920,25 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                   </div>
 
                                   {!sameAddress && (
-                                      <div className="">
-                                        <div className="form-pair-three-by-one">
-                                          <div className="col-span-3">
-                                            <Controller
-                                              name="shippingAddress"
-                                              control={control}
-                                              render={({ field }) => (
-                                                <TextField
-                                                  {...field}
-                                                  label={t(
-                                                    "label:streetAddress"
-                                                  )}
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  disabled={sameAddress}
-                                                  error={
-                                                    !!errors.shippingAddress
-                                                  }
-                                                  helperText={
-                                                    errors?.shippingAddress
-                                                      ?.message
-                                                      ? t(
-                                                          `validation:${errors?.shippingAddress?.message}`
-                                                        )
-                                                      : ""
-                                                  }
-                                                  variant="outlined"
-                                                  fullWidth
-                                                  value={field.value || ""}
-                                                />
-                                              )}
-                                            />
-                                          </div>
-                                          <div className="col-span-1">
-                                            <Controller
-                                              name="shippingZip"
-                                              className="col-span-1"
-                                              control={control}
-                                              render={({ field }) => (
-                                                <TextField
-                                                  {...field}
-                                                  label={t("label:zipCode")}
-                                                  type="number"
-                                                  autoComplete="off"
-                                                  disabled={sameAddress}
-                                                  error={!!errors.shippingZip}
-                                                  helperText={
-                                                    errors?.shippingZip?.message
-                                                      ? t(
-                                                          `validation:${errors?.shippingZip?.message}`
-                                                        )
-                                                      : ""
-                                                  }
-                                                  variant="outlined"
-                                                  fullWidth
-                                                  value={field.value || ""}
-                                                />
-                                              )}
-                                            />
-                                          </div>
-                                        </div>
-                                        <div className="form-pair-input gap-x-20">
+                                    <div className="">
+                                      <div className="form-pair-three-by-one">
+                                        <div className="col-span-3">
                                           <Controller
-                                            name="shippingCity"
+                                            name="shippingAddress"
                                             control={control}
                                             render={({ field }) => (
                                               <TextField
                                                 {...field}
-                                                label={t("label:city")}
+                                                label={t("label:streetAddress")}
                                                 type="text"
                                                 autoComplete="off"
                                                 disabled={sameAddress}
-                                                error={!!errors.shippingCity}
+                                                error={!!errors.shippingAddress}
                                                 helperText={
-                                                  errors?.shippingCity?.message
+                                                  errors?.shippingAddress
+                                                    ?.message
                                                     ? t(
-                                                        `validation:${errors?.shippingCity?.message}`
+                                                        `validation:${errors?.shippingAddress?.message}`
                                                       )
                                                     : ""
                                                 }
@@ -866,56 +948,113 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                               />
                                             )}
                                           />
+                                        </div>
+                                        <div className="col-span-1">
                                           <Controller
-                                            name="shippingCountry"
+                                            name="shippingZip"
+                                            className="col-span-1"
                                             control={control}
                                             render={({ field }) => (
-                                              <FormControl
-                                                error={!!errors.shippingCountry}
-                                                fullWidth
-                                              >
-                                                <InputLabel id="demo-simple-select-label">
-                                                  {t("label:country")}
-                                                </InputLabel>
-                                                <Select
-                                                  {...field}
-                                                  labelId="demo-simple-select-label"
-                                                  id="demo-simple-select"
-                                                  label="Country"
-                                                  disabled={sameAddress}
-                                                  defaultValue={
-                                                    info?.addresses &&
-                                                    info?.addresses?.shipping &&
-                                                    info?.addresses?.shipping?.country.toLowerCase()
-                                                  }
-                                                >
-                                                  {/*<MenuItem value="" />*/}
-                                                  {/*<MenuItem value="norway">{t("label:norway")}</MenuItem>*/}
-                                                  {countries.map(
-                                                    (country, index) => (
-                                                      <MenuItem
-                                                        key={index}
-                                                        value={country.name}
-                                                      >
-                                                        {country.title}
-                                                      </MenuItem>
-                                                    )
-                                                  )}
-                                                </Select>
-                                                <FormHelperText>
-                                                  {errors?.shippingCountry
-                                                    ?.message
+                                              <TextField
+                                                {...field}
+                                                label={t("label:zipCode")}
+                                                type="number"
+                                                autoComplete="off"
+                                                disabled={sameAddress}
+                                                error={!!errors.shippingZip}
+                                                helperText={
+                                                  errors?.shippingZip?.message
                                                     ? t(
-                                                        `validation:${errors?.shippingCountry?.message}`
+                                                        `validation:${errors?.shippingZip?.message}`
                                                       )
-                                                    : ""}
-                                                </FormHelperText>
-                                              </FormControl>
+                                                    : ""
+                                                }
+                                                variant="outlined"
+                                                fullWidth
+                                                value={field.value || ""}
+                                              />
                                             )}
                                           />
                                         </div>
                                       </div>
-                                    )}
+                                      <div className="form-pair-input gap-x-20">
+                                        <Controller
+                                          name="shippingCity"
+                                          control={control}
+                                          render={({ field }) => (
+                                            <TextField
+                                              {...field}
+                                              label={t("label:city")}
+                                              type="text"
+                                              autoComplete="off"
+                                              disabled={sameAddress}
+                                              error={!!errors.shippingCity}
+                                              helperText={
+                                                errors?.shippingCity?.message
+                                                  ? t(
+                                                      `validation:${errors?.shippingCity?.message}`
+                                                    )
+                                                  : ""
+                                              }
+                                              variant="outlined"
+                                              fullWidth
+                                              value={field.value || ""}
+                                            />
+                                          )}
+                                        />
+                                        <Controller
+                                          name="shippingCountry"
+                                          control={control}
+                                          render={({ field }) => (
+                                            <FormControl
+                                              error={!!errors.shippingCountry}
+                                              fullWidth
+                                            >
+                                              <InputLabel id="demo-simple-select-label">
+                                                {t("label:country")}
+                                              </InputLabel>
+                                              <Select
+                                                {...field}
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                label="Country"
+                                                disabled={sameAddress}
+                                                defaultValue={
+                                                  info?.addresses &&
+                                                  info?.addresses?.shipping &&
+                                                  info?.addresses?.shipping
+                                                    ?.country
+                                                    ? info?.addresses?.shipping?.country.toLowerCase()
+                                                    : ""
+                                                }
+                                              >
+                                                {/*<MenuItem value="" />*/}
+                                                {/*<MenuItem value="norway">{t("label:norway")}</MenuItem>*/}
+                                                {countries.map(
+                                                  (country, index) => (
+                                                    <MenuItem
+                                                      key={index}
+                                                      value={country.name}
+                                                    >
+                                                      {country.title}
+                                                    </MenuItem>
+                                                  )
+                                                )}
+                                              </Select>
+                                              <FormHelperText>
+                                                {errors?.shippingCountry
+                                                  ?.message
+                                                  ? t(
+                                                      `validation:${errors?.shippingCountry?.message}`
+                                                    )
+                                                  : ""}
+                                              </FormHelperText>
+                                            </FormControl>
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                               <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
