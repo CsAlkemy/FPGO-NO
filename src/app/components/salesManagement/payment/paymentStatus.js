@@ -9,8 +9,14 @@ const paymentStatus = () => {
   const {t} = useTranslation();
   const queryParams = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [sentBy, setSentBy] = useState("");
+  const [phoneOrEmail, setPhoneOrEmail] = useState("");
   useEffect(() => {
-    console.log(queryParams.uuid)
+    const orderConfirmationData = JSON.parse(localStorage.getItem("orderConfirmationData"));
+    if (queryParams.uuid === orderConfirmationData.orderUuid){
+      setSentBy(orderConfirmationData?.sentBy);
+      setPhoneOrEmail(orderConfirmationData?.phoneOrEmail);
+    }
   }, [isLoading]);
 
     // const [isSuccess, setIsSuccess] = React.useState(false);
@@ -30,7 +36,7 @@ const paymentStatus = () => {
                         </div>
                         {/*<div className='header5'>Payment {isSuccess? 'Successful':'Failed'}</div>*/}
                         <div className='header5'>{t("label:paymentSuccessful")}</div>
-                        <div className='body2 w-full md:w-3/4 mx-auto text-center'>{t("label:paymentSuccessfulMessage")}</div>
+                        <div className='body2 w-full md:w-3/4 mx-auto text-center'>{t("label:paymentSuccessfulMessage", {sentBy:sentBy, phoneOrEmail:phoneOrEmail})}</div>
                     </div>
                 </div>
             </div>

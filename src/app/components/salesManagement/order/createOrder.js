@@ -164,6 +164,7 @@ const createOrder = () => {
     watch,
     setValue,
     resetField,
+    getFieldState,
     trigger,
     setError,
     setFocus,
@@ -171,8 +172,34 @@ const createOrder = () => {
   } = useForm({
     mode: "all",
     CreateOrderDefaultValue,
-    // reValidateMode: "onChange",
+    // reValidateMode: "all",
     resolver: yupResolver(schema),
+    // resolver: () => {
+    //   if (
+    //     (customData.orderBy === "sms" &&
+    //       customData.customerType === "private") ||
+    //     (customData.orderBy === "invoice" &&
+    //       customData.customerType === "private")
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderPrivate);
+    //   else if (
+    //     customData.orderBy === "email" &&
+    //     customData.customerType === "private"
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderPrivateOrderByEmail);
+    //   else if (
+    //     (customData.orderBy === "email" &&
+    //       customData.customerType === "corporate") ||
+    //     (customData.orderBy === "invoice" &&
+    //       customData.customerType === "corporate")
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderCorporate);
+    //   else if (
+    //     customData.orderBy === "sms" &&
+    //     customData.customerType === "corporate"
+    //   )
+    //     return yupResolver(validateSchemaCreateOrderCorporateOrderBySms);
+    // },
   });
   const watchAllFields = watch();
 
@@ -1110,7 +1137,17 @@ const createOrder = () => {
                                     `order[${index}].productID`,
                                     data.id
                                   );
-                                  setValue(`order[${index}].rate`, data.price);
+                                  const preparedPrice = data.price
+                                    .toString()
+                                    .includes(".")
+                                    ? `${data.price.toString().split(".")[0]},${
+                                        data.price.toString().split(".")[1]
+                                      }`
+                                    : data.price;
+                                  setValue(
+                                    `order[${index}].rate`,
+                                    preparedPrice
+                                  );
                                   setValue(`order[${index}].tax`, data.tax);
                                   disableCurrentProductRow(index);
 
@@ -1291,8 +1328,9 @@ const createOrder = () => {
                                 {...field}
                                 labelId="tax"
                                 id="tax"
+                                sx={{ height: 44 }}
                                 defaultValue={defaultTaxValue}
-                                className="custom-select-create-order"
+                                className="custom-select-create-order pt-8 mt-1"
                                 disabled={disableRowIndexes.includes(index)}
                               >
                                 {taxes && taxes.length ? (
@@ -2197,19 +2235,14 @@ const createOrder = () => {
                                     enableSearch
                                     autocompleteSearch
                                     countryCodeEditable={false}
-                                    // specialLabel={
-                                    //   customData.customerType === "corporate"
-                                    //     ? t("label:phone")
-                                    //     : `${t("label:phone")}*`
-                                    // }
                                     specialLabel={`${t("label:phone")}*`}
                                     // onBlur={handleOnBlurGetDialCode}
                                     value={field.value || ""}
                                   />
                                   <FormHelperText>
-                                    {errors?.email?.message
+                                    {errors?.primaryPhoneNumber?.message
                                       ? t(
-                                          `validation:${errors?.email?.message}`
+                                          `validation:${errors?.primaryPhoneNumber?.message}`
                                         )
                                       : ""}
                                   </FormHelperText>
@@ -2235,10 +2268,6 @@ const createOrder = () => {
                                   }
                                   variant="outlined"
                                   fullWidth
-                                  // required={
-                                  //   customData.customerType === "corporate" ||
-                                  //   customData.orderBy === "email"
-                                  // }
                                   required
                                   value={field.value || ""}
                                 />
@@ -2323,36 +2352,6 @@ const createOrder = () => {
                                   )}
                                 />
                               )}
-                              {/*<Controller*/}
-                              {/*  name="orgorPID"*/}
-                              {/*  control={control}*/}
-                              {/*  render={({ field }) => (*/}
-                              {/*    <TextField*/}
-                              {/*      {...field}*/}
-                              {/*      label={*/}
-                              {/*        customData.customerType === "private"*/}
-                              {/*          ? t("label:pNumber")*/}
-                              {/*          : t("label:organizationId")*/}
-                              {/*      }*/}
-                              {/*      type="number"*/}
-                              {/*      autoComplete="off"*/}
-                              {/*      error={!!errors.orgorPID}*/}
-                              {/*      required={*/}
-                              {/*        customData.customerType === "corporate"*/}
-                              {/*      }*/}
-                              {/*      helperText={*/}
-                              {/*        errors?.orgorPID?.message*/}
-                              {/*          ? t(*/}
-                              {/*              `validation:${errors?.orgorPID?.message}`*/}
-                              {/*            )*/}
-                              {/*          : ""*/}
-                              {/*      }*/}
-                              {/*      variant="outlined"*/}
-                              {/*      fullWidth*/}
-                              {/*      value={field.value || ""}*/}
-                              {/*    />*/}
-                              {/*  )}*/}
-                              {/*/>*/}
                             </div>
                           </div>
                           <div className="">
@@ -2497,12 +2496,11 @@ const createOrder = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.billingCity?.message
+                                      {errors?.billingCountry?.message
                                         ? t(
-                                            `validation:${errors?.billingCity?.message}`
+                                            `validation:${errors?.billingCountry?.message}`
                                           )
                                         : ""}
-                                      {errors?.billingCountry?.message}
                                     </FormHelperText>
                                   </FormControl>
                                 )}

@@ -48,7 +48,7 @@ const TimelineLog = () => {
   };
 
   useEffect(() => {
-    if (defaultTimeline) {
+    if (defaultTimeline && isFetching) {
       const prepareSelectedDate = `${
         new Date().getMonth() + 1
       }.09.${new Date().getFullYear()} 00:00:00`;
@@ -118,7 +118,8 @@ const TimelineLog = () => {
                 <TimelineContent>
                   <div className="ml-5 mt-10 mb-10">
                     <div className="subtitle3 text-MonochromeGray-700">
-                      {log.title}
+                      {/*{log.title}*/}
+                      {t(`label:${log.translationKey}`)}
                     </div>
                     {log.datetime && (
                       <div className="flex gap-5">
@@ -235,6 +236,10 @@ const TimelineLog = () => {
             );
           })}
         </Timeline>
+      ) : !isFetching && logs.length === 0 ? (
+        <div className="flex justify-center items-center">
+          <p>{t("label:noDataFound")}</p>
+        </div>
       ) : isFetching ? (
         <div>
           <div className="flex gap-10 mb-32">

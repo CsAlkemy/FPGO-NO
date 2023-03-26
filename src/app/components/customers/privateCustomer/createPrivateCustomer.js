@@ -117,6 +117,7 @@ const createPrivateCustomer = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
+                  disabled={!isValid}
                 >
                   {t("label:createCustomer")}
                 </LoadingButton>

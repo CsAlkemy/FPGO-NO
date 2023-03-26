@@ -357,7 +357,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Paid" />
+                    <OverviewStatus name="Paid" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -374,7 +374,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Sent" />
+                    <OverviewStatus name="Sent" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -391,7 +391,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Expired" />
+                    <OverviewStatus name="Expired" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -408,7 +408,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Invoiced" />
+                    <OverviewStatus name="Invoiced" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -425,7 +425,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Cancelled" />
+                    <OverviewStatus name="Cancelled" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -442,7 +442,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Refunded" />
+                    <OverviewStatus name="Refunded" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -459,7 +459,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Refund Pending" />
+                    <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -476,7 +476,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Partial Refunded" />
+                    <OverviewStatus name="Partial Refunded" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -493,7 +493,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Completed" />
+                    <OverviewStatus name="Completed" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -510,7 +510,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Reminder Sent" />
+                    <OverviewStatus name="Reminder Sent" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -527,7 +527,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Debt Collection" />
+                    <OverviewStatus name="Debt Collection" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1047,7 +1047,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Paid" />
+                    <OverviewStatus name="Paid" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1064,7 +1064,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Sent" />
+                    <OverviewStatus name="Sent" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1081,7 +1081,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Expired" />
+                    <OverviewStatus name="Expired" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1098,7 +1098,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Invoiced" />
+                    <OverviewStatus name="Invoiced" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1115,7 +1115,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Cancelled" />
+                    <OverviewStatus name="Cancelled" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1132,7 +1132,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Refunded" />
+                    <OverviewStatus name="Refunded" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1149,7 +1149,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Refund Pending" />
+                    <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1166,7 +1166,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Partial Refunded" />
+                    <OverviewStatus name="Partial Refunded" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1183,7 +1183,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Completed" />
+                    <OverviewStatus name="Completed" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1200,7 +1200,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Reminder Sent" />
+                    <OverviewStatus name="Reminder Sent" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1217,7 +1217,7 @@ export default function OverViewResponsiveBody(props) {
                     {rdt.label}
                   </div>
                   <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus name="Debt Collection" />
+                    <OverviewStatus name="Debt Collection" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1448,7 +1448,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Refund Pending" />
+                    <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1465,7 +1465,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Accepted" />
+                    <OverviewStatus name="Accepted" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1482,7 +1482,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Rejected" />
+                    <OverviewStatus name="Rejected" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1631,7 +1631,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Paid" />
+                    <OverviewStatus name="Paid" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1648,7 +1648,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Sent" />
+                    <OverviewStatus name="Sent" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1665,7 +1665,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Expired" />
+                    <OverviewStatus name="Expired" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1682,7 +1682,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Invoiced" />
+                    <OverviewStatus name="Invoiced" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1699,7 +1699,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Cancelled" />
+                    <OverviewStatus name="Cancelled" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1716,7 +1716,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Refunded" />
+                    <OverviewStatus name="Refunded" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1733,7 +1733,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Refund Pending" />
+                    <OverviewStatus name="Refund Pending" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1750,7 +1750,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Partial Refunded" />
+                    <OverviewStatus name="Partial Refunded" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1767,7 +1767,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Completed" />
+                    <OverviewStatus name="Completed" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1784,7 +1784,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Reminder Sent" />
+                    <OverviewStatus name="Reminder Sent" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );
@@ -1801,7 +1801,7 @@ export default function OverViewResponsiveBody(props) {
                       props.rowClickAction(props.row);
                     }}
                   >
-                    <OverviewStatus name="Debt Collection" />
+                    <OverviewStatus name="Debt Collection" translationKey={props.row.translationKey}/>
                   </div>
                 </div>
               );

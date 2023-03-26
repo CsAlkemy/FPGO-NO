@@ -83,7 +83,7 @@ export const validateSchemaGeneralAdmin = yup.object().shape({
   email: yup.string().email('youMustEnterAValidEmail').required('youMustEnterAEmail'),
   fullName: yup.string().required('youMustEnterYourName'),
   phoneNumber: yup.string().required('youMustEnterYourPhoneNumber'),
-  organization: yup.string().required('You must enter your organization'),
+  organization: yup.string().required('youMustEnterYourOrganizationName'),
   preferredLanguage: yup.string().required("youMustSelectYourPreferredLanguage"),
   password: yup
     .string()
@@ -196,7 +196,7 @@ export const schemaUserProfileResetPassUserDetails = yup.object().shape({
 export const defaultValues = {
   email: '',
   fullName: '',
-  phoneNumber: '47',
+  phoneNumber: '',
   password: '',
   designation: '',
   role: '',

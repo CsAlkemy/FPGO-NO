@@ -36,7 +36,7 @@ function Customers(props) {
       },
       fontFamily: "inherit",
       foreColor: "inherit",
-      height: "100%",
+      height: "80%",
       type: "donut",
       sparkline: {
         enabled: true,
@@ -155,6 +155,7 @@ function Customers(props) {
           ))}
           <div className="h-96"></div>
         </div>
+        <div className="h-40"></div>
       </div>
     </Paper>
   );

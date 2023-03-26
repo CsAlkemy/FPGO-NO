@@ -169,6 +169,7 @@ const createProducts = (onSubmit = () => {}) => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
+                  disabled={!isValid}
                 >
                   {t("label:createProduct")}
                 </LoadingButton>

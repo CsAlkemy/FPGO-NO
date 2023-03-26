@@ -37,8 +37,8 @@ const schema = yup.object().shape({
     .required("organizationIdIsRequired")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "pNumberMustBeNumber")
-    .max(9, "pNumberMustBeNumber"),
+    .min(9, "mustBeNineDigits")
+    .max(9, "mustBeNineDigits"),
   // trems: yup
   //   .bool()
   //   .required("youNeedToAcceptTheTermsAndConditions")
@@ -142,6 +142,7 @@ export default function CreditCheckCorporateClient() {
                       variant="contained"
                       color="secondary"
                       className="font-semibold rounded-4 w-full min-w-[140px]"
+                      disabled={!isValid}
                     >
                       {t("label:confirm")}
                     </LoadingButton>

@@ -137,12 +137,20 @@ const paymentInformation = () => {
           setOpen(false);
           // navigate("/payment/checkout/status");
           // navigate(`${response?.data?.paymentUrl}`);
+          localStorage.setItem(
+            "orderConfirmationData",
+            JSON.stringify({
+              orderUuid: orderDetails?.orderUuid,
+              sentBy: orderDetails?.sendOrderBy?.sms ? "sms" : "email",
+              phoneOrEmail: orderDetails?.sendOrderBy?.sms
+                ? orderDetails?.customerDetails?.countryCode +
+                  orderDetails?.customerDetails?.msisdn
+                : orderDetails?.customerDetails?.email,
+            })
+          );
           window.location.href = `${response?.data?.paymentUrl}`;
-        } else if(
-          response?.status_code === 202 &&
-          !response?.is_data
-        ){
-          navigate(`/order/details/${orderUuid}/confirmation`)
+        } else if (response?.status_code === 202 && !response?.is_data) {
+          navigate(`/order/details/${orderUuid}/confirmation`);
         }
       })
       .catch((e) => {
@@ -254,7 +262,7 @@ const paymentInformation = () => {
         setIsApproved(true);
         setCreditCheckMessage("Credit check was successful");
         setApiLoading(false);
-        setIsCreditChecked(true)
+        setIsCreditChecked(true);
       } else {
         setIsApproved(false);
         setCreditCheckMessage("Credit check was declined");
@@ -474,19 +482,15 @@ const paymentInformation = () => {
                                         // enableSearch
                                         // autocompleteSearch
                                         countryCodeEditable={false}
-                                        // specialLabel={
-                                        //   customData.customerType ===
-                                        //   "corporate"
-                                        //     ? t("label:phone")
-                                        //     : `${t("label:phone")}*`
-                                        // }
                                         specialLabel={`${t("label:phone")}*`}
-                                        // onBlur={handleOnBlurGetDialCode}
-                                        // disabled={!customData.isNewCustomer}
                                         value={field.value || ""}
                                       />
                                       <FormHelperText>
-                                        {errors?.phone?.message ? t(`validation:${errors?.phone?.message}`) : ""}
+                                        {errors?.phone?.message
+                                          ? t(
+                                              `validation:${errors?.phone?.message}`
+                                            )
+                                          : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -502,7 +506,13 @@ const paymentInformation = () => {
                                       className="mb-32 md:mb-auto"
                                       autoComplete="off"
                                       error={!!errors.email}
-                                      helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
+                                      helperText={
+                                        errors?.email?.message
+                                          ? t(
+                                              `validation:${errors?.email?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       // required={
@@ -529,7 +539,11 @@ const paymentInformation = () => {
                                         autoComplete="off"
                                         error={!!errors.customerName}
                                         helperText={
-                                          errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""
+                                          errors?.customerName?.message
+                                            ? t(
+                                                `validation:${errors?.customerName?.message}`
+                                              )
+                                            : ""
                                         }
                                         required
                                         variant="outlined"
@@ -552,12 +566,13 @@ const paymentInformation = () => {
                                         type="number"
                                         autoComplete="off"
                                         error={!!errors.orgIdOrPNumber}
-                                        required={
-                                          customData.customerType ===
-                                          "corporate"
-                                        }
+                                        required
                                         helperText={
-                                          errors?.orgIdOrPNumber?.message ? t(`validation:${errors?.orgIdOrPNumber?.message}`) : ""
+                                          errors?.orgIdOrPNumber?.message
+                                            ? t(
+                                                `validation:${errors?.orgIdOrPNumber?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -585,19 +600,15 @@ const paymentInformation = () => {
                                       autoComplete="off"
                                       error={!!errors.billingAddress}
                                       helperText={
-                                        errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""
+                                        errors?.billingAddress?.message
+                                          ? t(
+                                              `validation:${errors?.billingAddress?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
-                                      // inputlabelprops={{
-                                      //     shrink:
-                                      //         !!field.value ||
-                                      //         touchedFields.billingAddress,
-                                      // }}
                                       value={field.value || ""}
-                                      // required={customData.paymentMethod.includes(
-                                      //   "invoice"
-                                      // )}
                                       required
                                     />
                                   )}
@@ -615,18 +626,16 @@ const paymentInformation = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.billingZip}
-                                      helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
+                                      helperText={
+                                        errors?.billingZip?.message
+                                          ? t(
+                                              `validation:${errors?.billingZip?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
-                                      // inputlabelprops={{
-                                      //     shrink:
-                                      //         !!field.value ||
-                                      //         touchedFields.billingZip,
-                                      // }}
                                       value={field.value || ""}
-                                      // required={customData.paymentMethod.includes(
-                                      //   "invoice"
-                                      // )}
                                       required
                                     />
                                   )}
@@ -644,13 +653,16 @@ const paymentInformation = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.billingCity}
-                                    helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
+                                    helperText={
+                                      errors?.billingCity?.message
+                                        ? t(
+                                            `validation:${errors?.billingCity?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
-                                    // required={customData.paymentMethod.includes(
-                                    //   "invoice"
-                                    // )}
                                     required
                                   />
                                 )}
@@ -692,7 +704,11 @@ const paymentInformation = () => {
                                       )}
                                     </Select>
                                     <FormHelperText>
-                                      {errors?.billingCountry?.message ? t(`validation:${errors?.billingCountry?.message}`) : ""}
+                                      {errors?.billingCountry?.message
+                                        ? t(
+                                            `validation:${errors?.billingCountry?.message}`
+                                          )
+                                        : ""}
                                     </FormHelperText>
                                   </FormControl>
                                 )}
@@ -750,7 +766,11 @@ const paymentInformation = () => {
                               }}
                             >
                               <img
-                                className={` ${item.name === 'VIPPS' ? 'max-h-16 min-h-16': 'max-h-32 min-h-32'} md:max-h-48`}
+                                className={` ${
+                                  item.name === "VIPPS"
+                                    ? "max-h-16 min-h-16"
+                                    : "max-h-32 min-h-32"
+                                } md:max-h-48`}
                                 src={item.logo}
                                 alt={item.name}
                               />
@@ -803,9 +823,7 @@ const paymentInformation = () => {
                             </div>
                             <div
                               className={`${
-                                !!isApproved
-                                  ? "text-green-600"
-                                  : "text-red-500"
+                                !!isApproved ? "text-green-600" : "text-red-500"
                               } text-MonochromeGray-300 my-8 mx-8`}
                             >
                               {creditCheckMessage}
@@ -827,7 +845,9 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.subTotal
-                              ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
+                              ? ThousandSeparator(
+                                  orderDetails?.orderSummary?.subTotal
+                                )
                               : ""}
                           </div>
                         </div>
@@ -838,7 +858,9 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.tax
-                              ? ThousandSeparator(orderDetails?.orderSummary?.tax)
+                              ? ThousandSeparator(
+                                  orderDetails?.orderSummary?.tax
+                                )
                               : 0}
                           </div>
                         </div>
@@ -849,7 +871,9 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.discount
-                              ? ThousandSeparator(orderDetails?.orderSummary?.discount)
+                              ? ThousandSeparator(
+                                  orderDetails?.orderSummary?.discount
+                                )
                               : 0}
                           </div>
                         </div>
@@ -862,7 +886,9 @@ const paymentInformation = () => {
                           <div className="body3 text-MonochromeGray-700">
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.grandTotal
-                              ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
+                              ? ThousandSeparator(
+                                  orderDetails?.orderSummary?.grandTotal
+                                )
                               : ""}
                           </div>
                         </div>
@@ -884,7 +910,9 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.subTotal
-                            ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
+                            ? ThousandSeparator(
+                                orderDetails?.orderSummary?.subTotal
+                              )
                             : ""}
                         </div>
                       </div>
@@ -906,7 +934,9 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.discount
-                            ? ThousandSeparator(orderDetails?.orderSummary?.discount)
+                            ? ThousandSeparator(
+                                orderDetails?.orderSummary?.discount
+                              )
                             : 0}
                         </div>
                       </div>
@@ -919,7 +949,9 @@ const paymentInformation = () => {
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.grandTotal
-                            ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
+                            ? ThousandSeparator(
+                                orderDetails?.orderSummary?.grandTotal
+                              )
                             : ""}
                         </div>
                       </div>
@@ -947,8 +979,9 @@ const paymentInformation = () => {
                       isCeditCheck: false,
                     })
                   }
-
-                  disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
+                  disabled={
+                    customData.paymentMethod === "invoice" && !isCreditChecked
+                  }
                 >
                   {t("label:payNow")}
                 </Button>
@@ -978,7 +1011,9 @@ const paymentInformation = () => {
                     isCeditCheck: false,
                   })
                 }
-                disabled={customData.paymentMethod === "invoice" && !isCreditChecked}
+                disabled={
+                  customData.paymentMethod === "invoice" && !isCreditChecked
+                }
               >
                 {t("label:payNow")}
               </Button>
