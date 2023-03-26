@@ -12,6 +12,7 @@ export const EnvVariable = {
       ? `${process.env.REACT_APP_PUBLIC_BASE_API_URL_PROD}`
       : "",
   USER_MANAGEMENT: `${process.env.REACT_APP_PUBLIC_API_URL_USER_MANAGEMENT}`,
+  PROD_BASE_URL: `${process.env.REACT_APP_PUBLIC_BASE_API_URL_PROD}`,
 };
 
 export const SecretKey = process.env.REACT_APP_PUBLIC_SCRTKY;
