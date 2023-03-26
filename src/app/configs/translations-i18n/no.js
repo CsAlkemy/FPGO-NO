@@ -459,6 +459,7 @@ const no = {
     orderLogOrderExpiredAndWasNotPaid: "Ordre utløpt og ikke betalt",
     customerTimelinePaymentSuccessful: "Betaling vellykket",
     clientTimelineEmailSent: "E-post sendt",
+    refunded: "Refundert"
   },
   message: {
     clientNotFound: "Klient ikke funnet",
