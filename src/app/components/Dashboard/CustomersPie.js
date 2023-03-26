@@ -155,6 +155,7 @@ function Customers(props) {
           ))}
           <div className="h-96"></div>
         </div>
+        <div className="h-40"></div>
       </div>
     </Paper>
   );
