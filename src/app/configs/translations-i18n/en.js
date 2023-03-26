@@ -465,6 +465,7 @@ const en = {
     orderLogOrderExpiredAndWasNotPaid: "Order Expired and was not Paid",
     customerTimelinePaymentSuccessful: "Payment Successful",
     clientTimelineEmailSent: "Email Sent",
+    refunded: "Refunded"
   },
   message: {
     clientNotFound: "Client not Found",
