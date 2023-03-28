@@ -113,237 +113,6 @@ const ClientDetails = () => {
         .then((res) => {
           setInfo(res.data);
           const info = res?.data;
-          const planValue = parseInt(
-            info?.contractDetails?.planTag?.split(" ")[1]
-          );
-          if (planValue) {
-            if (planValue === 1) {
-              setPlan(1);
-              // plan1.current.click();
-            } else if (planValue === 2) {
-              setPlan(2);
-              // plan2.current.click();
-            } else if (planValue === 3) {
-              setPlan(3);
-              // plan3.current.click();
-            }
-          }
-
-          if (
-            info?.addresses &&
-            info?.addresses["billing"]?.email ===
-              info?.addresses["shipping"]?.email &&
-            info?.addresses["billing"]?.street ===
-              info?.addresses["shipping"]?.street &&
-            info?.addresses["billing"]?.zip ===
-              info?.addresses["shipping"]?.zip &&
-            info?.addresses["billing"]?.city ===
-              info?.addresses["shipping"]?.city &&
-            info?.addresses["billing"]?.country ===
-              info?.addresses["shipping"]?.country
-          ) {
-            setSameAddress(true);
-            setInitialSameAddressRef(true);
-          } else {
-            setInitialSameAddressRef(false);
-            setSameAddress(false);
-          }
-
-          defaultValue.id = info?.organizationDetails?.id
-            ? info.organizationDetails.id
-            : "";
-          defaultValue.clientName = info?.organizationDetails?.name
-            ? info.organizationDetails.name
-            : "";
-          defaultValue.organizationType = info?.organizationDetails?.type
-            ? info.organizationDetails?.type
-            : "";
-          defaultValue.fullName = info?.primaryContactDetails?.name
-            ? info.primaryContactDetails?.name
-            : "";
-          defaultValue.primaryPhoneNumber =
-            info?.primaryContactDetails?.countryCode &&
-            info.primaryContactDetails?.msisdn
-              ? info.primaryContactDetails?.countryCode +
-                info.primaryContactDetails?.msisdn
-              : "";
-          defaultValue.designation = info?.primaryContactDetails?.designation
-            ? info.primaryContactDetails?.designation
-            : "";
-          defaultValue.email = info?.primaryContactDetails?.email
-            ? info.primaryContactDetails?.email
-            : "";
-          defaultValue.contactEndDate = info?.contractDetails?.endDate
-            ? info.contractDetails.endDate
-            : "";
-          defaultValue.commision = info?.contractDetails?.commissionRate
-            ? info.contractDetails.commissionRate
-            : "";
-          defaultValue.smsCost = info?.contractDetails?.smsCost
-            ? info.contractDetails.smsCost
-            : "";
-          defaultValue.emailCost = info?.contractDetails?.emailCost
-            ? info.contractDetails.emailCost
-            : "";
-          defaultValue.creditCheckCost = info?.contractDetails?.creditCheckCost
-            ? info.contractDetails.creditCheckCost
-            : "";
-          defaultValue.ehfCost = info?.contractDetails?.ehfCost
-            ? info.contractDetails.ehfCost
-            : "";
-          if (!!info.addresses) {
-            defaultValue.billingPhoneNumber =
-              info?.addresses["billing"]?.countryCode &&
-              info.addresses["billing"].msisdn
-                ? info.addresses["billing"].countryCode +
-                  info.addresses["billing"].msisdn
-                : "";
-            defaultValue.billingEmail = info?.addresses["billing"]?.email
-              ? info.addresses["billing"].email
-              : "";
-            defaultValue.billingAddress = info?.addresses["billing"]?.street
-              ? info.addresses["billing"].street
-              : "";
-            defaultValue.zip = info?.addresses["billing"]?.zip
-              ? info.addresses["billing"].zip
-              : "";
-            defaultValue.city = info?.addresses["billing"]?.city
-              ? info.addresses["billing"].city
-              : "";
-            defaultValue.country = info?.addresses["billing"]?.country
-              ? info.addresses["billing"].country
-              : "";
-          }
-          if (!!info.addresses && !!info.addresses["shipping"]) {
-            defaultValue.shippingPhoneNumber =
-              info?.addresses["shipping"]?.countryCode &&
-              info?.addresses["shipping"]?.msisdn
-                ? info.addresses["shipping"].countryCode +
-                  info.addresses["shipping"].msisdn
-                : "";
-            defaultValue.shippingEmail = info?.addresses["shipping"]?.email
-              ? info.addresses["shipping"].email
-              : "";
-            defaultValue.shippingAddress = info?.addresses["shipping"]?.street
-              ? info.addresses["shipping"].street
-              : "";
-            defaultValue.shippingZip = info?.addresses["shipping"]?.zip
-              ? info.addresses["shipping"].zip
-              : "";
-            defaultValue.shippingCity = info?.addresses["shipping"]?.city
-              ? info.addresses["shipping"].city
-              : "";
-            defaultValue.shippingCountry = info?.addresses["shipping"]?.country
-              ? info.addresses["shipping"].country
-              : "";
-          }
-          defaultValue.bankName = info?.bankInformation?.name
-            ? info?.bankInformation?.name
-            : "";
-          defaultValue.accountNumber = info?.bankInformation?.accountNumber
-            ? info?.bankInformation?.accountNumber
-            : "";
-          defaultValue.IBAN = info?.bankInformation?.iban
-            ? info?.bankInformation?.iban
-            : "";
-          defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
-            ? info?.bankInformation?.swiftCode
-            : "";
-          defaultValue.APTICuserName = info?.apticInformation?.username
-            ? info?.apticInformation?.username
-            : "";
-          defaultValue.APTICpassword = info?.apticInformation?.password
-            ? info?.apticInformation?.password
-            : "";
-          defaultValue.name = info?.apticInformation?.name
-            ? info?.apticInformation?.name
-            : "";
-          defaultValue.costLimitforCustomer = info?.apticInformation
-            ?.costLimitForCustomer
-            ? info?.apticInformation?.costLimitForCustomer
-            : "";
-          defaultValue.costLimitforOrder = info?.apticInformation
-            ?.costLimitForOrder
-            ? info?.apticInformation?.costLimitForOrder
-            : "";
-          defaultValue.invoicewithRegress = info?.apticInformation
-            ?.invoiceWithRegress
-            ? info?.apticInformation?.invoiceWithRegress
-            : "";
-          defaultValue.invoicewithoutRegress = info?.apticInformation
-            ?.invoiceWithoutRegress
-            ? info?.apticInformation?.invoiceWithoutRegress
-            : "";
-          defaultValue.APTIEngineCuserName = info?.apticInformation
-            ?.backOfficeUsername
-            ? info?.apticInformation?.backOfficeUsername
-            : "";
-          defaultValue.APTIEnginePassword = info?.apticInformation
-            ?.backOfficePassword
-            ? info?.apticInformation?.backOfficePassword
-            : "";
-          defaultValue.fpReference = info?.apticInformation?.fpReference
-            ? info?.apticInformation?.fpReference
-            : "";
-          defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
-            ? info?.apticInformation?.creditLimit
-            : "";
-          defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
-            ? info?.apticInformation?.b2bInvoiceFee
-            : "";
-          defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
-            ? info?.apticInformation?.b2cInvoiceFee
-            : "";
-
-          if (
-            info?.settings &&
-            info?.settings?.vatRates &&
-            info?.settings?.vatRates.length >= 2
-          ) {
-            setAddVatIndex(
-              addVatIndex.filter(
-                (item, index) => item <= info?.settings?.vatRates.length - 1
-              )
-            );
-          } else {
-            setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
-          }
-
-          if (info?.settings?.currency && info?.settings?.currency.length) {
-            setCurrency({
-              code: info?.settings?.currency[0].code,
-              currency:
-                info?.settings?.currency[0].code === "NOK"
-                  ? "Norwegian Krone"
-                  : info?.settings?.currency[0].code === "SEK"
-                  ? "Swedish Krona"
-                  : info?.settings?.currency[0].code === "DKK"
-                  ? "Danish Krone"
-                  : "European Euro",
-            });
-          }
-
-          reset({ ...defaultValue });
-          if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
-            for (let i = 0; i < info?.settings?.vatRates.length; i++) {
-              setValue(
-                `vat[${i}].vatName`,
-                info?.settings?.vatRates[`${i}`].name
-              );
-              setValue(
-                `vat[${i}].vatValue`,
-                info?.settings?.vatRates[`${i}`].value
-              );
-              setValue(
-                `vat[${i}].bookKeepingReference`,
-                info?.settings?.vatRates[`${i}`].bookKeepingReference
-              );
-              setValue(
-                `vat[${i}].vatActive`,
-                info?.settings?.vatRates[`${i}`].status === "Active"
-              );
-            }
-          }
           setIsLoading(false);
         })
         .catch((error) => {
@@ -383,6 +152,250 @@ const ClientDetails = () => {
         (defaultValue.shippingCountry = "");
     };
   }, [isLoading]);
+
+  useEffect(() => {
+    if (!!info) {
+      const planValue = parseInt(info?.contractDetails?.planTag?.split(" ")[1]);
+      if (planValue) {
+        if (planValue === 1) {
+          setPlan(1);
+          // plan1.current.click();
+        } else if (planValue === 2) {
+          setPlan(2);
+          // plan2.current.click();
+        } else if (planValue === 3) {
+          setPlan(3);
+          // plan3.current.click();
+        }
+      }
+
+      if (
+        info?.addresses &&
+        info?.addresses["billing"]?.email ===
+          info?.addresses["shipping"]?.email &&
+        info?.addresses["billing"]?.street ===
+          info?.addresses["shipping"]?.street &&
+        info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
+        info?.addresses["billing"]?.city ===
+          info?.addresses["shipping"]?.city &&
+        info?.addresses["billing"]?.country ===
+          info?.addresses["shipping"]?.country
+      ) {
+        setSameAddress(true);
+        setInitialSameAddressRef(true);
+      } else {
+        setInitialSameAddressRef(false);
+        setSameAddress(false);
+      }
+
+      defaultValue.id = info?.organizationDetails?.id
+        ? info.organizationDetails.id
+        : "";
+      defaultValue.clientName = info?.organizationDetails?.name
+        ? info.organizationDetails.name
+        : "";
+      defaultValue.organizationType = info?.organizationDetails?.type
+        ? info.organizationDetails?.type
+        : "";
+      defaultValue.fullName = info?.primaryContactDetails?.name
+        ? info.primaryContactDetails?.name
+        : "";
+      defaultValue.primaryPhoneNumber =
+        info?.primaryContactDetails?.countryCode &&
+        info.primaryContactDetails?.msisdn
+          ? info.primaryContactDetails?.countryCode +
+            info.primaryContactDetails?.msisdn
+          : "";
+      defaultValue.designation = info?.primaryContactDetails?.designation
+        ? info.primaryContactDetails?.designation
+        : "";
+      defaultValue.email = info?.primaryContactDetails?.email
+        ? info.primaryContactDetails?.email
+        : "";
+      defaultValue.contactEndDate = info?.contractDetails?.endDate
+        ? info.contractDetails.endDate
+        : "";
+      defaultValue.commision =
+        info?.contractDetails?.commissionRate === 0
+          ? 0
+          : info?.contractDetails?.commissionRate
+          ? info.contractDetails.commissionRate
+          : "";
+      defaultValue.smsCost =
+        info?.contractDetails?.smsCost === 0
+          ? 0
+          : info?.contractDetails?.smsCost
+          ? info.contractDetails.smsCost
+          : "";
+      defaultValue.emailCost =
+        info?.contractDetails?.emailCost === 0
+          ? 0
+          : info?.contractDetails?.emailCost
+          ? info.contractDetails.emailCost
+          : "";
+      defaultValue.creditCheckCost =
+        info?.contractDetails?.creditCheckCost === 0
+          ? 0
+          : info?.contractDetails?.creditCheckCost
+          ? info.contractDetails.creditCheckCost
+          : "";
+      defaultValue.ehfCost =
+        info?.contractDetails?.ehfCost === 0
+          ? 0
+          : info?.contractDetails?.ehfCost
+          ? info.contractDetails.ehfCost
+          : "";
+      if (!!info.addresses) {
+        defaultValue.billingPhoneNumber =
+          info?.addresses["billing"]?.countryCode &&
+          info.addresses["billing"].msisdn
+            ? info.addresses["billing"].countryCode +
+              info.addresses["billing"].msisdn
+            : "";
+        defaultValue.billingEmail = info?.addresses["billing"]?.email
+          ? info.addresses["billing"].email
+          : "";
+        defaultValue.billingAddress = info?.addresses["billing"]?.street
+          ? info.addresses["billing"].street
+          : "";
+        defaultValue.zip = info?.addresses["billing"]?.zip
+          ? info.addresses["billing"].zip
+          : "";
+        defaultValue.city = info?.addresses["billing"]?.city
+          ? info.addresses["billing"].city
+          : "";
+        defaultValue.country = info?.addresses["billing"]?.country
+          ? info.addresses["billing"].country
+          : "";
+      }
+      if (!!info.addresses && !!info.addresses["shipping"]) {
+        defaultValue.shippingPhoneNumber =
+          info?.addresses["shipping"]?.countryCode &&
+          info?.addresses["shipping"]?.msisdn
+            ? info.addresses["shipping"].countryCode +
+              info.addresses["shipping"].msisdn
+            : "";
+        defaultValue.shippingEmail = info?.addresses["shipping"]?.email
+          ? info.addresses["shipping"].email
+          : "";
+        defaultValue.shippingAddress = info?.addresses["shipping"]?.street
+          ? info.addresses["shipping"].street
+          : "";
+        defaultValue.shippingZip = info?.addresses["shipping"]?.zip
+          ? info.addresses["shipping"].zip
+          : "";
+        defaultValue.shippingCity = info?.addresses["shipping"]?.city
+          ? info.addresses["shipping"].city
+          : "";
+        defaultValue.shippingCountry = info?.addresses["shipping"]?.country
+          ? info.addresses["shipping"].country
+          : "";
+      }
+      defaultValue.bankName = info?.bankInformation?.name
+        ? info?.bankInformation?.name
+        : "";
+      defaultValue.accountNumber = info?.bankInformation?.accountNumber
+        ? info?.bankInformation?.accountNumber
+        : "";
+      defaultValue.IBAN = info?.bankInformation?.iban
+        ? info?.bankInformation?.iban
+        : "";
+      defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
+        ? info?.bankInformation?.swiftCode
+        : "";
+      defaultValue.APTICuserName = info?.apticInformation?.username
+        ? info?.apticInformation?.username
+        : "";
+      defaultValue.APTICpassword = info?.apticInformation?.password
+        ? info?.apticInformation?.password
+        : "";
+      defaultValue.name = info?.apticInformation?.name
+        ? info?.apticInformation?.name
+        : "";
+      defaultValue.costLimitforCustomer = info?.apticInformation
+        ?.costLimitForCustomer
+        ? info?.apticInformation?.costLimitForCustomer
+        : "";
+      defaultValue.costLimitforOrder = info?.apticInformation?.costLimitForOrder
+        ? info?.apticInformation?.costLimitForOrder
+        : "";
+      defaultValue.invoicewithRegress = info?.apticInformation
+        ?.invoiceWithRegress
+        ? info?.apticInformation?.invoiceWithRegress
+        : "";
+      defaultValue.invoicewithoutRegress = info?.apticInformation
+        ?.invoiceWithoutRegress
+        ? info?.apticInformation?.invoiceWithoutRegress
+        : "";
+      defaultValue.APTIEngineCuserName = info?.apticInformation
+        ?.backOfficeUsername
+        ? info?.apticInformation?.backOfficeUsername
+        : "";
+      defaultValue.APTIEnginePassword = info?.apticInformation
+        ?.backOfficePassword
+        ? info?.apticInformation?.backOfficePassword
+        : "";
+      defaultValue.fpReference = info?.apticInformation?.fpReference
+        ? info?.apticInformation?.fpReference
+        : "";
+      defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
+        ? info?.apticInformation?.creditLimit
+        : "";
+      defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
+        ? info?.apticInformation?.b2bInvoiceFee
+        : "";
+      defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
+        ? info?.apticInformation?.b2cInvoiceFee
+        : "";
+
+      if (
+        info?.settings &&
+        info?.settings?.vatRates &&
+        info?.settings?.vatRates.length >= 2
+      ) {
+        setAddVatIndex(
+          addVatIndex.filter(
+            (item, index) => item <= info?.settings?.vatRates.length - 1
+          )
+        );
+      } else {
+        setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
+      }
+
+      if (info?.settings?.currency && info?.settings?.currency.length) {
+        setCurrency({
+          code: info?.settings?.currency[0].code,
+          currency:
+            info?.settings?.currency[0].code === "NOK"
+              ? "Norwegian Krone"
+              : info?.settings?.currency[0].code === "SEK"
+              ? "Swedish Krona"
+              : info?.settings?.currency[0].code === "DKK"
+              ? "Danish Krone"
+              : "European Euro",
+        });
+      }
+
+      reset({ ...defaultValue });
+      if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
+        for (let i = 0; i < info?.settings?.vatRates.length; i++) {
+          setValue(`vat[${i}].vatName`, info?.settings?.vatRates[`${i}`].name);
+          setValue(
+            `vat[${i}].vatValue`,
+            info?.settings?.vatRates[`${i}`].value
+          );
+          setValue(
+            `vat[${i}].bookKeepingReference`,
+            info?.settings?.vatRates[`${i}`].bookKeepingReference
+          );
+          setValue(
+            `vat[${i}].vatActive`,
+            info?.settings?.vatRates[`${i}`].status === "Active"
+          );
+        }
+      }
+    }
+  }, [info]);
 
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
@@ -680,7 +693,7 @@ const ClientDetails = () => {
                 <div className=" header-click-to-action">
                   <div className="header-text header6 flex gap-7">
                     Client Details ({info?.organizationDetails?.uuid})
-                    {info?.length !==0 && (
+                    {info?.length !== 0 && (
                       <div>
                         {info?.status === "Active" ? (
                           <span className=" ml-5 bg-confirmed rounded-4 px-16 py-4 body3">
@@ -701,7 +714,7 @@ const ClientDetails = () => {
                       variant="outlined"
                       className="font-semibold rounded-4"
                     >
-                      {info.status ==="Inactive"
+                      {info.status === "Inactive"
                         ? t("label:makeActive")
                         : t("label:makeInactive")}
                     </Button>
@@ -714,7 +727,9 @@ const ClientDetails = () => {
                       type="submit"
                       loading={loading}
                       loadingPosition="center"
-                      disabled={(!isDirty && sameAddress === initialSameAddressRef)}
+                      disabled={
+                        !isDirty && sameAddress === initialSameAddressRef
+                      }
                     >
                       {t("label:update")}
                     </LoadingButton>
@@ -734,17 +749,17 @@ const ClientDetails = () => {
                         allowScrollButtonsMobile
                       >
                         <Tab
-                          label={ t("label:clientInformation") }
+                          label={t("label:clientInformation")}
                           className="subtitle3"
                           value="1"
                         />
                         <Tab
-                          label={ t("label:clientTimeline") }
+                          label={t("label:clientTimeline")}
                           className="subtitle3"
                           value="2"
                         />
                         <Tab
-                          label={ t("label:clientOrders") }
+                          label={t("label:clientOrders")}
                           className="subtitle3"
                           value="3"
                         />
@@ -800,8 +815,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.clientName?.message
                                         ? t(
-                                          `validation:${errors?.clientName?.message}`
-                                        )
+                                            `validation:${errors?.clientName?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
@@ -845,8 +860,8 @@ const ClientDetails = () => {
                                     <FormHelperText>
                                       {errors?.organizationType?.message
                                         ? t(
-                                          `validation:${errors?.organizationType?.message}`
-                                        )
+                                            `validation:${errors?.organizationType?.message}`
+                                          )
                                         : ""}
                                     </FormHelperText>
                                   </FormControl>
@@ -866,8 +881,8 @@ const ClientDetails = () => {
                                       helperText={
                                         errors?.parentClientName?.message
                                           ? t(
-                                            `validation:${errors?.parentClientName?.message}`
-                                          )
+                                              `validation:${errors?.parentClientName?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -918,8 +933,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.fullName?.message
                                         ? t(
-                                          `validation:${errors?.fullName?.message}`
-                                        )
+                                            `validation:${errors?.fullName?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
@@ -955,8 +970,8 @@ const ClientDetails = () => {
                                     <FormHelperText>
                                       {errors?.primaryPhoneNumber?.message
                                         ? t(
-                                          `validation:${errors?.primaryPhoneNumber?.message}`
-                                        )
+                                            `validation:${errors?.primaryPhoneNumber?.message}`
+                                          )
                                         : ""}
                                     </FormHelperText>
                                   </FormControl>
@@ -975,8 +990,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.designation?.message
                                         ? t(
-                                          `validation:${errors?.designation?.message}`
-                                        )
+                                            `validation:${errors?.designation?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
@@ -998,8 +1013,8 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.email?.message
                                         ? t(
-                                          `validation:${errors?.email?.message}`
-                                        )
+                                            `validation:${errors?.email?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
@@ -1070,8 +1085,8 @@ const ClientDetails = () => {
                                 name="contactEndDate"
                                 control={control}
                                 render={({
-                                           field: { onChange, value, onBlur },
-                                         }) => (
+                                  field: { onChange, value, onBlur },
+                                }) => (
                                   <DesktopDatePicker
                                     label={t("label:contractEndDate")}
                                     mask=""
@@ -1095,13 +1110,12 @@ const ClientDetails = () => {
                                         {...params}
                                         onBlur={onBlur}
                                         type="date"
-                                        required
                                         error={!!errors.contactEndDate}
                                         helperText={
                                           errors?.contactEndDate?.message
                                             ? t(
-                                              `validation:${errors?.contactEndDate?.message}`
-                                            )
+                                                `validation:${errors?.contactEndDate?.message}`
+                                              )
                                             : ""
                                         }
                                       />
@@ -1118,17 +1132,19 @@ const ClientDetails = () => {
                                     label={t("label:commissionRate")}
                                     type="text"
                                     autoComplete="off"
+                                    required
                                     error={!!errors.commision}
                                     helperText={
                                       errors?.commision?.message
                                         ? t(
-                                          `validation:${errors?.commision?.message}`
-                                        )
+                                            `validation:${errors?.commision?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
-                                    required
-                                    value={field.value || ""}
+                                    value={
+                                      field.value === 0 ? 0 : field.value || ""
+                                    }
                                     fullWidth
                                     InputProps={{
                                       endAdornment: (
@@ -1148,18 +1164,20 @@ const ClientDetails = () => {
                                     {...field}
                                     label={t("label:smsCost")}
                                     type="text"
+                                    required
                                     autoComplete="off"
                                     error={!!errors.smsCost}
                                     helperText={
                                       errors?.smsCost?.message
                                         ? t(
-                                          `validation:${errors?.smsCost?.message}`
-                                        )
+                                            `validation:${errors?.smsCost?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
-                                    required
-                                    value={field.value || ""}
+                                    value={
+                                      field.value === 0 ? 0 : field.value || ""
+                                    }
                                     fullWidth
                                     InputProps={{
                                       endAdornment: (
@@ -1184,13 +1202,14 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.emailCost?.message
                                         ? t(
-                                          `validation:${errors?.emailCost?.message}`
-                                        )
+                                            `validation:${errors?.emailCost?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
-                                    required
-                                    value={field.value || ""}
+                                    value={
+                                      field.value === 0 ? 0 : field.value || ""
+                                    }
                                     fullWidth
                                     InputProps={{
                                       endAdornment: (
@@ -1215,14 +1234,15 @@ const ClientDetails = () => {
                                     helperText={
                                       errors?.creditCheckCost?.message
                                         ? t(
-                                          `validation:${errors?.creditCheckCost?.message}`
-                                        )
+                                            `validation:${errors?.creditCheckCost?.message}`
+                                          )
                                         : ""
                                     }
                                     variant="outlined"
-                                    required
                                     fullWidth
-                                    value={field.value || ""}
+                                    value={
+                                      field.value === 0 ? 0 : field.value || ""
+                                    }
                                     InputProps={{
                                       endAdornment: (
                                         <InputAdornment position="start">
@@ -1245,9 +1265,10 @@ const ClientDetails = () => {
                                     error={!!errors.ehfCost}
                                     helperText={errors?.ehfCost?.message}
                                     variant="outlined"
-                                    required
                                     fullWidth
-                                    value={field.value || ""}
+                                    value={
+                                      field.value === 0 ? 0 : field.value || ""
+                                    }
                                     InputProps={{
                                       endAdornment: (
                                         <InputAdornment position="start">
@@ -1259,41 +1280,7 @@ const ClientDetails = () => {
                                 )}
                               />
                             </div>
-                            {/*<div className="create-user-roles caption2">*/}
-                            {/*  {t("label:contractDocument")}*/}
-                            {/*</div>*/}
-                            {/*<div className="document-preview grid grid-cols-1 sm:grid-cols-3 gap-20 my-20">*/}
-                            {/*  {uploadDocuments.map((item, index) => (*/}
-                            {/*    <div*/}
-                            {/*      key={index}*/}
-                            {/*      className="py-16 px-10 border-1 border-MonochromeGray-50 rounded-8 flex justify-between items-center"*/}
-                            {/*    >*/}
-                            {/*      <div className="flex gap-5">*/}
-                            {/*        <BsFileEarmarkMedical className="icon-size-20 text-main" />*/}
-                            {/*        {item.name}*/}
-                            {/*      </div>*/}
-                            {/*      <MdClose className="icon-size-20" />*/}
-                            {/*    </div>*/}
-                            {/*  ))}*/}
-                            {/*</div>*/}
-                            {/*<Button*/}
-                            {/*  variant="contained"*/}
-                            {/*  component="label"*/}
-                            {/*  className="rounded-4 font-semibold text-primary-800 bg-primary-25 md:min-w-192 min-w-min"*/}
-                            {/*  disabled={uploadDocuments.length >= 3}*/}
-                            {/*  startIcon={*/}
-                            {/*    <PublishOutlinedIcon className="icon-size-20 mr-5" />*/}
-                            {/*  }*/}
-                            {/*>*/}
-                            {/*  {uploadDocuments?.length > 0*/}
-                            {/*    ? t("label:reUploadDocument")*/}
-                            {/*    : t("label:uploadFile")}*/}
-                            {/*  <input*/}
-                            {/*    type="file"*/}
-                            {/*    hidden*/}
-                            {/*    onChange={(e) => handleFileUpload(e)}*/}
-                            {/*  />*/}
-                            {/*</Button>*/}
+
                           </div>
                         </div>
                         <div className="billing-information">
@@ -1534,11 +1521,11 @@ const ClientDetails = () => {
                             </div>
                             {!sameAddress &&
                               ((billingPhoneNumber &&
-                                  billingEmail &&
-                                  billingAddress &&
-                                  zip &&
-                                  city &&
-                                  country) ||
+                                billingEmail &&
+                                billingAddress &&
+                                zip &&
+                                city &&
+                                country) ||
                                 shippingPhoneNumber ||
                                 shippingEmail ||
                                 shippingAddress ||
@@ -1691,7 +1678,7 @@ const ClientDetails = () => {
                                               info?.addresses["shipping"]
                                                 ?.country
                                                 ? info.addresses["shipping"]
-                                                  .country
+                                                    .country
                                                 : ""
                                             }
                                           >
@@ -1744,7 +1731,6 @@ const ClientDetails = () => {
                                       error={!!errors.bankName}
                                       helperText={errors?.bankName?.message}
                                       variant="outlined"
-                                      required
                                       value={field.value || ""}
                                       fullWidth
                                       InputProps={{
@@ -1774,7 +1760,6 @@ const ClientDetails = () => {
                                         errors?.accountNumber?.message
                                       }
                                       variant="outlined"
-                                      required
                                       fullWidth
                                     />
                                   )}
@@ -1792,7 +1777,6 @@ const ClientDetails = () => {
                                       error={!!errors.IBAN}
                                       helperText={errors?.IBAN?.message}
                                       variant="outlined"
-                                      required
                                       fullWidth
                                     />
                                   )}
@@ -1810,7 +1794,6 @@ const ClientDetails = () => {
                                       error={!!errors.SWIFTCode}
                                       helperText={errors?.SWIFTCode?.message}
                                       variant="outlined"
-                                      required
                                       fullWidth
                                     />
                                   )}
@@ -2517,13 +2500,13 @@ const ClientDetails = () => {
                                         type="checkbox"
                                         control={control}
                                         render={({
-                                                   field: {
-                                                     onChange,
-                                                     value,
-                                                     ref,
-                                                     onBlur,
-                                                   },
-                                                 }) => (
+                                          field: {
+                                            onChange,
+                                            value,
+                                            ref,
+                                            onBlur,
+                                          },
+                                        }) => (
                                           <FormControl
                                             required
                                             error={!!errors.Switch}
