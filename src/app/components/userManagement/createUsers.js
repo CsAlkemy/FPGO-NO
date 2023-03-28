@@ -315,9 +315,9 @@ export default function CreateUsers() {
                           >
                             <PhoneInput
                               {...field}
-                              className={
-                                errors.phoneNumber
-                                  ? "input-phone-number-field border-1 rounded-md border-red-300"
+                              className = {
+                                !!errors.phoneNumber
+                                  ? "input-phone-number-field border-1 rounded-md border-[#f44336]"
                                   : "input-phone-number-field"
                               }
                               country="no"
