@@ -113,6 +113,245 @@ const ClientDetails = () => {
         .then((res) => {
           setInfo(res.data);
           const info = res?.data;
+          const planValue = parseInt(info?.contractDetails?.planTag?.split(" ")[1]);
+          if (planValue) {
+            if (planValue === 1) {
+              setPlan(1);
+              // plan1.current.click();
+            } else if (planValue === 2) {
+              setPlan(2);
+              // plan2.current.click();
+            } else if (planValue === 3) {
+              setPlan(3);
+              // plan3.current.click();
+            }
+          }
+
+          if (
+            info?.addresses &&
+            info?.addresses["billing"]?.email ===
+            info?.addresses["shipping"]?.email &&
+            info?.addresses["billing"]?.street ===
+            info?.addresses["shipping"]?.street &&
+            info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
+            info?.addresses["billing"]?.city ===
+            info?.addresses["shipping"]?.city &&
+            info?.addresses["billing"]?.country ===
+            info?.addresses["shipping"]?.country
+          ) {
+            setSameAddress(true);
+            setInitialSameAddressRef(true);
+          } else {
+            setInitialSameAddressRef(false);
+            setSameAddress(false);
+          }
+
+          defaultValue.id = info?.organizationDetails?.id
+            ? info.organizationDetails.id
+            : "";
+          defaultValue.clientName = info?.organizationDetails?.name
+            ? info.organizationDetails.name
+            : "";
+          defaultValue.organizationType = info?.organizationDetails?.type
+            ? info.organizationDetails?.type
+            : "";
+          defaultValue.fullName = info?.primaryContactDetails?.name
+            ? info.primaryContactDetails?.name
+            : "";
+          defaultValue.primaryPhoneNumber =
+            info?.primaryContactDetails?.countryCode &&
+            info.primaryContactDetails?.msisdn
+              ? info.primaryContactDetails?.countryCode +
+              info.primaryContactDetails?.msisdn
+              : "";
+          defaultValue.designation = info?.primaryContactDetails?.designation
+            ? info.primaryContactDetails?.designation
+            : "";
+          defaultValue.email = info?.primaryContactDetails?.email
+            ? info.primaryContactDetails?.email
+            : "";
+          defaultValue.contactEndDate = info?.contractDetails?.endDate
+            ? info.contractDetails.endDate
+            : "";
+          defaultValue.commision =
+            info?.contractDetails?.commissionRate === 0
+              ? 0
+              : info?.contractDetails?.commissionRate
+                ? info.contractDetails.commissionRate
+                : "";
+          defaultValue.smsCost =
+            info?.contractDetails?.smsCost === 0
+              ? 0
+              : info?.contractDetails?.smsCost
+                ? info.contractDetails.smsCost
+                : "";
+          defaultValue.emailCost =
+            info?.contractDetails?.emailCost === 0
+              ? 0
+              : info?.contractDetails?.emailCost
+                ? info.contractDetails.emailCost
+                : "";
+          defaultValue.creditCheckCost =
+            info?.contractDetails?.creditCheckCost === 0
+              ? 0
+              : info?.contractDetails?.creditCheckCost
+                ? info.contractDetails.creditCheckCost
+                : "";
+          defaultValue.ehfCost =
+            info?.contractDetails?.ehfCost === 0
+              ? 0
+              : info?.contractDetails?.ehfCost
+                ? info.contractDetails.ehfCost
+                : "";
+          if (!!info.addresses) {
+            defaultValue.billingPhoneNumber =
+              info?.addresses["billing"]?.countryCode &&
+              info.addresses["billing"].msisdn
+                ? info.addresses["billing"].countryCode +
+                info.addresses["billing"].msisdn
+                : "";
+            defaultValue.billingEmail = info?.addresses["billing"]?.email
+              ? info.addresses["billing"].email
+              : "";
+            defaultValue.billingAddress = info?.addresses["billing"]?.street
+              ? info.addresses["billing"].street
+              : "";
+            defaultValue.zip = info?.addresses["billing"]?.zip
+              ? info.addresses["billing"].zip
+              : "";
+            defaultValue.city = info?.addresses["billing"]?.city
+              ? info.addresses["billing"].city
+              : "";
+            defaultValue.country = info?.addresses["billing"]?.country
+              ? info.addresses["billing"].country
+              : "";
+          }
+          if (!!info.addresses && !!info.addresses["shipping"]) {
+            defaultValue.shippingPhoneNumber =
+              info?.addresses["shipping"]?.countryCode &&
+              info?.addresses["shipping"]?.msisdn
+                ? info.addresses["shipping"].countryCode +
+                info.addresses["shipping"].msisdn
+                : "";
+            defaultValue.shippingEmail = info?.addresses["shipping"]?.email
+              ? info.addresses["shipping"].email
+              : "";
+            defaultValue.shippingAddress = info?.addresses["shipping"]?.street
+              ? info.addresses["shipping"].street
+              : "";
+            defaultValue.shippingZip = info?.addresses["shipping"]?.zip
+              ? info.addresses["shipping"].zip
+              : "";
+            defaultValue.shippingCity = info?.addresses["shipping"]?.city
+              ? info.addresses["shipping"].city
+              : "";
+            defaultValue.shippingCountry = info?.addresses["shipping"]?.country
+              ? info.addresses["shipping"].country
+              : "";
+          }
+          defaultValue.bankName = info?.bankInformation?.name
+            ? info?.bankInformation?.name
+            : "";
+          defaultValue.accountNumber = info?.bankInformation?.accountNumber
+            ? info?.bankInformation?.accountNumber
+            : "";
+          defaultValue.IBAN = info?.bankInformation?.iban
+            ? info?.bankInformation?.iban
+            : "";
+          defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
+            ? info?.bankInformation?.swiftCode
+            : "";
+          defaultValue.APTICuserName = info?.apticInformation?.username
+            ? info?.apticInformation?.username
+            : "";
+          defaultValue.APTICpassword = info?.apticInformation?.password
+            ? info?.apticInformation?.password
+            : "";
+          defaultValue.name = info?.apticInformation?.name
+            ? info?.apticInformation?.name
+            : "";
+          defaultValue.costLimitforCustomer = info?.apticInformation
+            ?.costLimitForCustomer
+            ? info?.apticInformation?.costLimitForCustomer
+            : "";
+          defaultValue.costLimitforOrder = info?.apticInformation?.costLimitForOrder
+            ? info?.apticInformation?.costLimitForOrder
+            : "";
+          defaultValue.invoicewithRegress = info?.apticInformation
+            ?.invoiceWithRegress
+            ? info?.apticInformation?.invoiceWithRegress
+            : "";
+          defaultValue.invoicewithoutRegress = info?.apticInformation
+            ?.invoiceWithoutRegress
+            ? info?.apticInformation?.invoiceWithoutRegress
+            : "";
+          defaultValue.APTIEngineCuserName = info?.apticInformation
+            ?.backOfficeUsername
+            ? info?.apticInformation?.backOfficeUsername
+            : "";
+          defaultValue.APTIEnginePassword = info?.apticInformation
+            ?.backOfficePassword
+            ? info?.apticInformation?.backOfficePassword
+            : "";
+          defaultValue.fpReference = info?.apticInformation?.fpReference
+            ? info?.apticInformation?.fpReference
+            : "";
+          defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
+            ? info?.apticInformation?.creditLimit
+            : "";
+          defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
+            ? info?.apticInformation?.b2bInvoiceFee
+            : "";
+          defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
+            ? info?.apticInformation?.b2cInvoiceFee
+            : "";
+
+          if (
+            info?.settings &&
+            info?.settings?.vatRates &&
+            info?.settings?.vatRates.length >= 2
+          ) {
+            setAddVatIndex(
+              addVatIndex.filter(
+                (item, index) => item <= info?.settings?.vatRates.length - 1
+              )
+            );
+          } else {
+            setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
+          }
+
+          if (info?.settings?.currency && info?.settings?.currency.length) {
+            setCurrency({
+              code: info?.settings?.currency[0].code,
+              currency:
+                info?.settings?.currency[0].code === "NOK"
+                  ? "Norwegian Krone"
+                  : info?.settings?.currency[0].code === "SEK"
+                    ? "Swedish Krona"
+                    : info?.settings?.currency[0].code === "DKK"
+                      ? "Danish Krone"
+                      : "European Euro",
+            });
+          }
+
+          reset({ ...defaultValue });
+          if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
+            for (let i = 0; i < info?.settings?.vatRates.length; i++) {
+              setValue(`vat[${i}].vatName`, info?.settings?.vatRates[`${i}`].name);
+              setValue(
+                `vat[${i}].vatValue`,
+                info?.settings?.vatRates[`${i}`].value
+              );
+              setValue(
+                `vat[${i}].bookKeepingReference`,
+                info?.settings?.vatRates[`${i}`].bookKeepingReference
+              );
+              setValue(
+                `vat[${i}].vatActive`,
+                info?.settings?.vatRates[`${i}`].status === "Active"
+              );
+            }
+          }
           setIsLoading(false);
         })
         .catch((error) => {
@@ -155,227 +394,11 @@ const ClientDetails = () => {
 
   useEffect(() => {
     if (!!info) {
-      const planValue = parseInt(info?.contractDetails?.planTag?.split(" ")[1]);
-      if (planValue) {
-        if (planValue === 1) {
-          setPlan(1);
-          // plan1.current.click();
-        } else if (planValue === 2) {
-          setPlan(2);
-          // plan2.current.click();
-        } else if (planValue === 3) {
-          setPlan(3);
-          // plan3.current.click();
-        }
-      }
-
-      if (
-        info?.addresses &&
-        info?.addresses["billing"]?.email ===
-          info?.addresses["shipping"]?.email &&
-        info?.addresses["billing"]?.street ===
-          info?.addresses["shipping"]?.street &&
-        info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
-        info?.addresses["billing"]?.city ===
-          info?.addresses["shipping"]?.city &&
-        info?.addresses["billing"]?.country ===
-          info?.addresses["shipping"]?.country
-      ) {
-        setSameAddress(true);
-        setInitialSameAddressRef(true);
-      } else {
-        setInitialSameAddressRef(false);
-        setSameAddress(false);
-      }
-
-      defaultValue.id = info?.organizationDetails?.id
-        ? info.organizationDetails.id
-        : "";
-      defaultValue.clientName = info?.organizationDetails?.name
-        ? info.organizationDetails.name
-        : "";
-      defaultValue.organizationType = info?.organizationDetails?.type
-        ? info.organizationDetails?.type
-        : "";
-      defaultValue.fullName = info?.primaryContactDetails?.name
-        ? info.primaryContactDetails?.name
-        : "";
-      defaultValue.primaryPhoneNumber =
-        info?.primaryContactDetails?.countryCode &&
-        info.primaryContactDetails?.msisdn
-          ? info.primaryContactDetails?.countryCode +
-            info.primaryContactDetails?.msisdn
-          : "";
-      defaultValue.designation = info?.primaryContactDetails?.designation
-        ? info.primaryContactDetails?.designation
-        : "";
-      defaultValue.email = info?.primaryContactDetails?.email
-        ? info.primaryContactDetails?.email
-        : "";
-      defaultValue.contactEndDate = info?.contractDetails?.endDate
-        ? info.contractDetails.endDate
-        : "";
-      defaultValue.commision =
-        info?.contractDetails?.commissionRate === 0
-          ? 0
-          : info?.contractDetails?.commissionRate
-          ? info.contractDetails.commissionRate
-          : "";
-      defaultValue.smsCost =
-        info?.contractDetails?.smsCost === 0
-          ? 0
-          : info?.contractDetails?.smsCost
-          ? info.contractDetails.smsCost
-          : "";
-      defaultValue.emailCost =
-        info?.contractDetails?.emailCost === 0
-          ? 0
-          : info?.contractDetails?.emailCost
-          ? info.contractDetails.emailCost
-          : "";
-      defaultValue.creditCheckCost =
-        info?.contractDetails?.creditCheckCost === 0
-          ? 0
-          : info?.contractDetails?.creditCheckCost
-          ? info.contractDetails.creditCheckCost
-          : "";
-      defaultValue.ehfCost =
-        info?.contractDetails?.ehfCost === 0
-          ? 0
-          : info?.contractDetails?.ehfCost
-          ? info.contractDetails.ehfCost
-          : "";
       if (!!info.addresses) {
-        defaultValue.billingPhoneNumber =
-          info?.addresses["billing"]?.countryCode &&
-          info.addresses["billing"].msisdn
-            ? info.addresses["billing"].countryCode +
-              info.addresses["billing"].msisdn
-            : "";
-        defaultValue.billingEmail = info?.addresses["billing"]?.email
-          ? info.addresses["billing"].email
-          : "";
-        defaultValue.billingAddress = info?.addresses["billing"]?.street
-          ? info.addresses["billing"].street
-          : "";
-        defaultValue.zip = info?.addresses["billing"]?.zip
-          ? info.addresses["billing"].zip
-          : "";
-        defaultValue.city = info?.addresses["billing"]?.city
-          ? info.addresses["billing"].city
-          : "";
         defaultValue.country = info?.addresses["billing"]?.country
           ? info.addresses["billing"].country
           : "";
       }
-      if (!!info.addresses && !!info.addresses["shipping"]) {
-        defaultValue.shippingPhoneNumber =
-          info?.addresses["shipping"]?.countryCode &&
-          info?.addresses["shipping"]?.msisdn
-            ? info.addresses["shipping"].countryCode +
-              info.addresses["shipping"].msisdn
-            : "";
-        defaultValue.shippingEmail = info?.addresses["shipping"]?.email
-          ? info.addresses["shipping"].email
-          : "";
-        defaultValue.shippingAddress = info?.addresses["shipping"]?.street
-          ? info.addresses["shipping"].street
-          : "";
-        defaultValue.shippingZip = info?.addresses["shipping"]?.zip
-          ? info.addresses["shipping"].zip
-          : "";
-        defaultValue.shippingCity = info?.addresses["shipping"]?.city
-          ? info.addresses["shipping"].city
-          : "";
-        defaultValue.shippingCountry = info?.addresses["shipping"]?.country
-          ? info.addresses["shipping"].country
-          : "";
-      }
-      defaultValue.bankName = info?.bankInformation?.name
-        ? info?.bankInformation?.name
-        : "";
-      defaultValue.accountNumber = info?.bankInformation?.accountNumber
-        ? info?.bankInformation?.accountNumber
-        : "";
-      defaultValue.IBAN = info?.bankInformation?.iban
-        ? info?.bankInformation?.iban
-        : "";
-      defaultValue.SWIFTCode = info?.bankInformation?.swiftCode
-        ? info?.bankInformation?.swiftCode
-        : "";
-      defaultValue.APTICuserName = info?.apticInformation?.username
-        ? info?.apticInformation?.username
-        : "";
-      defaultValue.APTICpassword = info?.apticInformation?.password
-        ? info?.apticInformation?.password
-        : "";
-      defaultValue.name = info?.apticInformation?.name
-        ? info?.apticInformation?.name
-        : "";
-      defaultValue.costLimitforCustomer = info?.apticInformation
-        ?.costLimitForCustomer
-        ? info?.apticInformation?.costLimitForCustomer
-        : "";
-      defaultValue.costLimitforOrder = info?.apticInformation?.costLimitForOrder
-        ? info?.apticInformation?.costLimitForOrder
-        : "";
-      defaultValue.invoicewithRegress = info?.apticInformation
-        ?.invoiceWithRegress
-        ? info?.apticInformation?.invoiceWithRegress
-        : "";
-      defaultValue.invoicewithoutRegress = info?.apticInformation
-        ?.invoiceWithoutRegress
-        ? info?.apticInformation?.invoiceWithoutRegress
-        : "";
-      defaultValue.APTIEngineCuserName = info?.apticInformation
-        ?.backOfficeUsername
-        ? info?.apticInformation?.backOfficeUsername
-        : "";
-      defaultValue.APTIEnginePassword = info?.apticInformation
-        ?.backOfficePassword
-        ? info?.apticInformation?.backOfficePassword
-        : "";
-      defaultValue.fpReference = info?.apticInformation?.fpReference
-        ? info?.apticInformation?.fpReference
-        : "";
-      defaultValue.creditLimitCustomer = info?.apticInformation?.creditLimit
-        ? info?.apticInformation?.creditLimit
-        : "";
-      defaultValue.fakturaB2B = info?.apticInformation?.b2bInvoiceFee
-        ? info?.apticInformation?.b2bInvoiceFee
-        : "";
-      defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
-        ? info?.apticInformation?.b2cInvoiceFee
-        : "";
-
-      if (
-        info?.settings &&
-        info?.settings?.vatRates &&
-        info?.settings?.vatRates.length >= 2
-      ) {
-        setAddVatIndex(
-          addVatIndex.filter(
-            (item, index) => item <= info?.settings?.vatRates.length - 1
-          )
-        );
-      } else {
-        setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
-      }
-
-      if (info?.settings?.currency && info?.settings?.currency.length) {
-        setCurrency({
-          code: info?.settings?.currency[0].code,
-          currency:
-            info?.settings?.currency[0].code === "NOK"
-              ? "Norwegian Krone"
-              : info?.settings?.currency[0].code === "SEK"
-              ? "Swedish Krona"
-              : info?.settings?.currency[0].code === "DKK"
-              ? "Danish Krone"
-              : "European Euro",
-        });
-      }
-
       reset({ ...defaultValue });
       if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
         for (let i = 0; i < info?.settings?.vatRates.length; i++) {
