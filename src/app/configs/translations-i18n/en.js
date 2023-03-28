@@ -610,6 +610,7 @@ const en = {
     passwordCombinationRules:
       "Password must be at least 8-15 digits and contain number and alphabets",
     bothPasswordNeedToBeTheSame: "Both password need to be the same",
+    enterValidPhoneNumber:"Enter valid phone number",
     youMustEnterProductId: "You must enter product Id",
     youMustEnterProductName: "You must enter product name",
     youMustEnterPrice: "You must enter price",
