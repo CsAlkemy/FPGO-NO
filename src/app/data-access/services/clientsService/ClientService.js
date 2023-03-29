@@ -214,42 +214,44 @@ class ClientService {
   };
 
   vateRatesList = async (orgUuid, isSkipIsAuthenticated) => {
-      const URL = `${EnvVariable.BASEURL}/clients/vat/list/${orgUuid}`;
-      if (isSkipIsAuthenticated) {
-        return new Promise((resolve, reject) => {
-          return axios
-            .get(URL)
-            .then((response) => {
-              if (response?.data?.status_code === 200) {
-                resolve(response?.data);
-              } else reject("somethingWentWrong");
-            })
-            .catch((e) => {
-              if (e?.response?.data?.status_code === 404) resolve(e.response.data);
-              reject(e?.response?.data?.message);
-            });
-        });
-      } else {
-        return AuthService.axiosRequestHelper()
-          .then((status) => {
-            if (status) {
-              return axios
-                .get(URL)
-                .then((response) => {
-                  if (response?.data?.status_code === 200) {
-                    resolve(response.data);
-                  } else reject("somethingWentWrong");
-                })
-                .catch((e) => {
-                  if (e?.response?.data?.status_code === 404) resolve(e.response.data);
-                  reject(e?.response?.data?.message);
-                });
+    const URL = `${EnvVariable.BASEURL}/clients/vat/list/${orgUuid}`;
+    if (isSkipIsAuthenticated) {
+      return new Promise((resolve, reject) => {
+        return axios
+          .get(URL)
+          .then((response) => {
+            if (response?.data?.status_code === 200) {
+              resolve(response?.data);
             } else reject("somethingWentWrong");
           })
           .catch((e) => {
-            reject("somethingWentWrong");
+            if (e?.response?.data?.status_code === 404)
+              resolve(e.response.data);
+            reject(e?.response?.data?.message);
           });
-      }
+      });
+    } else {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (response?.data?.status_code === 200) {
+                  resolve(response.data);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                if (e?.response?.data?.status_code === 404)
+                  resolve(e.response.data);
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
+    }
   };
 
   createClient = async (params) => {
@@ -455,7 +457,11 @@ class ClientService {
                       phoneNo: phone ? "+" + phone[phone.length - 1] : null,
                       amount: row.amount,
                       status: row?.status ? row?.status.toLowerCase() : null,
-                      translationKey: row.translationKey
+                      translationKey: row.translationKey,
+                      enableSendInvoice:
+                        row?.type.toLowerCase() === "quick" &&
+                        !row?.exportedToAptic &&
+                        row?.status.toLowerCase() === "expired",
                     };
                   });
                   d.status_code = 200;
