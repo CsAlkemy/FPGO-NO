@@ -9,6 +9,9 @@ const CreateOrder = lazy(() =>
 const OrderModals = lazy(() =>
   import("../../components/salesManagement/order/popupModal")
 );
+const QuickOrder = lazy(() =>
+  import("../../components/salesManagement/quickOrder")
+);
 
 export const SalesConfig = {
   settings: {
@@ -37,6 +40,10 @@ export const SalesConfig = {
     {
       path: "/create-order",
       element: <CreateOrder />,
+    },
+    {
+      path: "/quick-order",
+      element: <QuickOrder />,
     },
   ],
 };
