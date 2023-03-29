@@ -1288,6 +1288,7 @@ const ClientDetails = () => {
                                     error={!!errors.ehfCost}
                                     helperText={errors?.ehfCost?.message}
                                     variant="outlined"
+                                    required
                                     fullWidth
                                     value={
                                       field.value === 0 ? 0 : field.value || ""

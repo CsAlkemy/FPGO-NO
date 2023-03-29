@@ -73,12 +73,12 @@ export const validateSchemaOnBoard = yup.object().shape({
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
   // password: yup.string().required('You must enter your password'),
 
-  // contactEndDate: yup.string().required('youMustEnterYourContactEndDate') .typeError('youMustEnterYourContactEndDate'),
+  contactEndDate: yup.string().required('youMustEnterYourContactEndDate') .typeError('youMustEnterYourContactEndDate'),
   commision: yup.string().required('youMustEnterYourCommission'),
   smsCost: yup.string().required('youMustEnterYourSmsCost'),
-  // emailCost: yup.string().required('youMustEnterYourEmailCost'),
-  // creditCheckCost: yup.string().required('youMustEnterYourCreditCheckCost'),
-  // ehfCost: yup.string().required('youMustEnterYourEhfCost'),
+  emailCost: yup.string().required('youMustEnterYourEmailCost'),
+  creditCheckCost: yup.string().required('youMustEnterYourCreditCheckCost'),
+  ehfCost: yup.string().required('youMustEnterYourEhfCost'),
 
 
   billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber'),
@@ -88,12 +88,12 @@ export const validateSchemaOnBoard = yup.object().shape({
   city: yup.string().required('youMustEnterYourCity'),
   country: yup.string().required('youMustEnterYourCountry'),
 
-  // bankName: yup.string().required('youMustEnterYourBankName'),
-  // accountNumber: yup.string()
-  //     .required('youMustEnterYourAccountNumber')
-  //     .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
-  // IBAN: yup.string().required('youMustEnterYourIban'),
-  // SWIFTCode: yup.string().required('youMustEnterYourSwiftCode'),
+  bankName: yup.string().required('youMustEnterYourBankName'),
+  accountNumber: yup.string()
+    .required('youMustEnterYourAccountNumber')
+    .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
+  IBAN: yup.string().required('youMustEnterYourIban'),
+  SWIFTCode: yup.string().required('youMustEnterYourSwiftCode'),
 
 
   APTICuserName: yup.string().required('youMustEnterYourApticUserName'),
@@ -212,7 +212,7 @@ export const defaultValue = {
   vat:[],
   fakturaB2B: '',
   fakturaB2C: '',
-
+  
 }
 
 export const defaultValueOnBoard = {
