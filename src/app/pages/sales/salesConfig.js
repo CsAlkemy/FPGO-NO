@@ -41,6 +41,10 @@ export const SalesConfig = {
       path: "/create-order",
       element: <CreateOrder />,
     },
+    {
+      path: "/quick-order",
+      element: <QuickOrder />,
+    },
   ],
 };
 
@@ -75,10 +79,6 @@ export const SalesConfigRBAC = {
     {
       path: "/create-order/modal",
       element: <OrderModals />,
-    },
-    {
-      path: "/quick-order",
-      element: <QuickOrder />,
     },
     {
       path: "/create-order/details/:uuid",

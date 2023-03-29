@@ -380,7 +380,10 @@ const OrderInformation = ({ info }) => {
                     </AccordionSummary>
                     <AccordionDetails className="bg-white px-0">
                       {addOrderIndex.map((index) => (
-                        <div className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20" key={`order:${index}`}>
+                        <div
+                          className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
+                          key={`order:${index}`}
+                        >
                           <Controller
                             name={`order[${index}].productName`}
                             control={control}
@@ -479,7 +482,9 @@ const OrderInformation = ({ info }) => {
                                   defaultValue={
                                     info.productList &&
                                     info.productList?.[index]?.rate
-                                      ? ThousandSeparator(info.productList[index].rate)
+                                      ? ThousandSeparator(
+                                          info.productList[index].rate
+                                        )
                                       : ""
                                   }
                                 />
@@ -534,7 +539,7 @@ const OrderInformation = ({ info }) => {
                                     info.productList &&
                                     info.productList?.[index]?.tax === 0
                                       ? 0
-                                      :info.productList[index]?.tax
+                                      : info.productList[index]?.tax
                                   }
                                 />
                               )}
@@ -542,15 +547,21 @@ const OrderInformation = ({ info }) => {
                           </div>
                           <div className="flex justify-between subtitle1 py-20 border-t-1 border-MonochromeGray-50">
                             <div>{t("label:total")}</div>
-                            <div>{t("label:nok")} {info.productList &&
-                            info.productList?.[index]?.amount
-                              ? ThousandSeparator(info.productList[index].amount)
-                              : ""}</div>
+                            <div>
+                              {t("label:nok")}{" "}
+                              {info.productList &&
+                              info.productList?.[index]?.amount
+                                ? ThousandSeparator(
+                                    info.productList[index].amount
+                                  )
+                                : ""}
+                            </div>
                           </div>
                         </div>
                       ))}
                       <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
-                        {t("label:grandTotal")} : {t("label:nok")} {ThousandSeparator(info.orderSummary.grandTotal)}
+                        {t("label:grandTotal")} : {t("label:nok")}{" "}
+                        {ThousandSeparator(info.orderSummary.grandTotal)}
                       </div>
                     </AccordionDetails>
                   </Accordion>
@@ -690,7 +701,9 @@ const OrderInformation = ({ info }) => {
                                 defaultValue={
                                   info.productList &&
                                   info.productList?.[index]?.rate
-                                    ? ThousandSeparator(info.productList[index].rate)
+                                    ? ThousandSeparator(
+                                        info.productList[index].rate
+                                      )
                                     : ""
                                 }
                               />
@@ -747,7 +760,7 @@ const OrderInformation = ({ info }) => {
                                   info.productList &&
                                   info.productList?.[index]?.tax === 0
                                     ? 0
-                                      :info.productList[index]?.tax
+                                    : info.productList[index]?.tax
                                 }
                               />
                             )}
@@ -758,7 +771,9 @@ const OrderInformation = ({ info }) => {
                             {t("label:nok")}{" "}
                             {info.productList &&
                             info.productList?.[index]?.amount
-                              ? ThousandSeparator(info.productList[index].amount)
+                              ? ThousandSeparator(
+                                  info.productList[index].amount
+                                )
                               : ""}
                           </div>
                         </div>
@@ -792,14 +807,15 @@ const OrderInformation = ({ info }) => {
                               // value={!value ? new Date() : value}
                               PopperProps={{
                                 sx: {
-                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                    borderRadius: '8px',
-                                    "&.Mui-selected": {
-                                      backgroundColor: "#c9eee7",
-                                      color: "#323434",
-                                    }
-                                  }
-                                }
+                                  "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                    {
+                                      borderRadius: "8px",
+                                      "&.Mui-selected": {
+                                        backgroundColor: "#c9eee7",
+                                        color: "#323434",
+                                      },
+                                    },
+                                },
                               }}
                               value={
                                 info?.orderDate
@@ -856,14 +872,15 @@ const OrderInformation = ({ info }) => {
                                   inputFormat="dd.MM.yyyy HH:mm"
                                   PopperProps={{
                                     sx: {
-                                      "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root": {
-                                        borderRadius: '8px',
-                                        "&.Mui-selected": {
-                                          backgroundColor: "#c9eee7",
-                                          color: "#323434",
-                                        }
-                                      }
-                                    }
+                                      "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                        {
+                                          borderRadius: "8px",
+                                          "&.Mui-selected": {
+                                            backgroundColor: "#c9eee7",
+                                            color: "#323434",
+                                          },
+                                        },
+                                    },
                                   }}
                                   // inputFormat="dd.MMM.yyyy"
                                   value={
@@ -1308,6 +1325,12 @@ const OrderInformation = ({ info }) => {
                                           "corporate" ||
                                         customData.orderBy === "email"
                                       }
+                                      value={
+                                        field.value ||
+                                        (info.customerDetails?.email
+                                          ? info.customerDetails?.email
+                                          : "")
+                                      }
                                       defaultValue={
                                         info.customerDetails?.email
                                           ? info.customerDetails?.email
@@ -1335,6 +1358,12 @@ const OrderInformation = ({ info }) => {
                                         variant="outlined"
                                         fullWidth
                                         disabled
+                                        value={
+                                          field.value ||
+                                          (info.customerDetails?.name
+                                            ? info.customerDetails?.name
+                                            : "")
+                                        }
                                         defaultValue={
                                           info.customerDetails?.name
                                             ? info.customerDetails?.name
@@ -1365,6 +1394,21 @@ const OrderInformation = ({ info }) => {
                                         variant="outlined"
                                         fullWidth
                                         disabled
+                                        value={
+                                          field.value ||
+                                          (info.customerDetails?.type ===
+                                          "Private"
+                                            ? info.customerDetails
+                                                ?.personalNumber
+                                              ? info.customerDetails
+                                                  ?.personalNumber
+                                              : ""
+                                            : info.customerDetails
+                                                ?.organizationId
+                                            ? info.customerDetails
+                                                ?.organizationId
+                                            : "")
+                                        }
                                         defaultValue={
                                           info.customerDetails?.type ===
                                           "Private"
@@ -1410,6 +1454,14 @@ const OrderInformation = ({ info }) => {
                                             required={customData.paymentMethod.includes(
                                               "invoice"
                                             )}
+                                            value={
+                                              field.value ||
+                                              (info.customerDetails.address
+                                                ?.street
+                                                ? info.customerDetails.address
+                                                    ?.street
+                                                : "")
+                                            }
                                             defaultValue={
                                               info.customerDetails.address
                                                 ?.street
@@ -1447,6 +1499,13 @@ const OrderInformation = ({ info }) => {
                                             required={customData.paymentMethod.includes(
                                               "invoice"
                                             )}
+                                            value={
+                                              field.value ||
+                                              (info.customerDetails.address?.zip
+                                                ? info.customerDetails.address
+                                                    ?.zip
+                                                : "")
+                                            }
                                             defaultValue={
                                               info.customerDetails.address?.zip
                                                 ? info.customerDetails.address
@@ -1483,6 +1542,13 @@ const OrderInformation = ({ info }) => {
                                           required={customData.paymentMethod.includes(
                                             "invoice"
                                           )}
+                                          value={
+                                            field.value ||
+                                            (info.customerDetails.address?.city
+                                              ? info.customerDetails.address
+                                                  ?.city
+                                              : "")
+                                          }
                                           defaultValue={
                                             info.customerDetails.address?.city
                                               ? info.customerDetails.address
@@ -1595,8 +1661,6 @@ const OrderInformation = ({ info }) => {
                                         <TextField
                                           {...field}
                                           label={t("label:referenceNo")}
-                                          type="number"
-                                          autoComplete="off"
                                           error={!!errors.referenceNumber}
                                           helperText={
                                             errors?.referenceNumber?.message
@@ -1604,17 +1668,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.referenceNumber,
-                                          }}
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.referenceNumber
                                               ? info.invoiceReferences
                                                   ?.referenceNumber
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1627,8 +1687,6 @@ const OrderInformation = ({ info }) => {
                                         <TextField
                                           {...field}
                                           label={t("label:customerReference")}
-                                          type="text"
-                                          autoComplete="off"
                                           error={!!errors.customerReference}
                                           helperText={
                                             errors?.customerReference?.message
@@ -1636,17 +1694,14 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.customerReference,
-                                          }}
-                                          defaultValue={
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences &&
                                             info.invoiceReferences
                                               ?.customerReference
                                               ? info.invoiceReferences
                                                   ?.customerReference
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1658,8 +1713,6 @@ const OrderInformation = ({ info }) => {
                                         <TextField
                                           {...field}
                                           label={t("label:receiptNo")}
-                                          type="text"
-                                          autoComplete="off"
                                           error={!!errors.receiptNo}
                                           helperText={
                                             errors?.receiptNo?.message
@@ -1667,17 +1720,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.receiptNo,
-                                          }}
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.receiptNumber
                                               ? info.invoiceReferences
                                                   ?.receiptNumber
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1702,12 +1751,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.customerNotes
                                               ? info.invoiceReferences
                                                   ?.customerNotes
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1730,12 +1780,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.termsAndCondition
                                               ? info.invoiceReferences
                                                   ?.termsAndCondition
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1796,6 +1847,14 @@ const OrderInformation = ({ info }) => {
                                               !!field.value ||
                                               touchedFields.internalReferenceNo,
                                           }}
+                                          value={
+                                            field.value ||
+                                            (info.internalReferences
+                                              ?.referenceNumber
+                                              ? info.internalReferences
+                                                  ?.referenceNumber
+                                              : "")
+                                          }
                                           defaultValue={
                                             info.internalReferences
                                               ?.referenceNumber
@@ -1825,6 +1884,12 @@ const OrderInformation = ({ info }) => {
                                           }
                                           variant="outlined"
                                           fullWidth
+                                          value={
+                                            field.value ||
+                                            (info.internalReferences?.notes
+                                              ? info.internalReferences?.notes
+                                              : "")
+                                          }
                                           defaultValue={
                                             info.internalReferences?.notes
                                               ? info.internalReferences?.notes
@@ -1853,7 +1918,8 @@ const OrderInformation = ({ info }) => {
                             {t("label:subTotal")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} { ThousandSeparator(info.orderSummary.subTotal) }
+                            {t("label:nok")}{" "}
+                            {ThousandSeparator(info.orderSummary.subTotal)}
                           </div>
                         </div>
                         <div className="flex justify-between items-center  my-20">
@@ -1861,7 +1927,8 @@ const OrderInformation = ({ info }) => {
                             {t("label:tax")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} { ThousandSeparator(info.orderSummary.tax) }
+                            {t("label:nok")}{" "}
+                            {ThousandSeparator(info.orderSummary.tax)}
                           </div>
                         </div>
                         <div className="flex justify-between items-center  my-20">
@@ -1869,7 +1936,8 @@ const OrderInformation = ({ info }) => {
                             {t("label:discount")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} { ThousandSeparator(info.orderSummary.discount) }
+                            {t("label:nok")}{" "}
+                            {ThousandSeparator(info.orderSummary.discount)}
                           </div>
                         </div>
                       </div>
@@ -1879,7 +1947,8 @@ const OrderInformation = ({ info }) => {
                             {t("label:grandTotal")}
                           </div>
                           <div className="body3 text-MonochromeGray-700">
-                            {t("label:nok")} { ThousandSeparator(info.orderSummary.grandTotal) }
+                            {t("label:nok")}{" "}
+                            {ThousandSeparator(info.orderSummary.grandTotal)}
                           </div>
                         </div>
                       </div>

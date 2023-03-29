@@ -3,6 +3,7 @@ import axios from "axios";
 import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
+import UtilsServices from "../../utils/UtilsServices";
 
 class OrdersService {
   //Not using - Shifted RTK-Query
@@ -132,6 +133,10 @@ class OrdersService {
         // refundResend: "Resend",
         // isCancel: true,
         translationKey: row.translationKey,
+        enableSendInvoice:
+          row?.type.toLowerCase() === "quick" &&
+          !row?.exportedToAptic &&
+          row?.status.toLowerCase() === "expired",
       };
     });
     return d;
@@ -938,7 +943,6 @@ class OrdersService {
   };
 
   prepareCreateQuickOrderPayload = (params) => {
-    console.log("PARAMS : ", params);
     const products =
       params.order.length &&
       params.order
@@ -986,7 +990,12 @@ class OrdersService {
         });
     const customers = params?.customers.length
       ? params.customers.map((customer) => {
-          return customer?.uuid ? customer?.uuid : customer?.phone;
+          const isExisting = !!customer?.uuid;
+          let phone = "";
+          if (!isExisting) {
+            phone = UtilsServices.preparePhoneNumber(`${customer?.phone}`);
+          }
+          return customer?.uuid ? customer?.uuid : phone;
         })
       : [];
 
@@ -1011,6 +1020,62 @@ class OrdersService {
       customerNotes: params?.customerNotes ? `${params?.customerNotes}` : null,
       tnc: params?.termsConditions ? `${params?.termsConditions}` : null,
     };
+  };
+
+  prepareUpdateQuickOrderCustomer = (params) => {
+    const phone = params?.phone ? params.phone.split("+") : null;
+
+    const msisdn = phone ? phone[phone.length - 1].slice(2) : null;
+    const countryCode = phone
+      ? "+" + phone[phone.length - 1].slice(0, 2)
+      : null;
+
+    return {
+      type: "private",
+      countryCode,
+      msisdn,
+      email: params?.email ? params?.email : null,
+      name: params?.customerName ? params?.customerName : null,
+      personalNumber:
+        params?.orgIdOrPNumber.length === 11
+          ? `${params?.orgIdOrPNumber}`
+          : null,
+      organizationId:
+        params?.orgIdOrPNumber.length === 9
+          ? `${params?.orgIdOrPNumber}`
+          : null,
+      // organizationId : "fu",
+      address: {
+        street: params?.streetAddress ? params?.streetAddress : null,
+        zip: params?.zipCode ? `${params?.zipCode}` : null,
+        city: params?.city ? params?.city : null,
+        country: params?.country ? params?.country : null,
+      },
+    };
+  };
+
+  sendQuickOrderToAptic = (uuid) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/orders/export/aptic/${uuid}`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (response?.data?.status_code === 201) {
+                  resolve(response?.data);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
+    });
   };
 }
 

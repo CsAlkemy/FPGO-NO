@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -19,11 +19,23 @@ import {
 import { useTranslation } from "react-i18next";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
+import {
+  useGetUsersListQuery,
+  useOrderExportToApticQuery,
+  useUpdateQuickOrderCustomerMutation
+} from "app/store/api/apiSlice";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
+import OrdersService from "../../../data-access/services/ordersService/OrdersService";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 const SendInvoiceModal = (props) => {
   const { t } = useTranslation();
-  const { editOpen, setEditOpen } = props;
+  const { editOpen, setEditOpen, customerInfo } = props;
   const [loading, setLoading] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const [updateQuickOrderCustomer, response] =useUpdateQuickOrderCustomerMutation();
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -34,7 +46,7 @@ const SendInvoiceModal = (props) => {
       name: "sweden",
     },
   ]);
-  const { control, formState, handleSubmit } = useForm({
+  const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
     sendInvoiceDefaultValue,
     resolver: yupResolver(sendInvoiceValidation),
@@ -42,9 +54,28 @@ const SendInvoiceModal = (props) => {
   const { isValid, errors } = formState;
   const onSubmit = (values) => {
     setLoading(true);
-    console.log(values);
-    setLoading(false);
+    const  data = OrdersService.prepareUpdateQuickOrderCustomer(values);
+    updateQuickOrderCustomer({...data, uuid:customerInfo?.uuid}).then((response) => {
+      if (response?.data?.status_code === 202) {
+        OrdersService.sendQuickOrderToAptic(customerInfo?.uuid)
+          .then((response)=> {
+            enqueueSnackbar(t(`message:${response?.message}`), { variant: "success" });
+            setLoading(false);
+          })
+          .catch((e)=> {
+            enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+            setLoading(false);
+          })
+      } else {
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+      }
+    });
   };
+
+  useEffect(()=>{
+    sendInvoiceDefaultValue.phone = customerInfo?.phone ? customerInfo?.phone : "";
+    reset({...sendInvoiceDefaultValue})
+  },[editOpen])
 
   return (
     <div>
@@ -67,13 +98,13 @@ const SendInvoiceModal = (props) => {
             <div className="flex justify-between mx-10 items-center my-20">
               <div className="flex flex-col gap-5">
                 <div className="body2 font-bold text-MonochromeGray-900">
-                  +47 990 65 708
+                  {customerInfo?.phone}
                 </div>
                 <div className="body2 text-MonochromeGray-500">
-                  Order ID: 3725688
+                  {t("label:orderID")}: {customerInfo?.uuid}
                 </div>
               </div>
-              <div className="header6">NOK 10,0000</div>
+              <div className="header6">{t("label:nok")} {customerInfo?.amount}</div>
             </div>
             <hr />
             <form
@@ -375,7 +406,7 @@ const SendInvoiceModal = (props) => {
                     loadingPosition="center"
                     disabled={!isValid}
                   >
-                    {t("label:update")}
+                    {t("label:send")}
                   </LoadingButton>
                 </div>
               </div>

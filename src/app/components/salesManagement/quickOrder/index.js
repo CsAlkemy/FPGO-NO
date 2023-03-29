@@ -64,7 +64,7 @@ const createProducts = () => {
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
   const [val, setVal] = useState([]);
-  const [newCustomer, setNewCustomer] = useState("");
+  const [newCustomer, setNewCustomer] = useState([]);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createQuickOrder, response] = useCreateQuickOrderMutation();
@@ -248,7 +248,7 @@ const createProducts = () => {
       ) || [];
     const searchByName =
       customersList.filter((customer) =>
-        customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+        customer?.name && customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
     setCustomerSearchBy(
       searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
@@ -384,6 +384,22 @@ const createProducts = () => {
     }
   };
 
+  const watchOrderDate = watch(`orderDate`)
+    ? watch(`orderDate`)
+    : setValue("orderDate", new Date());
+  const watchDueDatePaymentLink = watch(`dueDatePaymentLink`);
+
+  useEffect(() => {
+    setValue(
+      "dueDatePaymentLink",
+      new Date().setDate(
+        watchOrderDate && watchOrderDate.getDate() >= new Date().getDate()
+          ? watchOrderDate.getDate() + 2
+          : new Date().getDate() + 2
+      )
+    );
+  }, [watch(`orderDate`)]);
+
   return (
     <div className="create-product-container">
       <div className="inside-div-product">
@@ -413,7 +429,7 @@ const createProducts = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
-                  // disabled={!isValid}
+                  disabled={!isValid || val.length === 0}
                 >
                   {t("label:sendOrder")}
                 </LoadingButton>
@@ -443,7 +459,7 @@ const createProducts = () => {
                     noOptionsText={
                       <div className="flex items-center justify-between my-2">
                         <span className="subtitle3 font-600">
-                          No customers found
+                          {t("label:noCustomersFound")}
                         </span>
                         <Button
                           variant="contained"
@@ -514,7 +530,7 @@ const createProducts = () => {
                         {...params}
                         onChange={searchCustomerOnFocus}
                         className="mt-10 w-full sm:w-2/4"
-                        placeholder={t("label:searchByNameOrPhoneNo")}
+                        placeholder={t("label:searchCustomersByNameOrPhoneNo")}
                       />
                     )}
                   />
@@ -574,7 +590,7 @@ const createProducts = () => {
               <div className="flex gap-5 m-5 items-center">
                 <InfoIcon className="text-primary-500 h-[15px] w-[15px]" />
                 <span className="body4 text-m-grey-500">
-                  Multiple customers can be added
+                  {t("label:multipleCustomersCanBeAdded")}
                 </span>
               </div>
               <div className="my-20">
@@ -611,6 +627,12 @@ const createProducts = () => {
                       value={!value ? new Date() : value}
                       required
                       onChange={onChange}
+                      minDate={new Date().setDate(
+                        new Date().getDate() - 30
+                      )}
+                      maxDate={new Date().setDate(
+                        new Date().getDate() + 30
+                      )}
                       PopperProps={{
                         sx: {
                           "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
@@ -651,9 +673,24 @@ const createProducts = () => {
                       label={t("label:dueDateForPaymentLink")}
                       mask=""
                       inputFormat="dd.MM.yyyy"
-                      value={!value ? new Date() : value}
+                      value={
+                        !value
+                          ? new Date().setDate(new Date().getDate() + 2)
+                          : value
+                        // : value
+                      }
                       required
                       onChange={onChange}
+                      minDate={
+                        watchOrderDate
+                          ? new Date().setDate(
+                            watchOrderDate.getDate() + 1
+                          )
+                          : new Date().setDate(
+                            new Date().getDate() - 30
+                          )
+                      }
+                      disablePast={true}
                       PopperProps={{
                         sx: {
                           "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
@@ -773,7 +810,7 @@ const createProducts = () => {
                           onClick={() => addNewOrder()}
                           disabled={addOrderIndex.length >= 20 ? true : false}
                         >
-                          Add Item
+                          {t("label:addItem")}
                         </Button>
                       </div>
                       {addOrderIndex.map((index) => (
@@ -1076,7 +1113,7 @@ const createProducts = () => {
                             }
                             onClick={() => onDelete(index)}
                           >
-                            Remove Item
+                            {t("label:removeItem")}
                           </Button>
                         </div>
                       ))}
@@ -1452,7 +1489,7 @@ const createProducts = () => {
                     onClick={() => addNewOrder()}
                     disabled={addOrderIndex.length >= 20 ? true : false}
                   >
-                    Add Item
+                    {t("label:addItem")}
                   </Button>
                   <hr className=" mt-20 border-half-bottom" />
                 </div>

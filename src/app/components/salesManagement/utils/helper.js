@@ -413,11 +413,11 @@ export const sendInvoiceValidation = yup.object().shape({
       message: "Must be number",
       excludeEmptyString: true,
     })
-    .required("youMustEnterOrganizationID")
+    .required("pNumberMustBeNumber")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(9, "mustBeExactlyNineNumbers")
-    .max(9, "mustBeExactlyNineNumbers"),
+    .min(11, "mustBeExactlyElevenNumbers")
+    .max(11, "mustBeExactlyElevenNumbers"),
   streetAddress: yup.string().required("youMustEnterYourStreetAddress"),
   zipCode: yup.string().required("enterZIP"),
 });
