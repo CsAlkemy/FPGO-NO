@@ -459,7 +459,8 @@ const no = {
     orderLogOrderExpiredAndWasNotPaid: "Ordre utløpt og ikke betalt",
     customerTimelinePaymentSuccessful: "Betaling vellykket",
     clientTimelineEmailSent: "E-post sendt",
-    refunded: "Refundert"
+    refunded: "Refundert",
+    noDataFound: "Ingen data funnet",
   },
   message: {
     clientNotFound: "Klient ikke funnet",
@@ -591,6 +592,12 @@ const no = {
     creditCheckHistoryRetrievedSuccessfully:
       "Kredittkontrollhistorikk hentet med hell",
     creditCheckHistoryNotFound: "Kredittsjekkhistorikk ikke funnet",
+    quickOrderAddedSuccessfully: "Hurtigbestilling lagt til med suksess",
+    orderStatusAlreadyCancelled: "Bestillingsstatus allerede kansellert",
+    orderStatusAlreadyInvoiced: "Bestillingsstatus allerede fakturert",
+    orderStatusNotExportable: "Bestillingsstatus Kan ikke eksporteres",
+    userAlreadyExistsWithSameEmail:
+      "Bruker finnes allerede med samme e-postadresse",
   },
   validation: {
     youMustEnterAValidEmail: "Du må oppgi en gyldig e-postadresse",
@@ -686,6 +693,7 @@ const no = {
     youMustEnterTheCancellationNote: "Du må oppgi avbestillingsnotatet",
     youMustSelectYourRole: "Du må velge din rolle",
     youMustSelectYourBranch: "Du må velge filial",
+    enterValidPhoneNumber: "Oppgi gyldig telefonnummer",
   },
 };
 export default no;
