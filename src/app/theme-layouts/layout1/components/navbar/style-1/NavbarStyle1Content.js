@@ -63,17 +63,17 @@ function NavbarStyle1Content(props) {
             color="secondary"
             variant="outlined"
             className="button-outline-product flex justify-center items-center custom-position-for-nav-button mt-20 mb-10"
-            onClick={()=> navigate(`/create-order`)}
+            onClick={()=> navigate(`/quick-order`)}
             disabled={user.role[0] === FP_ADMIN}
           >
-            {t("label:createOrder")}
+            {t("label:quickOrder")}
           </Button>
         )
       }
       {
         !!settings.layout.config.navbar.folded && (
           <IconButton aria-label="fingerprint" color="secondary" className="rounded-4 mx-10"
-                      onClick={()=> navigate(`/create-order`)}
+                      onClick={()=> navigate(`/quick-order`)}
                       disabled={user.role[0] === FP_ADMIN}
           >
             <AddIcon />

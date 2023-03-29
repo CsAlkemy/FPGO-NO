@@ -1440,7 +1440,11 @@ class CustomersService {
                             "Refund"
                           : null,
                       isCancel: row.status.toLowerCase() === "sent",
-                      translationKey: row.translationKey
+                      translationKey: row.translationKey,
+                      enableSendInvoice:
+                        row?.type.toLowerCase() === "quick" &&
+                        !row?.exportedToAptic &&
+                        row?.status.toLowerCase() === "expired",
                     };
                   });
                   d.status_code = 200;
