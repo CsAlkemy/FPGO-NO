@@ -135,7 +135,7 @@ export const validateSchemaCreateClient = yup.object().shape({
   //   .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
   // SWIFTCode: yup.string().required('youMustEnterYourSwiftCode'),
   // IBAN: yup.string().required('youMustEnterYourIban'),
-  
+
   APTICuserName: yup.string().required('youMustEnterYourApticUserName'),
   APTICpassword: yup.string().required('youMustEnterYourApticPassword'),
   APTIEnginePassword: yup.string().required('youMustEnterYourApticEnginePassword'),
