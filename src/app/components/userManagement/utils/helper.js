@@ -58,8 +58,8 @@ export const validateSchemaCreateCompanyAdmin = yup.object().shape({
   phoneNumber: yup
     .string()
     .required("youMustEnterYourPhoneNumber")
-    .min(8, "youMustEnterYourPhoneNumber")
-    .max(15, "youMustEnterYourPhoneNumber"),
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   preferredLanguage: yup
     .string()
     .required("youMustSelectYourPreferredLanguage"),
@@ -87,8 +87,8 @@ export const validateSchemaCreateBusinessAdmin = yup.object().shape({
   phoneNumber: yup
     .string()
     .required("youMustEnterYourPhoneNumber")
-    .min(8, "youMustEnterYourPhoneNumber")
-    .max(15, "youMustEnterYourPhoneNumber"),
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   organization: yup.string().required("youMustEnterOrganization"),
   preferredLanguage: yup
     .string()
@@ -114,8 +114,8 @@ export const validateSchemaGeneralAdmin = yup.object().shape({
   phoneNumber: yup
     .string()
     .required("youMustEnterYourPhoneNumber")
-    .min(8, "youMustEnterYourPhoneNumber")
-    .max(15, "youMustEnterYourPhoneNumber"),
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   organization: yup.string().required("youMustEnterYourOrganizationName"),
   preferredLanguage: yup
     .string()
@@ -141,7 +141,11 @@ export const schemaSubClientCreateBranch = yup.object().shape({
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
-  phoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  phoneNumber: yup
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   branch: yup.string().required("You must select your branch"),
   password: yup
     .string()
@@ -160,7 +164,11 @@ export const schemaSubClientCreateGeneralUser = yup.object().shape({
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
-  phoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  phoneNumber: yup
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   branch: yup.string(), // .required('You must select your branch'),
   password: yup
     .string()
@@ -183,7 +191,11 @@ export const schemaUserProfile = yup.object().shape({
     .string()
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
-  phoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  phoneNumber: yup
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   organization: yup.string().required("youMustEnterYourOrganizationName"),
   role: yup.string().required("youMustEnterYourRole"),
   // preferredLanguage : yup.string().required('youMustSelectYourPreferredLanguage'),

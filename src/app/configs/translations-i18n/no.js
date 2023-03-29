@@ -609,6 +609,7 @@ const no = {
     bothPasswordNeedToBeTheSame: "Begge passordene må være de samme",
     youMustEnterProductId: "Du må oppgi produkt-ID",
     youMustEnterProductName: "Du må oppgi produktnavn",
+    enterValidPhoneNumber:"Oppgi gyldig telefonnummer",
     youMustEnterPrice: "Du må oppgi pris",
     youMustSelectTax: "Du må velge avgift",
     productUnitCanTBeNumber: "Produktenhet kan ikke være nummer",
