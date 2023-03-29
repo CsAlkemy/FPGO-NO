@@ -820,7 +820,6 @@ const Onboarding = () => {
                                   {...params}
                                   onBlur={onBlur}
                                   type="date"
-                                  required
                                   error={!!errors.contactEndDate}
                                   helperText={
                                     errors?.contactEndDate?.message
@@ -910,7 +909,6 @@ const Onboarding = () => {
                                   : ""
                               }
                               variant="outlined"
-                              required
                               fullWidth
                               InputProps={{
                                 endAdornment: (
@@ -940,7 +938,6 @@ const Onboarding = () => {
                                   : ""
                               }
                               variant="outlined"
-                              required
                               fullWidth
                               InputProps={{
                                 endAdornment: (
@@ -968,7 +965,6 @@ const Onboarding = () => {
                                   : ""
                               }
                               variant="outlined"
-                              required
                               fullWidth
                               InputProps={{
                                 endAdornment: (
@@ -981,41 +977,6 @@ const Onboarding = () => {
                           )}
                         />
                       </div>
-                      {/*<div className="create-user-roles caption2">*/}
-                      {/*  {t("label:contractDocument")}*/}
-                      {/*</div>*/}
-                      {/*<div className="document-preview grid grid-cols-1 sm:grid-cols-3 gap-20 my-20">*/}
-                      {/*  {uploadDocuments.map((item, index) => (*/}
-                      {/*    <div*/}
-                      {/*      key={index}*/}
-                      {/*      className="py-16 px-10 border-1 border-MonochromeGray-50 rounded-8 flex justify-between items-center"*/}
-                      {/*    >*/}
-                      {/*      <div className="flex gap-5">*/}
-                      {/*        <BsFileEarmarkMedical className="icon-size-20 text-main" />*/}
-                      {/*        {item.name}*/}
-                      {/*      </div>*/}
-                      {/*      <MdClose className="icon-size-20" />*/}
-                      {/*    </div>*/}
-                      {/*  ))}*/}
-                      {/*</div>*/}
-                      {/*<Button*/}
-                      {/*  variant="contained"*/}
-                      {/*  component="label"*/}
-                      {/*  className="rounded-4 font-semibold text-primary-800 bg-primary-25 md:min-w-192 min-w-min"*/}
-                      {/*  disabled={uploadDocuments.length >= 3}*/}
-                      {/*  startIcon={*/}
-                      {/*    <PublishOutlinedIcon className="icon-size-20 mr-5" />*/}
-                      {/*  }*/}
-                      {/*>*/}
-                      {/*  {uploadDocuments?.length > 0*/}
-                      {/*    ? t("label:reUploadDocument")*/}
-                      {/*    : t("label:uploadFile")}*/}
-                      {/*  <input*/}
-                      {/*    type="file"*/}
-                      {/*    hidden*/}
-                      {/*    onChange={(e) => handleFileUpload(e)}*/}
-                      {/*  />*/}
-                      {/*</Button>*/}
                     </div>
                   </div>
                   <div className="billing-information">
@@ -1485,7 +1446,6 @@ const Onboarding = () => {
                                     : ""
                                 }
                                 variant="outlined"
-                                required
                                 fullWidth
                                 InputProps={{
                                   endAdornment: (
@@ -1517,7 +1477,6 @@ const Onboarding = () => {
                                     : ""
                                 }
                                 variant="outlined"
-                                required
                                 fullWidth
                               />
                             )}
@@ -1538,7 +1497,6 @@ const Onboarding = () => {
                                     : ""
                                 }
                                 variant="outlined"
-                                required
                                 fullWidth
                               />
                             )}
@@ -1561,7 +1519,6 @@ const Onboarding = () => {
                                     : ""
                                 }
                                 variant="outlined"
-                                required
                                 fullWidth
                               />
                             )}

@@ -18,17 +18,13 @@ const confirmDiscard = (props) => {
     title,
     open,
     setOpen,
-    reset,
     subTitle,
-    defaultValue,
     route,
     modalRef,
     values,
   } = props;
   const handleClose = () => {
     setTimeout(() => {
-      //commented the reset as Nafees Vaiya only want to back previous screen by clicking discard(15-12-2022)
-      // reset({...defaultValue})
       !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
     }, 500);
     setOpen(false);
@@ -69,26 +65,26 @@ const confirmDiscard = (props) => {
     <div>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={()=>setOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         className="rounded-8"
       >
         <div className="p-16">
           <DialogTitle id="alert-dialog-title" className="modeal-header">
-            {t(`label:${_.camelCase(title)}`)}
+            {title}
           </DialogTitle>
           <DialogContent>
             <DialogContentText
               id="alert-dialog-description"
               className="modeal-text"
             >
-              {t(`label:${_.camelCase(subTitle)}`)}
+              {subTitle}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={handleClose}
+              onClick={()=>setOpen(false)}
               variant="text"
               className="text-main font-semibold mr-16"
             >
