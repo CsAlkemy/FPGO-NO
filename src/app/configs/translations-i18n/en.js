@@ -132,7 +132,7 @@ const en = {
     newCorporateCustomer: "New Corporate Customer",
     corporateCustomersCanBeCreatedJustByOrganizationIdAndEmailId:
       "Corporate Customers Can Be Created Just By Organization ID And Email ID.",
-    findOrganization: "Find Organziation",
+    findOrganization: "Find Organisation",
     emailId: "Email ID",
     organizationName: "Organization Name",
     additionalContacts: "Additional Contacts",
@@ -465,7 +465,8 @@ const en = {
     orderLogOrderExpiredAndWasNotPaid: "Order Expired and was not Paid",
     customerTimelinePaymentSuccessful: "Payment Successful",
     clientTimelineEmailSent: "Email Sent",
-    refunded: "Refunded"
+    refunded: "Refunded",
+    noDataFound: "No Data Found",
   },
   message: {
     clientNotFound: "Client not Found",
@@ -594,6 +595,11 @@ const en = {
     creditCheckHistoryRetrievedSuccessfully:
       "Credit Check History Retrieved Successfully",
     creditCheckHistoryNotFound: "Credit Check History not Found",
+    quickOrderAddedSuccessfully: "Quick Order Added Successfully",
+    orderStatusAlreadyCancelled: "Order Status Already Cancelled",
+    orderStatusAlreadyInvoiced: "Order Status Already Invoiced",
+    orderStatusNotExportable: "Order Status Not Exportable",
+    userAlreadyExistsWithSameEmail: "User Already Exists with Same Email",
   },
   validation: {
     youMustEnterAValidEmail: "You must enter a valid email",
@@ -610,7 +616,6 @@ const en = {
     passwordCombinationRules:
       "Password must be at least 8-15 digits and contain number and alphabets",
     bothPasswordNeedToBeTheSame: "Both password need to be the same",
-    enterValidPhoneNumber:"Enter valid phone number",
     youMustEnterProductId: "You must enter product Id",
     youMustEnterProductName: "You must enter product name",
     youMustEnterPrice: "You must enter price",
@@ -687,6 +692,7 @@ const en = {
     youMustEnterTheCancellationNote: "You must enter the Cancellation Note",
     youMustSelectYourRole: "You must select your role",
     youMustSelectYourBranch: "You must select your branch",
+    enterValidPhoneNumber: "Enter valid phone number",
   },
 };
 export default en;
