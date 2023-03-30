@@ -35,7 +35,13 @@ import PhoneInput from "react-phone-input-2";
 import { useNavigate, useParams } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import ConfirmModal from "../../common/confirmmationDialog";
-import { defaultValue, validateSchema } from "../utils/helper";
+import {
+  defaultValue,
+  validateSchema,
+  validateSchemaAdministration,
+  validateSchemaCreateClient,
+  validateSchemaCreateClientAdministration,
+} from "../utils/helper";
 import Orders from "./Orders";
 import Timeline from "./Timeline";
 import {
@@ -65,8 +71,10 @@ const ClientDetails = () => {
   const [tabValue, setTabValue] = React.useState("1");
   const [addVatIndex, setAddVatIndex] = React.useState([0, 1, 2, 3, 4]);
   const [ownerRef, setOwnerRef] = React.useState(true);
+  const [recheckSchema, setRecheckSchema] = React.useState(false);
   const [updateClient] = useUpdateClientMutation();
   const [updateClientStatus] = useUpdateClientStatusMutation();
+  const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
 
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
@@ -83,11 +91,40 @@ const ClientDetails = () => {
       : setAddVatIndex([...addVatIndex]);
   };
 
+  let schema =
+    customApticInfoData === "purchase"
+      ? validateSchema
+      : validateSchemaAdministration;
+  useEffect(() => {
+    if (recheckSchema) {
+      if (customApticInfoData === "purchase") {
+        clearErrors(["creditLimitCustomer"]);
+        setValue("creditLimitCustomer", "", { shouldValidate: true });
+        setError(
+          "creditLimitCustomer",
+          { type: "focus" },
+          { shouldFocus: true }
+        );
+      } else {
+        setValue("creditLimitCustomer", "", { shouldValidate: true });
+        clearErrors(["creditLimitCustomer"]);
+      }
+    }
+  }, [customApticInfoData]);
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
+  const {
+    control,
+    formState,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    clearErrors,
+    setError,
+  } = useForm({
     mode: "onChange",
     defaultValue,
-    resolver: yupResolver(validateSchema),
+    resolver: yupResolver(schema),
   });
   const billingPhoneNumber = watch("billingPhoneNumber") || "";
   const billingEmail = watch("billingEmail") || "";
@@ -113,7 +150,9 @@ const ClientDetails = () => {
         .then((res) => {
           setInfo(res.data);
           const info = res?.data;
-          const planValue = parseInt(info?.contractDetails?.planTag?.split(" ")[1]);
+          const planValue = parseInt(
+            info?.contractDetails?.planTag?.split(" ")[1]
+          );
           if (planValue) {
             if (planValue === 1) {
               setPlan(1);
@@ -127,17 +166,22 @@ const ClientDetails = () => {
             }
           }
 
+          if (info?.apticInformation?.isPurchasable)
+            setCustomApticInfoData("purchase");
+          else setCustomApticInfoData("administration");
+
           if (
             info?.addresses &&
             info?.addresses["billing"]?.email ===
-            info?.addresses["shipping"]?.email &&
+              info?.addresses["shipping"]?.email &&
             info?.addresses["billing"]?.street ===
-            info?.addresses["shipping"]?.street &&
-            info?.addresses["billing"]?.zip === info?.addresses["shipping"]?.zip &&
+              info?.addresses["shipping"]?.street &&
+            info?.addresses["billing"]?.zip ===
+              info?.addresses["shipping"]?.zip &&
             info?.addresses["billing"]?.city ===
-            info?.addresses["shipping"]?.city &&
+              info?.addresses["shipping"]?.city &&
             info?.addresses["billing"]?.country ===
-            info?.addresses["shipping"]?.country
+              info?.addresses["shipping"]?.country
           ) {
             setSameAddress(true);
             setInitialSameAddressRef(true);
@@ -162,7 +206,7 @@ const ClientDetails = () => {
             info?.primaryContactDetails?.countryCode &&
             info.primaryContactDetails?.msisdn
               ? info.primaryContactDetails?.countryCode +
-              info.primaryContactDetails?.msisdn
+                info.primaryContactDetails?.msisdn
               : "";
           defaultValue.designation = info?.primaryContactDetails?.designation
             ? info.primaryContactDetails?.designation
@@ -177,38 +221,38 @@ const ClientDetails = () => {
             info?.contractDetails?.commissionRate === 0
               ? 0
               : info?.contractDetails?.commissionRate
-                ? info.contractDetails.commissionRate
-                : "";
+              ? info.contractDetails.commissionRate
+              : "";
           defaultValue.smsCost =
             info?.contractDetails?.smsCost === 0
               ? 0
               : info?.contractDetails?.smsCost
-                ? info.contractDetails.smsCost
-                : "";
+              ? info.contractDetails.smsCost
+              : "";
           defaultValue.emailCost =
             info?.contractDetails?.emailCost === 0
               ? 0
               : info?.contractDetails?.emailCost
-                ? info.contractDetails.emailCost
-                : "";
+              ? info.contractDetails.emailCost
+              : "";
           defaultValue.creditCheckCost =
             info?.contractDetails?.creditCheckCost === 0
               ? 0
               : info?.contractDetails?.creditCheckCost
-                ? info.contractDetails.creditCheckCost
-                : "";
+              ? info.contractDetails.creditCheckCost
+              : "";
           defaultValue.ehfCost =
             info?.contractDetails?.ehfCost === 0
               ? 0
               : info?.contractDetails?.ehfCost
-                ? info.contractDetails.ehfCost
-                : "";
+              ? info.contractDetails.ehfCost
+              : "";
           if (!!info.addresses) {
             defaultValue.billingPhoneNumber =
               info?.addresses["billing"]?.countryCode &&
               info.addresses["billing"].msisdn
                 ? info.addresses["billing"].countryCode +
-                info.addresses["billing"].msisdn
+                  info.addresses["billing"].msisdn
                 : "";
             defaultValue.billingEmail = info?.addresses["billing"]?.email
               ? info.addresses["billing"].email
@@ -231,7 +275,7 @@ const ClientDetails = () => {
               info?.addresses["shipping"]?.countryCode &&
               info?.addresses["shipping"]?.msisdn
                 ? info.addresses["shipping"].countryCode +
-                info.addresses["shipping"].msisdn
+                  info.addresses["shipping"].msisdn
                 : "";
             defaultValue.shippingEmail = info?.addresses["shipping"]?.email
               ? info.addresses["shipping"].email
@@ -274,7 +318,8 @@ const ClientDetails = () => {
             ?.costLimitForCustomer
             ? info?.apticInformation?.costLimitForCustomer
             : "";
-          defaultValue.costLimitforOrder = info?.apticInformation?.costLimitForOrder
+          defaultValue.costLimitforOrder = info?.apticInformation
+            ?.costLimitForOrder
             ? info?.apticInformation?.costLimitForOrder
             : "";
           defaultValue.invoicewithRegress = info?.apticInformation
@@ -327,17 +372,20 @@ const ClientDetails = () => {
                 info?.settings?.currency[0].code === "NOK"
                   ? "Norwegian Krone"
                   : info?.settings?.currency[0].code === "SEK"
-                    ? "Swedish Krona"
-                    : info?.settings?.currency[0].code === "DKK"
-                      ? "Danish Krone"
-                      : "European Euro",
+                  ? "Swedish Krona"
+                  : info?.settings?.currency[0].code === "DKK"
+                  ? "Danish Krone"
+                  : "European Euro",
             });
           }
 
           reset({ ...defaultValue });
           if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
             for (let i = 0; i < info?.settings?.vatRates.length; i++) {
-              setValue(`vat[${i}].vatName`, info?.settings?.vatRates[`${i}`].name);
+              setValue(
+                `vat[${i}].vatName`,
+                info?.settings?.vatRates[`${i}`].name
+              );
               setValue(
                 `vat[${i}].vatValue`,
                 info?.settings?.vatRates[`${i}`].value
@@ -588,15 +636,36 @@ const ClientDetails = () => {
         // creditLimit: values.creditLimit,
         // b2bInvoiceFee: values.B2BInvoiceFee,
         // b2cInvoiceFee: values.B2CInvoiceFee,
+        isPurchasable: customApticInfoData === "purchase",
         username: values.APTICuserName,
         password: values.APTICpassword,
         name: values.name,
         fpReference: values.fpReference,
-        creditLimit: parseFloat(values.creditLimitCustomer),
-        costLimitForCustomer: parseFloat(values.costLimitforCustomer),
-        costLimitForOrder: parseFloat(values.costLimitforOrder),
-        invoiceWithRegress: parseFloat(values.invoicewithRegress),
-        invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
+        creditLimit:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.creditLimitCustomer)
+            : null,
+        costLimitForCustomer:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.costLimitforCustomer)
+            : null,
+        costLimitForOrder:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.costLimitforOrder)
+            : null,
+        invoiceWithRegress:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.invoicewithRegress)
+            : null,
+        invoiceWithoutRegress:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.invoicewithoutRegress)
+            : null,
+        // creditLimit: parseFloat(values.creditLimitCustomer),
+        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
+        // costLimitForOrder: parseFloat(values.costLimitforOrder),
+        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
+        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
         backOfficeUsername: values.APTIEngineCuserName,
         backOfficePassword: values.APTIEnginePassword,
         b2bInvoiceFee: parseFloat(values.fakturaB2B),
@@ -1837,6 +1906,40 @@ const ClientDetails = () => {
                             )}
                           </div>
                           <div className="p-10">
+                            <div className="search-customer-order-create-type my-32 px-16">
+                              <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20">
+                                <Button
+                                  variant="outlined"
+                                  className={`body2 ${
+                                    customApticInfoData === "administration"
+                                      ? "create-order-capsule-button-active"
+                                      : "create-order-capsule-button"
+                                  }`}
+                                  onClick={() => {
+                                    setCustomApticInfoData("administration");
+                                    setRecheckSchema(true);
+                                  }}
+                                  disabled
+                                >
+                                  {t("label:administration")}
+                                </Button>
+                                <Button
+                                  variant="outlined"
+                                  className={`body2 ${
+                                    customApticInfoData === "purchase"
+                                      ? "create-order-capsule-button-active"
+                                      : "create-order-capsule-button"
+                                  }`}
+                                  onClick={() => {
+                                    setCustomApticInfoData("purchase");
+                                    setRecheckSchema(true);
+                                  }}
+                                  disabled
+                                >
+                                  {t("label:purchase")}
+                                </Button>
+                              </div>
+                            </div>
                             <div className="px-16">
                               <div className="form-pair-input w-full md:w-3/4">
                                 <Controller
@@ -1935,141 +2038,141 @@ const ClientDetails = () => {
                                   )}
                                 />
                               </div>
-
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 my-40 w-full md:w-3/4">
-                                <Controller
-                                  name="creditLimitCustomer"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <TextField
-                                      {...field}
-                                      label={t("label:creditLimitForClient")}
-                                      type="number"
-                                      value={field.value || ""}
-                                      autoComplete="off"
-                                      error={!!errors.creditLimitCustomer}
-                                      helperText={
-                                        errors?.creditLimitCustomer?.message
-                                      }
-                                      variant="outlined"
-                                      required
-                                      fullWidth
-                                      InputProps={{
-                                        endAdornment: (
-                                          <InputAdornment position="start">
-                                            {t("label:nok")}
-                                          </InputAdornment>
-                                        ),
-                                      }}
-                                    />
-                                  )}
-                                />
-                                <Controller
-                                  name="costLimitforCustomer"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <TextField
-                                      {...field}
-                                      label={t("label:costLimitForCustomer")}
-                                      type="number"
-                                      value={field.value || ""}
-                                      autoComplete="off"
-                                      error={!!errors.costLimitforCustomer}
-                                      helperText={
-                                        errors?.costLimitforCustomer?.message
-                                      }
-                                      variant="outlined"
-                                      fullWidth
-                                      InputProps={{
-                                        endAdornment: (
-                                          <InputAdornment position="start">
-                                            {t("label:nok")}
-                                          </InputAdornment>
-                                        ),
-                                      }}
-                                    />
-                                  )}
-                                />
-                                <Controller
-                                  name="costLimitforOrder"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <TextField
-                                      {...field}
-                                      label={t("label:costLimitForOrder")}
-                                      type="number"
-                                      autoComplete="off"
-                                      value={field.value || ""}
-                                      error={!!errors.costLimitforOrder}
-                                      helperText={
-                                        errors?.costLimitforOrder?.message
-                                      }
-                                      variant="outlined"
-                                      fullWidth
-                                      InputProps={{
-                                        endAdornment: (
-                                          <InputAdornment position="start">
-                                            {t("label:nok")}
-                                          </InputAdornment>
-                                        ),
-                                      }}
-                                    />
-                                  )}
-                                />
-                                <Controller
-                                  name="invoicewithRegress"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <TextField
-                                      {...field}
-                                      label={t("label:invoiceWithRegress")}
-                                      type="number"
-                                      autoComplete="off"
-                                      value={field.value || ""}
-                                      error={!!errors.nvoicewithRegress}
-                                      helperText={
-                                        errors?.nvoicewithRegress?.message
-                                      }
-                                      variant="outlined"
-                                      fullWidth
-                                      InputProps={{
-                                        endAdornment: (
-                                          <InputAdornment position="start">
-                                            {t("label:nok")}
-                                          </InputAdornment>
-                                        ),
-                                      }}
-                                    />
-                                  )}
-                                />
-                                <Controller
-                                  name="invoicewithoutRegress"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <TextField
-                                      {...field}
-                                      label={t("label:invoiceWithoutRegress")}
-                                      type="number"
-                                      autoComplete="off"
-                                      value={field.value || ""}
-                                      error={!!errors.invoicewithoutRegress}
-                                      helperText={
-                                        errors?.invoicewithoutRegress?.message
-                                      }
-                                      variant="outlined"
-                                      s
-                                      fullWidth
-                                      InputProps={{
-                                        endAdornment: (
-                                          <InputAdornment position="start">
-                                            {t("label:nok")}
-                                          </InputAdornment>
-                                        ),
-                                      }}
-                                    />
-                                  )}
-                                />
-                              </div>
+                              {customApticInfoData === "purchase" && (
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 my-40 w-full md:w-3/4">
+                                  <Controller
+                                    name="creditLimitCustomer"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:creditLimitForClient")}
+                                        type="number"
+                                        value={field.value || ""}
+                                        autoComplete="off"
+                                        error={!!errors.creditLimitCustomer}
+                                        helperText={
+                                          errors?.creditLimitCustomer?.message
+                                        }
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        InputProps={{
+                                          endAdornment: (
+                                            <InputAdornment position="start">
+                                              {t("label:nok")}
+                                            </InputAdornment>
+                                          ),
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                  <Controller
+                                    name="costLimitforCustomer"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:costLimitForCustomer")}
+                                        type="number"
+                                        value={field.value || ""}
+                                        autoComplete="off"
+                                        error={!!errors.costLimitforCustomer}
+                                        helperText={
+                                          errors?.costLimitforCustomer?.message
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        InputProps={{
+                                          endAdornment: (
+                                            <InputAdornment position="start">
+                                              {t("label:nok")}
+                                            </InputAdornment>
+                                          ),
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                  <Controller
+                                    name="costLimitforOrder"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:costLimitForOrder")}
+                                        type="number"
+                                        autoComplete="off"
+                                        value={field.value || ""}
+                                        error={!!errors.costLimitforOrder}
+                                        helperText={
+                                          errors?.costLimitforOrder?.message
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        InputProps={{
+                                          endAdornment: (
+                                            <InputAdornment position="start">
+                                              {t("label:nok")}
+                                            </InputAdornment>
+                                          ),
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                  <Controller
+                                    name="invoicewithRegress"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:invoiceWithRegress")}
+                                        type="number"
+                                        autoComplete="off"
+                                        value={field.value || ""}
+                                        error={!!errors.nvoicewithRegress}
+                                        helperText={
+                                          errors?.nvoicewithRegress?.message
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        InputProps={{
+                                          endAdornment: (
+                                            <InputAdornment position="start">
+                                              {t("label:nok")}
+                                            </InputAdornment>
+                                          ),
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                  <Controller
+                                    name="invoicewithoutRegress"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:invoiceWithoutRegress")}
+                                        type="number"
+                                        autoComplete="off"
+                                        value={field.value || ""}
+                                        error={!!errors.invoicewithoutRegress}
+                                        helperText={
+                                          errors?.invoicewithoutRegress?.message
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        InputProps={{
+                                          endAdornment: (
+                                            <InputAdornment position="start">
+                                              {t("label:nok")}
+                                            </InputAdornment>
+                                          ),
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
