@@ -57,15 +57,9 @@ const SendInvoiceModal = (props) => {
     const  data = OrdersService.prepareUpdateQuickOrderCustomer(values);
     updateQuickOrderCustomer({...data, uuid:customerInfo?.uuid}).then((response) => {
       if (response?.data?.status_code === 202) {
-        OrdersService.sendQuickOrderToAptic(customerInfo?.uuid)
-          .then((response)=> {
-            enqueueSnackbar(t(`message:${response?.message}`), { variant: "success" });
-            setLoading(false);
-          })
-          .catch((e)=> {
-            enqueueSnackbar(t(`message:${e}`), { variant: "error" });
-            setLoading(false);
-          })
+      enqueueSnackbar(t(`message:${response?.data?.message}`), {
+        variant: "success",
+      })
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
