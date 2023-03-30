@@ -1946,13 +1946,16 @@ const createOrder = () => {
                     </div>
                   </div> */}
                   <div className="send-order-by mt-20">
+                    <div className="caption2 text-MonochromeGray-300">
+                      {t("label:creditCheckLabel")}
+                    </div>
                     <div className="subtitle3 text-MonochromeGray-500">
                       {t("label:creditCheckFlagOrderPage")}
                     </div>
-                    <div className="body3 text-MonochromeGray-300">
-                      {t("label:creditCheckDetailsOrderPage")}
-                    </div>
                     <div className="send-order-credit-check">
+                      <div className="body3 text-MonochromeGray-300">
+                        {t("label:creditCheckDetailsOrderPage")}
+                      </div>
                       <div className="flex gap-20 w-full md:w-3/4 my-32">
                         <Button
                           variant="outlined"

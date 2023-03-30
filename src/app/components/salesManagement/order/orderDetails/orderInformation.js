@@ -1070,14 +1070,14 @@ const OrderInformation = ({ info }) => {
                       </div>
                       <div className="send-order-by mt-20">
                         <div className="caption2 text-MonochromeGray-300">
-                          {t("label:creditCheck")}
+                          {t("label:creditCheckLabel")}
                         </div>
-                        <div className="body3 text-MonochromeGray-300">
-                          {t("label:creditCheckDetailsOrderPage")}
+                        <div className="subtitle3 text-MonochromeGray-500">
+                          {t("label:creditCheckFlagOrderPage")}
                         </div>
                         <div className="send-order-credit-check">
-                          <div className="subtitle3 text-MonochromeGray-500">
-                            {t("label:creditCheckFlagOrderPage")}
+                          <div className="body3 text-MonochromeGray-300">
+                            {t("label:creditCheckDetailsOrderPage")}
                           </div>
                           <div className="flex gap-20 w-full md:w-3/4 my-32">
                             <Button
