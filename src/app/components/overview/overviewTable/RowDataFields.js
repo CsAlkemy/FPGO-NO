@@ -136,6 +136,18 @@ export const orderListOverviewRowDataFields = [
   "refundResend",
   "cancel",
 ];
+export const orderListOverviewFPAdminRowDataFields = [
+  "date",
+  "id",
+  "clientName",
+  "name",
+  "dueDate",
+  "phone",
+  "amount",
+  "stage",
+  "refundResend",
+  "cancel",
+];
 
 export const refundRequestsOverviewRowDataFields = [
   "date",

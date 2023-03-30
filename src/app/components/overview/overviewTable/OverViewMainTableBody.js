@@ -1144,17 +1144,17 @@ export default function OverViewMainTableBody(props) {
           );
         } else {
           return (
-            <TableCell
+          <TableCell
               key={`${props.row.uuid}-${rdt}`}
               align="left"
               onClick={() => {
                 props.rowClickAction(props.row);
               }}
-            >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
-            </TableCell>
-          );
-        }
+          >
+            {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+          </TableCell>
+      );
+      }
         // return rdt.includes("amount") || rdt.includes("stage") ? (
         //   <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
         //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
