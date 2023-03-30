@@ -134,10 +134,11 @@ class OrdersService {
         // refundResend: "Resend",
         // isCancel: true,
         translationKey: row.translationKey,
-        enableSendInvoice:
-          row?.type.toLowerCase() === "quick" &&
-          !row?.exportedToAptic &&
-          row?.status.toLowerCase() === "expired",
+        // enableSendInvoice:
+        //   row?.type.toLowerCase() === "quick" &&
+        //   !row?.exportedToAptic &&
+        //   row?.status.toLowerCase() === "expired",
+        enableSendInvoice: row.showExportButton,
       };
     });
     return d;
