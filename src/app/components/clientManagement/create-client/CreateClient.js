@@ -43,7 +43,7 @@ const CreateClient = () => {
   const [hide, setHide] = useState(true);
   const [sameAddress, setSameAddress] = useState(false);
   const [uploadDocuments, setUploadDocuments] = useState([]);
-  const [addVatIndex, setAddVatIndex] = React.useState([0]);
+  const [addVatIndex, setAddVatIndex] = React.useState([0, 1, 2, 3]);
   const [orgTypeList, setOrgTypeList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
@@ -100,6 +100,21 @@ const CreateClient = () => {
       }
     }
   };
+
+  useEffect(() => {
+    setValue(`vat[${0}].vatName`, "Zero");
+    setValue(`vat[${0}].vatValue`, "0");
+    setValue(`vat[${0}].bookKeepingReference`, "");
+    setValue(`vat[${1}].vatName`, "Eight");
+    setValue(`vat[${1}].vatValue`, "8");
+    setValue(`vat[${1}].bookKeepingReference`, "");
+    setValue(`vat[${2}].vatName`, "Fifteen");
+    setValue(`vat[${2}].vatValue`, "15");
+    setValue(`vat[${2}].bookKeepingReference`, "");
+    setValue(`vat[${3}].vatName`, "Twenty Five");
+    setValue(`vat[${3}].vatValue`, "25");
+    setValue(`vat[${3}].bookKeepingReference`, "");
+  }, []);
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);

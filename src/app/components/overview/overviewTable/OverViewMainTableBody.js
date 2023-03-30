@@ -143,11 +143,23 @@ export default function OverViewMainTableBody(props) {
       });
     case clientsListOverview:
       return props.rowDataFields.map((rdt) => {
-        return (
-          <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-            {props.row ? props.row[rdt] : <Skeleton variant="text" />}
-          </TableCell>
-        );
+        if(rdt === "status") {
+          return props.row.status === "Active" ? (
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+                <OverviewStatus name="Active" />
+              </TableCell>
+          ) : (
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+                <OverviewStatus name="Inactive" />
+              </TableCell>
+          );
+        } else {
+          return (
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              </TableCell>
+          );
+        }
       });
     case approvalListOverviewFPAdmin:
       return props.rowDataFields.map((rdt) => {
@@ -1132,17 +1144,17 @@ export default function OverViewMainTableBody(props) {
           );
         } else {
           return (
-            <TableCell
+          <TableCell
               key={`${props.row.uuid}-${rdt}`}
               align="left"
               onClick={() => {
                 props.rowClickAction(props.row);
               }}
-            >
-              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
-            </TableCell>
-          );
-        }
+          >
+            {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+          </TableCell>
+      );
+      }
         // return rdt.includes("amount") || rdt.includes("stage") ? (
         //   <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
         //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}

@@ -97,6 +97,7 @@ class OrdersService {
         uuid: row.orderUuid,
         date: row.dateCreated,
         id: row.orderUuid,
+        clientName:row.clientName,
         name: row.name,
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
@@ -133,10 +134,11 @@ class OrdersService {
         // refundResend: "Resend",
         // isCancel: true,
         translationKey: row.translationKey,
-        enableSendInvoice:
-          row?.type.toLowerCase() === "quick" &&
-          !row?.exportedToAptic &&
-          row?.status.toLowerCase() === "expired",
+        // enableSendInvoice:
+        //   row?.type.toLowerCase() === "quick" &&
+        //   !row?.exportedToAptic &&
+        //   row?.status.toLowerCase() === "expired",
+        enableSendInvoice: row.showExportButton,
       };
     });
     return d;
