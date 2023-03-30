@@ -720,7 +720,7 @@ const createOrder = () => {
                         onClick={() => addNewOrder()}
                         disabled={addOrderIndex.length >= 20 ? true : false}
                       >
-                        Add Item
+                        {t(`label:addItem`)}
                       </Button>
                     </div>
                     {addOrderIndex.map((index) => (
@@ -962,7 +962,7 @@ const createOrder = () => {
                                   fullWidth
                                 >
                                   <InputLabel id="demo-simple-select-outlined-label-type">
-                                    Tax
+                                    {t(`label:tax`)}
                                   </InputLabel>
                                   <Select
                                     {...field}
@@ -1049,7 +1049,7 @@ const createOrder = () => {
                           }
                           onClick={() => onDelete(index)}
                         >
-                          Remove Item
+                          {t(`label:removeItem`)}
                         </Button>
                       </div>
                     ))}
@@ -1418,7 +1418,7 @@ const createOrder = () => {
                   onClick={() => addNewOrder()}
                   disabled={addOrderIndex.length >= 20 ? true : false}
                 >
-                  Add Item
+                  {t(`label:addItem`)}
                 </Button>
                 <hr className=" mt-20 border-half-bottom" />
               </div>
