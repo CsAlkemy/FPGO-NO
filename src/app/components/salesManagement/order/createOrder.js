@@ -404,8 +404,8 @@ const createOrder = () => {
       "dueDatePaymentLink",
       new Date().setDate(
         watchOrderDate && watchOrderDate.getDate() >= new Date().getDate()
-          ? watchOrderDate.getDate() + 1
-          : new Date().getDate() + 1
+          ? watchOrderDate.getDate() + 2
+          : new Date().getDate() + 2
       )
     );
   }, [watch(`orderDate`)]);
@@ -1524,7 +1524,7 @@ const createOrder = () => {
                               disableOpenPicker
                               value={
                                 !value
-                                  ? new Date().setDate(new Date().getDate() + 1)
+                                  ? new Date().setDate(new Date().getDate() + 2)
                                   : value
                                 // : value
                               }
