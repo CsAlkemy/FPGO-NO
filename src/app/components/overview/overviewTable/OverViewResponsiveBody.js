@@ -162,31 +162,29 @@ export default function OverViewResponsiveBody(props) {
               </div>
             </div>
           );
-        }
-        else if (rdt.id === "status") {
-            return props.row.status === "Active" ? (
-                <div className="grid grid-cols-2 justify-between items-center">
-                    <div className="subtitle3 text-primary-900">
-                        {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
-                        {rdt.label}
-                    </div>
-                    <div className="body3 text-MonochromeGray-700">
-                        <OverviewStatus name="Active" />
-                    </div>
-                </div>
-            ) : (
-                <div className="grid grid-cols-2 justify-between items-center">
-                    <div className="subtitle3 text-primary-900">
-                        {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
-                        {rdt.label}
-                    </div>
-                    <div className="body3 text-MonochromeGray-700">
-                        <OverviewStatus name="Inactive" />
-                    </div>
-                </div>
-            );
-        }
-        else {
+        } else if (rdt.id === "status") {
+          return props.row.status === "Active" ? (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                <OverviewStatus name="Active" />
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                <OverviewStatus name="Inactive" />
+              </div>
+            </div>
+          );
+        } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
               <div className="subtitle3 text-primary-900">
@@ -793,6 +791,36 @@ export default function OverViewResponsiveBody(props) {
                 setOpen={setOpen}
                 headerTitle={headerTitle}
                 orderId={props.row.uuid}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<RedoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  {t("label:resendOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
@@ -1539,6 +1567,36 @@ export default function OverViewResponsiveBody(props) {
                   onClick={() => handleModalOpen("cancel")}
                 >
                   {t("label:cancelOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<RedoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  {t("label:resendOrder")}
                 </Button>
               </CustomTooltip>
               <OrderModal
