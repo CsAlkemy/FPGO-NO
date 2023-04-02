@@ -456,7 +456,10 @@ const createProducts = () => {
                       setCustomerSearchBoxLength(0);
                       setVal(newValue);
                     }}
-                    onInputChange={(event, value) => setNewCustomer(value)}
+                    onInputChange={(event, value) => {
+                      setNewCustomer(value);
+                      if (value.length === 0) setCustomerSearchBy(undefined)
+                    }}
                     onClose={()=> setCustomerSearchBoxDropdownOpen(false)}
                     value={val}
                     noOptionsText={
