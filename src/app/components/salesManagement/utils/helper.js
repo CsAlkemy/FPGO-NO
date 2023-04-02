@@ -407,17 +407,37 @@ export const sendInvoiceValidation = yup.object().shape({
   country: yup.string().required("youMustEnterYourCountry"),
   customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup.string().required("youMustEnterAEmail").email("mustBeValidEmail"),
-  orgIdOrPNumber: yup
+  pNumber: yup
+    .string()
+    .matches(/^[0-9]+$/, {
+      message: "pNumberMustBeNumber",
+      excludeEmptyString: true,
+    })
+    .notRequired()
+    .nullable()
+    .transform((o, c) => (o === "" ? null : c))
+    .min(11, "mustBeExactlyElevenNumbers")
+    .max(11, "mustBeExactlyElevenNumbers"),
+  streetAddress: yup.string().required("youMustEnterYourStreetAddress"),
+  zipCode: yup.string().required("enterZIP"),
+});
+
+export const sendInvoiceValidationCorporate = yup.object().shape({
+  city: yup.string().required("youMustEnterYourCity"),
+  country: yup.string().required("youMustEnterYourCountry"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
+  email: yup.string().required("youMustEnterAEmail").email("mustBeValidEmail"),
+  orgID: yup
     .string()
     .matches(/^[0-9]+$/, {
       message: "Must be number",
       excludeEmptyString: true,
     })
-    .required("pNumberMustBeNumber")
+    .required("youMustEnterOrganizationID")
     .nullable()
     .transform((o, c) => (o === "" ? null : c))
-    .min(11, "mustBeExactlyElevenNumbers")
-    .max(11, "mustBeExactlyElevenNumbers"),
+    .min(9, "mustBeExactlyNineNumbers")
+    .max(9, "mustBeExactlyNineNumbers"),
   streetAddress: yup.string().required("youMustEnterYourStreetAddress"),
   zipCode: yup.string().required("enterZIP"),
 });
