@@ -245,6 +245,7 @@ const createProducts = () => {
   };
 
   const searchCustomerOnFocus = (e) => {
+    setCustomerSearchBoxDropdownOpen(false)
     const searchByPhone =
       customersList.filter((customer) =>
         customer.phone.startsWith(e.target.value)
@@ -276,6 +277,7 @@ const createProducts = () => {
     //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
     // );
     setCustomerSearchBoxLength(e.target.value.length);
+    setCustomerSearchBoxDropdownOpen(true)
   };
 
   const valHtml = val.map((option, index) => {
