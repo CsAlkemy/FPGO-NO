@@ -143,21 +143,21 @@ export default function OverViewMainTableBody(props) {
       });
     case clientsListOverview:
       return props.rowDataFields.map((rdt) => {
-        if(rdt === "status") {
+        if (rdt === "status") {
           return props.row.status === "Active" ? (
-              <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                <OverviewStatus name="Active" />
-              </TableCell>
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              <OverviewStatus name="Active" />
+            </TableCell>
           ) : (
-              <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                <OverviewStatus name="Inactive" />
-              </TableCell>
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              <OverviewStatus name="Inactive" />
+            </TableCell>
           );
         } else {
           return (
-              <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
-              </TableCell>
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
           );
         }
       });
@@ -568,6 +568,39 @@ export default function OverViewMainTableBody(props) {
                   onClick={() => handleModalOpen("cancel")}
                 >
                   <CancelIcon style={{ paddingBottom: "3px" }} />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.uuid}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </TableCell>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
+                  sx={resendRefundBoxSX}
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  <RedoIcon
+                    style={{ paddingBottom: "3px" }}
+                    // onClick={() => }
+                  />
                 </Box>
               </CustomTooltip>
               <OrderModal
@@ -1136,6 +1169,39 @@ export default function OverViewMainTableBody(props) {
                 customerEmail={props.row.email}
               />
             </TableCell>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
+                  sx={resendRefundBoxSX}
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  <RedoIcon
+                    style={{ paddingBottom: "3px" }}
+                    // onClick={() => }
+                  />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.uuid}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </TableCell>
           ) : (
             <TableCell
               key={`${props.row.uuid}-${rdt}`}
@@ -1144,17 +1210,17 @@ export default function OverViewMainTableBody(props) {
           );
         } else {
           return (
-          <TableCell
+            <TableCell
               key={`${props.row.uuid}-${rdt}`}
               align="left"
               onClick={() => {
                 props.rowClickAction(props.row);
               }}
-          >
-            {props.row ? props.row[rdt] : <Skeleton variant="text" />}
-          </TableCell>
-      );
-      }
+            >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
         // return rdt.includes("amount") || rdt.includes("stage") ? (
         //   <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
         //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
