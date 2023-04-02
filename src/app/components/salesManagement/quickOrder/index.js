@@ -61,6 +61,7 @@ const createProducts = () => {
   const [customersList, setCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
+  const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] = useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
   const [val, setVal] = useState([]);
@@ -441,6 +442,7 @@ const createProducts = () => {
                 name="searchCustomer"
                 render={({ field: { ref, onChange, ...field } }) => (
                   <Autocomplete
+                    open={customerSearchBoxDropdownOpen}
                     multiple
                     disablePortal
                     // freeSolo
@@ -455,6 +457,7 @@ const createProducts = () => {
                       setVal(newValue);
                     }}
                     onInputChange={(event, value) => setNewCustomer(value)}
+                    onClose={()=> setCustomerSearchBoxDropdownOpen(false)}
                     value={val}
                     noOptionsText={
                       <div className="flex items-center justify-between my-2">
@@ -473,6 +476,7 @@ const createProducts = () => {
                               ...val,
                               { name: "", phone: `${newCustomer}` },
                             ]);
+                            setCustomerSearchBoxDropdownOpen(false)
                           }}
                         >
                           {t(`label:add`)}
@@ -529,6 +533,7 @@ const createProducts = () => {
                       <TextField
                         {...params}
                         onChange={searchCustomerOnFocus}
+                        onClick={()=> setCustomerSearchBoxDropdownOpen(!customerSearchBoxDropdownOpen)}
                         className="mt-10 w-full sm:w-2/4"
                         placeholder={t("label:searchCustomersByNameOrPhoneNo")}
                       />
