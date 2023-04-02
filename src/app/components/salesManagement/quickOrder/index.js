@@ -59,9 +59,11 @@ const createProducts = () => {
   const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
   const [productsList, setProductsList] = useState([]);
   const [customersList, setCustomersList] = useState([]);
+  const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
-  const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] = useState(false);
+  const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
+    useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
   const [val, setVal] = useState([]);
@@ -177,9 +179,11 @@ const createProducts = () => {
               });
           }
           setCustomersList(data);
+          setSearchCustomersList(data);
         })
         .catch((e) => {
           setCustomersList([]);
+          setSearchCustomersList([]);
         });
       if (userInfo?.user_data?.organization?.uuid) {
         ClientService.vateRatesList(
@@ -219,9 +223,7 @@ const createProducts = () => {
         totalDiscount,
         grandTotal,
       },
-      customers: [
-        ...val
-      ]
+      customers: [...val],
     });
     createQuickOrder(data).then((response) => {
       setLoading(false);
@@ -248,12 +250,31 @@ const createProducts = () => {
         customer.phone.startsWith(e.target.value)
       ) || [];
     const searchByName =
-      customersList.filter((customer) =>
-        customer?.name && customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+      customersList.filter(
+        (customer) =>
+          customer?.name &&
+          customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
-    setCustomerSearchBy(
-      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
-    );
+    if (searchByName.length) {
+      setCustomerSearchBy("name");
+      setSearchCustomersList(
+        customersList.filter(
+          (customer) =>
+            customer?.name &&
+            customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+        )
+      );
+    } else if (searchByPhone.length) {
+      setCustomerSearchBy("phone");
+      setSearchCustomersList(
+        customersList.filter((customer) =>
+          customer.phone.startsWith(e.target.value)
+        )
+      );
+    }
+    // setCustomerSearchBy(
+    //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
+    // );
     setCustomerSearchBoxLength(e.target.value.length);
   };
 
@@ -447,7 +468,7 @@ const createProducts = () => {
                     disablePortal
                     // freeSolo
                     // filterSelectedOptions
-                    options={customersList}
+                    options={searchCustomersList}
                     getOptionLabel={(option) => option.searchString}
                     renderTags={() => {}}
                     fullWidth
@@ -458,9 +479,9 @@ const createProducts = () => {
                     }}
                     onInputChange={(event, value) => {
                       setNewCustomer(value);
-                      if (value.length === 0) setCustomerSearchBy(undefined)
+                      if (value.length === 0) setCustomerSearchBy(undefined);
                     }}
-                    onClose={()=> setCustomerSearchBoxDropdownOpen(false)}
+                    onClose={() => setCustomerSearchBoxDropdownOpen(false)}
                     value={val}
                     noOptionsText={
                       <div className="flex items-center justify-between my-2">
@@ -479,7 +500,7 @@ const createProducts = () => {
                               ...val,
                               { name: "", phone: `${newCustomer}` },
                             ]);
-                            setCustomerSearchBoxDropdownOpen(false)
+                            setCustomerSearchBoxDropdownOpen(false);
                           }}
                         >
                           {t(`label:add`)}
@@ -491,7 +512,8 @@ const createProducts = () => {
                         {/*{`${option.name}`}*/}
                         {customerSearchBy ? (
                           <div>
-                            {customerSearchBy === "name" && option?.name &&
+                            {customerSearchBy === "name" &&
+                            option?.name &&
                             customerSearchBoxLength > 0 ? (
                               <div>
                                 <span
@@ -536,7 +558,11 @@ const createProducts = () => {
                       <TextField
                         {...params}
                         onChange={searchCustomerOnFocus}
-                        onClick={()=> setCustomerSearchBoxDropdownOpen(!customerSearchBoxDropdownOpen)}
+                        onClick={() =>
+                          setCustomerSearchBoxDropdownOpen(
+                            !customerSearchBoxDropdownOpen
+                          )
+                        }
                         className="mt-10 w-full sm:w-2/4"
                         placeholder={t("label:searchCustomersByNameOrPhoneNo")}
                       />
@@ -635,12 +661,8 @@ const createProducts = () => {
                       value={!value ? new Date() : value}
                       required
                       onChange={onChange}
-                      minDate={new Date().setDate(
-                        new Date().getDate() - 30
-                      )}
-                      maxDate={new Date().setDate(
-                        new Date().getDate() + 30
-                      )}
+                      minDate={new Date().setDate(new Date().getDate() - 30)}
+                      maxDate={new Date().setDate(new Date().getDate() + 30)}
                       PopperProps={{
                         sx: {
                           "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
@@ -691,12 +713,8 @@ const createProducts = () => {
                       onChange={onChange}
                       minDate={
                         watchOrderDate
-                          ? new Date().setDate(
-                            watchOrderDate.getDate() + 1
-                          )
-                          : new Date().setDate(
-                            new Date().getDate() - 30
-                          )
+                          ? new Date().setDate(watchOrderDate.getDate() + 1)
+                          : new Date().setDate(new Date().getDate() - 30)
                       }
                       disablePast={true}
                       PopperProps={{
@@ -835,20 +853,20 @@ const createProducts = () => {
                             }) => (
                               <Autocomplete
                                 disabled={
-                                    index === 0 ||
-                                    index === Math.min(...addOrderIndex)
-                                        ? false
-                                        : !watch(
-                                            `order[${
-                                                index -
-                                                (addOrderIndex[
-                                                        addOrderIndex.indexOf(index)
-                                                        ] -
-                                                    addOrderIndex[
-                                                    addOrderIndex.indexOf(index) - 1
-                                                        ])
-                                            }].productName`
-                                        )
+                                  index === 0 ||
+                                  index === Math.min(...addOrderIndex)
+                                    ? false
+                                    : !watch(
+                                        `order[${
+                                          index -
+                                          (addOrderIndex[
+                                            addOrderIndex.indexOf(index)
+                                          ] -
+                                            addOrderIndex[
+                                              addOrderIndex.indexOf(index) - 1
+                                            ])
+                                        }].productName`
+                                      )
                                 }
                                 freeSolo
                                 autoSelect
@@ -906,11 +924,11 @@ const createProducts = () => {
                                           watchTax &&
                                           i !== index &&
                                           watchName ===
-                                          watch(`order[${i}].productName`) &&
+                                            watch(`order[${i}].productName`) &&
                                           watchId ===
-                                          watch(`order[${i}].productID`) &&
+                                            watch(`order[${i}].productID`) &&
                                           watchRate ===
-                                          watch(`order[${i}].rate`) &&
+                                            watch(`order[${i}].rate`) &&
                                           watchTax === watch(`order[${i}].tax`)
                                         ) {
                                           let quantityNum = isNaN(
@@ -920,8 +938,8 @@ const createProducts = () => {
                                           )
                                             ? 1
                                             : parseInt(
-                                              watch(`order[${i}].quantity`)
-                                            );
+                                                watch(`order[${i}].quantity`)
+                                              );
                                           setValue(
                                             `order[${i}].quantity`,
                                             quantityNum + 1
@@ -931,7 +949,9 @@ const createProducts = () => {
                                           enqueueSnackbar(
                                             `Same product found in Row ${
                                               i + 1
-                                            } and ${index + 1}, merged together!`,
+                                            } and ${
+                                              index + 1
+                                            }, merged together!`,
                                             { variant: "success" }
                                           );
                                         }
@@ -1110,7 +1130,9 @@ const createProducts = () => {
                           </div>
                           <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
                             <div>{t("label:total")}</div>
-                            <div>{t("label:nok")}{" "} {productWiseTotal(index)}</div>
+                            <div>
+                              {t("label:nok")} {productWiseTotal(index)}
+                            </div>
                           </div>
                           <Button
                             variant="outlined"
@@ -1126,7 +1148,8 @@ const createProducts = () => {
                         </div>
                       ))}
                       <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
-                        {t("label:grandTotal")} : {t("label:nok")}{" "}  {ThousandSeparator(grandTotal.toFixed(2) / 2)}
+                        {t("label:grandTotal")} : {t("label:nok")}{" "}
+                        {ThousandSeparator(grandTotal.toFixed(2) / 2)}
                       </div>
                     </AccordionDetails>
                   </Accordion>
@@ -1214,7 +1237,9 @@ const createProducts = () => {
                                     const preparedPrice = data.price
                                       .toString()
                                       .includes(".")
-                                      ? `${data.price.toString().split(".")[0]},${
+                                      ? `${
+                                          data.price.toString().split(".")[0]
+                                        },${
                                           data.price.toString().split(".")[1]
                                         }`
                                       : data.price;
@@ -1228,7 +1253,9 @@ const createProducts = () => {
                                     const watchRate = watch(
                                       `order[${index}].rate`
                                     );
-                                    const watchTax = watch(`order[${index}].tax`);
+                                    const watchTax = watch(
+                                      `order[${index}].tax`
+                                    );
                                     const watchName = watch(
                                       `order[${index}].productName`
                                     );
@@ -1251,11 +1278,14 @@ const createProducts = () => {
                                           watch(`order[${i}].productName`) &&
                                         watchId ===
                                           watch(`order[${i}].productID`) &&
-                                        watchRate === watch(`order[${i}].rate`) &&
+                                        watchRate ===
+                                          watch(`order[${i}].rate`) &&
                                         watchTax === watch(`order[${i}].tax`)
                                       ) {
                                         let quantityNum = isNaN(
-                                          parseInt(watch(`order[${i}].quantity`))
+                                          parseInt(
+                                            watch(`order[${i}].quantity`)
+                                          )
                                         )
                                           ? 1
                                           : parseInt(
