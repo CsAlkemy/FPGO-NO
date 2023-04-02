@@ -1033,18 +1033,18 @@ class OrdersService {
       : null;
 
     return {
-      type: "private",
+      type: params.customerType,
       countryCode,
       msisdn,
       email: params?.email ? params?.email : null,
       name: params?.customerName ? params?.customerName : null,
       personalNumber:
-        params?.orgIdOrPNumber.length === 11
-          ? `${params?.orgIdOrPNumber}`
+        params?.pNumber
+          ? `${params?.pNumber}`
           : null,
       organizationId:
-        params?.orgIdOrPNumber.length === 9
-          ? `${params?.orgIdOrPNumber}`
+        params?.orgID
+          ? `${params?.orgID}`
           : null,
       // organizationId : "fu",
       address: {

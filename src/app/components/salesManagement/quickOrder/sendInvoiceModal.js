@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import {
   sendInvoiceDefaultValue,
-  sendInvoiceValidation,
+  sendInvoiceValidation, sendInvoiceValidationCorporate
 } from "../utils/helper";
 import { useTranslation } from "react-i18next";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -33,9 +33,11 @@ const SendInvoiceModal = (props) => {
   const { t } = useTranslation();
   const { editOpen, setEditOpen, customerInfo } = props;
   const [loading, setLoading] = React.useState(false);
+  const [recheckSchema, setRecheckSchema] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [updateQuickOrderCustomer, response] =useUpdateQuickOrderCustomerMutation();
+  const [customerType, setCustomerType] = useState("private")
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -46,15 +48,29 @@ const SendInvoiceModal = (props) => {
       name: "sweden",
     },
   ]);
-  const { control, formState, handleSubmit, reset } = useForm({
+  let schema = customerType === "private" ? sendInvoiceValidation : sendInvoiceValidationCorporate;
+  useEffect(() => {
+    schema = customerType === "private" ? sendInvoiceValidation : sendInvoiceValidationCorporate;
+    if (recheckSchema) {
+      if (customerType === "corporate") {
+        clearErrors(["pNumber", "orgID"]);
+        setValue("orgID", "", { shouldValidate: true });
+        setError("orgID", { type: "focus" }, { shouldFocus: true });
+      } else {
+        setValue("pNumber", "", { shouldValidate: true });
+        clearErrors(["pNumber", "orgID"]);
+      }
+    }
+  }, [customerType]);
+  const { control, formState, handleSubmit, reset, clearErrors, setError, setValue } = useForm({
     mode: "onChange",
     sendInvoiceDefaultValue,
-    resolver: yupResolver(sendInvoiceValidation),
+    resolver: yupResolver(schema),
   });
   const { isValid, errors } = formState;
   const onSubmit = (values) => {
     setLoading(true);
-    const  data = OrdersService.prepareUpdateQuickOrderCustomer(values);
+    const  data = OrdersService.prepareUpdateQuickOrderCustomer({ ...values, customerType });
     updateQuickOrderCustomer({...data, uuid:customerInfo?.uuid}).then((response) => {
       if (response?.data?.status_code === 202) {
       enqueueSnackbar(t(`message:${response?.data?.message}`), {
@@ -63,6 +79,7 @@ const SendInvoiceModal = (props) => {
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
+      setLoading(false);
     });
   };
 
@@ -112,25 +129,29 @@ const SendInvoiceModal = (props) => {
                     <div className="flex gap-20 w-full md:w-3/4">
                       <Button
                         variant="outlined"
-                        className="create-order-capsule-button-active items-center my-auto"
-                        // onClick={() => {
-                        //   setCustomData({
-                        //     ...customData,
-                        //     customerType: "private",
-                        //   });
-                        // }}
+                        className={`${
+                          customerType === "private"
+                            ? "create-order-capsule-button-active"
+                            : "create-order-capsule-button"
+                        }`}
+                        onClick={() => {
+                          setCustomerType("private");
+                          setRecheckSchema(true);
+                        }}
                       >
                         {t("label:private")}
                       </Button>
                       <Button
                         variant="outlined"
-                        className="body2 create-order-capsule-button"
-                        // onClick={() => {
-                        //   setCustomData({
-                        //     ...customData,
-                        //     customerType: "corporate",
-                        //   });
-                        // }}
+                        className={`${
+                          customerType === "corporate"
+                            ? "create-order-capsule-button-active"
+                            : "create-order-capsule-button"
+                        }`}
+                        onClick={() => {
+                          setCustomerType("corporate");
+                          setRecheckSchema(true);
+                        }}
                         // disabled={
                         //   orderDetails &&
                         //   orderDetails?.customerDetails?.type === "Private" &&
@@ -227,35 +248,87 @@ const SendInvoiceModal = (props) => {
                             />
                           )}
                         />
-                        <Controller
-                          name="orgIdOrPNumber"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={"P-Number"}
-                              // label={
-                              //   customData.customerType === "private"
-                              //     ? t("label:pNumber")
-                              //     : t("label:organizationId")
-                              // }
-                              type="number"
-                              autoComplete="off"
-                              error={!!errors.orgIdOrPNumber}
-                              required
-                              helperText={
-                                errors?.orgIdOrPNumber?.message
-                                  ? t(
-                                      `validation:${errors?.orgIdOrPNumber?.message}`
+                        {customerType === "corporate" && (
+                          <Controller
+                            name="orgID"
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:organizationId")}
+                                type="number"
+                                autoComplete="off"
+                                error={!!errors.orgID}
+                                required
+                                helperText={
+                                  errors?.orgID?.message
+                                    ? t(
+                                      `validation:${errors?.orgID?.message}`
                                     )
-                                  : ""
-                              }
-                              variant="outlined"
-                              fullWidth
-                              value={field.value || ""}
-                            />
-                          )}
-                        />
+                                    : ""
+                                }
+                                variant="outlined"
+                                fullWidth
+                                value={field.value || ""}
+                              />
+                            )}
+                          />
+                        )}
+                        {customerType === "private" && (
+                          <Controller
+                            name="pNumber"
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:pNumber")}
+                                type="number"
+                                autoComplete="off"
+                                error={!!errors.pNumber}
+                                helperText={
+                                  errors?.pNumber?.message
+                                    ? t(
+                                      `validation:${errors?.pNumber?.message}`
+                                    )
+                                    : ""
+                                }
+                                // ref={orgOrPNumberRef}
+                                variant="outlined"
+                                fullWidth
+                                value={field.value || ""}
+                              />
+                            )}
+                          />
+                        )}
+                        {/*<Controller*/}
+                        {/*  name="orgIdOrPNumber"*/}
+                        {/*  control={control}*/}
+                        {/*  render={({ field }) => (*/}
+                        {/*    <TextField*/}
+                        {/*      {...field}*/}
+                        {/*      label={"P-Number"}*/}
+                        {/*      // label={*/}
+                        {/*      //   customData.customerType === "private"*/}
+                        {/*      //     ? t("label:pNumber")*/}
+                        {/*      //     : t("label:organizationId")*/}
+                        {/*      // }*/}
+                        {/*      type="number"*/}
+                        {/*      autoComplete="off"*/}
+                        {/*      error={!!errors.orgIdOrPNumber}*/}
+                        {/*      required*/}
+                        {/*      helperText={*/}
+                        {/*        errors?.orgIdOrPNumber?.message*/}
+                        {/*          ? t(*/}
+                        {/*              `validation:${errors?.orgIdOrPNumber?.message}`*/}
+                        {/*            )*/}
+                        {/*          : ""*/}
+                        {/*      }*/}
+                        {/*      variant="outlined"*/}
+                        {/*      fullWidth*/}
+                        {/*      value={field.value || ""}*/}
+                        {/*    />*/}
+                        {/*  )}*/}
+                        {/*/>*/}
                       </div>
                     </div>
                   </div>
