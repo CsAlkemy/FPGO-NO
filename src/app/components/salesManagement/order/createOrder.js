@@ -2113,7 +2113,7 @@ const createOrder = () => {
                                     {/*{`${option.name}`}*/}
                                     {customerSearchBy ? (
                                       <div>
-                                        {customerSearchBy === "name" &&
+                                        {customerSearchBy === "name" && option?.name &&
                                         customerSearchBoxLength > 0 ? (
                                           <div>
                                             <span
