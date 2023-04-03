@@ -39,7 +39,7 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
-import CancelIcon from '@mui/icons-material/Cancel';
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const customerData = [
   { label: "The Shawshank Redemption", phone: "+47 1994" },
@@ -246,7 +246,7 @@ const createProducts = () => {
   };
 
   const searchCustomerOnFocus = (e) => {
-    setCustomerSearchBoxDropdownOpen(false)
+    setCustomerSearchBoxDropdownOpen(false);
     const searchByPhone =
       customersList.filter((customer) =>
         customer.phone.startsWith(e.target.value)
@@ -278,7 +278,7 @@ const createProducts = () => {
     //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
     // );
     setCustomerSearchBoxLength(e.target.value.length);
-    setCustomerSearchBoxDropdownOpen(true)
+    setCustomerSearchBoxDropdownOpen(true);
   };
 
   const valHtml = val.map((option, index) => {
@@ -294,8 +294,8 @@ const createProducts = () => {
         }}
         sx={{
           backgroundColor: "#E6F3F7",
-          '& .MuiChip-deleteIcon': {
-            color: '#000',
+          "& .MuiChip-deleteIcon": {
+            color: "#000",
           },
         }}
       />
@@ -308,8 +308,8 @@ const createProducts = () => {
         }}
         sx={{
           backgroundColor: "#EFEFEF",
-          '& .MuiChip-deleteIcon': {
-            color: '#000',
+          "& .MuiChip-deleteIcon": {
+            color: "#000",
           },
         }}
       />
@@ -1091,7 +1091,7 @@ const createProducts = () => {
                                       labelId="demo-simple-select-outlined-label-type"
                                       id="demo-simple-select-outlined"
                                       label="Tax"
-                                      value={field.value || ""}
+                                      //value={field.value || ""}
                                       defaultValue={defaultTaxValue}
                                       className="col-span-1"
                                       disabled={disableRowIndexes.includes(
@@ -1102,9 +1102,30 @@ const createProducts = () => {
                                           !!field.value || touchedFields.tax,
                                       }}
                                     >
-                                      <MenuItem key={0} value={0}>
-                                        0
-                                      </MenuItem>
+                                      {taxes && taxes.length ? (
+                                        taxes.map((tax, index) =>
+                                          tax.status === "Active" ? (
+                                            <MenuItem
+                                              key={index}
+                                              value={tax.value}
+                                            >
+                                              {tax.value}
+                                            </MenuItem>
+                                          ) : (
+                                            <MenuItem
+                                              key={index}
+                                              value={tax.value}
+                                              disabled
+                                            >
+                                              {tax.value}
+                                            </MenuItem>
+                                          )
+                                        )
+                                      ) : (
+                                        <MenuItem key={0} value={0}>
+                                          0
+                                        </MenuItem>
+                                      )}
                                     </Select>
                                     <FormHelperText>
                                       {errors?.order?.[index]?.tax?.message}
