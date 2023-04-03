@@ -14,7 +14,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
@@ -39,17 +39,7 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
-import CancelIcon from "@mui/icons-material/Cancel";
-
-const customerData = [
-  { label: "The Shawshank Redemption", phone: "+47 1994" },
-  { label: "The Godfather", phone: "+47 1994" },
-  { label: "The Godfather: Part II", phone: "+47 1994" },
-  { label: "The Dark Knight", phone: "+47 1994" },
-  { label: "12 Angry Men", phone: "+47 1994" },
-  { label: "Schindler's List", phone: "+47 1994" },
-  { label: "Pulp Fiction", phone: "+47 1994" },
-];
+import FuseUtils from "@fuse/utils";
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -114,6 +104,7 @@ const createProducts = () => {
   };
   const [open, setOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
+  const [searchText, setSearchText] = useState("");
 
   const {
     control,
@@ -175,7 +166,8 @@ const createProducts = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
-                  searchString: row?.name + " ( " + row?.phone + " )",
+                  searchString:
+                    row?.name + " ( " + row?.phone + " )" + row.uuid,
                 });
               });
           }
@@ -204,6 +196,8 @@ const createProducts = () => {
       }
     });
   }, []);
+
+  const watchRate = watch(`order[${Math.min(...addOrderIndex)}].rate`) || "";
 
   const pnameOnBlur = (e) => {
     if (!e.target.value.length) {
@@ -246,6 +240,8 @@ const createProducts = () => {
   };
 
   const searchCustomerOnFocus = (e) => {
+    setSearchText(e.target.value);
+
     setCustomerSearchBoxDropdownOpen(false);
     const searchByPhone =
       customersList.filter((customer) =>
@@ -257,29 +253,22 @@ const createProducts = () => {
           customer?.name &&
           customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
-    if (searchByName.length) {
-      setCustomerSearchBy("name");
-      setSearchCustomersList(
-        customersList.filter(
-          (customer) =>
-            customer?.name &&
-            customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
-        )
-      );
-    } else if (searchByPhone.length) {
-      setCustomerSearchBy("phone");
-      setSearchCustomersList(
-        customersList.filter((customer) =>
-          customer.phone.startsWith(e.target.value)
-        )
-      );
-    }
-    // setCustomerSearchBy(
-    //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
-    // );
+    setSearchCustomersList(
+      FuseUtils.filterArrayByString(customersList, e.target.value)
+    );
+    setCustomerSearchBy(
+      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
+    );
     setCustomerSearchBoxLength(e.target.value.length);
     setCustomerSearchBoxDropdownOpen(true);
   };
+
+  useEffect(() => {
+    console.log("useEffect");
+    setSearchCustomersList(
+      FuseUtils.filterArrayByString(customersList, searchText)
+    );
+  }, [searchText]);
 
   const valHtml = val.map((option, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
@@ -288,7 +277,7 @@ const createProducts = () => {
     return isExistingCustomer ? (
       <Chip
         label={label}
-        className="body3 mr-4"
+        className="body3 mr-4 mb-4"
         onDelete={() => {
           setVal(val.filter((entry) => entry !== option));
         }}
@@ -302,7 +291,7 @@ const createProducts = () => {
     ) : (
       <Chip
         label={label}
-        className="body3 mr-4"
+        className="body3 mr-4 mb-4"
         onDelete={() => {
           setVal(val.filter((entry) => entry !== option));
         }}
@@ -460,7 +449,7 @@ const createProducts = () => {
                   type="submit"
                   loading={loading}
                   loadingPosition="center"
-                  disabled={!isValid || val.length === 0}
+                  disabled={!isValid || val.length === 0 || !watchRate}
                 >
                   {t("label:sendOrder")}
                 </LoadingButton>
