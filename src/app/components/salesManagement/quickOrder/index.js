@@ -39,17 +39,8 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
+import FuseUtils from "@fuse/utils";
 import CancelIcon from "@mui/icons-material/Cancel";
-
-const customerData = [
-  { label: "The Shawshank Redemption", phone: "+47 1994" },
-  { label: "The Godfather", phone: "+47 1994" },
-  { label: "The Godfather: Part II", phone: "+47 1994" },
-  { label: "The Dark Knight", phone: "+47 1994" },
-  { label: "12 Angry Men", phone: "+47 1994" },
-  { label: "Schindler's List", phone: "+47 1994" },
-  { label: "Pulp Fiction", phone: "+47 1994" },
-];
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -114,6 +105,7 @@ const createProducts = () => {
   };
   const [open, setOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
+  const [searchText, setSearchText] = useState("")
 
   const {
     control,
@@ -175,7 +167,7 @@ const createProducts = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
-                  searchString: row?.name + " ( " + row?.phone + " )",
+                  searchString: row?.name + " ( " + row?.phone + " )"+row.uuid,
                 });
               });
           }
@@ -246,7 +238,9 @@ const createProducts = () => {
   };
 
   const searchCustomerOnFocus = (e) => {
-    setCustomerSearchBoxDropdownOpen(false);
+    setSearchText(e.target.value);
+
+    setCustomerSearchBoxDropdownOpen(false)
     const searchByPhone =
       customersList.filter((customer) =>
         customer.phone.startsWith(e.target.value)
@@ -257,29 +251,18 @@ const createProducts = () => {
           customer?.name &&
           customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
-    if (searchByName.length) {
-      setCustomerSearchBy("name");
-      setSearchCustomersList(
-        customersList.filter(
-          (customer) =>
-            customer?.name &&
-            customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
-        )
-      );
-    } else if (searchByPhone.length) {
-      setCustomerSearchBy("phone");
-      setSearchCustomersList(
-        customersList.filter((customer) =>
-          customer.phone.startsWith(e.target.value)
-        )
-      );
-    }
-    // setCustomerSearchBy(
-    //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
-    // );
+    setSearchCustomersList(FuseUtils.filterArrayByString(customersList, e.target.value))
+    setCustomerSearchBy(
+      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
+    );
     setCustomerSearchBoxLength(e.target.value.length);
     setCustomerSearchBoxDropdownOpen(true);
   };
+
+  useEffect(()=>{
+    console.log("useEffect");
+    setSearchCustomersList(FuseUtils.filterArrayByString(customersList, searchText))
+  },[searchText])
 
   const valHtml = val.map((option, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
