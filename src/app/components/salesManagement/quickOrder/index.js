@@ -39,6 +39,7 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const customerData = [
   { label: "The Shawshank Redemption", phone: "+47 1994" },
@@ -287,23 +288,29 @@ const createProducts = () => {
     return isExistingCustomer ? (
       <Chip
         label={label}
-        className="body3"
+        className="body3 mr-4"
         onDelete={() => {
           setVal(val.filter((entry) => entry !== option));
         }}
         sx={{
           backgroundColor: "#E6F3F7",
+          '& .MuiChip-deleteIcon': {
+            color: '#000',
+          },
         }}
       />
     ) : (
       <Chip
         label={label}
-        className="body3"
+        className="body3 mr-4"
         onDelete={() => {
           setVal(val.filter((entry) => entry !== option));
         }}
         sx={{
           backgroundColor: "#EFEFEF",
+          '& .MuiChip-deleteIcon': {
+            color: '#000',
+          },
         }}
       />
     );

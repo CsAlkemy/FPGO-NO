@@ -458,7 +458,7 @@ export const quickOrderValidation = yup.object().shape({
     .string()
     .typeError("youMustEnterOrderDate")
     .required("youMustEnterOrderDate"),
-  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
+  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate").typeError("youMustEnterPaymentLinkDueDate"),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
