@@ -455,7 +455,7 @@ const createOrder = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
-                  searchString: row?.name + " ( " + row?.phone + " )",
+                  searchString: row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
               });
           }
