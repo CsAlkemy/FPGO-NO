@@ -38,10 +38,11 @@ export const approvalListForFPAdminRowDataFields = [
 export const clientsListRowDataFields = [
   "name",
   "orgId",
-  "orgType",
+  // "orgType",
   "primaryContact",
   "phone",
   "email",
+  "status",
 ];
 
 export const productsListRowDataFields = [
@@ -128,6 +129,18 @@ export const organizationWiseUsersRowDataFields = [
 export const orderListOverviewRowDataFields = [
   "date",
   "id",
+  "name",
+  "dueDate",
+  "phone",
+  "amount",
+  "stage",
+  "refundResend",
+  "cancel",
+];
+export const orderListOverviewFPAdminRowDataFields = [
+  "date",
+  "id",
+  "clientName",
   "name",
   "dueDate",
   "phone",

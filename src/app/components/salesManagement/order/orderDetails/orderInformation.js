@@ -1197,7 +1197,7 @@ const OrderInformation = ({ info }) => {
                                         {...field}
                                         //className='custom-input-height-div'
                                         inputRef={ref}
-                                        placeholder="Search by name, org ID, phone no. & email"
+                                        placeholder= {t(`label:searchByNameOrPhoneNo`)}
                                       />
                                     )}
                                   />
