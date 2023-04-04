@@ -1,5 +1,9 @@
-const reservationCreate = () => {
-
+const ReservationCreate = () => {
+    return (
+        <>
+            <div>create reservations</div>
+        </>
+    );
 };
 
-export default reservationCreate;
+export default ReservationCreate;
