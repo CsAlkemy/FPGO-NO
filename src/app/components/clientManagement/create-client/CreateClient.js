@@ -1464,6 +1464,7 @@ const CreateClient = () => {
                   <div className="search-customer-order-create-type my-32 px-16">
                     <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
                       <button
+                        type="button"
                         className={`${
                           customApticInfoData === "administration"
                             ? "create-user-role-button-active"
