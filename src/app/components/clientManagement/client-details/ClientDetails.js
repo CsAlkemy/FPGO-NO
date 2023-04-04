@@ -59,6 +59,7 @@ const ClientDetails = () => {
   const [clientType, setClientType] = React.useState(1); // 1 for client, 2 for sub-client
   const [sameAddress, setSameAddress] = React.useState(false);
   const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
+  const [initialIsPurchasable, setInitialIsPurchasable] = useState("purchase");
   const [uploadDocuments, setUploadDocuments] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -169,6 +170,8 @@ const ClientDetails = () => {
           if (info?.apticInformation?.isPurchasable)
             setCustomApticInfoData("purchase");
           else setCustomApticInfoData("administration");
+
+          setInitialIsPurchasable(info?.apticInformation?.isPurchasable ? "purchase" : "administration")
 
           if (
             info?.addresses &&
@@ -820,7 +823,7 @@ const ClientDetails = () => {
                       loading={loading}
                       loadingPosition="center"
                       disabled={
-                        !isDirty && sameAddress === initialSameAddressRef
+                        !isDirty && sameAddress === initialSameAddressRef && initialIsPurchasable === customApticInfoData
                       }
                     >
                       {t("label:update")}
@@ -1909,6 +1912,7 @@ const ClientDetails = () => {
                             <div className="search-customer-order-create-type my-32 px-16">
                               <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
                                 <button
+                                  type="button"
                                   className={`${
                                     customApticInfoData === "administration"
                                       ? "create-user-role-button-active"
@@ -1923,6 +1927,7 @@ const ClientDetails = () => {
                                   {t("label:administration")}
                                 </button>
                                 <button
+                                  type="button"
                                   className={`${
                                     customApticInfoData === "purchase"
                                       ? "create-user-role-button-active"
