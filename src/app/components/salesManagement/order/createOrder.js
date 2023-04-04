@@ -74,6 +74,7 @@ const createOrder = () => {
   const [expandedPanel2, setExpandedPanel2] = React.useState(false);
   const [productsList, setProductsList] = useState([]);
   const [customersList, setCustomersList] = useState([]);
+  const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [selectedFromList, setSelectedFromList] = useState(null);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
@@ -211,9 +212,18 @@ const createOrder = () => {
         customer.phone.startsWith(e.target.value)
       ) || [];
     const searchByName =
-      customersList.filter((customer) =>
-        customer?.name && customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+      customersList.filter(
+        (customer) =>
+          customer?.name &&
+          customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
+    setSearchCustomersList(
+      searchByName.length
+        ? searchByName
+        : searchByPhone.length
+        ? searchByPhone
+        : []
+    );
     setCustomerSearchBy(
       searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
     );
@@ -455,14 +465,17 @@ const createOrder = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
-                  searchString: row?.name + " ( " + row?.phone + ` - ${row.type} )`,
+                  searchString:
+                    row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
               });
           }
           setCustomersList(data);
+          setSearchCustomersList(data);
         })
         .catch((e) => {
           setCustomersList([]);
+          setSearchCustomersList([]);
         });
       if (userInfo?.user_data?.organization?.uuid) {
         ClientService.vateRatesList(
@@ -2061,12 +2074,13 @@ const createOrder = () => {
                             }) => (
                               <Autocomplete
                                 freeSolo
-                                options={customersList}
+                                options={searchCustomersList}
                                 // forcePopupIcon={<Search />}
                                 getOptionLabel={(option) => option.searchString}
                                 className=""
                                 fullWidth
                                 onChange={(_, data) => {
+                                  setCustomerSearchBoxLength(0);
                                   if (data) {
                                     clearErrors(["pNumber", "orgID"]);
                                     setRecheckSchema(false);
@@ -2108,12 +2122,17 @@ const createOrder = () => {
                                   }
                                   return onChange(data);
                                 }}
+                                onInputChange={(event, value) => {
+                                  if (value.length === 0)
+                                    setCustomerSearchBy(undefined);
+                                }}
                                 renderOption={(props, option, { selected }) => (
                                   <MenuItem {...props}>
                                     {/*{`${option.name}`}*/}
                                     {customerSearchBy ? (
                                       <div>
-                                        {customerSearchBy === "name" && option?.name &&
+                                        {customerSearchBy === "name" &&
+                                        option?.name &&
                                         customerSearchBoxLength > 0 ? (
                                           <div>
                                             <span

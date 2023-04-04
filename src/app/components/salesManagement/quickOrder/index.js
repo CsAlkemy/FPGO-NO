@@ -254,7 +254,11 @@ const createProducts = () => {
           customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
     setSearchCustomersList(
-      FuseUtils.filterArrayByString(customersList, e.target.value)
+      searchByName.length
+        ? searchByName
+        : searchByPhone.length
+        ? searchByPhone
+        : []
     );
     setCustomerSearchBy(
       searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
@@ -262,13 +266,6 @@ const createProducts = () => {
     setCustomerSearchBoxLength(e.target.value.length);
     setCustomerSearchBoxDropdownOpen(true);
   };
-
-  useEffect(() => {
-    console.log("useEffect");
-    setSearchCustomersList(
-      FuseUtils.filterArrayByString(customersList, searchText)
-    );
-  }, [searchText]);
 
   const valHtml = val.map((option, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
