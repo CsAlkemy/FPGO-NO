@@ -737,13 +737,13 @@ const ClientDetails = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
-        setLoading(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
       }
+      setLoading(false);
     });
     // ClientService.updateClient(clientUpdatedData, params.uuid)
     //   .then((res) => {
