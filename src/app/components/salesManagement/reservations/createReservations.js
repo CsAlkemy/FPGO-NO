@@ -1,7 +1,7 @@
 const ReservationCreate = () => {
     return (
         <>
-            <div>create reservations</div>
+            <div>create reservations hi</div>
         </>
     );
 };
