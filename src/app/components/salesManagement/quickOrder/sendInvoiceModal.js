@@ -92,7 +92,7 @@ const SendInvoiceModal = (props) => {
     <div>
       <Dialog
         open={editOpen}
-        maxWidth={"sm"}
+        maxWidth={"md"}
         onClose={() => setEditOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
