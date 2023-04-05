@@ -41,12 +41,14 @@ import { CharCont } from "../../../utils/helperFunctions";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
 
 export default function OverViewResponsiveBody(props) {
   const [openHigh, setOpenHigh] = useState(false);
   const [openModerate, setOpenModerate] = useState(false);
   const [openLow, setOpenLow] = useState(false);
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [openApprove, setOpenApprove] = useState(false);
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
@@ -1529,20 +1531,21 @@ export default function OverViewResponsiveBody(props) {
                   color="secondary"
                   startIcon={<ReceiptLongOutlinedIcon />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100"
-                  onClick={() => handleSendInvoiceModalOpen()}
+                  onClick={() => setEditOpen(true)}
                 >
                   {t("label:sendInvoice")}
                 </Button>
               </CustomTooltip>
-              <OrderModal
-                open={open}
-                setOpen={setOpen}
-                headerTitle={headerTitle}
-                orderId={props.row.id}
-                orderName={props.row.name}
-                orderAmount={props.row.amount}
-                customerPhone={props.row.phone}
-                customerEmail={props.row.email}
+              <SendInvoiceModal
+                editOpen={editOpen}
+                setEditOpen={setEditOpen}
+                customerInfo={props.row}
+                // headerTitle={headerTitle}
+                // orderId={props.row.id}
+                // orderName={props.row.name}
+                // orderAmount={props.row.amount}
+                // customerPhone={props.row.phone}
+                // customerEmail={props.row.email}
               />
             </>
           ) : (
