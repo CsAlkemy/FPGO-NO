@@ -1,5 +1,5 @@
-const reservationInformation = () => {
+const Information = () => {
 
 };
 
-export default reservationInformation;
+export default Information;

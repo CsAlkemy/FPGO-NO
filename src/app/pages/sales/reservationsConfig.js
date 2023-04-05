@@ -1,9 +1,17 @@
 import { lazy } from "react";
 import authRoles from "../../data-access/utils/AuthRoles";
 import ListOverview from "../overviews/reservations/listOverview";
-const ReservationCreate = lazy(() => import("../../components/salesManagement/reservations/createReservations")) 
 
-export const ReservationsConfEx = {
+const ReservationCreate = lazy(() => 
+  import("../../components/salesManagement/reservations/createReservations")
+); 
+
+const ReservationDetails = lazy(() => 
+  import("../../components/salesManagement/reservations/details")
+);
+
+
+export const ReservationsConfig = {
   settings: {
         layout: {
           config: {
@@ -26,7 +34,8 @@ export const ReservationsConfEx = {
         },
     },
     auth: [
-      `${authRoles.businessAdmin}`,
+      `${authRoles.businessAdmin}`, 
+      `${authRoles.user}`
     ],
     routes: [
         {
@@ -36,7 +45,7 @@ export const ReservationsConfEx = {
     ]
 }
 
-export const ReservationsConfig = {
+export const ReservationsConfEx = {
     settings: {
         layout: {
           config: {
@@ -59,14 +68,18 @@ export const ReservationsConfig = {
         },
     },
     auth: [
-        `${authRoles.fpAdmin}`,
-        `${authRoles.businessAdmin}`,
-        `${authRoles.user}`,
+      `${authRoles.fpAdmin}`,
+      `${authRoles.businessAdmin}`,
+      `${authRoles.user}`,
     ],
     routes: [
         {
             path: "/reservations",
             element: <ListOverview />
+        },
+        {
+          path: "/reservations/details/:uuid",
+          element: <ReservationDetails />
         }
     ]
 };

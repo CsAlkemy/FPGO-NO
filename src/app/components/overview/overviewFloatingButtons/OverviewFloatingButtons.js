@@ -18,7 +18,8 @@ import {
   fpAdminUsersOverview,
   businessAdminUsersOverview,
   organizationWiseUsersOverview,
-  customerOrdersListOverview, refundRequestsOverview,
+  customerOrdersListOverview, refundRequestsOverview, 
+  reservationListOverview
 } from '../overviewTable/TablesName';
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -101,6 +102,9 @@ export default function OverviewFloatingButtons(props) {
         break;
       case ordersListOverview:
         navigate(`/create-order`);
+        break;
+      case reservationListOverview:
+        navigate(`/reservations/create`);
         break;
     }
     setAnchorEl(event.currentTarget);

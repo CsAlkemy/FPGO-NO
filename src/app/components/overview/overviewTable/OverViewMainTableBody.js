@@ -15,6 +15,7 @@ import {
   productsListOverview,
   refundRequestsOverview,
   userListOverview,
+  reservationListOverview
 } from "./TablesName";
 import Skeleton from "@mui/material/Skeleton";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -1633,5 +1634,115 @@ export default function OverViewMainTableBody(props) {
           );
         }
       });
+    case reservationListOverview:
+        return props.rowDataFields.map((rdt) => {
+          if (rdt === "status") {
+            switch (props.row.status) {
+              case "sent":
+                return (
+                  <TableCell
+                    key={`${props.row.uuid}-${rdt}`}
+                    align="center"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Sent"
+                      translationKey={props.row.translationKey}
+                    />
+                  </TableCell>
+                );
+              case "expired":
+                return (
+                  <TableCell
+                    key={`${props.row.uuid}-${rdt}`}
+                    align="center"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Expired"
+                      translationKey={props.row.translationKey}
+                    />
+                  </TableCell>
+                );
+              case "cancelled":
+                return (
+                  <TableCell
+                    key={`${props.row.uuid}-${rdt}`}
+                    align="center"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Cancelled"
+                      translationKey={props.row.translationKey}
+                    />
+                  </TableCell>
+                );
+              case "completed":
+                return (
+                  <TableCell
+                    key={`${props.row.uuid}-${rdt}`}
+                    align="center"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Completed"
+                      translationKey={props.row.translationKey}
+                    />
+                  </TableCell>
+                );
+                case "reserved":
+                  return (
+                    <TableCell
+                      key={`${props.row.uuid}-${rdt}`}
+                      align="center"
+                      onClick={() => {
+                        props.rowClickAction(props.row);
+                      }}
+                    >
+                      <OverviewStatus
+                        name="Reserved"
+                        translationKey={props.row.translationKey}
+                      />
+                    </TableCell>
+                );
+            }
+          } else if (rdt === "reservedAmount" || rdt === "amountPaid" || rdt === "amountInBank") {
+            return (
+              <TableCell
+                key={`${props.row.uuid}-${rdt}`}
+                align="right"
+                onClick={() => {
+                  props.rowClickAction(props.row);
+                }}
+              >
+                {props.row ? (
+                  `${t("label:nok")} ${ThousandSeparator(props.row[rdt])}`
+                ) : (
+                  <Skeleton variant="text" />
+                )}
+              </TableCell>
+            );
+          } else {
+            return (
+              <TableCell
+                key={`${props.row.uuid}-${rdt}`}
+                align="left"
+                onClick={() => {
+                  props.rowClickAction(props.row);
+                }}
+              >
+                {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+              </TableCell>
+            );
+          }
+        });
   }
 }

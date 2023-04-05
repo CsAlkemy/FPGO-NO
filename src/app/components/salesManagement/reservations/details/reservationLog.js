@@ -1,5 +1,5 @@
-const reservationLog = () => {
+const ReservationLog = () => {
 
 };
 
-export default reservationLog;
+export default ReservationLog;
