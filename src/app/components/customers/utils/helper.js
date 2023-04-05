@@ -4,7 +4,11 @@ export const validateSchema = yup.object().shape({
   organizationID: yup.string().required("youMustEnterYourOrganizationId").min(9, "idMustBeNineDigit").max(9, "idMustBeNineDigit"),
   orgEmail: yup.string().required("youMustEnterYourEmail").email("youMustEnterAValidEmail"),
   OrganizationName: yup.string().required("youMustEnterYourOrganizationName"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  primaryPhoneNumber: yup
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingAddress: yup.string().required("youMustEnterYourAddress"),
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
@@ -16,7 +20,11 @@ export const validateSchema2 = yup.object().shape({
 
 });
 export const validateSchemaUpdatePrivateCustomer = yup.object().shape({
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  primaryPhoneNumber: yup
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   customerEmail: yup.string().required("youMustEnterAEmail").email("youMustEnterAValidEmail"),
   pNumber: yup
     .string()
@@ -33,8 +41,10 @@ export const validateSchemaUpdatePrivateCustomer = yup.object().shape({
 
 export const validateSchemaPrivate = yup.object().shape({
   primaryPhoneNumber: yup
-    .string()
-    .required('youMustEnterYourPhoneNumber'),
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   pNumber: yup
     .string()
     .matches(/^[0-9]+$/, { message: 'pNumberMustBeNumber', excludeEmptyString: true })
