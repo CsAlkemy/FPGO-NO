@@ -410,15 +410,58 @@ const createOrder = () => {
   const watchDueDatePaymentLink = watch(`dueDatePaymentLink`);
 
   useEffect(() => {
-    setValue(
-      "dueDatePaymentLink",
-      new Date().setDate(
-        watchOrderDate && watchOrderDate.getDate() >= new Date().getDate()
-          ? watchOrderDate.getDate() + 2
-          : new Date().getDate() + 2
-      )
-    );
+    if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() === new Date().getMonth() &&
+      watchOrderDate.getDate() >= new Date().getDate()
+    ) {
+      setValue(
+        "dueDatePaymentLink",
+        new Date().setDate(watchOrderDate.getDate() + 2)
+      );
+    } else if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() > new Date().getMonth()
+    ) {
+      let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
+      dueDate = dueDate.setDate(watchOrderDate.getDate() + 2);
+      setValue("dueDatePaymentLink", new Date(dueDate));
+    } else if (
+      watchOrderDate &&
+      (watchOrderDate.getMonth() < new Date().getMonth() ||
+        (watchOrderDate.getMonth() === new Date().getMonth() &&
+          watchOrderDate.getDate() < new Date().getDate()))
+    ) {
+      setValue(
+        "dueDatePaymentLink",
+        new Date().setDate(new Date().getDate() + 2)
+      );
+    }
   }, [watch(`orderDate`)]);
+
+  const setDueDateMinDate = () => {
+      if (
+        watchOrderDate &&
+        watchOrderDate.getMonth() === new Date().getMonth() &&
+        watchOrderDate.getDate() >= new Date().getDate()
+      ) {
+        return new Date().setDate(watchOrderDate.getDate() + 1);
+      } else if (
+        watchOrderDate &&
+        watchOrderDate.getMonth() > new Date().getMonth()
+      ) {
+        let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
+        dueDate = dueDate.setDate(watchOrderDate.getDate() + 1);
+        return new Date(dueDate);
+      } else if (
+        watchOrderDate &&
+        (watchOrderDate.getMonth() < new Date().getMonth() ||
+          (watchOrderDate.getMonth() === new Date().getMonth() &&
+            watchOrderDate.getDate() < new Date().getDate()))
+      ) {
+        return new Date().setDate(new Date().getDate() + 1);
+      }
+    };
 
   useEffect(() => {
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
@@ -1546,9 +1589,7 @@ const createOrder = () => {
                               disabled={!watchOrderDate}
                               minDate={
                                 watchOrderDate
-                                  ? new Date().setDate(
-                                      watchOrderDate.getDate() + 1
-                                    )
+                                  ? setDueDateMinDate()
                                   : new Date().setDate(
                                       new Date().getDate() - 30
                                     )
