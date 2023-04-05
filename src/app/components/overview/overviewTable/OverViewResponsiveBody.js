@@ -15,6 +15,7 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
+  reservationListOverview
 } from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
@@ -41,6 +42,7 @@ import { CharCont } from "../../../utils/helperFunctions";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 
 export default function OverViewResponsiveBody(props) {
   const [openHigh, setOpenHigh] = useState(false);
@@ -2101,6 +2103,145 @@ export default function OverViewResponsiveBody(props) {
         //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
         //   </TableCell>
         // )
+      });
+    case reservationListOverview: 
+      return props.headerRows.map((rdt) => {
+        if(rdt.id === 'status') {
+          switch (props.row.status) {
+            case "sent":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Sent"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "expired":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Expired"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "reserved":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Reserved"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "cancelled":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Cancelled"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "completed":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Completed"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+          }
+        }  else if (rdt.id === "reservedAmount" || rdt.id === "amountPaid" || rdt.id === "amountInBank") {
+          return (
+            <div
+              className="grid grid-cols-2 justify-between items-center"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              <div className="subtitle3 text-primary-900">
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {t("label:nok")} {ThousandSeparator(props.row[rdt.id])}
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div
+              className="grid grid-cols-2 justify-between items-center"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              <div className="subtitle3 text-primary-900">
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        }
       });
   }
 }
