@@ -76,6 +76,7 @@ const SendInvoiceModal = (props) => {
       enqueueSnackbar(t(`message:${response?.data?.message}`), {
         variant: "success",
       })
+        setEditOpen(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
@@ -112,7 +113,7 @@ const SendInvoiceModal = (props) => {
                   {customerInfo?.phone}
                 </div>
                 <div className="body2 text-MonochromeGray-500">
-                  {t("label:orderID")}: {customerInfo?.uuid}
+                  {t("label:orderId")}: {customerInfo?.uuid}
                 </div>
               </div>
               <div className="header6">{t("label:nok")} {customerInfo?.amount}</div>
