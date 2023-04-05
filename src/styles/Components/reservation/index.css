@@ -1,0 +1,13 @@
+.reservation-create-form .header-click-to-action {
+    @apply sm:px-16 px-0
+}
+.reservation-create-form .create-order-date-container {
+    @apply grid grid-cols-1 md:grid-cols-4 px-0;
+    /* @apply grid grid-cols-1 md:grid-cols-3 gap-20 w-full my-20 px-10; */
+}
+.reservation-create-form .product-list-grid-container {
+    grid-template-columns: 26% 20% 20% 11% 15% 6%;
+}
+.reservation-create-form .customer-section {
+    max-width: 510px;
+}
