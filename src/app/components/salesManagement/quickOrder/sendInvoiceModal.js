@@ -76,6 +76,7 @@ const SendInvoiceModal = (props) => {
       enqueueSnackbar(t(`message:${response?.data?.message}`), {
         variant: "success",
       })
+        setEditOpen(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
       }
