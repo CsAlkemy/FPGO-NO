@@ -212,7 +212,7 @@ const createOrder = () => {
       ) || [];
     const searchByName =
       customersList.filter((customer) =>
-        customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+        customer?.name && customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
     setCustomerSearchBy(
       searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
