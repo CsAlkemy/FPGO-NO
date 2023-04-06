@@ -127,13 +127,13 @@ const SendInvoiceModal = (props) => {
               <div id="customer-information-payment">
                 <div className="bg-white px-10">
                   <div className="search-customer-order-create-type my-20">
-                    <div className="flex gap-20 w-full md:w-3/4">
+                    <div className="flex flex-col sm:flex-row gap-20 w-full md:w-3/4">
                       <Button
                         variant="outlined"
                         className={`${
                           customerType === "private"
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
+                            ? "create-order-capsule-button-active min-w-important-16"
+                            : "create-order-capsule-button min-w-important-16"
                         }`}
                         onClick={() => {
                           setCustomerType("private");
@@ -146,8 +146,8 @@ const SendInvoiceModal = (props) => {
                         variant="outlined"
                         className={`${
                           customerType === "corporate"
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
+                            ? "create-order-capsule-button-active min-w-important-16"
+                            : "create-order-capsule-button min-w-important-16"
                         }`}
                         onClick={() => {
                           setCustomerType("corporate");

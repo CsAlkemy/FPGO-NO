@@ -393,3 +393,6 @@ input:-webkit-autofill:active {
 .custom-bg-teal-500 {
   color: #50C9B1;
 }
+.min-w-important-16 {
+  min-width: 16rem !important;
+}
