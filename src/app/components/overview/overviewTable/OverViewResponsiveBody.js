@@ -41,12 +41,14 @@ import { CharCont } from "../../../utils/helperFunctions";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
 
 export default function OverViewResponsiveBody(props) {
   const [openHigh, setOpenHigh] = useState(false);
   const [openModerate, setOpenModerate] = useState(false);
   const [openLow, setOpenLow] = useState(false);
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [openApprove, setOpenApprove] = useState(false);
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
@@ -797,6 +799,36 @@ export default function OverViewResponsiveBody(props) {
                 customerEmail={props.row.email}
               />
             </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<RedoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  {t("label:resendOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
           ) : (
             ""
           );
@@ -1499,20 +1531,21 @@ export default function OverViewResponsiveBody(props) {
                   color="secondary"
                   startIcon={<ReceiptLongOutlinedIcon />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100"
-                  onClick={() => handleSendInvoiceModalOpen()}
+                  onClick={() => setEditOpen()}
                 >
                   {t("label:sendInvoice")}
                 </Button>
               </CustomTooltip>
-              <OrderModal
-                open={open}
-                setOpen={setOpen}
-                headerTitle={headerTitle}
-                orderId={props.row.id}
-                orderName={props.row.name}
-                orderAmount={props.row.amount}
-                customerPhone={props.row.phone}
-                customerEmail={props.row.email}
+              <SendInvoiceModal
+                editOpen={editOpen}
+                setEditOpen={setEditOpen}
+                customerInfo={props.row}
+                // headerTitle={headerTitle}
+                // orderId={props.row.id}
+                // orderName={props.row.name}
+                // orderAmount={props.row.amount}
+                // customerPhone={props.row.phone}
+                // customerEmail={props.row.email}
               />
             </>
           ) : (
@@ -1537,6 +1570,36 @@ export default function OverViewResponsiveBody(props) {
                   onClick={() => handleModalOpen("cancel")}
                 >
                   {t("label:cancelOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<RedoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  {t("label:resendOrder")}
                 </Button>
               </CustomTooltip>
               <OrderModal

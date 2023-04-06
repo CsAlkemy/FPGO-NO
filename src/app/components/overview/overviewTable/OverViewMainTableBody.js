@@ -581,6 +581,39 @@ export default function OverViewMainTableBody(props) {
                 customerEmail={props.row.email}
               />
             </TableCell>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
+                  sx={resendRefundBoxSX}
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  <RedoIcon
+                    style={{ paddingBottom: "3px" }}
+                    // onClick={() => }
+                  />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.uuid}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </TableCell>
           ) : (
             <TableCell
               key={`${props.row.uuid}-${rdt}`}
@@ -1130,6 +1163,39 @@ export default function OverViewMainTableBody(props) {
                 setOpen={setOpen}
                 headerTitle={headerTitle}
                 orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </TableCell>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
+                  sx={resendRefundBoxSX}
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  <RedoIcon
+                    style={{ paddingBottom: "3px" }}
+                    // onClick={() => }
+                  />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.uuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}

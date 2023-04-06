@@ -97,7 +97,7 @@ class OrdersService {
         uuid: row.orderUuid,
         date: row.dateCreated,
         id: row.orderUuid,
-        clientName:row.clientName,
+        clientName: row.clientName,
         name: row.name,
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
@@ -134,10 +134,11 @@ class OrdersService {
         // refundResend: "Resend",
         // isCancel: true,
         translationKey: row.translationKey,
-        enableSendInvoice:
-          row?.type.toLowerCase() === "quick" &&
-          !row?.exportedToAptic &&
-          row?.status.toLowerCase() === "expired",
+        // enableSendInvoice:
+        //   row?.type.toLowerCase() === "quick" &&
+        //   !row?.exportedToAptic &&
+        //   row?.status.toLowerCase() === "expired",
+        enableSendInvoice: row.showExportButton,
       };
     });
     return d;
@@ -985,19 +986,19 @@ class OrdersService {
             amount:
               order.quantity && order.rate
                 ? parseInt(order.quantity) * parseFloat(floatRate) -
-                parseFloat(order?.discount ? order.discount : 0)
+                  parseFloat(order?.discount ? order.discount : 0)
                 : null,
           };
         });
     const customers = params?.customers.length
       ? params.customers.map((customer) => {
-        const isExisting = !!customer?.uuid;
-        let phone = "";
-        if (!isExisting) {
-          phone = UtilsServices.preparePhoneNumber(`${customer?.phone}`);
-        }
-        return customer?.uuid ? customer?.uuid : phone;
-      })
+          const isExisting = !!customer?.uuid;
+          let phone = "";
+          if (!isExisting) {
+            phone = UtilsServices.preparePhoneNumber(`${customer?.phone}`);
+          }
+          return customer?.uuid ? customer?.uuid : phone;
+        })
       : [];
 
     return {
@@ -1032,18 +1033,18 @@ class OrdersService {
       : null;
 
     return {
-      type: "private",
+      type: params.customerType,
       countryCode,
       msisdn,
       email: params?.email ? params?.email : null,
       name: params?.customerName ? params?.customerName : null,
       personalNumber:
-        params?.orgIdOrPNumber.length === 11
-          ? `${params?.orgIdOrPNumber}`
+        params?.pNumber
+          ? `${params?.pNumber}`
           : null,
       organizationId:
-        params?.orgIdOrPNumber.length === 9
-          ? `${params?.orgIdOrPNumber}`
+        params?.orgID
+          ? `${params?.orgID}`
           : null,
       // organizationId : "fu",
       address: {

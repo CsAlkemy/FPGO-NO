@@ -257,8 +257,8 @@ const createProducts = () => {
       searchByName.length
         ? searchByName
         : searchByPhone.length
-          ? searchByPhone
-          : []
+        ? searchByPhone
+        : []
     );
     setCustomerSearchBy(
       searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
@@ -777,8 +777,8 @@ const createProducts = () => {
                           helperText={
                             errors?.dueDatePaymentLink?.message
                               ? t(
-                                `validation:${errors?.dueDatePaymentLink?.message}`
-                              )
+                                  `validation:${errors?.dueDatePaymentLink?.message}`
+                                )
                               : ""
                           }
                           sx={{
@@ -822,8 +822,8 @@ const createProducts = () => {
                       helperText={
                         errors?.customerReference?.message
                           ? t(
-                            `validation:${errors?.customerReference?.message}`
-                          )
+                              `validation:${errors?.customerReference?.message}`
+                            )
                           : ""
                       }
                       variant="outlined"
@@ -887,24 +887,24 @@ const createProducts = () => {
                             required
                             name={`order[${index}].productName`}
                             render={({
-                                       field: { ref, onChange, ...field },
-                                     }) => (
+                              field: { ref, onChange, ...field },
+                            }) => (
                               <Autocomplete
                                 disabled={
                                   index === 0 ||
                                   index === Math.min(...addOrderIndex)
                                     ? false
                                     : !watch(
-                                      `order[${
-                                        index -
-                                        (addOrderIndex[
+                                        `order[${
+                                          index -
+                                          (addOrderIndex[
                                             addOrderIndex.indexOf(index)
-                                            ] -
-                                          addOrderIndex[
-                                          addOrderIndex.indexOf(index) - 1
+                                          ] -
+                                            addOrderIndex[
+                                              addOrderIndex.indexOf(index) - 1
                                             ])
-                                      }].productName`
-                                    )
+                                        }].productName`
+                                      )
                                 }
                                 freeSolo
                                 autoSelect
@@ -915,8 +915,8 @@ const createProducts = () => {
                                   option?.name
                                     ? option.name
                                     : option
-                                      ? option
-                                      : ""
+                                    ? option
+                                    : ""
                                 }
                                 size="small"
                                 onChange={(_, data) => {
@@ -962,11 +962,11 @@ const createProducts = () => {
                                           watchTax &&
                                           i !== index &&
                                           watchName ===
-                                          watch(`order[${i}].productName`) &&
+                                            watch(`order[${i}].productName`) &&
                                           watchId ===
-                                          watch(`order[${i}].productID`) &&
+                                            watch(`order[${i}].productID`) &&
                                           watchRate ===
-                                          watch(`order[${i}].rate`) &&
+                                            watch(`order[${i}].rate`) &&
                                           watchTax === watch(`order[${i}].tax`)
                                         ) {
                                           let quantityNum = isNaN(
@@ -976,8 +976,8 @@ const createProducts = () => {
                                           )
                                             ? 1
                                             : parseInt(
-                                              watch(`order[${i}].quantity`)
-                                            );
+                                                watch(`order[${i}].quantity`)
+                                              );
                                           setValue(
                                             `order[${i}].quantity`,
                                             quantityNum + 1
@@ -1257,16 +1257,16 @@ const createProducts = () => {
                                 index === Math.min(...addOrderIndex)
                                   ? false
                                   : !watch(
-                                    `order[${
-                                      index -
-                                      (addOrderIndex[
+                                      `order[${
+                                        index -
+                                        (addOrderIndex[
                                           addOrderIndex.indexOf(index)
-                                          ] -
-                                        addOrderIndex[
-                                        addOrderIndex.indexOf(index) - 1
+                                        ] -
+                                          addOrderIndex[
+                                            addOrderIndex.indexOf(index) - 1
                                           ])
-                                    }].productName`
-                                  )
+                                      }].productName`
+                                    )
                               }
                               freeSolo
                               autoSelect
@@ -1277,8 +1277,8 @@ const createProducts = () => {
                                 option?.name
                                   ? option.name
                                   : option
-                                    ? option
-                                    : ""
+                                  ? option
+                                  : ""
                               }
                               size="small"
                               //className="custom-input-height"
@@ -1297,10 +1297,10 @@ const createProducts = () => {
                                       .toString()
                                       .includes(".")
                                       ? `${
-                                        data.price.toString().split(".")[0]
-                                      },${
-                                        data.price.toString().split(".")[1]
-                                      }`
+                                          data.price.toString().split(".")[0]
+                                        },${
+                                          data.price.toString().split(".")[1]
+                                        }`
                                       : data.price;
                                     setValue(
                                       `order[${index}].rate`,
@@ -1334,11 +1334,11 @@ const createProducts = () => {
                                         watchTax &&
                                         i !== index &&
                                         watchName ===
-                                        watch(`order[${i}].productName`) &&
+                                          watch(`order[${i}].productName`) &&
                                         watchId ===
-                                        watch(`order[${i}].productID`) &&
+                                          watch(`order[${i}].productID`) &&
                                         watchRate ===
-                                        watch(`order[${i}].rate`) &&
+                                          watch(`order[${i}].rate`) &&
                                         watchTax === watch(`order[${i}].tax`)
                                       ) {
                                         let quantityNum = isNaN(
@@ -1348,8 +1348,8 @@ const createProducts = () => {
                                         )
                                           ? 1
                                           : parseInt(
-                                            watch(`order[${i}].quantity`)
-                                          );
+                                              watch(`order[${i}].quantity`)
+                                            );
                                         setValue(
                                           `order[${i}].quantity`,
                                           quantityNum + 1
@@ -1609,8 +1609,8 @@ const createProducts = () => {
                           helperText={
                             errors?.customerNotes?.message
                               ? t(
-                                `validation:${errors?.customerNotes?.message}`
-                              )
+                                  `validation:${errors?.customerNotes?.message}`
+                                )
                               : ""
                           }
                           variant="outlined"
@@ -1640,8 +1640,8 @@ const createProducts = () => {
                           helperText={
                             errors?.termsConditions?.message
                               ? t(
-                                `validation:${errors?.termsConditions?.message}`
-                              )
+                                  `validation:${errors?.termsConditions?.message}`
+                                )
                               : ""
                           }
                           variant="outlined"
