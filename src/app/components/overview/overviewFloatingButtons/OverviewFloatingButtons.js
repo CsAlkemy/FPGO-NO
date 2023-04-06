@@ -104,7 +104,7 @@ export default function OverviewFloatingButtons(props) {
         navigate(`/create-order`);
         break;
       case reservationListOverview:
-        navigate(`/reservations/create`);
+        navigate(`/create-reservations`);
         break;
     }
     setAnchorEl(event.currentTarget);

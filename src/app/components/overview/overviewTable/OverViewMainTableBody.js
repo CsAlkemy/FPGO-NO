@@ -40,6 +40,7 @@ import DiscardConfirmModal from "../../common/confirmDiscard";
 import { useTranslation } from "react-i18next";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
+import ReservationDropdown from "../../salesManagement/reservations/dropdown";
 
 export default function OverViewMainTableBody(props) {
   const { t } = useTranslation();
@@ -1728,6 +1729,31 @@ export default function OverViewMainTableBody(props) {
                 ) : (
                   <Skeleton variant="text" />
                 )}
+              </TableCell>
+            );
+          }  else if(rdt === "options") {
+            return props.row.status.toLowerCase() === "completed" ? (
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+                <CustomTooltip
+                  disableFocusListener
+                  title={t('label:refundFromReservations')}
+                  TransitionComponent={Zoom}
+                  placement="bottom"
+                  enterDelay={300}
+                >
+                  <Box
+                    component="span"
+                    className="py-8 px-4"
+                    sx={resendRefundBoxSX}
+                  >
+                    <UndoIcon style={{ paddingBottom: "3px" }} />
+                  </Box>
+                </CustomTooltip>
+              </TableCell>
+            ) : 
+            (
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="center">
+                <ReservationDropdown status={props.row.status} />
               </TableCell>
             );
           } else {
