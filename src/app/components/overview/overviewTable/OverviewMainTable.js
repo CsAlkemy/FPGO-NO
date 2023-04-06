@@ -438,40 +438,40 @@ export default function OverviewMainTable(props) {
       case 4:
         setData(
           props.tableData
-            .map((data) => {
-              const dueDate = data.dueDate;
-              const splitedTimeAndDate = dueDate.split(", ");
-              const splitedDates = splitedTimeAndDate[1].split(".");
-              const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
-              const dueDateTimeStamp = new Date(formatedDate).getTime();
-              const currentTimeStamp = new Date().getTime();
-              const isExpired = data.stage.toLowerCase() === "sent" && dueDateTimeStamp < currentTimeStamp;
-              const statusChanged = data?.status
-                ? isExpired
-                  ? "expired"
-                  : data.status.toLowerCase()
-                : null;
-              return { ...data, status: statusChanged };
-            })
+            // .map((data) => {
+            //   const dueDate = data.dueDate;
+            //   const splitedTimeAndDate = dueDate.split(", ");
+            //   const splitedDates = splitedTimeAndDate[1].split(".");
+            //   const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+            //   const dueDateTimeStamp = new Date(formatedDate).getTime();
+            //   const currentTimeStamp = new Date().getTime();
+            //   const isExpired = data.stage.toLowerCase() === "sent" && dueDateTimeStamp < currentTimeStamp;
+            //   const statusChanged = data?.status
+            //     ? isExpired
+            //       ? "expired"
+            //       : data.status.toLowerCase()
+            //     : null;
+            //   return { ...data, status: statusChanged };
+            // })
             .filter((row) => row.stage.toLowerCase() === "expired")
         );
         setFilteredData(
           props.tableData
-            .map((data) => {
-              const dueDate = data.dueDate;
-              const splitedTimeAndDate = dueDate.split(", ");
-              const splitedDates = splitedTimeAndDate[1].split(".");
-              const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
-              const dueDateTimeStamp = new Date(formatedDate).getTime();
-              const currentTimeStamp = new Date().getTime();
-              const isExpired = data.stage.toLowerCase() === "sent" && dueDateTimeStamp < currentTimeStamp;
-              const statusChanged = data?.status
-                ? isExpired
-                  ? "expired"
-                  : data.status.toLowerCase()
-                : null;
-              return { ...data, status: statusChanged };
-            })
+            // .map((data) => {
+            //   const dueDate = data.dueDate;
+            //   const splitedTimeAndDate = dueDate.split(", ");
+            //   const splitedDates = splitedTimeAndDate[1].split(".");
+            //   const formatedDate = `${splitedTimeAndDate[0]} ${splitedDates[1]}.${splitedDates[0]}.${splitedDates[2]}`;
+            //   const dueDateTimeStamp = new Date(formatedDate).getTime();
+            //   const currentTimeStamp = new Date().getTime();
+            //   const isExpired = data.stage.toLowerCase() === "sent" && dueDateTimeStamp < currentTimeStamp;
+            //   const statusChanged = data?.status
+            //     ? isExpired
+            //       ? "expired"
+            //       : data.status.toLowerCase()
+            //     : null;
+            //   return { ...data, status: statusChanged };
+            // })
             .filter((row) => row.stage.toLowerCase() === "expired")
         );
         break;

@@ -59,6 +59,7 @@ const ClientDetails = () => {
   const [clientType, setClientType] = React.useState(1); // 1 for client, 2 for sub-client
   const [sameAddress, setSameAddress] = React.useState(false);
   const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
+  const [initialIsPurchasable, setInitialIsPurchasable] = useState("purchase");
   const [uploadDocuments, setUploadDocuments] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -169,6 +170,8 @@ const ClientDetails = () => {
           if (info?.apticInformation?.isPurchasable)
             setCustomApticInfoData("purchase");
           else setCustomApticInfoData("administration");
+
+          setInitialIsPurchasable(info?.apticInformation?.isPurchasable ? "purchase" : "administration")
 
           if (
             info?.addresses &&
@@ -734,13 +737,13 @@ const ClientDetails = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
-        setLoading(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
       }
+      setLoading(false);
     });
     // ClientService.updateClient(clientUpdatedData, params.uuid)
     //   .then((res) => {
@@ -820,7 +823,7 @@ const ClientDetails = () => {
                       loading={loading}
                       loadingPosition="center"
                       disabled={
-                        !isDirty && sameAddress === initialSameAddressRef
+                        !isDirty && sameAddress === initialSameAddressRef && initialIsPurchasable === customApticInfoData
                       }
                     >
                       {t("label:update")}
@@ -1907,37 +1910,37 @@ const ClientDetails = () => {
                           </div>
                           <div className="p-10">
                             <div className="search-customer-order-create-type my-32 px-16">
-                              <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20">
-                                <Button
-                                  variant="outlined"
-                                  className={`body2 ${
+                              <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
+                                <button
+                                  type="button"
+                                  className={`${
                                     customApticInfoData === "administration"
-                                      ? "create-order-capsule-button-active"
-                                      : "create-order-capsule-button"
+                                      ? "create-user-role-button-active"
+                                      : "create-user-role-button"
                                   }`}
                                   onClick={() => {
                                     setCustomApticInfoData("administration");
                                     setRecheckSchema(true);
                                   }}
-                                  disabled
+                                  // disabled
                                 >
                                   {t("label:administration")}
-                                </Button>
-                                <Button
-                                  variant="outlined"
-                                  className={`body2 ${
+                                </button>
+                                <button
+                                  type="button"
+                                  className={`${
                                     customApticInfoData === "purchase"
-                                      ? "create-order-capsule-button-active"
-                                      : "create-order-capsule-button"
+                                      ? "create-user-role-button-active"
+                                      : "create-user-role-button"
                                   }`}
                                   onClick={() => {
                                     setCustomApticInfoData("purchase");
                                     setRecheckSchema(true);
                                   }}
-                                  disabled
+                                  // disabled
                                 >
                                   {t("label:purchase")}
-                                </Button>
+                                </button>
                               </div>
                             </div>
                             <div className="px-16">
