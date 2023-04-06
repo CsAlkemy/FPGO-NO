@@ -6,7 +6,9 @@ export const validateSchema = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   designation: yup.string(),
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
   password: yup.string().required('youMustEnterPassword'),
@@ -32,7 +34,9 @@ export const validateSchema = yup.object().shape({
   creditCheckCostp3: yup.string().required('youMustEnterYourCreditCheckCost'),
   ehfCostp3: yup.string().required('youMustEnterYourEhfCost'),
 
-  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber'),
+  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber')
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingEmail: yup.string().required('youMustEnterYourBillingEmail'),
   billingAddress: yup.string().required('youMustEnterYourBillingAddress'),
   zip: yup.string().required('youMustEnterYourZip'),
@@ -68,7 +72,9 @@ export const validateSchemaAdministration = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   designation: yup.string(),
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
   password: yup.string().required('youMustEnterPassword'),
@@ -94,7 +100,9 @@ export const validateSchemaAdministration = yup.object().shape({
   creditCheckCostp3: yup.string().required('youMustEnterYourCreditCheckCost'),
   ehfCostp3: yup.string().required('youMustEnterYourEhfCost'),
 
-  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber'),
+  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber')
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingEmail: yup.string().required('youMustEnterYourBillingEmail'),
   billingAddress: yup.string().required('youMustEnterYourBillingAddress'),
   zip: yup.string().required('youMustEnterYourZip'),
@@ -130,7 +138,9 @@ export const validateSchemaOnBoard = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   designation: yup.string(),
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
   // password: yup.string().required('You must enter your password'),
@@ -143,7 +153,9 @@ export const validateSchemaOnBoard = yup.object().shape({
   // ehfCost: yup.string().required('youMustEnterYourEhfCost'),
 
 
-  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber'),
+  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber')
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingEmail: yup.string().required('youMustEnterYourBillingEmail'),
   billingAddress: yup.string().required('youMustEnterYourBillingAddress'),
   zip: yup.string().required('youMustEnterYourZip'),
@@ -175,7 +187,9 @@ export const validateSchemaOnBoardAdministration = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   designation: yup.string(),
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
   // password: yup.string().required('You must enter your password'),
@@ -188,7 +202,9 @@ export const validateSchemaOnBoardAdministration = yup.object().shape({
   // ehfCost: yup.string().required('youMustEnterYourEhfCost'),
 
 
-  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber'),
+  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber')
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingEmail: yup.string().required('youMustEnterYourBillingEmail'),
   billingAddress: yup.string().required('youMustEnterYourBillingAddress'),
   zip: yup.string().required('youMustEnterYourZip'),
@@ -219,7 +235,9 @@ export const validateSchemaCreateClient = yup.object().shape({
   clientName: yup.string().required("youMustEnterYourClientName"),
   organizationType: yup.string().required("youMustSelectOrganizationType"),
   fullName: yup.string().required("youMustEnterYourName"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   designation: yup.string(),
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
 
@@ -230,7 +248,9 @@ export const validateSchemaCreateClient = yup.object().shape({
   // creditCheckCost: yup.string().required('youMustEnterYourCreditCheckCost'),
   // ehfCost: yup.string().required('youMustEnterYourEhfCost'),
 
-  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber'),
+  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber')
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingEmail: yup.string() .email('mustBeValidEmail') .required('youMustEnterYourBillingEmail'),
   billingAddress: yup.string().required('youMustEnterYourBillingAddress'),
   zip: yup.string().required('youMustEnterYourZip'),
@@ -259,7 +279,9 @@ export const validateSchemaCreateClientAdministration = yup.object().shape({
   clientName: yup.string().required("youMustEnterYourClientName"),
   organizationType: yup.string().required("youMustSelectOrganizationType"),
   fullName: yup.string().required("youMustEnterYourName"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPrimaryPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   designation: yup.string(),
   email: yup.string().required('youMustEnterAEmail').email('youMustEnterAValidEmail'),
 
@@ -270,7 +292,9 @@ export const validateSchemaCreateClientAdministration = yup.object().shape({
   // creditCheckCost: yup.string().required('youMustEnterYourCreditCheckCost'),
   // ehfCost: yup.string().required('youMustEnterYourEhfCost'),
 
-  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber'),
+  billingPhoneNumber: yup.string().required('youMustEnterYourBillingPhoneNumber')
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingEmail: yup.string() .email('mustBeValidEmail') .required('youMustEnterYourBillingEmail'),
   billingAddress: yup.string().required('youMustEnterYourBillingAddress'),
   zip: yup.string().required('youMustEnterYourZip'),
