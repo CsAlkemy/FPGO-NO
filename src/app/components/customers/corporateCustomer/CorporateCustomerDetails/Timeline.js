@@ -92,10 +92,12 @@ const TimelineLog = () => {
                   {log.slug === "order-created" ||
                   log.slug === "credit-check-performed" ||
                   log.slug === "customer-information-updated" ||
-                  log.slug === "order-was-resent" ||
+                  log.slug === "order-was-sent" ||
                   log.slug === "order-was-resent" ||
                   log.slug === "payment-link-opened" ||
                   log.slug === "refund-sent" ||
+                  log.slug === "invoice-order-exported" ||
+                  log.slug === "customer-information-updated" ||
                   log.slug === "payment-successful" ? (
                     <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
                       <CheckIcon className="icon-size-16 text-white" />
