@@ -152,8 +152,8 @@ export const validateSchemaOnBoard = yup.object().shape({
 
   // bankName: yup.string().required('youMustEnterYourBankName'),
   // accountNumber: yup.string()
-  //     .required('youMustEnterYourAccountNumber')
-  //     .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
+  //   .required('youMustEnterYourAccountNumber')
+  //   .matches(/^(\S+$)/g, 'thisFieldCannotContainBlankspaces'),
   // IBAN: yup.string().required('youMustEnterYourIban'),
   // SWIFTCode: yup.string().required('youMustEnterYourSwiftCode'),
 
@@ -358,7 +358,7 @@ export const defaultValue = {
   vat:[],
   fakturaB2B: '',
   fakturaB2C: '',
-
+  
 }
 
 export const defaultValueOnBoard = {
