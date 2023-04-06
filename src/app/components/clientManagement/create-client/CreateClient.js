@@ -57,20 +57,26 @@ const CreateClient = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
-  const [customApticInfoData, setCustomApticInfoData] =
-    useState("purchase");
+  const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
 
-  let schema = customApticInfoData === "purchase" ? validateSchemaCreateClient : validateSchemaCreateClientAdministration;
+  let schema =
+    customApticInfoData === "purchase"
+      ? validateSchemaCreateClient
+      : validateSchemaCreateClientAdministration;
   useEffect(() => {
     if (recheckSchema) {
       if (customApticInfoData === "purchase") {
         clearErrors(["creditLimitCustomer"]);
         setValue("creditLimitCustomer", "", { shouldValidate: true });
-        setError("creditLimitCustomer", { type: "focus" }, { shouldFocus: true });
+        setError(
+          "creditLimitCustomer",
+          { type: "focus" },
+          { shouldFocus: true }
+        );
       } else {
         setValue("creditLimitCustomer", "", { shouldValidate: true });
         clearErrors(["creditLimitCustomer"]);
@@ -142,7 +148,6 @@ const CreateClient = () => {
     setValue(`vat[${3}].vatValue`, "25");
     setValue(`vat[${3}].bookKeepingReference`, "");
   }, []);
-
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);
@@ -912,7 +917,6 @@ const CreateClient = () => {
                       )}
                     />
                   </div>
-
                 </div>
               </div>
               <div className="billing-information">
@@ -1471,6 +1475,7 @@ const CreateClient = () => {
                   <div className="search-customer-order-create-type my-32 px-16">
                     <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
                       <button
+                        type="button"
                         className={`${
                           customApticInfoData === "administration"
                             ? "create-user-role-button-active"
@@ -1623,8 +1628,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.creditLimitCustomer?.message
                                   ? t(
-                                    `validation:${errors?.creditLimitCustomer?.message}`
-                                  )
+                                      `validation:${errors?.creditLimitCustomer?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1653,8 +1658,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.costLimitforCustomer?.message
                                   ? t(
-                                    `validation:${errors?.costLimitforCustomer?.message}`
-                                  )
+                                      `validation:${errors?.costLimitforCustomer?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1682,8 +1687,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.costLimitforOrder?.message
                                   ? t(
-                                    `validation:${errors?.costLimitforOrder?.message}`
-                                  )
+                                      `validation:${errors?.costLimitforOrder?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1711,8 +1716,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.invoicewithRegress?.message
                                   ? t(
-                                    `validation:${errors?.invoicewithRegress?.message}`
-                                  )
+                                      `validation:${errors?.invoicewithRegress?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1740,8 +1745,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.invoicewithoutRegress?.message
                                   ? t(
-                                    `validation:${errors?.invoicewithoutRegress?.message}`
-                                  )
+                                      `validation:${errors?.invoicewithoutRegress?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"

@@ -59,6 +59,7 @@ const ClientDetails = () => {
   const [clientType, setClientType] = React.useState(1); // 1 for client, 2 for sub-client
   const [sameAddress, setSameAddress] = React.useState(false);
   const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
+  const [initialIsPurchasable, setInitialIsPurchasable] = useState("purchase");
   const [uploadDocuments, setUploadDocuments] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -165,6 +166,8 @@ const ClientDetails = () => {
               // plan3.current.click();
             }
           }
+
+          setInitialIsPurchasable(info?.apticInformation?.isPurchasable ? "purchase" : "administration")
 
           if (
             info?.addresses &&
@@ -795,7 +798,7 @@ const ClientDetails = () => {
                       loading={loading}
                       loadingPosition="center"
                       disabled={
-                        !isDirty && sameAddress === initialSameAddressRef
+                        !isDirty && sameAddress === initialSameAddressRef && initialIsPurchasable === customApticInfoData
                       }
                     >
                       {t("label:update")}
@@ -1332,10 +1335,10 @@ const ClientDetails = () => {
                                     error={!!errors.ehfCost}
                                     helperText={
                                       errors?.ehfCost?.message
-                                          ? t(
-                                              `validation:${errors?.ehfCost?.message}`
+                                        ? t(
+                                            `validation:${errors?.ehfCost?.message}`
                                           )
-                                          : ""
+                                        : ""
                                     }
                                     variant="outlined"
                                     fullWidth
@@ -1409,12 +1412,11 @@ const ClientDetails = () => {
                                         onBlur={handleOnBlurGetDialCode}
                                       />
                                       <FormHelperText>
-                                        { errors?.billingPhoneNumber?.message
-                                        ? t(
-                                        `validation:${errors?.billingPhoneNumber?.message}`
-                                        )
-                                        : ""
-                                        }
+                                        {errors?.billingPhoneNumber?.message
+                                          ? t(
+                                              `validation:${errors?.billingPhoneNumber?.message}`
+                                            )
+                                          : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -1437,10 +1439,10 @@ const ClientDetails = () => {
                                       error={!!errors.billingEmail}
                                       helperText={
                                         errors?.billingEmail?.message
-                                            ? t(
-                                                `validation:${errors?.billingEmail?.message}`
+                                          ? t(
+                                              `validation:${errors?.billingEmail?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -1465,10 +1467,10 @@ const ClientDetails = () => {
                                         error={!!errors.billingAddress}
                                         helperText={
                                           errors?.billingAddress?.message
-                                              ? t(
-                                                  `validation:${errors?.billingAddress?.message}`
+                                            ? t(
+                                                `validation:${errors?.billingAddress?.message}`
                                               )
-                                              : ""
+                                            : ""
                                         }
                                         variant="outlined"
                                         required
@@ -1492,10 +1494,10 @@ const ClientDetails = () => {
                                         error={!!errors.zip}
                                         helperText={
                                           errors?.zip?.message
-                                              ? t(
-                                                  `validation:${errors?.zip?.message}`
+                                            ? t(
+                                                `validation:${errors?.zip?.message}`
                                               )
-                                              : ""
+                                            : ""
                                         }
                                         variant="outlined"
                                         required
@@ -1519,10 +1521,10 @@ const ClientDetails = () => {
                                       error={!!errors.city}
                                       helperText={
                                         errors?.city?.message
-                                            ? t(
-                                                `validation:${errors?.city?.message}`
+                                          ? t(
+                                              `validation:${errors?.city?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -1565,13 +1567,11 @@ const ClientDetails = () => {
                                         </MenuItem>
                                       </Select>
                                       <FormHelperText>
-                                        {
-                                        errors?.country?.message
-                                            ? t(
-                                                `validation:${errors?.country?.message}`
+                                        {errors?.country?.message
+                                          ? t(
+                                              `validation:${errors?.country?.message}`
                                             )
-                                            : ""
-                                      }
+                                          : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -1664,13 +1664,12 @@ const ClientDetails = () => {
                                             onBlur={handleOnBlurGetDialCode}
                                           />
                                           <FormHelperText>
-                                            {
-                                            errors?.shippingPhoneNumber?.message
-                                                ? t(
-                                                    `validation:${errors?.shippingPhoneNumber?.message}`
+                                            {errors?.shippingPhoneNumber
+                                              ?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingPhoneNumber?.message}`
                                                 )
-                                                : ""
-                                          }
+                                              : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -1688,12 +1687,11 @@ const ClientDetails = () => {
                                           error={!!errors.shippingEmail}
                                           helperText={
                                             errors?.shippingEmail?.message
-                                                ? t(
-                                                    `validation:${errors?.shippingEmail?.message}`
+                                              ? t(
+                                                  `validation:${errors?.shippingEmail?.message}`
                                                 )
-                                                : ""
+                                              : ""
                                           }
-
                                           variant="outlined"
                                           // required
                                           fullWidth
@@ -1716,12 +1714,11 @@ const ClientDetails = () => {
                                             error={!!errors.shippingAddress}
                                             helperText={
                                               errors?.shippingAddress?.message
-                                                  ? t(
-                                                      `validation:${errors?.shippingAddress?.message}`
+                                                ? t(
+                                                    `validation:${errors?.shippingAddress?.message}`
                                                   )
-                                                  : ""
+                                                : ""
                                             }
-
                                             variant="outlined"
                                             // required
                                             fullWidth
@@ -1744,10 +1741,10 @@ const ClientDetails = () => {
                                             error={!!errors.shippingZip}
                                             helperText={
                                               errors?.shippingZip?.message
-                                                  ? t(
-                                                      `validation:${errors?.shippingZip?.message}`
+                                                ? t(
+                                                    `validation:${errors?.shippingZip?.message}`
                                                   )
-                                                  : ""
+                                                : ""
                                             }
                                             variant="outlined"
                                             // required
@@ -1771,10 +1768,10 @@ const ClientDetails = () => {
                                           error={!!errors.shippingCity}
                                           helperText={
                                             errors?.shippingCity?.message
-                                                ? t(
-                                                    `validation:${errors?.shippingCity?.message}`
+                                              ? t(
+                                                  `validation:${errors?.shippingCity?.message}`
                                                 )
-                                                : ""
+                                              : ""
                                           }
                                           variant="outlined"
                                           // required
@@ -1820,13 +1817,11 @@ const ClientDetails = () => {
                                             </MenuItem>
                                           </Select>
                                           <FormHelperText>
-                                            {
-                                            errors?.shippingCountry?.message
-                                                ? t(
-                                                    `validation:${errors?.shippingCountry?.message}`
+                                            {errors?.shippingCountry?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingCountry?.message}`
                                                 )
-                                                : ""
-                                          }
+                                              : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -1863,10 +1858,10 @@ const ClientDetails = () => {
                                       error={!!errors.bankName}
                                       helperText={
                                         errors?.bankName?.message
-                                            ? t(
-                                                `validation:${errors?.bankName?.message}`
+                                          ? t(
+                                              `validation:${errors?.bankName?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       value={field.value || ""}
@@ -1896,10 +1891,10 @@ const ClientDetails = () => {
                                       error={!!errors.accountNumber}
                                       helperText={
                                         errors?.accountNumber?.message
-                                            ? t(
-                                                `validation:${errors?.accountNumber?.message}`
+                                          ? t(
+                                              `validation:${errors?.accountNumber?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -1919,10 +1914,10 @@ const ClientDetails = () => {
                                       error={!!errors.IBAN}
                                       helperText={
                                         errors?.IBAN?.message
-                                            ? t(
-                                                `validation:${errors?.IBAN?.message}`
+                                          ? t(
+                                              `validation:${errors?.IBAN?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -1942,10 +1937,10 @@ const ClientDetails = () => {
                                       error={!!errors.SWIFTCode}
                                       helperText={
                                         errors?.SWIFTCode?.message
-                                            ? t(
-                                                `validation:${errors?.SWIFTCode?.message}`
+                                          ? t(
+                                              `validation:${errors?.SWIFTCode?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -1972,6 +1967,7 @@ const ClientDetails = () => {
                             <div className="search-customer-order-create-type my-32 px-16">
                               <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
                                 <button
+                                  type="button"
                                   className={`${
                                     customApticInfoData === "administration"
                                       ? "create-user-role-button-active"
@@ -1986,6 +1982,7 @@ const ClientDetails = () => {
                                   {t("label:administration")}
                                 </button>
                                 <button
+                                  type="button"
                                   className={`${
                                     customApticInfoData === "purchase"
                                       ? "create-user-role-button-active"
@@ -2016,10 +2013,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTICuserName}
                                       helperText={
                                         errors?.APTICuserName?.message
-                                            ? t(
-                                                `validation:${errors?.APTICuserName?.message}`
+                                          ? t(
+                                              `validation:${errors?.APTICuserName?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -2040,10 +2037,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTICpassword}
                                       helperText={
                                         errors?.APTICpassword?.message
-                                            ? t(
-                                                `validation:${errors?.APTICpassword?.message}`
+                                          ? t(
+                                              `validation:${errors?.APTICpassword?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2083,10 +2080,10 @@ const ClientDetails = () => {
                                       error={!!errors.name}
                                       helperText={
                                         errors?.name?.message
-                                            ? t(
-                                                `validation:${errors?.name?.message}`
+                                          ? t(
+                                              `validation:${errors?.name?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -2107,10 +2104,10 @@ const ClientDetails = () => {
                                       error={!!errors.fpReference}
                                       helperText={
                                         errors?.fpReference?.message
-                                            ? t(
-                                                `validation:${errors?.fpReference?.message}`
+                                          ? t(
+                                              `validation:${errors?.fpReference?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -2135,10 +2132,10 @@ const ClientDetails = () => {
                                         error={!!errors.creditLimitCustomer}
                                         helperText={
                                           errors?.creditLimitCustomer?.message
-                                              ? t(
-                                                  `validation:${errors?.creditLimitCustomer?.message}`
+                                            ? t(
+                                                `validation:${errors?.creditLimitCustomer?.message}`
                                               )
-                                              : ""
+                                            : ""
                                         }
                                         variant="outlined"
                                         required
@@ -2166,10 +2163,10 @@ const ClientDetails = () => {
                                         error={!!errors.costLimitforCustomer}
                                         helperText={
                                           errors?.costLimitforCustomer?.message
-                                              ? t(
-                                                  `validation:${errors?.costLimitforCustomer?.message}`
+                                            ? t(
+                                                `validation:${errors?.costLimitforCustomer?.message}`
                                               )
-                                              : ""
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2196,10 +2193,10 @@ const ClientDetails = () => {
                                         error={!!errors.costLimitforOrder}
                                         helperText={
                                           errors?.costLimitforOrder?.message
-                                              ? t(
-                                                  `validation:${errors?.costLimitforOrder?.message}`
+                                            ? t(
+                                                `validation:${errors?.costLimitforOrder?.message}`
                                               )
-                                              : ""
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2226,10 +2223,10 @@ const ClientDetails = () => {
                                         error={!!errors.nvoicewithRegress}
                                         helperText={
                                           errors?.nvoicewithRegress?.message
-                                              ? t(
-                                                  `validation:${errors?.nvoicewithRegress?.message}`
+                                            ? t(
+                                                `validation:${errors?.nvoicewithRegress?.message}`
                                               )
-                                              : ""
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2256,10 +2253,10 @@ const ClientDetails = () => {
                                         error={!!errors.invoicewithoutRegress}
                                         helperText={
                                           errors?.invoicewithoutRegress?.message
-                                              ? t(
-                                                  `validation:${errors?.invoicewithoutRegress?.message}`
+                                            ? t(
+                                                `validation:${errors?.invoicewithoutRegress?.message}`
                                               )
-                                              : ""
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2303,10 +2300,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTIEngineCuserName}
                                       helperText={
                                         errors?.APTIEngineCuserName?.message
-                                            ? t(
-                                                `validation:${errors?.APTIEngineCuserName?.message}`
+                                          ? t(
+                                              `validation:${errors?.APTIEngineCuserName?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -2327,10 +2324,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTIEnginePassword}
                                       helperText={
                                         errors?.APTIEnginePassword?.message
-                                            ? t(
-                                                `validation:${errors?.APTIEnginePassword?.message}`
+                                          ? t(
+                                              `validation:${errors?.APTIEnginePassword?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2666,10 +2663,10 @@ const ClientDetails = () => {
                                             error={!!errors.vatName}
                                             helperText={
                                               errors?.vatName?.message
-                                                  ? t(
-                                                      `validation:${errors?.vatName?.message}`
+                                                ? t(
+                                                    `validation:${errors?.vatName?.message}`
                                                   )
-                                                  : ""
+                                                : ""
                                             }
                                             variant="outlined"
                                             required
@@ -2696,10 +2693,10 @@ const ClientDetails = () => {
                                             error={!!errors.vatValue}
                                             helperText={
                                               errors?.vatValue?.message
-                                                  ? t(
-                                                      `validation:${errors?.vatValue?.message}`
+                                                ? t(
+                                                    `validation:${errors?.vatValue?.message}`
                                                   )
-                                                  : ""
+                                                : ""
                                             }
                                             variant="outlined"
                                             required
@@ -2727,11 +2724,12 @@ const ClientDetails = () => {
                                                 ?.bookKeepingReference
                                             }
                                             helperText={
-                                              errors?.bookKeepingReference?.message
-                                                  ? t(
-                                                      `validation:${errors?.bookKeepingReference?.message}`
+                                              errors?.bookKeepingReference
+                                                ?.message
+                                                ? t(
+                                                    `validation:${errors?.bookKeepingReference?.message}`
                                                   )
-                                                  : ""
+                                                : ""
                                             }
                                             variant="outlined"
                                             required
@@ -2816,10 +2814,10 @@ const ClientDetails = () => {
                                       error={!!errors.fakturaB2B}
                                       helperText={
                                         errors?.fakturaB2B?.message
-                                            ? t(
-                                                `validation:${errors?.fakturaB2B?.message}`
+                                          ? t(
+                                              `validation:${errors?.fakturaB2B?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -2846,10 +2844,10 @@ const ClientDetails = () => {
                                       error={!!errors.fakturaB2C}
                                       helperText={
                                         errors?.fakturaB2C?.message
-                                            ? t(
-                                                `validation:${errors?.fakturaB2C?.message}`
+                                          ? t(
+                                              `validation:${errors?.fakturaB2C?.message}`
                                             )
-                                            : ""
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
