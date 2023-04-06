@@ -107,6 +107,17 @@ const ListOverview = () => {
             reservedAmount: 12000,
             amountPaid: 8000,
             amountInBank: 8000,
+            status: 'completed'
+        },
+        {
+            uuid: "RSV00023",
+            id: "RSV00023",
+            date: "6 April 2023",
+            customer: "Alkemy Hossain",
+            phone: 23423547,
+            reservedAmount: 12000,
+            amountPaid: 8000,
+            amountInBank: 8000,
             status: 'reserved'
         }
     ];

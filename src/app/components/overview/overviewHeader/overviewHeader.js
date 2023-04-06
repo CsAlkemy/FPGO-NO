@@ -90,7 +90,7 @@ export default function OverviewHeader(props) {
         navigate(`/create-order`);
         break;
       case reservationListOverview:
-        navigate(`/reservations/create`);
+        navigate(`/create-reservations`);
         break;
     }
     setAnchorEl(event.currentTarget);

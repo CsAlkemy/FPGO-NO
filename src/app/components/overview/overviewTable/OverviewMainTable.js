@@ -775,7 +775,7 @@ export default function OverviewMainTable(props) {
         navigate(`/create-order/details/${info.uuid}`);
         break;
       case reservationListOverview:
-        navigate(`/reservations/details/${info.uuid}`);
+        navigate(`/reservations-details/${info.uuid}`);
         break;
     }
   };
@@ -1006,7 +1006,8 @@ export default function OverviewMainTable(props) {
                                   props.tableName !== ordersListOverview &&
                                   props.tableName !==
                                     customerOrdersListOverview &&
-                                  props.tableName !== refundRequestsOverview
+                                  props.tableName !== refundRequestsOverview &&
+                                  props.tableName !== reservationListOverview
                                 )
                                   handleTableRowClick(row);
                               }}
