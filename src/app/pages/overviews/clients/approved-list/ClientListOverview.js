@@ -45,13 +45,13 @@ export default function ClientListOverview() {
       label: t("label:organizationId"),
       sort: true,
     },
-    {
-      id: "orgType",
-      align: "left",
-      disablePadding: false,
-      label: t("label:organizationType"),
-      sort: true,
-    },
+    // {
+    //   id: "orgType",
+    //   align: "left",
+    //   disablePadding: false,
+    //   label: t("label:organizationType"),
+    //   sort: true,
+    // },
     {
       id: "primaryContact",
       align: "left",
@@ -71,6 +71,13 @@ export default function ClientListOverview() {
       align: "left",
       disablePadding: false,
       label: t("label:email"),
+      sort: true,
+    },
+    {
+      id: "status",
+      align: "center",
+      disablePadding: false,
+      label: t("label:status"),
       sort: true,
     },
   ];

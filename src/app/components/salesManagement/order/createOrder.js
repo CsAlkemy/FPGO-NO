@@ -74,6 +74,7 @@ const createOrder = () => {
   const [expandedPanel2, setExpandedPanel2] = React.useState(false);
   const [productsList, setProductsList] = useState([]);
   const [customersList, setCustomersList] = useState([]);
+  const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [selectedFromList, setSelectedFromList] = useState(null);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
@@ -211,9 +212,18 @@ const createOrder = () => {
         customer.phone.startsWith(e.target.value)
       ) || [];
     const searchByName =
-      customersList.filter((customer) =>
-        customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+      customersList.filter(
+        (customer) =>
+          customer?.name &&
+          customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       ) || [];
+    setSearchCustomersList(
+      searchByName.length
+        ? searchByName
+        : searchByPhone.length
+        ? searchByPhone
+        : []
+    );
     setCustomerSearchBy(
       searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
     );
@@ -400,15 +410,58 @@ const createOrder = () => {
   const watchDueDatePaymentLink = watch(`dueDatePaymentLink`);
 
   useEffect(() => {
-    setValue(
-      "dueDatePaymentLink",
-      new Date().setDate(
-        watchOrderDate && watchOrderDate.getDate() >= new Date().getDate()
-          ? watchOrderDate.getDate() + 1
-          : new Date().getDate() + 1
-      )
-    );
+    if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() === new Date().getMonth() &&
+      watchOrderDate.getDate() >= new Date().getDate()
+    ) {
+      setValue(
+        "dueDatePaymentLink",
+        new Date().setDate(watchOrderDate.getDate() + 2)
+      );
+    } else if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() > new Date().getMonth()
+    ) {
+      let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
+      dueDate = dueDate.setDate(watchOrderDate.getDate() + 2);
+      setValue("dueDatePaymentLink", new Date(dueDate));
+    } else if (
+      watchOrderDate &&
+      (watchOrderDate.getMonth() < new Date().getMonth() ||
+        (watchOrderDate.getMonth() === new Date().getMonth() &&
+          watchOrderDate.getDate() < new Date().getDate()))
+    ) {
+      setValue(
+        "dueDatePaymentLink",
+        new Date().setDate(new Date().getDate() + 2)
+      );
+    }
   }, [watch(`orderDate`)]);
+
+  const setDueDateMinDate = () => {
+    if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() === new Date().getMonth() &&
+      watchOrderDate.getDate() >= new Date().getDate()
+    ) {
+      return new Date().setDate(watchOrderDate.getDate() + 1);
+    } else if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() > new Date().getMonth()
+    ) {
+      let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
+      dueDate = dueDate.setDate(watchOrderDate.getDate() + 1);
+      return new Date(dueDate);
+    } else if (
+      watchOrderDate &&
+      (watchOrderDate.getMonth() < new Date().getMonth() ||
+        (watchOrderDate.getMonth() === new Date().getMonth() &&
+          watchOrderDate.getDate() < new Date().getDate()))
+    ) {
+      return new Date().setDate(new Date().getDate() + 1);
+    }
+  };
 
   useEffect(() => {
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
@@ -455,14 +508,17 @@ const createOrder = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
-                  searchString: row?.name + " ( " + row?.phone + " )",
+                  searchString:
+                    row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
               });
           }
           setCustomersList(data);
+          setSearchCustomersList(data);
         })
         .catch((e) => {
           setCustomersList([]);
+          setSearchCustomersList([]);
         });
       if (userInfo?.user_data?.organization?.uuid) {
         ClientService.vateRatesList(
@@ -720,7 +776,7 @@ const createOrder = () => {
                         onClick={() => addNewOrder()}
                         disabled={addOrderIndex.length >= 20 ? true : false}
                       >
-                        Add Item
+                        {t(`label:addItem`)}
                       </Button>
                     </div>
                     {addOrderIndex.map((index) => (
@@ -962,7 +1018,7 @@ const createOrder = () => {
                                   fullWidth
                                 >
                                   <InputLabel id="demo-simple-select-outlined-label-type">
-                                    Tax
+                                    {t(`label:tax`)}
                                   </InputLabel>
                                   <Select
                                     {...field}
@@ -1049,7 +1105,7 @@ const createOrder = () => {
                           }
                           onClick={() => onDelete(index)}
                         >
-                          Remove Item
+                          {t(`label:removeItem`)}
                         </Button>
                       </div>
                     ))}
@@ -1418,7 +1474,7 @@ const createOrder = () => {
                   onClick={() => addNewOrder()}
                   disabled={addOrderIndex.length >= 20 ? true : false}
                 >
-                  Add Item
+                  {t(`label:addItem`)}
                 </Button>
                 <hr className=" mt-20 border-half-bottom" />
               </div>
@@ -1524,7 +1580,7 @@ const createOrder = () => {
                               disableOpenPicker
                               value={
                                 !value
-                                  ? new Date().setDate(new Date().getDate() + 1)
+                                  ? new Date().setDate(new Date().getDate() + 2)
                                   : value
                                 // : value
                               }
@@ -1533,9 +1589,7 @@ const createOrder = () => {
                               disabled={!watchOrderDate}
                               minDate={
                                 watchOrderDate
-                                  ? new Date().setDate(
-                                      watchOrderDate.getDate() + 1
-                                    )
+                                  ? setDueDateMinDate()
                                   : new Date().setDate(
                                       new Date().getDate() - 30
                                     )
@@ -2061,12 +2115,13 @@ const createOrder = () => {
                             }) => (
                               <Autocomplete
                                 freeSolo
-                                options={customersList}
+                                options={searchCustomersList}
                                 // forcePopupIcon={<Search />}
                                 getOptionLabel={(option) => option.searchString}
                                 className=""
                                 fullWidth
                                 onChange={(_, data) => {
+                                  setCustomerSearchBoxLength(0);
                                   if (data) {
                                     clearErrors(["pNumber", "orgID"]);
                                     setRecheckSchema(false);
@@ -2108,12 +2163,17 @@ const createOrder = () => {
                                   }
                                   return onChange(data);
                                 }}
+                                onInputChange={(event, value) => {
+                                  if (value.length === 0)
+                                    setCustomerSearchBy(undefined);
+                                }}
                                 renderOption={(props, option, { selected }) => (
                                   <MenuItem {...props}>
                                     {/*{`${option.name}`}*/}
                                     {customerSearchBy ? (
                                       <div>
                                         {customerSearchBy === "name" &&
+                                        option?.name &&
                                         customerSearchBoxLength > 0 ? (
                                           <div>
                                             <span

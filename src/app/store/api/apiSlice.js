@@ -377,6 +377,26 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["RefundRequestsList"],
     }),
+    createQuickOrder: builder.mutation({
+      query: (payload) => ({
+        url: "/orders/quick",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["OrdersList"],
+    }),
+    updateQuickOrderCustomer: builder.mutation({
+      query: (payload) => ({
+        url: `/orders/update/address/${payload.uuid}`,
+        method: "PUT",
+        body: payload,
+      }),
+      // invalidatesTags: ["OrdersList"],
+    }),
+    orderExportToAptic: builder.query({
+      query: (uuid) => `/orders/export/aptic/${uuid}`,
+      providesTags: ["OrdersList"],
+    }),
   }),
 });
 
@@ -421,5 +441,7 @@ export const {
   useGetRefundRequestsListQuery,
   useRefundRequestDecisionMutation,
   useRequestRefundApprovalMutation,
-
+  useCreateQuickOrderMutation,
+  useUpdateQuickOrderCustomerMutation,
+  useOrderExportToApticQuery,
 } = apiSlice;

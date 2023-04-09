@@ -42,10 +42,10 @@
     @apply rounded-32 border-1 border-MonochromeGray-50  text-MonochromeGray-300;
 }
 .create-order-capsule-button {
-    @apply rounded-4 min-w-120 border-1 border-MonochromeGray-50;
+    @apply rounded-4 min-w-120 border-1 border-MonochromeGray-50 flex my-auto;
 }
 .create-order-capsule-button-active {
-   @apply rounded-4 min-w-120 border-2 border-main bg-primary-50;
+   @apply rounded-4 min-w-120 border-2 border-main bg-primary-50 flex my-auto;
 }
 .create-order-capsule-button-active-details {
     @apply rounded-4 min-w-120 border-2 border-MonochromeGray-300 bg-MonochromeGray-50;
