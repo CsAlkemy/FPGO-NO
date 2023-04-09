@@ -33,6 +33,7 @@ import DiscardConfirmModal from "../../common/confirmDiscard";
 import {
   defaultValueCreateClient,
   validateSchemaCreateClient,
+  validateSchemaCreateClientAdministration,
 } from "../utils/helper";
 import { useCreateClientMutation } from "app/store/api/apiSlice";
 
@@ -43,9 +44,10 @@ const CreateClient = () => {
   const [hide, setHide] = useState(true);
   const [sameAddress, setSameAddress] = useState(false);
   const [uploadDocuments, setUploadDocuments] = useState([]);
-  const [addVatIndex, setAddVatIndex] = React.useState([0]);
+  const [addVatIndex, setAddVatIndex] = React.useState([0, 1, 2, 3]);
   const [orgTypeList, setOrgTypeList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [recheckSchema, setRecheckSchema] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [plan, setPlan] = useState(1);
   const [loading, setLoading] = React.useState(false);
@@ -55,16 +57,47 @@ const CreateClient = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
+  const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
 
+  let schema =
+    customApticInfoData === "purchase"
+      ? validateSchemaCreateClient
+      : validateSchemaCreateClientAdministration;
+  useEffect(() => {
+    if (recheckSchema) {
+      if (customApticInfoData === "purchase") {
+        clearErrors(["creditLimitCustomer"]);
+        setValue("creditLimitCustomer", "", { shouldValidate: true });
+        setError(
+          "creditLimitCustomer",
+          { type: "focus" },
+          { shouldFocus: true }
+        );
+      } else {
+        setValue("creditLimitCustomer", "", { shouldValidate: true });
+        clearErrors(["creditLimitCustomer"]);
+      }
+    }
+  }, [customApticInfoData]);
+
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
+  const {
+    control,
+    formState,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    clearErrors,
+    setError,
+  } = useForm({
     mode: "onChange",
     defaultValueCreateClient,
-    resolver: yupResolver(validateSchemaCreateClient),
+    resolver: yupResolver(schema),
   });
 
   const watchContactEndDate = watch(`contactEndDate`)
@@ -100,6 +133,21 @@ const CreateClient = () => {
       }
     }
   };
+
+  useEffect(() => {
+    setValue(`vat[${0}].vatName`, "VAT 1");
+    setValue(`vat[${0}].vatValue`, "0");
+    setValue(`vat[${0}].bookKeepingReference`, "");
+    setValue(`vat[${1}].vatName`, "VAT 2");
+    setValue(`vat[${1}].vatValue`, "8");
+    setValue(`vat[${1}].bookKeepingReference`, "");
+    setValue(`vat[${2}].vatName`, "VAT 3");
+    setValue(`vat[${2}].vatValue`, "15");
+    setValue(`vat[${2}].bookKeepingReference`, "");
+    setValue(`vat[${3}].vatName`, "VAT 4");
+    setValue(`vat[${3}].vatValue`, "25");
+    setValue(`vat[${3}].bookKeepingReference`, "");
+  }, []);
 
   const addNewVat = () => {
     setAddVatIndex([...addVatIndex, addVatIndex.length]);
@@ -217,15 +265,36 @@ const CreateClient = () => {
         // creditLimit: values.creditLimit,
         // b2bInvoiceFee: values.B2BInvoiceFee,
         // b2cInvoiceFee: values.B2CInvoiceFee,
+        isPurchasable: customApticInfoData === "purchase",
         username: values.APTICuserName,
         password: values.APTICpassword,
         name: values.name,
         fpReference: values.fpReference,
-        creditLimit: parseFloat(values.creditLimitCustomer),
-        costLimitForCustomer: parseFloat(values.costLimitforCustomer),
-        costLimitForOrder: parseFloat(values.costLimitforOrder),
-        invoiceWithRegress: parseFloat(values.invoicewithRegress),
-        invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
+        // creditLimit: parseFloat(values.creditLimitCustomer),
+        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
+        // costLimitForOrder: parseFloat(values.costLimitforOrder),
+        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
+        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
+        creditLimit:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.creditLimitCustomer)
+            : null,
+        costLimitForCustomer:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.costLimitforCustomer)
+            : null,
+        costLimitForOrder:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.costLimitforOrder)
+            : null,
+        invoiceWithRegress:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.invoicewithRegress)
+            : null,
+        invoiceWithoutRegress:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.invoicewithoutRegress)
+            : null,
         backOfficeUsername: values.APTIEngineCuserName,
         backOfficePassword: values.APTIEnginePassword,
         b2bInvoiceFee: parseFloat(values.fakturaB2B),
@@ -848,7 +917,6 @@ const CreateClient = () => {
                       )}
                     />
                   </div>
-
                 </div>
               </div>
               <div className="billing-information">
@@ -1404,6 +1472,38 @@ const CreateClient = () => {
                   )}
                 </div>
                 <div className="p-10">
+                  <div className="search-customer-order-create-type my-32 px-16">
+                    <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
+                      <button
+                        type="button"
+                        className={`${
+                          customApticInfoData === "administration"
+                            ? "create-user-role-button-active"
+                            : "create-user-role-button"
+                        }`}
+                        onClick={() => {
+                          setCustomApticInfoData("administration");
+                          setRecheckSchema(true);
+                        }}
+                      >
+                        {t("label:administration")}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${
+                          customApticInfoData === "purchase"
+                            ? "create-user-role-button-active"
+                            : "create-user-role-button"
+                        }`}
+                        onClick={() => {
+                          setCustomApticInfoData("purchase");
+                          setRecheckSchema(true);
+                        }}
+                      >
+                        {t("label:purchase")}
+                      </button>
+                    </div>
+                  </div>
                   <div className="px-16">
                     <div className="form-pair-input w-full md:w-3/4">
                       <Controller
@@ -1513,155 +1613,157 @@ const CreateClient = () => {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 my-40 w-full md:w-3/4">
-                      <Controller
-                        name="creditLimitCustomer"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:creditLimitForClient")}
-                            type="number"
-                            autoComplete="off"
-                            error={!!errors.creditLimitCustomer}
-                            helperText={
-                              errors?.creditLimitCustomer?.message
-                                ? t(
-                                    `validation:${errors?.creditLimitCustomer?.message}`
-                                  )
-                                : ""
-                            }
-                            variant="outlined"
-                            required
-                            fullWidth
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name="costLimitforCustomer"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:costLimitForCustomer")}
-                            type="number"
-                            autoComplete="off"
-                            error={!!errors.costLimitforCustomer}
-                            helperText={
-                              errors?.costLimitforCustomer?.message
-                                ? t(
-                                    `validation:${errors?.costLimitforCustomer?.message}`
-                                  )
-                                : ""
-                            }
-                            variant="outlined"
-                            fullWidth
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name="costLimitforOrder"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:costLimitForOrder")}
-                            type="number"
-                            autoComplete="off"
-                            error={!!errors.costLimitforOrder}
-                            helperText={
-                              errors?.costLimitforOrder?.message
-                                ? t(
-                                    `validation:${errors?.costLimitforOrder?.message}`
-                                  )
-                                : ""
-                            }
-                            variant="outlined"
-                            fullWidth
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name="invoicewithRegress"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:invoiceWithRegress")}
-                            type="number"
-                            autoComplete="off"
-                            error={!!errors.invoicewithRegress}
-                            helperText={
-                              errors?.invoicewithRegress?.message
-                                ? t(
-                                    `validation:${errors?.invoicewithRegress?.message}`
-                                  )
-                                : ""
-                            }
-                            variant="outlined"
-                            fullWidth
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name="invoicewithoutRegress"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:invoiceWithoutRegress")}
-                            type="number"
-                            autoComplete="off"
-                            error={!!errors.invoicewithoutRegress}
-                            helperText={
-                              errors?.invoicewithoutRegress?.message
-                                ? t(
-                                    `validation:${errors?.invoicewithoutRegress?.message}`
-                                  )
-                                : ""
-                            }
-                            variant="outlined"
-                            s
-                            fullWidth
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                    </div>
+                    {customApticInfoData === "purchase" && (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 my-40 w-full md:w-3/4">
+                        <Controller
+                          name="creditLimitCustomer"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:creditLimitForClient")}
+                              type="number"
+                              autoComplete="off"
+                              error={!!errors.creditLimitCustomer}
+                              helperText={
+                                errors?.creditLimitCustomer?.message
+                                  ? t(
+                                      `validation:${errors?.creditLimitCustomer?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              required
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:nok")}
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="costLimitforCustomer"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:costLimitForCustomer")}
+                              type="number"
+                              autoComplete="off"
+                              error={!!errors.costLimitforCustomer}
+                              helperText={
+                                errors?.costLimitforCustomer?.message
+                                  ? t(
+                                      `validation:${errors?.costLimitforCustomer?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:nok")}
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="costLimitforOrder"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:costLimitForOrder")}
+                              type="number"
+                              autoComplete="off"
+                              error={!!errors.costLimitforOrder}
+                              helperText={
+                                errors?.costLimitforOrder?.message
+                                  ? t(
+                                      `validation:${errors?.costLimitforOrder?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:nok")}
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="invoicewithRegress"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:invoiceWithRegress")}
+                              type="number"
+                              autoComplete="off"
+                              error={!!errors.invoicewithRegress}
+                              helperText={
+                                errors?.invoicewithRegress?.message
+                                  ? t(
+                                      `validation:${errors?.invoicewithRegress?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:nok")}
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="invoicewithoutRegress"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:invoiceWithoutRegress")}
+                              type="number"
+                              autoComplete="off"
+                              error={!!errors.invoicewithoutRegress}
+                              helperText={
+                                errors?.invoicewithoutRegress?.message
+                                  ? t(
+                                      `validation:${errors?.invoicewithoutRegress?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              s
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:nok")}
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          )}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

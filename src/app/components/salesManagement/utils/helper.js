@@ -5,7 +5,9 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
     .string()
     .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   // dueDatePaymentLink: yup.string()
   //   .when( "orderDate",
   //     (orderDate, field)=> orderDate ? field.required() : field
@@ -81,7 +83,9 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
     .string()
     .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   email: yup.string().email("youMustEnterAValidEmail").required("youMustEnterAEmail"),
   // orgorPID: yup
   pNumber: yup
@@ -163,7 +167,9 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
     .transform((o, c) => (o === "" ? null : c))
     .min(9, "mustBeExactlyNineNumbers")
     .max(9, "mustBeExactlyNineNumbers"),
-  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  primaryPhoneNumber: yup.string().required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   email: yup
     .string()
     .required("youMustEnterAEmail")
@@ -243,7 +249,9 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
     .email("mustBeValidEmail"),
   primaryPhoneNumber: yup
     .string()
-    .required("youMustEnterPhoneNumberAsSelectedOrderBySMS"),
+    .required("youMustEnterPhoneNumberAsSelectedOrderBySMS")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
@@ -317,7 +325,9 @@ export const CreateOrderDefaultValue = {
 };
 
 export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
-  phone: yup.string().required("youMustEnterYourPhoneNumber"),
+  phone: yup.string().required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   email: yup
     .string()
     .required("youMustEnterAEmail")
@@ -340,7 +350,9 @@ export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
   billingCountry: yup.string().required("youMustEnterYourCountry"),
 });
 export const validateSchemaPaymentCheckout = yup.object().shape({
-  phone: yup.string().required("youMustEnterYourPhoneNumber"),
+  phone: yup.string().required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   email: yup
     .string()
     .required("youMustEnterAEmail")
@@ -395,7 +407,9 @@ export const OrderModalDefaultValue = {
 };
 
 export const validateSchemaOrderResendModal = yup.object().shape({
-  phone: yup.string().required("youMustEnterYourPhoneNumber"),
+  phone: yup.string().required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
 });
 export const validateSchemaOrderCancelModal = yup.object().shape({
   cancellationNote: yup

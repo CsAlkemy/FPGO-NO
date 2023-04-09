@@ -96,6 +96,7 @@ class OrdersService {
         uuid: row.orderUuid,
         date: row.dateCreated,
         id: row.orderUuid,
+        clientName:row.clientName,
         name: row.name,
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
