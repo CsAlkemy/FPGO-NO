@@ -635,15 +635,36 @@ const ClientDetails = () => {
         // creditLimit: values.creditLimit,
         // b2bInvoiceFee: values.B2BInvoiceFee,
         // b2cInvoiceFee: values.B2CInvoiceFee,
+        isPurchasable: customApticInfoData === "purchase",
         username: values.APTICuserName,
         password: values.APTICpassword,
         name: values.name,
         fpReference: values.fpReference,
-        creditLimit: parseFloat(values.creditLimitCustomer),
-        costLimitForCustomer: parseFloat(values.costLimitforCustomer),
-        costLimitForOrder: parseFloat(values.costLimitforOrder),
-        invoiceWithRegress: parseFloat(values.invoicewithRegress),
-        invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
+        creditLimit:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.creditLimitCustomer)
+            : null,
+        costLimitForCustomer:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.costLimitforCustomer)
+            : null,
+        costLimitForOrder:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.costLimitforOrder)
+            : null,
+        invoiceWithRegress:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.invoicewithRegress)
+            : null,
+        invoiceWithoutRegress:
+          customApticInfoData === "purchase"
+            ? parseFloat(values.invoicewithoutRegress)
+            : null,
+        // creditLimit: parseFloat(values.creditLimitCustomer),
+        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
+        // costLimitForOrder: parseFloat(values.costLimitforOrder),
+        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
+        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
         backOfficeUsername: values.APTIEngineCuserName,
         backOfficePassword: values.APTIEnginePassword,
         b2bInvoiceFee: parseFloat(values.fakturaB2B),
