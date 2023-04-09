@@ -566,7 +566,9 @@ const paymentInformation = () => {
                                         type="number"
                                         autoComplete="off"
                                         error={!!errors.orgIdOrPNumber}
-                                        required
+                                        required={
+                                          customData.customerType !== "private"
+                                        }
                                         helperText={
                                           errors?.orgIdOrPNumber?.message
                                             ? t(
