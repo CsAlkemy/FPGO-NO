@@ -1,4 +1,4 @@
-import { organizationWiseUsersListOverviewHeaderRows } from './HeaderRows';
+import { organizationWiseUsersListOverviewHeaderRows } from "./HeaderRows";
 
 export const fpAdminRowDataFields = [
   "clientName",
@@ -38,6 +38,7 @@ export const approvalListForFPAdminRowDataFields = [
 export const clientsListRowDataFields = [
   "name",
   "orgId",
+  // "orgType",
   "primaryContact",
   "phone",
   "email",
@@ -57,8 +58,8 @@ export const productsListRowDataFields = [
 export const categoriesListRowDataFields = [
   "name",
   "description",
-  "noOfProducts"
-]
+  "noOfProducts",
+];
 
 export const customersListRowDataFields = [
   "name",
@@ -66,7 +67,7 @@ export const customersListRowDataFields = [
   "phone",
   "email",
   "lastInvoicedOn",
-  "lastOrderAmount"
+  "lastOrderAmount",
 ];
 
 export const customerOrdersListRowDataFields = [
@@ -86,7 +87,7 @@ export const clientOrdersListRowDataFields = [
   "paymentLinkDueDate",
   "phoneNo",
   "amount",
-  "status"
+  "status",
 ];
 
 export const creditChecksListRowDataFields = [
@@ -95,7 +96,7 @@ export const creditChecksListRowDataFields = [
   "orgIdOrPNumber",
   "phone",
   "defaultProbability",
-  "status"
+  "status",
 ];
 
 export const fpAdminUsersRowDataFields = [

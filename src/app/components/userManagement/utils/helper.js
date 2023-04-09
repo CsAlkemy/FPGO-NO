@@ -6,9 +6,11 @@ export const validateSchema = yup.object().shape({
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
-  phoneNumber: yup.string().required("youMustEnterYourPhoneNumber")
-      .min(8, "enterValidPhoneNumber")
-      .max(15, "enterValidPhoneNumber"),
+  phoneNumber: yup
+    .string()
+    .required("youMustEnterYourPhoneNumber")
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   // designation: yup.string().required('You must enter your designation'),
   organization: yup.string().required("You must enter your organization"),
   //subClient: yup.string().required('You must select your sub client'),
@@ -37,9 +39,11 @@ export const validateSchemaCreateBranchAdmin = yup.object().shape({
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
-  phoneNumber: yup.string().required("youMustEnterYourPhoneNumber")
-      .min(8, "enterValidPhoneNumber")
-      .max(15, "enterValidPhoneNumber"),
+  phoneNumber: yup
+    .string()
+    .required("youMustEnterYourPhoneNumber")
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   branch: yup.string().required("You must select your branch"),
   // designation: yup.string().required("You must enter your designation"),
   password: yup
@@ -146,10 +150,10 @@ export const schemaSubClientCreateBranch = yup.object().shape({
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
   phoneNumber: yup
-      .string()
-      .required("youMustEnterYourPhoneNumber")
-      .min(8, "enterValidPhoneNumber")
-      .max(15, "enterValidPhoneNumber"),
+    .string()
+    .required("youMustEnterYourPhoneNumber")
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   branch: yup.string().required("You must select your branch"),
   password: yup
     .string()
@@ -169,10 +173,10 @@ export const schemaSubClientCreateGeneralUser = yup.object().shape({
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
   phoneNumber: yup
-      .string()
-      .required("youMustEnterYourPhoneNumber")
-      .min(8, "enterValidPhoneNumber")
-      .max(15, "enterValidPhoneNumber"),
+    .string()
+    .required("youMustEnterYourPhoneNumber")
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   branch: yup.string(), // .required('You must select your branch'),
   password: yup
     .string()
@@ -196,10 +200,10 @@ export const schemaUserProfile = yup.object().shape({
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
   phoneNumber: yup
-      .string()
-      .required("youMustEnterYourPhoneNumber")
-      .min(8, "enterValidPhoneNumber")
-      .max(15, "enterValidPhoneNumber"),
+    .string()
+    .required("youMustEnterYourPhoneNumber")
+    .min(8, "enterValidPhoneNumber")
+    .max(15, "enterValidPhoneNumber"),
   organization: yup.string().required("youMustEnterYourOrganizationName"),
   role: yup.string().required("youMustEnterYourRole"),
   // preferredLanguage : yup.string().required('youMustSelectYourPreferredLanguage'),

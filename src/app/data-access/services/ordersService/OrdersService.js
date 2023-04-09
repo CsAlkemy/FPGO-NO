@@ -97,7 +97,7 @@ class OrdersService {
         uuid: row.orderUuid,
         date: row.dateCreated,
         id: row.orderUuid,
-        clientName:row.clientName,
+        clientName: row.clientName,
         name: row.name,
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
@@ -1038,14 +1038,8 @@ class OrdersService {
       msisdn,
       email: params?.email ? params?.email : null,
       name: params?.customerName ? params?.customerName : null,
-      personalNumber:
-        params?.pNumber
-          ? `${params?.pNumber}`
-          : null,
-      organizationId:
-        params?.orgID
-          ? `${params?.orgID}`
-          : null,
+      personalNumber: params?.pNumber ? `${params?.pNumber}` : null,
+      organizationId: params?.orgID ? `${params?.orgID}` : null,
       // organizationId : "fu",
       address: {
         street: params?.streetAddress ? params?.streetAddress : null,

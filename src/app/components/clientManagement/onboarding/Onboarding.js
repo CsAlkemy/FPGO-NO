@@ -62,8 +62,7 @@ const Onboarding = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
-  const [customApticInfoData, setCustomApticInfoData] =
-    useState("purchase");
+  const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
