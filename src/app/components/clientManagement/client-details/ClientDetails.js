@@ -167,6 +167,10 @@ const ClientDetails = () => {
             }
           }
 
+          if (info?.apticInformation?.isPurchasable)
+            setCustomApticInfoData("purchase");
+          else setCustomApticInfoData("administration");
+
           setInitialIsPurchasable(info?.apticInformation?.isPurchasable ? "purchase" : "administration")
 
           if (
