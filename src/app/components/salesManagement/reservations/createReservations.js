@@ -10,6 +10,13 @@ import EventIcon from "@mui/icons-material/Event";
 import RedoIcon from "@mui/icons-material/Redo";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 import {
   DesktopDatePicker,
   DesktopDateTimePicker,
@@ -58,6 +65,7 @@ import ClientService from "../../../data-access/services/clientsService/ClientSe
 import { useCreateOrderMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from "../../../data-access/services/authService";
+import CharCount from "../../common/charCount";
 // import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { es, nn, nb } from "date-fns/locale";
@@ -84,12 +92,15 @@ const ReservationCreate = () => {
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createOrder, response] = useCreateOrderMutation();
+  const [selectedCustomer, setselectedCustomer] = useState('');
+  const [openCreateCustomer, setOpenCreateCustomer] = useState(false);
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   let subTotal = 0;
   let totalTax = 0;
   let totalDiscount = 0;
+  let totalReservation = 0;
   let grandTotal = 0;
   let amount = 0;
   const date = new Date();
@@ -117,9 +128,7 @@ const ReservationCreate = () => {
 
   const activeSchema = () => {
     if (
-      (customData.orderBy === "sms" && customData.customerType === "private") ||
-      (customData.orderBy === "invoice" &&
-        customData.customerType === "private")
+      customData.orderBy === "sms" && customData.customerType === "private"
     )
       return validateSchemaCreateOrderPrivate;
     else if (
@@ -128,10 +137,8 @@ const ReservationCreate = () => {
     )
       return validateSchemaCreateOrderPrivateOrderByEmail;
     else if (
-      (customData.orderBy === "email" &&
-        customData.customerType === "corporate") ||
-      (customData.orderBy === "invoice" &&
-        customData.customerType === "corporate")
+      customData.orderBy === "email" &&
+        customData.customerType === "corporate"
     )
       return validateSchemaCreateOrderCorporate;
     else if (
@@ -234,9 +241,11 @@ const ReservationCreate = () => {
     setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
   };
   const productWiseTotal = (index) => {
-    const watchQuantity = watch(`order[${index}].quantity`);
+    //const watchQuantity = watch(`order[${index}].quantity`);
+    const watchQuantity = 1;
     const watchRate = watch(`order[${index}].rate`);
     const watchDiscount = watch(`order[${index}].discount`) || 0;
+    const watchReservationAmount = watch(`order[${index}].reservationAmount`) || 0;
     const watchTax = watch(`order[${index}].tax`);
     const watchName = watch(`order[${index}].productName`);
     const watchId = watch(`order[${index}].productID`);
@@ -286,7 +295,8 @@ const ReservationCreate = () => {
     setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].quantity`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
+    //setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].reservationAmount`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
     setTimeout(() => {
       setItemLoader(false);
@@ -299,7 +309,8 @@ const ReservationCreate = () => {
     setValue(`order[${index}].productID`, "");
     setValue(`order[${index}].quantity`, "");
     setValue(`order[${index}].rate`, "");
-    setValue(`order[${index}].discount`, "");
+    //setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].reservationAmount`, "");
     setValue(`order[${index}].tax`, "");
     enableCurrentProductRow(index);
     addOrderIndex.length > 1
@@ -315,14 +326,16 @@ const ReservationCreate = () => {
     resetField(`order[${index}].productID`);
     resetField(`order[${index}].quantity`);
     resetField(`order[${index}].rate`);
-    resetField(`order[${index}].discount`);
+    //resetField(`order[${index}].discount`);
+    resetField(`order[${index}].reservationAmount`);
     resetField(`order[${index}].tax`);
 
     setValue(`order[${index}].productName`, "");
     setValue(`order[${index}].productID`, "");
     setValue(`order[${index}].quantity`, "");
     setValue(`order[${index}].rate`, "");
-    setValue(`order[${index}].discount`, "");
+    //setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].reservationAmount`, "");
     setValue(`order[${index}].tax`, "");
     enableCurrentProductRow(index);
   };
@@ -461,6 +474,19 @@ const ReservationCreate = () => {
     );
   };
 
+  const openCustomarModal = (customerType) => {
+    customerType === "Corporate"
+    ? setCustomData({
+        ...customData,
+        customerType: "corporate",
+    })
+    : setCustomData({
+        ...customData,
+        customerType: "private",
+    });
+    setOpenCreateCustomer(true);
+  };
+
     return (
         <>
           <form
@@ -502,130 +528,483 @@ const ReservationCreate = () => {
                   </div>
                 </div>
                 <div className="main-content-wrap px-28">
-                  <div className="search-customer-order-create my-32">
-                      <Controller
-                      control={control}
-                      name="searchCustomer"
-                      render={({
-                          field: { ref, onChange, ...field },
-                      }) => (
-                          <Autocomplete
-                          freeSolo
-                          options={customersList}
-                          //forcePopupIcon={<Search />}
-                          getOptionLabel={(option) => option.searchString}
-                          className=""
-                          fullWidth
-                          onChange={(_, data) => {
-                              if (data) {
-                              clearErrors(["pNumber", "orgID"]);
-                              setRecheckSchema(false);
-                              setCustomerSearchBy(undefined);
-                              setCustomerSearchBoxLength(0);
-                              setValue("primaryPhoneNumber", data.phone);
-                              setValue("email", data.email);
-                              setValue("customerName", data.name);
-                              data.type === "Corporate"
-                                  ? setValue("orgID", data.orgOrPNumber)
-                                  : setValue("pNumber", data.orgOrPNumber);
-                              setValue("billingAddress", data.street);
-                              setValue("billingZip", data.zip);
-                              setValue("billingCity", data.city);
-                              setValue("billingCountry", data.country);
-                              data.type === "Corporate"
-                                  ? setCustomData({
-                                      ...customData,
-                                      customerType: "corporate",
-                                  })
-                                  : setCustomData({
-                                      ...customData,
-                                      customerType: "private",
-                                  });
-                              // data.type === "Corporate"
-                              //   ? setSelectedFromList("Corporate")
-                              //   : setSelectedFromList("Private");
-                              } else {
-                              setValue("primaryPhoneNumber", "");
-                              setValue("email", "");
-                              setValue("customerName", "");
-                              setValue("orgID", "");
-                              setValue("pNumber", "");
-                              setValue("billingAddress", "");
-                              setValue("billingZip", "");
-                              setValue("billingCity", "");
-                              setValue("billingCountry", "");
-                              // setSelectedFromList(null);
-                              }
-                              return onChange(data);
-                          }}
-                          renderOption={(props, option, { selected }) => (
-                              <MenuItem {...props}>
-                              {/*{`${option.name}`}*/}
-                              {customerSearchBy ? (
-                                  <div>
-                                  {customerSearchBy === "name" && option?.name &&
-                                  customerSearchBoxLength > 0 ? (
-                                      <div>
-                                      <span
-                                          style={{ color: "#0088AE" }}
-                                      >{`${option.name.slice(
-                                          0,
-                                          customerSearchBoxLength
-                                      )}`}</span>
-                                      <span>{`${option.name.slice(
-                                          customerSearchBoxLength
-                                      )}`}</span>
-                                      </div>
-                                  ) : (
-                                      <div>{`${option.name}`}</div>
-                                  )}
-                                  {customerSearchBy === "phone" &&
-                                  customerSearchBoxLength > 0 ? (
-                                      <div>
-                                      <span
-                                          style={{ color: "#0088AE" }}
-                                      >{`${option.phone.slice(
-                                          0,
-                                          customerSearchBoxLength
-                                      )}`}</span>
-                                      <span>{`${option.phone.slice(
-                                          customerSearchBoxLength
-                                      )}`}</span>
-                                      </div>
-                                  ) : (
-                                      <div>{`${option.phone}`}</div>
-                                  )}
-                                  </div>
-                              ) : (
-                                  <div>
-                                  <div>{`${option.name}`}</div>
-                                  <div>{`${option.phone}`}</div>
-                                  </div>
-                              )}
-                              </MenuItem>
-                          )}
-                          renderInput={(params) => (
-                              <TextField
-                              id="searchBox"
-                              {...params}
-                              {...field}
-                              //className='custom-input-height-div'
-                              inputRef={ref}
-                              onChange={searchCustomerOnFocus}
-                              // placeholder="Search by Name or Phone Number"
-                              placeholder="Search customers by name or phone number"
-                              // InputProps={{
-                              //     startAdornment: (
-                              //         <InputAdornment position="end">
-                              //           <Search />
-                              //         </InputAdornment>
-                              //     ),
-                              // }}
-                              />
-                          )}
-                          />
+                  <div className="customer-info-section">
+                    <div className="search-customer-order-create my-32">
+                        <Controller
+                        control={control}
+                        name="searchCustomer"
+                        render={({
+                            field: { ref, onChange, ...field },
+                        }) => (
+                            <Autocomplete
+                            freeSolo
+                            options={customersList}
+                            //forcePopupIcon={<Search />}
+                            getOptionLabel={(option) => option.searchString}
+                            className=""
+                            fullWidth
+                            onChange={(_, data) => {
+                                if (data) {
+                                clearErrors(["pNumber", "orgID"]);
+                                setRecheckSchema(false);
+                                setCustomerSearchBy(undefined);
+                                setCustomerSearchBoxLength(0);
+                                setValue("primaryPhoneNumber", data.phone);
+                                setValue("email", data.email);
+                                setValue("customerName", data.name);
+                                data.type === "Corporate"
+                                    ? setValue("orgID", data.orgOrPNumber)
+                                    : setValue("pNumber", data.orgOrPNumber);
+                                setValue("billingAddress", data.street);
+                                setValue("billingZip", data.zip);
+                                setValue("billingCity", data.city);
+                                setValue("billingCountry", data.country);
+                                data.type === "Corporate"
+                                    ? setCustomData({
+                                        ...customData,
+                                        customerType: "corporate",
+                                    })
+                                    : setCustomData({
+                                        ...customData,
+                                        customerType: "private",
+                                    });
+                                // data.type === "Corporate"
+                                //   ? setSelectedFromList("Corporate")
+                                //   : setSelectedFromList("Private");
+                                } else {
+                                setValue("primaryPhoneNumber", "");
+                                setValue("email", "");
+                                setValue("customerName", "");
+                                setValue("orgID", "");
+                                setValue("pNumber", "");
+                                setValue("billingAddress", "");
+                                setValue("billingZip", "");
+                                setValue("billingCity", "");
+                                setValue("billingCountry", "");
+                                // setSelectedFromList(null);
+                                }
+                                return onChange(data);
+                            }}
+                            renderOption={(props, option, { selected }) => (
+                                <MenuItem {...props}>
+                                {/*{`${option.name}`}*/}
+                                {customerSearchBy ? (
+                                    <div>
+                                    {customerSearchBy === "name" && option?.name &&
+                                    customerSearchBoxLength > 0 ? (
+                                        <div>
+                                        <span
+                                            style={{ color: "#0088AE" }}
+                                        >{`${option.name.slice(
+                                            0,
+                                            customerSearchBoxLength
+                                        )}`}</span>
+                                        <span>{`${option.name.slice(
+                                            customerSearchBoxLength
+                                        )}`}</span>
+                                        </div>
+                                    ) : (
+                                        <div>{`${option.name}`}</div>
+                                    )}
+                                    {customerSearchBy === "phone" &&
+                                    customerSearchBoxLength > 0 ? (
+                                        <div>
+                                        <span
+                                            style={{ color: "#0088AE" }}
+                                        >{`${option.phone.slice(
+                                            0,
+                                            customerSearchBoxLength
+                                        )}`}</span>
+                                        <span>{`${option.phone.slice(
+                                            customerSearchBoxLength
+                                        )}`}</span>
+                                        </div>
+                                    ) : (
+                                        <div>{`${option.phone}`}</div>
+                                    )}
+                                    </div>
+                                ) : (
+                                    <div>
+                                    <div>{`${option.name}`}</div>
+                                    <div>{`${option.phone}`}</div>
+                                    </div>
+                                )}
+                                </MenuItem>
+                            )}
+                            renderInput={(params) => (
+                                <TextField
+                                id="searchBox"
+                                {...params}
+                                {...field}
+                                inputRef={ref}
+                                onChange={searchCustomerOnFocus}
+                                placeholder="Search customers by name or phone number"
+                                // InputProps={{
+                                //     startAdornment: (
+                                //         <InputAdornment position="end">
+                                //           <Search />
+                                //         </InputAdornment>
+                                //     ),
+                                // }}
+                                />
+                            )}
+                            />
+                        )}
+                        />
+                        <span className="search-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        </span>
+                    </div>
+
+                    <div className="customer-selection-info pb-20">
+                      { !selectedCustomer ? (
+                      <div className="no-customer-selected">
+                        <div className="box customer-selection-box">
+                          <h5 className="sec-sub-header">No Customer Selected</h5>
+                          <div className="body3 text-MonochromeGray-300">Please select a customer from the search box or create a new one.</div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 w-full mt-20">
+                            <Button
+                              variant="outlined"
+                              className="body3x lg-blue-btn"
+                              onClick={ () => openCustomarModal('Private')}
+                            >
+                              {t("label:createPrivateCustomer")}
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              className="body3x lg-blue-btn"
+                              onClick={ () => openCustomarModal('Corporate') }
+                            >
+                              {t("label:createCorporateCustomer")}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      ) : (
+                      <div className="selected-customer-info">
+                        <div className="box">
+                          <div className="box-header has-icon pr-20">
+                            <h5 className="sec-sub-header">Edgar Thune</h5>
+                            <span className="close-icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </span>
+                          </div>
+                          <p className="body-p">+47 959 43 109</p>
+                          <p className="body-p">edgar.thune@dummymail.com</p>
+                          <p className="body-p">Karl Johans gate 5, Oslo 0154, Norway</p>
+                        </div>
+                      </div>
                       )}
-                      />
+                      <Dialog open={openCreateCustomer} onClose={ () => {setOpenCreateCustomer(false)}}>
+                        <DialogTitle>
+                          { customData.customerType == 'corporate' ? t("label:createCorporateCustomer") : t("label:createPrivateCustomer")}
+                        </DialogTitle>
+                        <DialogContent>
+                          <div className="w-full my-32">
+                            <div className="form-pair-input gap-x-20">
+                              <Controller
+                                name="primaryPhoneNumber"
+                                control={control}
+                                render={({ field }) => (
+                                  <FormControl
+                                    error={!!errors.primaryPhoneNumber}
+                                    fullWidth
+                                  >
+                                    <PhoneInput
+                                      {...field}
+                                      className={
+                                        errors.primaryPhoneNumber
+                                          ? "input-phone-number-field border-1 rounded-md border-red-300"
+                                          : "input-phone-number-field"
+                                      }
+                                      country="no"
+                                      enableSearch
+                                      autocompleteSearch
+                                      countryCodeEditable={false}
+                                      specialLabel={`${t("label:phone")}*`}
+                                      // onBlur={handleOnBlurGetDialCode}
+                                      value={field.value || ""}
+                                    />
+                                    <FormHelperText>
+                                      {errors?.primaryPhoneNumber?.message
+                                        ? t(
+                                            `validation:${errors?.primaryPhoneNumber?.message}`
+                                          )
+                                        : ""}
+                                    </FormHelperText>
+                                  </FormControl>
+                                )}
+                              />
+                              <Controller
+                                name="email"
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label={t("label:email")}
+                                    type="email"
+                                    autoComplete="off"
+                                    error={!!errors.email}
+                                    helperText={
+                                      errors?.email?.message
+                                        ? t(
+                                            `validation:${errors?.email?.message}`
+                                          )
+                                        : ""
+                                    }
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    value={field.value || ""}
+                                  />
+                                )}
+                              />
+                            </div>
+                            <div className="mt-32 sm:mt-0">
+                              <div className="form-pair-input gap-x-20">
+                                <Controller
+                                  name="customerName"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:customerName")}
+                                      type="text"
+                                      autoComplete="off"
+                                      error={!!errors.customerName}
+                                      helperText={
+                                        errors?.customerName?.message
+                                          ? t(
+                                              `validation:${errors?.customerName?.message}`
+                                            )
+                                          : ""
+                                      }
+                                      variant="outlined"
+                                      fullWidth
+                                      required
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+                                {customData.customerType === "corporate" && (
+                                  <Controller
+                                    name="orgID"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:organizationId")}
+                                        type="number"
+                                        autoComplete="off"
+                                        error={!!errors.orgID}
+                                        required
+                                        helperText={
+                                          errors?.orgID?.message
+                                            ? t(
+                                                `validation:${errors?.orgID?.message}`
+                                              )
+                                            : ""
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        value={field.value || ""}
+                                      />
+                                    )}
+                                  />
+                                )}
+                                {customData.customerType === "private" && (
+                                  <Controller
+                                    name="pNumber"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:pNumber")}
+                                        type="number"
+                                        autoComplete="off"
+                                        error={!!errors.pNumber}
+                                        helperText={
+                                          errors?.pNumber?.message
+                                            ? t(
+                                                `validation:${errors?.pNumber?.message}`
+                                              )
+                                            : ""
+                                        }
+                                        // ref={orgOrPNumberRef}
+                                        variant="outlined"
+                                        fullWidth
+                                        value={field.value || ""}
+                                      />
+                                    )}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                            <div className="">
+                              <div className="form-pair-three-by-one">
+                                <div className="col-span-3">
+                                  <Controller
+                                    name="billingAddress"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:streetAddress")}
+                                        type="text"
+                                        autoComplete="off"
+                                        error={!!errors.billingAddress}
+                                        helperText={
+                                          errors?.billingAddress?.message
+                                            ? t(
+                                                `validation:${errors?.billingAddress?.message}`
+                                              )
+                                            : ""
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        inputlabelprops={{
+                                          shrink:
+                                            !!field.value ||
+                                            touchedFields.billingAddress,
+                                        }}
+                                        required={customData.paymentMethod.includes(
+                                          "invoice"
+                                        )}
+                                        value={field.value || ""}
+                                      />
+                                    )}
+                                  />
+                                </div>
+                                <div className="col-span-1">
+                                  <Controller
+                                    name="billingZip"
+                                    className="col-span-1"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:zipCode")}
+                                        type="text"
+                                        autoComplete="off"
+                                        error={!!errors.billingZip}
+                                        helperText={
+                                          errors?.billingZip?.message
+                                            ? t(
+                                                `validation:${errors?.billingZip?.message}`
+                                              )
+                                            : ""
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        inputlabelprops={{
+                                          shrink:
+                                            !!field.value ||
+                                            touchedFields.billingZip,
+                                        }}
+                                        required={customData.paymentMethod.includes(
+                                          "invoice"
+                                        )}
+                                        value={field.value || ""}
+                                      />
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                              <div className="form-pair-input gap-x-20">
+                                <Controller
+                                  name="billingCity"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:city")}
+                                      type="text"
+                                      autoComplete="off"
+                                      error={!!errors.billingCity}
+                                      helperText={
+                                        errors?.billingCity?.message
+                                          ? t(
+                                              `validation:${errors?.billingCity?.message}`
+                                            )
+                                          : ""
+                                      }
+                                      variant="outlined"
+                                      fullWidth
+                                      inputlabelprops={{
+                                        shrink:
+                                          !!field.value ||
+                                          touchedFields.billingCity,
+                                      }}
+                                      required={customData.paymentMethod.includes(
+                                        "invoice"
+                                      )}
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+
+                                <Controller
+                                  name="billingCountry"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <FormControl
+                                      error={!!errors.billingCountry}
+                                      fullWidth
+                                    >
+                                      <InputLabel id="billingCountry">
+                                        {t("label:country")}*
+                                      </InputLabel>
+                                      <Select
+                                        {...field}
+                                        labelId="billingCountry"
+                                        id="select"
+                                        label={t("label:country")}
+                                        inputlabelprops={{
+                                          shrink: !!field.value,
+                                        }}
+                                        value={field.value || ""}
+                                      >
+                                        {countries.length ? (
+                                          countries.map((country, index) => {
+                                            return (
+                                              <MenuItem
+                                                key={index}
+                                                value={country.name}
+                                              >
+                                                {country.title}
+                                              </MenuItem>
+                                            );
+                                          })
+                                        ) : (
+                                          <MenuItem key={0} value="norway">
+                                            Norway
+                                          </MenuItem>
+                                        )}
+                                      </Select>
+                                      <FormHelperText>
+                                        {errors?.billingCountry?.message
+                                          ? t(
+                                              `validation:${errors?.billingCountry?.message}`
+                                            )
+                                          : ""}
+                                      </FormHelperText>
+                                    </FormControl>
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </DialogContent>
+                        <DialogActions className="dialogue-btn-container">
+                          <Button className="body3x lg-blue-btn" variant="outlined" onClick={ () => {setOpenCreateCustomer(false) }}>
+                            {t("label:cancel")}
+                          </Button>
+                          <Button className="body3x lg-blue-btn" variant="outlined" onClick={ () => {setOpenCreateCustomer(false) }}>
+                            {t("label:create")}
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </div>
                   </div>
 
                   <div className="create-order-date-container">
@@ -1181,7 +1560,7 @@ const ReservationCreate = () => {
                           </div>
                           <div className="my-auto">
                             <Controller
-                              name={`order[${index}].discount`}
+                              name={`order[${index}].reservationAmount`}
                               control={control}
                               render={({ field }) => (
                                 <TextField
@@ -1190,8 +1569,8 @@ const ReservationCreate = () => {
                                   className="bg-white custom-input-height"
                                   type="number"
                                   autoComplete="off"
-                                  error={!!errors.discount}
-                                  helperText={errors?.discount?.message}
+                                  error={!!errors.reservationAmount}
+                                  helperText={errors?.reservationAmount?.message}
                                   variant="outlined"
                                   fullWidth
                                 />
@@ -1312,8 +1691,8 @@ const ReservationCreate = () => {
                   <hr className="mt-20 border-half-bottom" />
 
                   <div className="grid grid-cols-1 md:grid-cols-6 my-20">
-                    <div className="customer-section col-span-1 md:col-span-4">
-                      <div className="my-32">
+                    <div className="customer-section col-span-1 md:col-span-3 mt-20 flex flex-col gap-y-20 pb-20 sm:pb-0">
+                      <div>
                         <Controller
                           name="customerNotes"
                           control={control}
@@ -1338,36 +1717,46 @@ const ReservationCreate = () => {
                             />
                           )}
                         />
-                        <div className="my-32">
-                          <Controller
-                            name="termsConditions"
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                multiline
-                                rows={5}
-                                label={t("label:tnc")}
-                                type="text"
-                                autoComplete="off"
-                                error={!!errors.termsConditions}
-                                helperText={
-                                  errors?.termsConditions?.message
-                                    ? t(
-                                        `validation:${errors?.termsConditions?.message}`
-                                      )
-                                    : ""
-                                }
-                                variant="outlined"
-                                fullWidth
-                              />
-                            )}
-                          />
-                        </div>
+                        <CharCount
+                          current={watch("customerNotes")?.length || 0}
+                          total={200}
+                        />
+                      </div>
+
+                      <div>
+                        <Controller
+                          name="termsConditions"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              multiline
+                              rows={5}
+                              label={t("label:tnc")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.termsConditions}
+                              helperText={
+                                errors?.termsConditions?.message
+                                  ? t(
+                                      `validation:${errors?.termsConditions?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                            />
+                          )}
+                        />
+                        <CharCount
+                          current={watch("termsConditions")?.length || 0}
+                          total={200}
+                        />
                       </div>
                     </div>
+                    <div className="col-span-1"></div>
                     
-                    <div className="col-span-2 mx-10 sm:mx-0">
+                    <div className="col-span-1 md:col-span-2">
                       <div className="border-MonochromeGray-25">
                         <div className="px-14">
                           <div className="flex justify-between items-center bg-MonochromeGray-25 py-20 px-16 my-20">

@@ -5,9 +5,70 @@
     @apply grid grid-cols-1 md:grid-cols-4 px-0;
     /* @apply grid grid-cols-1 md:grid-cols-3 gap-20 w-full my-20 px-10; */
 }
+.lg-blue-btn {
+    @apply rounded-4 min-w-120 border-2 border-none bg-primary-50 flex my-auto;
+}
 .reservation-create-form .product-list-grid-container {
     grid-template-columns: 26% 20% 20% 11% 15% 6%;
 }
 .reservation-create-form .customer-section {
     max-width: 510px;
+}
+.customer-info-section {
+    max-width: 532px;
+}
+.box {
+    border: 1px solid #E8E8E8;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    padding: 16px 16px;
+}
+.customer-selection-box {
+    padding: 32px 16px;
+}
+.sec-sub-header {
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.33;
+    padding-bottom: 6px;
+}
+.customer-selection-box h5 {
+    padding-bottom: 5px;
+}
+.body3x {
+    font-size: 14px !important;
+    font-weight: 600;
+}
+.lg-blue-btn {
+    color: #00617C;
+}
+.body-p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #1D1F1F;
+}
+.has-icon {
+    position: relative;
+}
+.has-icon .close-icon{
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99;
+    display: inline-block;
+    cursor: pointer;
+}
+.dialogue-btn-container {
+    padding: 0 24px 20px 24px;
+}
+.search-customer-order-create {
+    position: relative;
+}
+.search-customer-order-create .search-icon {
+    display: inline-block;
+    position: absolute;
+    right: 17px;
+    top: 28%;
+    z-index: 98;
+    opacity: 0.5;
 }
