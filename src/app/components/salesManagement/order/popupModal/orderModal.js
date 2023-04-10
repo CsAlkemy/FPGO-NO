@@ -37,7 +37,7 @@ import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
-import _ from "lodash";
+import _, { head } from "lodash";
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -92,14 +92,13 @@ const OrderModal = (props) => {
     mode: "onChange",
     OrderModalDefaultValue,
     resolver: yupResolver(
-      headerTitle === "Resend Order"
+      (["Resend Order", "Resend Reservation"].includes(headerTitle))
         ? validateSchemaOrderResendModal
         : headerTitle === "Complete Reservation" 
         ? validateSchemaCompleteReservationModal 
         : headerTitle === "Charge Amount" 
         ? validateSchemaReservationCaptureCardModal
-        : headerTitle === "Cancel Order" ||
-          headerTitle === "Reject Refund Request"
+        : (["Cancel Order", "Reject Refund Request", "Cancel Reservation"].includes(headerTitle))
         ? validateSchemaOrderCancelModal
         : flag
         ? validateSchemaMoreThanFiveThousand
@@ -189,10 +188,7 @@ const OrderModal = (props) => {
         }, 1000);
         setApiLoading(false);
       });
-    } else if (
-      headerTitle === "Send Refund" ||
-      headerTitle === "Refund Order"
-    ) {
+    } else if (["Send Refund", "Refund Order"].includes(headerTitle) ) {
       setApiLoading(true);
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
@@ -311,10 +307,7 @@ const OrderModal = (props) => {
                 onSubmit={handleSubmit(onSubmit)}
                 className="pt-32"
               >
-                {(headerTitle === "Cancel Order" ||
-                  headerTitle === "Reject Refund Request" || 
-                  headerTitle === "Cancel Reservation" || 
-                  headerTitle === "Complete Reservation") && (
+                {(["Cancel Order", "Reject Refund Request", "Cancel Reservation", "Complete Reservation"].includes(headerTitle)) && (
                   <div>
                     <Controller
                       name="cancellationNote"
@@ -346,8 +339,7 @@ const OrderModal = (props) => {
                     />
                   </div>
                 )}
-                {(headerTitle === "Resend Order" || 
-                headerTitle === "Resend Reservation") && (
+                {(["Resend Order", "Resend Reservation"].includes(headerTitle)) && (
                   <div className="flex flex-col gap-32">
                     <div className="flex justify-start items-center border-b-1 border-MonochromeGray-50 pb-20">
                       <Checkbox
@@ -404,10 +396,7 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
-                {(headerTitle === "Send Refund" ||
-                  headerTitle === "Refund Order" ||
-                  headerTitle === "Capture Payment" ||
-                  headerTitle === "Refund from Reservation") &&
+                {(["Send Refund", "Refund Order", "Capture Payment", "Refund from Reservation"].includes(headerTitle)) &&
                   !flag && (
                     <div>
                       <div className="caption2">{t("label:refundType")}</div>
@@ -472,7 +461,7 @@ const OrderModal = (props) => {
                 {/*    Further refunds have to be approved by the FP Admin.*/}
                 {/*  </div>*/}
                 {/*)}*/}
-                {(headerTitle === "Charge Amount") && (
+                {(["Charge Amount"].includes(headerTitle)) && (
                   <div>
                     <Controller
                         name="chargeAmount"
