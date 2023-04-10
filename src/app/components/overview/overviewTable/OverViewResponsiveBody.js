@@ -44,6 +44,7 @@ import DiscardConfirmModal from "../../common/confirmDiscard";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import ReservationDropdown from "../../salesManagement/reservations/dropdown";
 
 export default function OverViewResponsiveBody(props) {
   const [openHigh, setOpenHigh] = useState(false);
@@ -74,6 +75,7 @@ export default function OverViewResponsiveBody(props) {
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
+    if(decision === "refundReservations") setHeaderTitle("Refund from Reservation");
   };
   const handleSendInvoiceModalOpen = () => {
     setOpen(true);
@@ -2227,6 +2229,44 @@ export default function OverViewResponsiveBody(props) {
                 {t("label:nok")} {ThousandSeparator(props.row[rdt.id])}
               </div>
             </div>
+          );
+        } else if(rdt.id === "options") {
+          return user.role[0] === FP_ADMIN ? (
+            ""
+          ) : props.row.status.toLowerCase() === "completed" ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={t('label:refundFromReservations')}
+                TransitionComponent={Zoom}
+                placement="bottom-start"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<UndoIcon />}
+                  className="rounded-4 border-1 hover:bg-white border-MonochromeGray-100 text-MonochromeGray-100 hover:text-primary-500"
+                  onClick={() => handleModalOpen("refundReservations")}
+                >
+                  {t("label:refundFromReservation")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.customer}
+                orderAmount={props.row.reservedAmount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : (
+            <>
+              <ReservationDropdown data={props.row} />
+            </>
           );
         } else {
           return (

@@ -885,7 +885,8 @@ export default function OverviewMainTable(props) {
                       onClick={() => {
                         if (
                           props.tableName !== ordersListOverview &&
-                          props.tableName !== customerOrdersListOverview
+                          props.tableName !== customerOrdersListOverview &&
+                          props.tableName !== reservationListOverview
                         )
                           handleTableRowClick(row);
                       }}

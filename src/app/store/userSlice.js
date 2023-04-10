@@ -163,14 +163,14 @@ export const setUser = createAsyncThunk(
             },
             {
               id: "sales",
-              title: "Orders",
+              title: "Sales",
               translate: "sales",
               type: "collapse",
               icon: "material-outline:receipt_long",
               children: [
                 {
                   id: "orders",
-                  title: "Sales",
+                  title: "Orders",
                   translate: 'orders',
                   type: "item",
                   icon: "material-solid:fiber_manual_record",

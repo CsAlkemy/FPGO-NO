@@ -71,6 +71,7 @@ export default function OverViewMainTableBody(props) {
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
+    if(decision === "refundReservations") setHeaderTitle("Refund from Reservation");
   };
   const handleSendInvoiceModalOpen = () => {
     setEditOpen(true);
@@ -1732,7 +1733,7 @@ export default function OverViewMainTableBody(props) {
               </TableCell>
             );
           }  else if(rdt === "options") {
-            return props.row.status.toLowerCase() === "completed" ? (
+            return user.role[0] === FP_ADMIN ? "" : props.row.status.toLowerCase() === "completed" ? (
               <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
                 <CustomTooltip
                   disableFocusListener
@@ -1743,17 +1744,28 @@ export default function OverViewMainTableBody(props) {
                 >
                   <Box
                     component="span"
-                    className="py-8 px-4"
+                    className="py-8 px-4 hover:border-primary-500"
                     sx={resendRefundBoxSX}
+                    onClick={() => handleModalOpen('refundReservations') }
                   >
                     <UndoIcon style={{ paddingBottom: "3px" }} />
                   </Box>
                 </CustomTooltip>
+                <OrderModal
+                  open={open}
+                  setOpen={setOpen}
+                  headerTitle={headerTitle}
+                  orderId={props.row.id}
+                  orderName={props.row.customer}
+                  orderAmount={props.row.reservedAmount}
+                  customerPhone={props.row.phone}
+                  customerEmail={props.row.email}
+                />
               </TableCell>
             ) : 
             (
               <TableCell key={`${props.row.uuid}-${rdt}`} align="center">
-                <ReservationDropdown status={props.row.status} />
+                <ReservationDropdown data={props.row} />
               </TableCell>
             );
           } else {

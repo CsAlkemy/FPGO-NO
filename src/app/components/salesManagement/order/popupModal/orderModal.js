@@ -22,6 +22,8 @@ import {
   validateSchemaOrderCancelModal,
   validateSchemaOrderRefundModal,
   validateSchemaOrderResendModal,
+  validateSchemaCompleteReservationModal,
+  validateSchemaReservationCaptureCardModal
 } from "../../utils/helper";
 import { useTranslation } from "react-i18next";
 import {
@@ -48,6 +50,8 @@ const OrderModal = (props) => {
     orderAmount,
     customerPhone,
     customerEmail,
+    amountInBank = null,
+    remainingAmount = null
   } = props;
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
@@ -90,6 +94,10 @@ const OrderModal = (props) => {
     resolver: yupResolver(
       headerTitle === "Resend Order"
         ? validateSchemaOrderResendModal
+        : headerTitle === "Complete Reservation" 
+        ? validateSchemaCompleteReservationModal 
+        : headerTitle === "Charge Amount" 
+        ? validateSchemaReservationCaptureCardModal
         : headerTitle === "Cancel Order" ||
           headerTitle === "Reject Refund Request"
         ? validateSchemaOrderCancelModal
@@ -105,6 +113,12 @@ const OrderModal = (props) => {
     OrderModalDefaultValue.email = customerEmail ? customerEmail : "";
     reset({ ...OrderModalDefaultValue });
   }, []);
+
+  const setFullAmount = () => {
+      setRefundType("full");
+      let amount = (headerTitle === "Capture Payment") ? remainingAmount : (headerTitle === "Refund from Reservation") ? amountInBank : orderAmount;
+      setValue("refundAmount", amount);
+  }
 
   const onSubmit = (values) => {
     const data = {
@@ -278,6 +292,19 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
+
+              {(amountInBank || remainingAmount) && (
+                <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
+                  <div className="text-MonochromeGray-700">
+                    {amountInBank ? t("label:amountInBank") : t("label:remainingAmount") }
+                  </div>
+                  <div className="text-MonochromeGray-700">
+                    {t("label:nok")}{" "}
+                    {amountInBank ? ThousandSeparator(amountInBank) : ThousandSeparator(remainingAmount) }
+                  </div>
+                </div>
+              )}
+
               <form
                 name="modalForm"
                 noValidate
@@ -285,7 +312,9 @@ const OrderModal = (props) => {
                 className="pt-32"
               >
                 {(headerTitle === "Cancel Order" ||
-                  headerTitle === "Reject Refund Request") && (
+                  headerTitle === "Reject Refund Request" || 
+                  headerTitle === "Cancel Reservation" || 
+                  headerTitle === "Complete Reservation") && (
                   <div>
                     <Controller
                       name="cancellationNote"
@@ -298,7 +327,8 @@ const OrderModal = (props) => {
                           label={t(
                             headerTitle === "Reject Refund Request"
                               ? "label:rejectionNote"
-                              : "label:cancellationNote"
+                              : headerTitle === "Complete Reservation" 
+                              ? "label:completionNote" : "label:cancellationNote"
                           )}
                           type="text"
                           autoComplete="off"
@@ -316,7 +346,8 @@ const OrderModal = (props) => {
                     />
                   </div>
                 )}
-                {headerTitle === "Resend Order" && (
+                {(headerTitle === "Resend Order" || 
+                headerTitle === "Resend Reservation") && (
                   <div className="flex flex-col gap-32">
                     <div className="flex justify-start items-center border-b-1 border-MonochromeGray-50 pb-20">
                       <Checkbox
@@ -374,7 +405,9 @@ const OrderModal = (props) => {
                   </div>
                 )}
                 {(headerTitle === "Send Refund" ||
-                  headerTitle === "Refund Order") &&
+                  headerTitle === "Refund Order" ||
+                  headerTitle === "Capture Payment" ||
+                  headerTitle === "Refund from Reservation") &&
                   !flag && (
                     <div>
                       <div className="caption2">{t("label:refundType")}</div>
@@ -386,10 +419,7 @@ const OrderModal = (props) => {
                               ? "create-order-capsule-button-active"
                               : "create-order-capsule-button"
                           }`}
-                          onClick={() => {
-                            setRefundType("full");
-                            setValue("refundAmount", orderAmount);
-                          }}
+                          onClick={ setFullAmount }
                         >
                           {t("label:fullRefund")}
                         </Button>
@@ -415,7 +445,7 @@ const OrderModal = (props) => {
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            label={t("label:refundAmount")}
+                            label={(headerTitle === "Capture Payment") ? t("label:amount") : t("label:refundAmount")}
                             type="number"
                             autoComplete="off"
                             variant="outlined"
@@ -442,6 +472,35 @@ const OrderModal = (props) => {
                 {/*    Further refunds have to be approved by the FP Admin.*/}
                 {/*  </div>*/}
                 {/*)}*/}
+                {(headerTitle === "Charge Amount") && (
+                  <div>
+                    <Controller
+                        name="chargeAmount"
+                        className="mt-32"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label={t("label:amount")}
+                            type="number"
+                            autoComplete="off"
+                            variant="outlined"
+                            error={!!errors.chargeAmount}
+                            helperText={errors?.chargeAmount?.message}
+                            fullWidth
+                            required
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="start">
+                                  {t("label:nok")}
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        )}
+                      />
+                  </div>
+                )}
                 {flag && (
                   <div>
                     {t(`message:${newString[0]}`)} {newString[1] || ""}

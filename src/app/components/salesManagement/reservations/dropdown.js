@@ -12,100 +12,179 @@ import RedoIcon from '@mui/icons-material/Redo';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import UndoIcon from '@mui/icons-material/Undo';
+import OrderModal from '../order/popupModal/orderModal';
 
 const ReservationDropdown = (props) => {
+    const {data} = props;
     const { t } = useTranslation();
+    const Random = Math.random();
+    const buttonId = `button-${Random}`;
+    const dropdownId = `dropDown-${Random}`;
     const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
+    const [open, setOpen] = useState(false);
+    const [headerTitle, setHeaderTitle] = useState();
+    const menuOpen = Boolean(anchorEl);
+    const [amountBank, setAmountBank] = useState(null);
+    const [remainingAmount, setRemainingAmount] = useState(null);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    let menuItem;
+    const handleModalOpen = (decision) => {
+        setOpen(true);
+        setAnchorEl(null);
+        setRemainingAmount(null);
+        setAmountBank(null);
+        
+        if(decision === "resendReservations") setHeaderTitle("Resend Reservation");
+        if (decision === "cancelReservation") setHeaderTitle("Cancel Reservation");
+        if (decision === "chargeFromCard") {
+            setHeaderTitle("Charge Amount");
+            setAmountBank(data.amountInBank);
+        }
+        if (decision === "capturePayments") { 
+            setHeaderTitle("Capture Payment");
+            setRemainingAmount(data.remainingAmount);
+        }
+        if (decision === "refundReservation") {
+            setHeaderTitle("Refund from Reservation");
+            setAmountBank(data.amountInBank);
+        }
+        if (decision === "completeReservation") {
+            setHeaderTitle("Complete Reservation");
+            setAmountBank(data.amountInBank);
+        }
+      };
 
-    if(props.status.toLowerCase() === 'sent') {
-        menuItem = (
+    let dropDownMenu;
+
+    if(data.status.toLowerCase() === 'sent') {
+        dropDownMenu = (
             <>
-            <MenuItem>
-                <ListItemIcon>
-                    <RedoIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{t("label:resendOrder")}</ListItemText>
-            </MenuItem>
-            <MenuItem>
-                <ListItemIcon>
-                    <CancelIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{t("label:cancelOrder")}</ListItemText>
-            </MenuItem>
+                <Menu
+                    id={dropdownId}
+                    anchorEl={anchorEl}
+                    open={menuOpen}
+                    onClose={handleClose}
+                    MenuListProps={{
+                    'aria-labelledby': buttonId,
+                    }}
+                >
+                    <MenuItem onClick={() => { handleModalOpen('resendReservations') }}>
+                        <ListItemIcon>
+                            <RedoIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t("label:resendReservation")}</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => handleModalOpen('cancelReservation') }>
+                        <ListItemIcon>
+                            <CancelIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t("label:cancelReservation")}</ListItemText>
+                    </MenuItem>
+                </Menu>
+                <OrderModal
+                    open={open}
+                    setOpen={setOpen}
+                    headerTitle={headerTitle}
+                    orderId={data.id}
+                    orderName={data.customer}
+                    orderAmount={data.reservedAmount}
+                    customerPhone={data.phone}
+                    customerEmail={data.email}
+                />
             </>
         );
-    } else if(props.status.toLowerCase() === 'reserved') {
-        menuItem = (
+    } else if(data.status.toLowerCase() === 'reserved') {
+        dropDownMenu = (
             <>
-            <MenuItem>
-                <ListItemIcon>
-                    <CreditCardIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{t("label:chargeFromCard")}</ListItemText>
-            </MenuItem>
-            <MenuItem>
-                <ListItemIcon>
-                    <PaymentsIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{t("label:capturePayments")}</ListItemText>
-            </MenuItem>
-            <MenuItem>
-                <ListItemIcon>
-                    <UndoIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{t("label:refundFromReservations")}</ListItemText>
-            </MenuItem>
-            <MenuItem>
-                <ListItemIcon>
-                    <DoneAllIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{t("label:completeOrder")}</ListItemText>
-            </MenuItem>
-            <MenuItem>
-                <ListItemIcon>
-                    <CancelIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{t("label:cancelOrder")}</ListItemText>
-            </MenuItem>
+                <Menu
+                    id={dropdownId}
+                    anchorEl={anchorEl}
+                    open={menuOpen}
+                    onClose={handleClose}
+                    MenuListProps={{
+                    'aria-labelledby': buttonId,
+                    }}
+                >
+                    <MenuItem onClick={() => handleModalOpen('chargeFromCard') }>
+                        <ListItemIcon>
+                            <CreditCardIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t("label:chargeFromCard")}</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => handleModalOpen('capturePayments') }>
+                        <ListItemIcon>
+                            <PaymentsIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t("label:capturePayments")}</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => handleModalOpen('refundReservation') }>
+                        <ListItemIcon>
+                            <UndoIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t("label:refundFromReservations")}</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => handleModalOpen('completeReservation') }>
+                        <ListItemIcon>
+                            <DoneAllIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t("label:completeReservation")}</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => handleModalOpen('cancelReservation') }>
+                        <ListItemIcon>
+                            <CancelIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t("label:cancelReservation")}</ListItemText>
+                    </MenuItem>
+                </Menu>
+                <OrderModal
+                    open={open}
+                    setOpen={setOpen}
+                    headerTitle={headerTitle}
+                    orderId={data.id}
+                    orderName={data.customer}
+                    orderAmount={data.reservedAmount}
+                    customerPhone={data.phone}
+                    customerEmail={data.email}
+                    amountInBank={amountBank}
+                    remainingAmount={remainingAmount}
+                />
             </>
         );
-    } 
-    
+    }
 
-    return (
-        <>
-            <div>
+    let dropDownButton;
+
+    if(data.status.toLowerCase() == 'sent' || data.status.toLowerCase() == 'reserved') {
+        dropDownButton = (
+            <>
                 <Button
-                    id="reservation-morevert"
-                    aria-controls={open ? 'reservation-dropdown' : undefined}
+                    variant="outlined"
+                    color="secondary"
+                    id={buttonId}
+                    aria-controls={menuOpen ? dropdownId : undefined}
                     aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
+                    className="sm:w-9 w-full sm:h-9 rounded-lg min-w-0 hover:bg-white border-MonochromeGray-50 text-MonochromeGray-100 hover:text-primary-500 hover:border-primary-200"
+                    aria-expanded={menuOpen ? 'true' : undefined}
                     onClick={handleClick}
                 >   
                     <MoreVertIcon />
                 </Button>
 
-                <Menu
-                    id="reservation-dropdown"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                    'aria-labelledby': 'reservation-morevert',
-                    }}
-                >
-                    {menuItem}
-                </Menu>
-            </div>
+                {dropDownMenu}
+            </>
+        );
+    }
+
+    return (
+        <>
+            {dropDownButton}
         </>
     );
 };

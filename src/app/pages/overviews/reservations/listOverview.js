@@ -92,33 +92,70 @@ const ListOverview = () => {
             id: "RSV0001",
             date: "7 April 2023",
             customer: "Lutfur rahman",
-            phone: 23423545,
+            phone: "+4753247564",
+            email: "lutfur@fpgo.no",
             reservedAmount: 12000,
             amountPaid: "0",
             amountInBank: "0",
-            status: 'sent'
+            remainingAmount: "0",
+            status: 'sent',
+            translationKey: "Sent"
         },
         {
-            uuid: "RSV00022",
-            id: "RSV00022",
+            uuid: "RSV0002",
+            id: "RSV0002",
             date: "6 April 2023",
             customer: "Alkemy Hossain",
-            phone: 23423547,
+            phone: "+4753247564",
+            email: "alkemy@fpgo.no",
             reservedAmount: 12000,
             amountPaid: 8000,
             amountInBank: 8000,
-            status: 'completed'
+            remainingAmount: 4000,
+            status: 'completed',
+            translationKey: "Completed"
         },
         {
-            uuid: "RSV00023",
-            id: "RSV00023",
+            uuid: "RSV0003",
+            id: "RSV0003",
             date: "6 April 2023",
-            customer: "Alkemy Hossain",
-            phone: 23423547,
+            customer: "Joni Kumar",
+            phone: "+4753247564",
+            email: "joni@fpgo.no",
             reservedAmount: 12000,
             amountPaid: 8000,
             amountInBank: 8000,
-            status: 'reserved'
+            remainingAmount: 4000,
+            status: 'cancelled',
+            translationKey: "Cancelled"
+        },
+        {
+            uuid: "RSV00004",
+            id: "RSV00004",
+            date: "6 April 2023",
+            customer: "Alkemy Hossain",
+            phone: "+4753247564",
+            email: "alkemy@fpgo.no",
+            reservedAmount: 12000,
+            amountPaid: 8000,
+            amountInBank: 8000,
+            remainingAmount: 4000,
+            status: 'reserved',
+            translationKey: "Reserved"
+        },
+        {
+            uuid: "RSV00005",
+            id: "RSV00005",
+            date: "6 April 2023",
+            customer: "Joni Kumar",
+            phone: "+4753247564",
+            email: "joni@fpgo.no",
+            reservedAmount: 12000,
+            amountPaid: 8000,
+            amountInBank: 8000,
+            remainingAmount: 4000,
+            status: 'expired',
+            translationKey: "Expired"
         }
     ];
 
