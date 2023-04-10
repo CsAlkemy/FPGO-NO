@@ -8,14 +8,17 @@
 .lg-blue-btn {
     @apply rounded-4 min-w-120 border-2 border-none bg-primary-50 flex my-auto;
 }
+.reservation-create-form {
+    padding-bottom: 50px;
+}
+.create-customer-modal .MuiDialog-container {
+    display: block;
+}
 .reservation-create-form .product-list-grid-container {
     grid-template-columns: 26% 20% 20% 11% 15% 6%;
 }
 .reservation-create-form .customer-section {
     max-width: 510px;
-}
-.customer-info-section {
-    max-width: 532px;
 }
 .box {
     border: 1px solid #E8E8E8;
@@ -46,6 +49,7 @@
     font-size: 15px;
     line-height: 1.6;
     color: #1D1F1F;
+    font-family: "LatoRegular";
 }
 .has-icon {
     position: relative;
@@ -71,4 +75,18 @@
     top: 28%;
     z-index: 98;
     opacity: 0.5;
+}
+.search-customer-order-create .MuiAutocomplete-hasClearIcon + .search-icon {
+    display: none;
+}
+
+@media only screen and (min-width: 960px) {
+    .customer-info-section {
+        max-width: 532px;
+    }
+}
+@media only screen and (min-width: 600px) {
+    .create-customer-modal .MuiDialog-container {
+        display: flex;
+    }
 }

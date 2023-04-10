@@ -10,6 +10,7 @@ import EventIcon from "@mui/icons-material/Event";
 import RedoIcon from "@mui/icons-material/Redo";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
+import ModeIcon from '@mui/icons-material/Mode';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -241,36 +242,25 @@ const ReservationCreate = () => {
     setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
   };
   const productWiseTotal = (index) => {
-    //const watchQuantity = watch(`order[${index}].quantity`);
-    const watchQuantity = 1;
-    const watchRate = watch(`order[${index}].rate`);
-    const watchDiscount = watch(`order[${index}].discount`) || 0;
     const watchReservationAmount = watch(`order[${index}].reservationAmount`) || 0;
     const watchTax = watch(`order[${index}].tax`);
-    const watchName = watch(`order[${index}].productName`);
-    const watchId = watch(`order[${index}].productID`);
+    //const watchName = watch(`order[${index}].productName`);
+    //const watchId = watch(`order[${index}].productID`);
 
-    // Vat Inclusive Calculation
-    // Subtotal : (Qty*Rate*100%)/(100+Tax)%
-    // Tax : subtotal * (tax/100)
-    //Amount : (Rate * Qty) - discount
-    //Discount : Sum of discounts
-    //Grand Total : Sum of amounts
-    let rate, splitedRate, dotFormatRate, floatRate;
-    if (!!watchRate) {
-      rate = watchRate;
-      splitedRate = rate.toString().includes(",") ? rate.split(",") : rate;
-      dotFormatRate =
-        typeof splitedRate === "object"
-          ? `${splitedRate[0]}.${splitedRate[1]}`
-          : splitedRate;
-      floatRate = parseFloat(dotFormatRate);
+    let splitedAmount, dotFormatAmount, floatAmount, amount;
+    if (!!watchReservationAmount) {
+      amount = watchReservationAmount;
+      splitedAmount = amount.toString().includes(",") ? amount.split(",") : amount;
+      dotFormatAmount =
+        typeof splitedAmount === "object"
+          ? `${splitedAmount[0]}.${splitedAmount[1]}`
+          : splitedAmount;
+      floatAmount = parseFloat(dotFormatAmount);
     }
 
-    const total =
-      parseInt(watchQuantity) * floatRate - parseFloat(watchDiscount);
+    const total = floatAmount;
     const subTotalCalculation =
-      (parseInt(watchQuantity) * floatRate) / ((100 + watchTax) / 100);
+    floatAmount / ((100 + watchTax) / 100);
     const totalTaxCalculation = subTotalCalculation
       ? (subTotalCalculation * (watchTax / 100)) / 2
       : 0;
@@ -279,8 +269,6 @@ const ReservationCreate = () => {
     if (subTotalCalculation)
       subTotal = subTotal + parseFloat(subTotalCalculation);
     if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
-    if (watchDiscount)
-      totalDiscount = totalDiscount + parseFloat(watchDiscount);
     if (total) grandTotal = grandTotal + total;
     if (total > 0) {
       return ` ${total}`;
@@ -293,8 +281,6 @@ const ReservationCreate = () => {
     setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
     setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].quantity`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
     //setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].reservationAmount`, "");
     setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
@@ -324,16 +310,16 @@ const ReservationCreate = () => {
     setValue(`order[${index}].productName`, "");
     resetField(`order[${index}].productName`);
     resetField(`order[${index}].productID`);
-    resetField(`order[${index}].quantity`);
-    resetField(`order[${index}].rate`);
+    //resetField(`order[${index}].quantity`);
+    //resetField(`order[${index}].rate`);
     //resetField(`order[${index}].discount`);
     resetField(`order[${index}].reservationAmount`);
     resetField(`order[${index}].tax`);
 
     setValue(`order[${index}].productName`, "");
     setValue(`order[${index}].productID`, "");
-    setValue(`order[${index}].quantity`, "");
-    setValue(`order[${index}].rate`, "");
+    //setValue(`order[${index}].quantity`, "");
+    //setValue(`order[${index}].rate`, "");
     //setValue(`order[${index}].discount`, "");
     setValue(`order[${index}].reservationAmount`, "");
     setValue(`order[${index}].tax`, "");
@@ -487,6 +473,127 @@ const ReservationCreate = () => {
     setOpenCreateCustomer(true);
   };
 
+  const triggerSelectCustomer = ( customerData ) => {
+    if (customerData) {
+      clearErrors(["pNumber", "orgID"]);
+      setRecheckSchema(false);
+      setCustomerSearchBy(undefined);
+      setCustomerSearchBoxLength(0);
+      setValue("primaryPhoneNumber", customerData.phone);
+      setValue("email", customerData.email);
+      setValue("customerName", customerData.name);
+      customerData.type === "Corporate"
+          ? setValue("orgID", customerData.orgOrPNumber)
+          : setValue("pNumber", customerData.orgOrPNumber);
+      setValue("billingAddress", customerData.street);
+      setValue("billingZip", customerData.zip);
+      setValue("billingCity", customerData.city);
+      setValue("billingCountry", customerData.country);
+      customerData.type === "Corporate"
+          ? setCustomData({
+              ...customData,
+              customerType: "corporate",
+          })
+          : setCustomData({
+              ...customData,
+              customerType: "private",
+          });
+      // data.type === "Corporate"
+      //   ? setSelectedFromList("Corporate")
+      //   : setSelectedFromList("Private");
+      setselectedCustomer(customerData);
+    } else {
+      setValue("primaryPhoneNumber", "");
+      setValue("email", "");
+      setValue("customerName", "");
+      setValue("orgID", "");
+      setValue("pNumber", "");
+      setValue("billingAddress", "");
+      setValue("billingZip", "");
+      setValue("billingCity", "");
+      setValue("billingCountry", "");
+      // setSelectedFromList(null);
+      setselectedCustomer('');
+    }
+  }
+
+  const triggerProductSelected = ( index, productData ) => {
+    if (productData) {
+      if (productData?.name) {
+        setValue(
+          `order[${index}].productName`,
+          productData.name
+        );
+        setValue(
+          `order[${index}].productID`,
+          productData.id
+        );
+        const preparedPrice = productData.price
+          .toString()
+          .includes(".")
+          ? `${productData.price.toString().split(".")[0]},${
+            productData.price.toString().split(".")[1]
+            }`
+          : productData.price;
+        setValue(
+          `order[${index}].reservationAmount`,
+          preparedPrice
+        );
+        setValue(`order[${index}].tax`, productData.tax);
+        disableCurrentProductRow(index);
+
+        const watchResevationAmount = watch(
+          `order[${index}].reservationAmount`
+        );
+        const watchTax = watch(`order[${index}].tax`);
+        const watchName = watch(
+          `order[${index}].productName`
+        );
+        const watchId = watch(
+          `order[${index}].productID`
+        );
+
+        for (
+          let i = 0;
+          i < addOrderIndex.length;
+          i++
+        ) {
+          if (
+            watchName &&
+            watchId &&
+            watchResevationAmount &&
+            watchTax &&
+            i !== index &&
+            watchName ===
+              watch(`order[${i}].productName`) &&
+            watchId ===
+              watch(`order[${i}].productID`) &&
+              watchResevationAmount === watch(`order[${i}].reservationAmount`) &&
+            watchTax === watch(`order[${i}].tax`)
+          ) {
+            onSameRowAction(index);
+            enqueueSnackbar(
+              `Same product found in Row ${
+                i + 1
+              } and ${index + 1}`,
+              { variant: "error" }
+            );
+          }
+        }
+      } else
+        setValue(
+          `order[${index}].productName`,
+          productData ? productData : ""
+        );
+    } else {
+      setValue(`order[${index}].productName`, "");
+      setValue(`order[${index}].productID`, "");
+      setValue(`order[${index}].reservationAmount`, "");
+      setValue(`order[${index}].tax`, "");
+      enableCurrentProductRow(index);
+    }
+  }
+
     return (
         <>
           <form
@@ -498,7 +605,7 @@ const ReservationCreate = () => {
                 <div className="reserv-header-click-to-action">
                   <div className=" header-click-to-action">
                       <div className="header-text header6  flex items-center justify-start w-full sm:w-auto px-16 sm:px-0">
-                      Create Reservation
+                      {t("label:createReservation")}
                       </div>
                       <Hidden smDown>
                           <div className="button-container-product">
@@ -544,46 +651,8 @@ const ReservationCreate = () => {
                             className=""
                             fullWidth
                             onChange={(_, data) => {
-                                if (data) {
-                                clearErrors(["pNumber", "orgID"]);
-                                setRecheckSchema(false);
-                                setCustomerSearchBy(undefined);
-                                setCustomerSearchBoxLength(0);
-                                setValue("primaryPhoneNumber", data.phone);
-                                setValue("email", data.email);
-                                setValue("customerName", data.name);
-                                data.type === "Corporate"
-                                    ? setValue("orgID", data.orgOrPNumber)
-                                    : setValue("pNumber", data.orgOrPNumber);
-                                setValue("billingAddress", data.street);
-                                setValue("billingZip", data.zip);
-                                setValue("billingCity", data.city);
-                                setValue("billingCountry", data.country);
-                                data.type === "Corporate"
-                                    ? setCustomData({
-                                        ...customData,
-                                        customerType: "corporate",
-                                    })
-                                    : setCustomData({
-                                        ...customData,
-                                        customerType: "private",
-                                    });
-                                // data.type === "Corporate"
-                                //   ? setSelectedFromList("Corporate")
-                                //   : setSelectedFromList("Private");
-                                } else {
-                                setValue("primaryPhoneNumber", "");
-                                setValue("email", "");
-                                setValue("customerName", "");
-                                setValue("orgID", "");
-                                setValue("pNumber", "");
-                                setValue("billingAddress", "");
-                                setValue("billingZip", "");
-                                setValue("billingCity", "");
-                                setValue("billingCountry", "");
-                                // setSelectedFromList(null);
-                                }
-                                return onChange(data);
+                              triggerSelectCustomer(data);
+                              return onChange(data);
                             }}
                             renderOption={(props, option, { selected }) => (
                                 <MenuItem {...props}>
@@ -638,7 +707,7 @@ const ReservationCreate = () => {
                                 {...field}
                                 inputRef={ref}
                                 onChange={searchCustomerOnFocus}
-                                placeholder="Search customers by name or phone number"
+                                placeholder={t("label:searchByNamePhoneNumber")}
                                 // InputProps={{
                                 //     startAdornment: (
                                 //         <InputAdornment position="end">
@@ -684,18 +753,30 @@ const ReservationCreate = () => {
                       <div className="selected-customer-info">
                         <div className="box">
                           <div className="box-header has-icon pr-20">
-                            <h5 className="sec-sub-header">Edgar Thune</h5>
-                            <span className="close-icon">
+                            <h5 className="sec-sub-header">{ selectedCustomer.name }</h5>
+                            <span className="close-icon" onClick={ () => triggerSelectCustomer('') }>
                               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                             </span>
                           </div>
-                          <p className="body-p">+47 959 43 109</p>
-                          <p className="body-p">edgar.thune@dummymail.com</p>
-                          <p className="body-p">Karl Johans gate 5, Oslo 0154, Norway</p>
+                          <p className="body-p">{ selectedCustomer.phone }</p>
+                          <p className="body-p">{ selectedCustomer.email }</p>
+                          <p className="body-p">
+                            { selectedCustomer.street + ', ' + selectedCustomer.city + ' ' + selectedCustomer.zip + ', ' + selectedCustomer.country }
+                          </p>
+                          <div className="my-20">
+                            <Button
+                                variant="outlined"
+                                className="body3x lg-blue-btn"
+                                startIcon={<ModeIcon />}
+                                onClick={ () => openCustomarModal('Private')}
+                              >
+                                {t("label:editDetails")}
+                            </Button>
+                          </div>
                         </div>
                       </div>
                       )}
-                      <Dialog open={openCreateCustomer} onClose={ () => {setOpenCreateCustomer(false)}}>
+                      <Dialog className="create-customer-modal" open={openCreateCustomer} onClose={ () => {setOpenCreateCustomer(false)}}>
                         <DialogTitle>
                           { customData.customerType == 'corporate' ? t("label:createCorporateCustomer") : t("label:createPrivateCustomer")}
                         </DialogTitle>
@@ -1372,23 +1453,288 @@ const ReservationCreate = () => {
                     </div>
                   </div>
 
+                  <Hidden smUp>
+                    <div className="mobile-product-list px-10">
+                      <Accordion
+                        defaultExpanded={true}
+                        className={`${
+                          !expandedPanelOrder ? "bg-primary-25" : "bg-primary-700"
+                        } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
+                      >
+                        <AccordionSummary
+                          expandIcon={
+                            !expandedPanelOrder ? (
+                              <IoMdAdd className="icon-size-20" />
+                            ) : (
+                              <FiMinus
+                                className={`icon-size-20 ${
+                                  !expandedPanelOrder ? "" : "text-white"
+                                }`}
+                              />
+                            )
+                          }
+                          onClick={() => setExpandedPanelOrder(!expandedPanelOrder)}
+                          id="panel2a-header"
+                        >
+                          <div
+                            className={`subtitle3  flex gap-10 my-auto ${
+                              !expandedPanelOrder
+                                ? "text-MonochromeGray-700"
+                                : "text-white"
+                            }`}
+                          >
+                            {t("label:orderDetails")}
+                          </div>
+                        </AccordionSummary>
+                        <AccordionDetails className="bg-white px-0">
+                          <div className="sticky top-28 z-40">
+                            <Button
+                              className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
+                              startIcon={<AddIcon className="text-main" />}
+                              variant="contained"
+                              onClick={() => addNewOrder()}
+                              disabled={addOrderIndex.length >= 20 ? true : false}
+                            >
+                              {t(`label:addItem`)}
+                            </Button>
+                          </div>
+                          {addOrderIndex.map((index) => (
+                            <div
+                              className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
+                              key={`order:${index}`}
+                            >
+                              <Controller
+                                control={control}
+                                required
+                                name={`order[${index}].productName`}
+                                render={({ field: { ref, onChange, ...field } }) => (
+                                  <Autocomplete
+                                    disabled={
+                                      index === 0 ||
+                                      index === Math.min(...addOrderIndex)
+                                        ? false
+                                        : !watch(
+                                            `order[${
+                                              index -
+                                              (addOrderIndex[
+                                                addOrderIndex.indexOf(index)
+                                              ] -
+                                                addOrderIndex[
+                                                  addOrderIndex.indexOf(index) - 1
+                                                ])
+                                            }].productName`
+                                          )
+                                    }
+                                    freeSolo
+                                    autoSelect
+                                    onBlur={pnameOnBlur}
+                                    options={productsList}
+                                    // forcePopupIcon={<Search />}
+                                    getOptionLabel={(option) =>
+                                      option?.name
+                                        ? option.name
+                                        : option
+                                        ? option
+                                        : ""
+                                    }
+                                    size="small"
+                                    //className="custom-input-height"
+                                    onChange={(_, data) => {
+                                      triggerProductSelected(index, data);
+                                      return onChange(data);
+                                    }}
+                                    renderOption={(props, option, { selected }) => (
+                                      <MenuItem
+                                        {...props}
+                                        key={option.uuid}
+                                      >{`${option.name}`}</MenuItem>
+                                    )}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        placeholder="Product Name"
+                                        {...field}
+                                        className="custom-input-height"
+                                        inputRef={ref}
+                                      />
+                                    )}
+                                  />
+                                )}
+                              />
+                              <Controller
+                                name={`order[${index}].productID`}
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label="Product ID"
+                                    className="bg-white custom-input-height"
+                                    type="text"
+                                    autoComplete="off"
+                                    error={!!errors.productID}
+                                    helperText={errors?.productID?.message}
+                                    variant="outlined"
+                                    fullWidth
+                                    value={field.value || ""}
+                                    disabled={disableRowIndexes.includes(index)}
+                                  />
+                                )}
+                              />
+                              <div className="grid grid-cols-4 gap-20">
+                                
+                                <Controller
+                                  name={`order[${index}].reservationAmount`}
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:reservationAmount")}
+                                      className="bg-white custom-input-height col-span-2"
+                                      autoComplete="off"
+                                      error={!!errors?.order?.[index]?.reservationAmount}
+                                      // helperText={errors?.order?.[index]?.rate?.message}
+                                      variant="outlined"
+                                      required
+                                      value={field.value || ""}
+                                      fullWidth
+                                      disabled={disableRowIndexes.includes(index)}
+                                    />
+                                  )}
+                                />
+
+                                {!disableRowIndexes.includes(index) ? (
+                                  <Controller
+                                    name={`order[${index}].tax`}
+                                    control={control}
+                                    render={({ field }) => (
+                                      <FormControl
+                                        error={!!errors?.order?.[index]?.tax}
+                                        required
+                                        fullWidth
+                                        className="col-span-2"
+                                      >
+                                        <InputLabel id="demo-simple-select-outlined-label-type">
+                                          {t(`label:tax`)}
+                                        </InputLabel>
+                                        <Select
+                                          {...field}
+                                          labelId="demo-simple-select-outlined-label-type"
+                                          id="demo-simple-select-outlined"
+                                          label="Tax"
+                                          value={field.value || ""}
+                                          defaultValue={defaultTaxValue}
+                                          className="col-span-2"
+                                          disabled={disableRowIndexes.includes(index)}
+                                          inputlabelprops={{
+                                            shrink:
+                                              !!field.value || touchedFields.tax,
+                                          }}
+                                        >
+                                          {!!taxes && taxes.length ? (
+                                            taxes.map((tax, index) =>
+                                              tax.status === "Active" ? (
+                                                <MenuItem
+                                                  key={index}
+                                                  value={tax.value}
+                                                >
+                                                  {tax.value}
+                                                </MenuItem>
+                                              ) : (
+                                                <MenuItem
+                                                  key={index}
+                                                  value={tax.value}
+                                                  disabled
+                                                >
+                                                  {tax.value}
+                                                </MenuItem>
+                                              )
+                                            )
+                                          ) : (
+                                            <MenuItem key={0} value={0}>
+                                              0
+                                            </MenuItem>
+                                          )}
+                                        </Select>
+                                        <FormHelperText>
+                                          {errors?.order?.[index]?.tax?.message}
+                                        </FormHelperText>
+                                      </FormControl>
+                                    )}
+                                  />
+                                ) : (
+                                  <Controller
+                                    name={`order[${index}].tax`}
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label="Tax"
+                                        className="bg-white custom-input-height col-span-2"
+                                        type="number"
+                                        autoComplete="off"
+                                        error={!!errors?.order?.[index]?.tax}
+                                        helperText={
+                                          errors?.order?.[index]?.tax?.message
+                                        }
+                                        variant="outlined"
+                                        required
+                                        placeholder="Tax"
+                                        disabled={disableRowIndexes.includes(index)}
+                                        fullWidth
+                                      />
+                                    )}
+                                  />
+                                )}
+                              </div>
+                              <div className="grid grid-cols-3 gap-20">
+                                
+                                
+                              </div>
+                              <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
+                                <div>{t("label:totalReservation")}</div>
+                                <div>
+                                  {t("label:nok")} {productWiseTotal(index)}
+                                </div>
+                              </div>
+                              <Button
+                                variant="outlined"
+                                color="error"
+                                className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                                startIcon={
+                                  <RemoveCircleOutlineIcon className="text-red-400" />
+                                }
+                                onClick={() => onDelete(index)}
+                              >
+                                {t(`label:removeItem`)}
+                              </Button>
+                            </div>
+                          ))}
+                          <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                            {/*TODO: joni vai please add grandtotal here*/}
+                            {t("label:totalReservationAmount")} : {t("label:nok")} {grandTotal}
+                          </div>
+                        </AccordionDetails>
+                      </Accordion>
+                    </div>
+                  </Hidden>
+
                   <Hidden smDown>
                     <div className="product-list">
                       <div className="my-10 product-list-grid-container product-list-grid-container-height bg-primary-25 subtitle3 gap-10 px-10">
                         <div className="my-auto text-MonochromeGray-500">
-                        Item Name
+                        {t("label:itemName")}
                         </div>
                         <div className="my-auto text-MonochromeGray-500">
                           {t("label:productIdOptional")}
                         </div>
                         <div className="my-auto text-right text-MonochromeGray-500">
-                        Reservation Amount
+                        {t("label:reservationAmount")}
                         </div>
                         <div className="my-auto text-center text-MonochromeGray-500">
                           {t("label:tax")}
                         </div>
                         <div className="my-auto text-right text-MonochromeGray-500">
-                        Total Reservation
+                        {t("label:totalReservation")}
                         </div>
                         <div className="my-auto"></div>
                       </div>
@@ -1431,91 +1777,8 @@ const ReservationCreate = () => {
                                   size="small"
                                   //className="custom-input-height"
                                   onChange={(_, data) => {
-                                    if (data) {
-                                      if (data?.name) {
-                                        setValue(
-                                          `order[${index}].productName`,
-                                          data.name
-                                        );
-                                        setValue(
-                                          `order[${index}].productID`,
-                                          data.id
-                                        );
-                                        const preparedPrice = data.price
-                                          .toString()
-                                          .includes(".")
-                                          ? `${data.price.toString().split(".")[0]},${
-                                              data.price.toString().split(".")[1]
-                                            }`
-                                          : data.price;
-                                        setValue(
-                                          `order[${index}].rate`,
-                                          preparedPrice
-                                        );
-                                        setValue(`order[${index}].tax`, data.tax);
-                                        disableCurrentProductRow(index);
-
-                                        const watchRate = watch(
-                                          `order[${index}].rate`
-                                        );
-                                        const watchTax = watch(`order[${index}].tax`);
-                                        const watchName = watch(
-                                          `order[${index}].productName`
-                                        );
-                                        const watchId = watch(
-                                          `order[${index}].productID`
-                                        );
-
-                                        for (
-                                          let i = 0;
-                                          i < addOrderIndex.length;
-                                          i++
-                                        ) {
-                                          if (
-                                            watchName &&
-                                            watchId &&
-                                            watchRate &&
-                                            watchTax &&
-                                            i !== index &&
-                                            watchName ===
-                                              watch(`order[${i}].productName`) &&
-                                            watchId ===
-                                              watch(`order[${i}].productID`) &&
-                                            watchRate === watch(`order[${i}].rate`) &&
-                                            watchTax === watch(`order[${i}].tax`)
-                                          ) {
-                                            let quantityNum = isNaN(
-                                              parseInt(watch(`order[${i}].quantity`))
-                                            )
-                                              ? 1
-                                              : parseInt(
-                                                  watch(`order[${i}].quantity`)
-                                                );
-                                            setValue(
-                                              `order[${i}].quantity`,
-                                              quantityNum + 1
-                                            );
-                                            onSameRowAction(index);
-                                            enqueueSnackbar(
-                                              `Same product found in Row ${
-                                                i + 1
-                                              } and ${index + 1}, merged together!`,
-                                              { variant: "success" }
-                                            );
-                                          }
-                                        }
-                                      } else
-                                        setValue(
-                                          `order[${index}].productName`,
-                                          data ? data : ""
-                                        );
-                                    } else {
-                                      setValue(`order[${index}].productName`, "");
-                                      setValue(`order[${index}].productID`, "");
-                                      setValue(`order[${index}].rate`, "");
-                                      setValue(`order[${index}].tax`, "");
-                                      enableCurrentProductRow(index);
-                                    }
+                                    triggerProductSelected(index, data);
+                                    
                                     return onChange(data);
                                   }}
                                   renderOption={(props, option, { selected }) => (
@@ -1756,25 +2019,58 @@ const ReservationCreate = () => {
                     </div>
                     <div className="col-span-1"></div>
                     
-                    <div className="col-span-1 md:col-span-2">
-                      <div className="border-MonochromeGray-25">
-                        <div className="px-14">
-                          <div className="flex justify-between items-center bg-MonochromeGray-25 py-20 px-16 my-20">
-                            <div className="subtitle3 text-MonochromeGray-700">
-                            Total Reservation
-                            </div>
-                            <div className="body3 text-MonochromeGray-700">
-                              {t("label:nok")}{" "}
-                              {ThousandSeparator(grandTotal.toFixed(2) / 2)}
+                    <Hidden smDown>
+                      <div className="col-span-1 md:col-span-2">
+                        <div className="border-MonochromeGray-25">
+                          <div className="px-14">
+                            <div className="flex justify-between items-center bg-MonochromeGray-25 py-20 px-16 my-20">
+                              <div className="subtitle3 text-MonochromeGray-700">
+                              {t("label:totalReservationAmount")}
+                              </div>
+                              <div className="body3 text-MonochromeGray-700">
+                                {t("label:nok")}{" "}
+                                {ThousandSeparator(grandTotal.toFixed(2) / 2)}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </Hidden>
                   </div>
 
                 </div>
               </div>
+              <Hidden mdUp>
+                <div className="fixed bottom-0 grid grid-cols-2 justify-center items-center gap-20 w-full mb-20 px-20 z-50">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    className="bg-white text-MonochromeGray-700 button2 shadow-5 "
+                    onClick={() => setOpen(true)}
+                    startIcon={<Cancel className="text-red-500" />}
+                  >
+                    {t("label:discard")}
+                  </Button>
+                  <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    className="rounded-full bg-primary-500 button2 py-5"
+                    disabled={!isValid}
+                    sx={{
+                      "&.Mui-disabled": {
+                        background: "#eaeaea",
+                        color: "#c0c0c0",
+                      },
+                    }}
+                    startIcon={<RedoIcon />}
+                    loading={loading}
+                    loadingPosition="center"
+                  >
+                    {t("label:sendOrder")}
+                  </LoadingButton>
+                </div>
+              </Hidden>
           </form>
         </>
     );
