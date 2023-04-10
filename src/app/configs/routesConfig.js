@@ -28,6 +28,9 @@ import UserManagementConfig from "../pages/userManagement/userManagementConfig";
 import PaymentConfig from "../pages/sales/paymentConfig";
 import RefundRequestsConfig from "../pages/overviews/refund-requests/RefundRequestsConfig";
 import Config404 from "../pages/404/404Config";
+import SubscriptionPaymentConfig from "../pages/subscriptions/subscriptionPaymentConfig";
+import {SubscriptionsConfig, SubscriptionsConfigRBAC} from "../pages/subscriptions/subscriptionsConfig";
+
 
 const routeConfigs = [
   DashboardConfig,
@@ -40,6 +43,9 @@ const routeConfigs = [
   ClientsConfig,
   ProductsConfig,
   ProductsConfigRBAC,
+  SubscriptionPaymentConfig,
+  SubscriptionsConfig,
+  SubscriptionsConfigRBAC,
   CategoriesConfig,
   CategoriesConfigRBAC,
   CustomersConfig,
