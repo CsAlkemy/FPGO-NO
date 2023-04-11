@@ -92,7 +92,8 @@ export const apiSlice = createApi({
     "ClientOrganizationsSummaryList",
     "ApprovedClientsList",
     "ApprovalClientsList",
-    "RefundRequestsList"
+    "RefundRequestsList",
+    "ReservationList"
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -397,6 +398,14 @@ export const apiSlice = createApi({
       query: (uuid) => `/orders/export/aptic/${uuid}`,
       providesTags: ["OrdersList"],
     }),
+    createReservation: builder.mutation({
+      query: (payload) => ({
+        url: "/reservations/create",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
   }),
 });
 
@@ -444,4 +453,5 @@ export const {
   useCreateQuickOrderMutation,
   useUpdateQuickOrderCustomerMutation,
   useOrderExportToApticQuery,
+  useCreateReservationMutation
 } = apiSlice;
