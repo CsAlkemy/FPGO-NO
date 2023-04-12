@@ -36,7 +36,9 @@ const schema = yup.object().shape({
     .required("youMustEnterYourOrganizationId"),
   companyname: yup.string().required("youMustEnterYourCompanyName"),
   name: yup.string().required("youMustEnterYourName"),
-  phonenumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  phonenumber: yup.string().required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   organizationtype: yup.string().required("youMustSelectType"),
   email: yup
     .string()

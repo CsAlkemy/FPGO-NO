@@ -12,7 +12,7 @@ import {useSnackbar} from "notistack";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import {useTranslation} from "react-i18next";
 import {useGetOrdersListQuery} from "app/store/api/apiSlice";
-import Hidden from "@mui/material/Hidden";
+import Hidden from '@mui/material/Hidden';
 import {FP_ADMIN} from "../../../utils/user-roles/UserRoles";
 import {selectUser} from "app/store/userSlice";
 
@@ -185,50 +185,50 @@ export default function OrdersListOverview() {
     <>
       <Hidden smUp>
         <OverviewMainTable
-          headerSubtitle={headerSubtitle}
-          headerButtonLabel={headerButtonLabel}
-          tableName={ordersListOverview}
-          headerRows={
-            user.role[0] !== FP_ADMIN
-              ? orderListOverviewHeaderRows
-              : orderListOverviewHeaderRowsFPAdmin
-          }
-          // tableData={ordersList.tableData}
-          tableData={data?.is_data ? preparedData : []}
-          rowDataFields={
-            user.role[0] !== FP_ADMIN
-              ? orderListOverviewRowDataFields
-              : orderListOverviewFPAdminRowDataFields
-          }
-          tabPanelsLabel={tabPanelsLabel}
-          tabs={tabs}
-          // isLoading={isLoading}
-          isLoading={isFetching}
-          isMobileScreen={true}
+            headerSubtitle={headerSubtitle}
+            headerButtonLabel={headerButtonLabel}
+            tableName={ordersListOverview}
+            headerRows={
+              user.role[0] !== FP_ADMIN
+                  ? orderListOverviewHeaderRows
+                  : orderListOverviewHeaderRowsFPAdmin
+            }
+            // tableData={ordersList.tableData}
+            tableData={data?.is_data ? preparedData : []}
+            rowDataFields={
+              user.role[0] !== FP_ADMIN
+                  ? orderListOverviewRowDataFields
+                  : orderListOverviewFPAdminRowDataFields
+            }
+            tabPanelsLabel={tabPanelsLabel}
+            tabs={tabs}
+            // isLoading={isLoading}
+            isLoading={isFetching}
+            isMobileScreen={true}
         />
       </Hidden>
       <Hidden smDown>
         <OverviewMainTable
-          headerSubtitle={headerSubtitle}
-          headerButtonLabel={headerButtonLabel}
-          tableName={ordersListOverview}
-          headerRows={
-            user.role[0] !== FP_ADMIN
-              ? orderListOverviewHeaderRows
-              : orderListOverviewHeaderRowsFPAdmin
-          }
-          // tableData={ordersList.tableData}
-          tableData={data?.is_data ? preparedData : []}
-          rowDataFields={
-            user.role[0] !== FP_ADMIN
-              ? orderListOverviewRowDataFields
-              : orderListOverviewFPAdminRowDataFields
-          }
-          tabPanelsLabel={tabPanelsLabel}
-          tabs={tabs}
-          // isLoading={isLoading}
-          isLoading={isFetching}
-          isMobileScreen={false}
+            headerSubtitle={headerSubtitle}
+            headerButtonLabel={headerButtonLabel}
+            tableName={ordersListOverview}
+            headerRows={
+              user.role[0] !== FP_ADMIN
+                  ? orderListOverviewHeaderRows
+                  : orderListOverviewHeaderRowsFPAdmin
+            }
+            // tableData={ordersList.tableData}
+            tableData={data?.is_data ? preparedData : []}
+            rowDataFields={
+              user.role[0] !== FP_ADMIN
+                  ? orderListOverviewRowDataFields
+                  : orderListOverviewFPAdminRowDataFields
+            }
+            tabPanelsLabel={tabPanelsLabel}
+            tabs={tabs}
+            // isLoading={isLoading}
+            isLoading={isFetching}
+            isMobileScreen={false}
         />
       </Hidden>
     </>

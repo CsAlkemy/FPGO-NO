@@ -1214,7 +1214,9 @@ const OrderInformation = ({ info }) => {
                                         {...field}
                                         //className='custom-input-height-div'
                                         inputRef={ref}
-                                        placeholder= {t(`label:searchByNameOrPhoneNo`)}
+                                        placeholder={t(
+                                          `label:searchByNameOrPhoneNo`
+                                        )}
                                       />
                                     )}
                                   />
@@ -1399,15 +1401,15 @@ const OrderInformation = ({ info }) => {
                                           (info.customerDetails?.type ===
                                           "Private"
                                             ? info.customerDetails
-                                                ?.personalNumber
+                                              ?.personalNumber
                                               ? info.customerDetails
-                                                  ?.personalNumber
+                                                ?.personalNumber
                                               : ""
                                             : info.customerDetails
+                                              ?.organizationId
+                                              ? info.customerDetails
                                                 ?.organizationId
-                                            ? info.customerDetails
-                                                ?.organizationId
-                                            : "")
+                                              : "")
                                         }
                                         defaultValue={
                                           info.customerDetails?.type ===
@@ -1459,7 +1461,7 @@ const OrderInformation = ({ info }) => {
                                               (info.customerDetails.address
                                                 ?.street
                                                 ? info.customerDetails.address
-                                                    ?.street
+                                                  ?.street
                                                 : "")
                                             }
                                             defaultValue={
@@ -1503,7 +1505,7 @@ const OrderInformation = ({ info }) => {
                                               field.value ||
                                               (info.customerDetails.address?.zip
                                                 ? info.customerDetails.address
-                                                    ?.zip
+                                                  ?.zip
                                                 : "")
                                             }
                                             defaultValue={
@@ -1546,7 +1548,7 @@ const OrderInformation = ({ info }) => {
                                             field.value ||
                                             (info.customerDetails.address?.city
                                               ? info.customerDetails.address
-                                                  ?.city
+                                                ?.city
                                               : "")
                                           }
                                           defaultValue={
@@ -1852,7 +1854,7 @@ const OrderInformation = ({ info }) => {
                                             (info.internalReferences
                                               ?.referenceNumber
                                               ? info.internalReferences
-                                                  ?.referenceNumber
+                                                ?.referenceNumber
                                               : "")
                                           }
                                           defaultValue={

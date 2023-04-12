@@ -440,28 +440,28 @@ const createOrder = () => {
   }, [watch(`orderDate`)]);
 
   const setDueDateMinDate = () => {
-      if (
-        watchOrderDate &&
-        watchOrderDate.getMonth() === new Date().getMonth() &&
-        watchOrderDate.getDate() >= new Date().getDate()
-      ) {
-        return new Date().setDate(watchOrderDate.getDate() + 1);
-      } else if (
-        watchOrderDate &&
-        watchOrderDate.getMonth() > new Date().getMonth()
-      ) {
-        let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
-        dueDate = dueDate.setDate(watchOrderDate.getDate() + 1);
-        return new Date(dueDate);
-      } else if (
-        watchOrderDate &&
-        (watchOrderDate.getMonth() < new Date().getMonth() ||
-          (watchOrderDate.getMonth() === new Date().getMonth() &&
-            watchOrderDate.getDate() < new Date().getDate()))
-      ) {
-        return new Date().setDate(new Date().getDate() + 1);
-      }
-    };
+    if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() === new Date().getMonth() &&
+      watchOrderDate.getDate() >= new Date().getDate()
+    ) {
+      return new Date().setDate(watchOrderDate.getDate() + 1);
+    } else if (
+      watchOrderDate &&
+      watchOrderDate.getMonth() > new Date().getMonth()
+    ) {
+      let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
+      dueDate = dueDate.setDate(watchOrderDate.getDate() + 1);
+      return new Date(dueDate);
+    } else if (
+      watchOrderDate &&
+      (watchOrderDate.getMonth() < new Date().getMonth() ||
+        (watchOrderDate.getMonth() === new Date().getMonth() &&
+          watchOrderDate.getDate() < new Date().getDate()))
+    ) {
+      return new Date().setDate(new Date().getDate() + 1);
+    }
+  };
 
   useEffect(() => {
     AuthService.axiosRequestHelper().then((isAuthenticated) => {

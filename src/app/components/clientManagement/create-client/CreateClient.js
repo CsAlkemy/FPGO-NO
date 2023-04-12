@@ -57,20 +57,26 @@ const CreateClient = () => {
     currency: "Norwegian Krone",
     code: "NOK",
   });
-  const [customApticInfoData, setCustomApticInfoData] =
-    useState("purchase");
+  const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
   const plansPrice = ["200", "350", "500"];
 
-  let schema = customApticInfoData === "purchase" ? validateSchemaCreateClient : validateSchemaCreateClientAdministration;
+  let schema =
+    customApticInfoData === "purchase"
+      ? validateSchemaCreateClient
+      : validateSchemaCreateClientAdministration;
   useEffect(() => {
     if (recheckSchema) {
       if (customApticInfoData === "purchase") {
         clearErrors(["creditLimitCustomer"]);
         setValue("creditLimitCustomer", "", { shouldValidate: true });
-        setError("creditLimitCustomer", { type: "focus" }, { shouldFocus: true });
+        setError(
+          "creditLimitCustomer",
+          { type: "focus" },
+          { shouldFocus: true }
+        );
       } else {
         setValue("creditLimitCustomer", "", { shouldValidate: true });
         clearErrors(["creditLimitCustomer"]);
@@ -264,6 +270,11 @@ const CreateClient = () => {
         password: values.APTICpassword,
         name: values.name,
         fpReference: values.fpReference,
+        // creditLimit: parseFloat(values.creditLimitCustomer),
+        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
+        // costLimitForOrder: parseFloat(values.costLimitforOrder),
+        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
+        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
         creditLimit:
           customApticInfoData === "purchase"
             ? parseFloat(values.creditLimitCustomer)
@@ -906,7 +917,6 @@ const CreateClient = () => {
                       )}
                     />
                   </div>
-
                 </div>
               </div>
               <div className="billing-information">

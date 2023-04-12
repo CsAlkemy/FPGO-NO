@@ -73,9 +73,9 @@ const SendInvoiceModal = (props) => {
     const  data = OrdersService.prepareUpdateQuickOrderCustomer({ ...values, customerType });
     updateQuickOrderCustomer({...data, uuid:customerInfo?.uuid}).then((response) => {
       if (response?.data?.status_code === 202) {
-      enqueueSnackbar(t(`message:${response?.data?.message}`), {
-        variant: "success",
-      })
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        })
         setEditOpen(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
@@ -238,8 +238,8 @@ const SendInvoiceModal = (props) => {
                               helperText={
                                 errors?.customerName?.message
                                   ? t(
-                                      `validation:${errors?.customerName?.message}`
-                                    )
+                                    `validation:${errors?.customerName?.message}`
+                                  )
                                   : ""
                               }
                               required
@@ -352,8 +352,8 @@ const SendInvoiceModal = (props) => {
                             helperText={
                               errors?.streetAddress?.message
                                 ? t(
-                                    `validation:${errors?.streetAddress?.message}`
-                                  )
+                                  `validation:${errors?.streetAddress?.message}`
+                                )
                                 : ""
                             }
                             variant="outlined"

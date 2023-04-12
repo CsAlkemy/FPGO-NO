@@ -203,7 +203,7 @@ export default function OverviewFloatingButtons(props) {
             disabled={!exportTableData}
           >
             {t("label:export")}
-          </Button> */}
+          </Button>*/}
         </div>
       )}
       {props.tableRef === customersListOverview ? (

@@ -737,6 +737,60 @@ export default function OverViewResponsiveBody(props) {
                 customerPhone={props.row.phone}
                 customerEmail={props.row.email}
               />
+            </>) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<ReceiptLongOutlinedIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => setEditOpen(true)}
+                >
+                  {t("label:sendInvoice")}
+                </Button>
+              </CustomTooltip>
+              <SendInvoiceModal
+                editOpen={editOpen}
+                setEditOpen={setEditOpen}
+                customerInfo={props.row}
+              />
+            </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<ReceiptLongOutlinedIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleSendInvoiceModalOpen()}
+                >
+                  {t("label:sendInvoice")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
             </>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
             <>
@@ -1544,12 +1598,6 @@ export default function OverViewResponsiveBody(props) {
                 editOpen={editOpen}
                 setEditOpen={setEditOpen}
                 customerInfo={props.row}
-                // headerTitle={headerTitle}
-                // orderId={props.row.id}
-                // orderName={props.row.name}
-                // orderAmount={props.row.amount}
-                // customerPhone={props.row.phone}
-                // customerEmail={props.row.email}
               />
             </>
           ) : (

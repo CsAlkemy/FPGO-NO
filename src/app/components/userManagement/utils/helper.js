@@ -6,7 +6,11 @@ export const validateSchema = yup.object().shape({
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
-  phoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  phoneNumber: yup
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   // designation: yup.string().required('You must enter your designation'),
   organization: yup.string().required("You must enter your organization"),
   //subClient: yup.string().required('You must select your sub client'),
@@ -35,7 +39,11 @@ export const validateSchemaCreateBranchAdmin = yup.object().shape({
     .email("youMustEnterAValidEmail")
     .required("youMustEnterAEmail"),
   fullName: yup.string().required("youMustEnterYourName"),
-  phoneNumber: yup.string().required("youMustEnterYourPhoneNumber"),
+  phoneNumber: yup
+      .string()
+      .required("youMustEnterYourPhoneNumber")
+      .min(8, "enterValidPhoneNumber")
+      .max(15, "enterValidPhoneNumber"),
   branch: yup.string().required("You must select your branch"),
   // designation: yup.string().required("You must enter your designation"),
   password: yup

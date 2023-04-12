@@ -1358,7 +1358,13 @@ const ClientDetails = () => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.ehfCost}
-                                    helperText={errors?.ehfCost?.message}
+                                    helperText={
+                                      errors?.ehfCost?.message
+                                        ? t(
+                                            `validation:${errors?.ehfCost?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     value={
@@ -1431,7 +1437,11 @@ const ClientDetails = () => {
                                         onBlur={handleOnBlurGetDialCode}
                                       />
                                       <FormHelperText>
-                                        {errors?.billingPhoneNumber?.message}
+                                        {errors?.billingPhoneNumber?.message
+                                          ? t(
+                                              `validation:${errors?.billingPhoneNumber?.message}`
+                                            )
+                                          : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -1452,7 +1462,13 @@ const ClientDetails = () => {
                                           : ""
                                       }
                                       error={!!errors.billingEmail}
-                                      helperText={errors?.billingEmail?.message}
+                                      helperText={
+                                        errors?.billingEmail?.message
+                                          ? t(
+                                              `validation:${errors?.billingEmail?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       value={field.value || ""}
@@ -1476,6 +1492,10 @@ const ClientDetails = () => {
                                         error={!!errors.billingAddress}
                                         helperText={
                                           errors?.billingAddress?.message
+                                            ? t(
+                                                `validation:${errors?.billingAddress?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         required
@@ -1497,7 +1517,13 @@ const ClientDetails = () => {
                                         autoComplete="off"
                                         value={field.value || ""}
                                         error={!!errors.zip}
-                                        helperText={errors?.zip?.message}
+                                        helperText={
+                                          errors?.zip?.message
+                                            ? t(
+                                                `validation:${errors?.zip?.message}`
+                                              )
+                                            : ""
+                                        }
                                         variant="outlined"
                                         required
                                         fullWidth
@@ -1518,7 +1544,13 @@ const ClientDetails = () => {
                                       value={field.value || ""}
                                       autoComplete="off"
                                       error={!!errors.city}
-                                      helperText={errors?.city?.message}
+                                      helperText={
+                                        errors?.city?.message
+                                          ? t(
+                                              `validation:${errors?.city?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth
@@ -1560,7 +1592,11 @@ const ClientDetails = () => {
                                         </MenuItem>
                                       </Select>
                                       <FormHelperText>
-                                        {errors?.country?.message}
+                                        {errors?.country?.message
+                                          ? t(
+                                              `validation:${errors?.country?.message}`
+                                            )
+                                          : ""}
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -1653,10 +1689,12 @@ const ClientDetails = () => {
                                             onBlur={handleOnBlurGetDialCode}
                                           />
                                           <FormHelperText>
-                                            {
-                                              errors?.shippingPhoneNumber
-                                                ?.message
-                                            }
+                                            {errors?.shippingPhoneNumber
+                                              ?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingPhoneNumber?.message}`
+                                                )
+                                              : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -1674,6 +1712,10 @@ const ClientDetails = () => {
                                           error={!!errors.shippingEmail}
                                           helperText={
                                             errors?.shippingEmail?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingEmail?.message}`
+                                                )
+                                              : ""
                                           }
                                           variant="outlined"
                                           // required
@@ -1697,6 +1739,10 @@ const ClientDetails = () => {
                                             error={!!errors.shippingAddress}
                                             helperText={
                                               errors?.shippingAddress?.message
+                                                ? t(
+                                                    `validation:${errors?.shippingAddress?.message}`
+                                                  )
+                                                : ""
                                             }
                                             variant="outlined"
                                             // required
@@ -1720,6 +1766,10 @@ const ClientDetails = () => {
                                             error={!!errors.shippingZip}
                                             helperText={
                                               errors?.shippingZip?.message
+                                                ? t(
+                                                    `validation:${errors?.shippingZip?.message}`
+                                                  )
+                                                : ""
                                             }
                                             variant="outlined"
                                             // required
@@ -1743,6 +1793,10 @@ const ClientDetails = () => {
                                           error={!!errors.shippingCity}
                                           helperText={
                                             errors?.shippingCity?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingCity?.message}`
+                                                )
+                                              : ""
                                           }
                                           variant="outlined"
                                           // required
@@ -1788,7 +1842,11 @@ const ClientDetails = () => {
                                             </MenuItem>
                                           </Select>
                                           <FormHelperText>
-                                            {errors?.shippingCountry?.message}
+                                            {errors?.shippingCountry?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingCountry?.message}`
+                                                )
+                                              : ""}
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -1823,7 +1881,13 @@ const ClientDetails = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors.bankName}
-                                      helperText={errors?.bankName?.message}
+                                      helperText={
+                                        errors?.bankName?.message
+                                          ? t(
+                                              `validation:${errors?.bankName?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       value={field.value || ""}
                                       fullWidth
@@ -1852,6 +1916,10 @@ const ClientDetails = () => {
                                       error={!!errors.accountNumber}
                                       helperText={
                                         errors?.accountNumber?.message
+                                          ? t(
+                                              `validation:${errors?.accountNumber?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -1869,7 +1937,13 @@ const ClientDetails = () => {
                                       value={field.value || ""}
                                       autoComplete="off"
                                       error={!!errors.IBAN}
-                                      helperText={errors?.IBAN?.message}
+                                      helperText={
+                                        errors?.IBAN?.message
+                                          ? t(
+                                              `validation:${errors?.IBAN?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                     />
@@ -1886,7 +1960,13 @@ const ClientDetails = () => {
                                       value={field.value || ""}
                                       autoComplete="off"
                                       error={!!errors.SWIFTCode}
-                                      helperText={errors?.SWIFTCode?.message}
+                                      helperText={
+                                        errors?.SWIFTCode?.message
+                                          ? t(
+                                              `validation:${errors?.SWIFTCode?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                     />
@@ -1958,6 +2038,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTICuserName}
                                       helperText={
                                         errors?.APTICuserName?.message
+                                          ? t(
+                                              `validation:${errors?.APTICuserName?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -1978,6 +2062,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTICpassword}
                                       helperText={
                                         errors?.APTICpassword?.message
+                                          ? t(
+                                              `validation:${errors?.APTICpassword?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2015,7 +2103,13 @@ const ClientDetails = () => {
                                       autoComplete="off"
                                       value={field.value || ""}
                                       error={!!errors.name}
-                                      helperText={errors?.name?.message}
+                                      helperText={
+                                        errors?.name?.message
+                                          ? t(
+                                              `validation:${errors?.name?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth
@@ -2033,7 +2127,13 @@ const ClientDetails = () => {
                                       autoComplete="off"
                                       value={field.value || ""}
                                       error={!!errors.fpReference}
-                                      helperText={errors?.fpReference?.message}
+                                      helperText={
+                                        errors?.fpReference?.message
+                                          ? t(
+                                              `validation:${errors?.fpReference?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth
@@ -2056,6 +2156,10 @@ const ClientDetails = () => {
                                         error={!!errors.creditLimitCustomer}
                                         helperText={
                                           errors?.creditLimitCustomer?.message
+                                            ? t(
+                                                `validation:${errors?.creditLimitCustomer?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         required
@@ -2083,6 +2187,10 @@ const ClientDetails = () => {
                                         error={!!errors.costLimitforCustomer}
                                         helperText={
                                           errors?.costLimitforCustomer?.message
+                                            ? t(
+                                                `validation:${errors?.costLimitforCustomer?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2109,6 +2217,10 @@ const ClientDetails = () => {
                                         error={!!errors.costLimitforOrder}
                                         helperText={
                                           errors?.costLimitforOrder?.message
+                                            ? t(
+                                                `validation:${errors?.costLimitforOrder?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2135,6 +2247,10 @@ const ClientDetails = () => {
                                         error={!!errors.nvoicewithRegress}
                                         helperText={
                                           errors?.nvoicewithRegress?.message
+                                            ? t(
+                                                `validation:${errors?.nvoicewithRegress?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2161,6 +2277,10 @@ const ClientDetails = () => {
                                         error={!!errors.invoicewithoutRegress}
                                         helperText={
                                           errors?.invoicewithoutRegress?.message
+                                            ? t(
+                                                `validation:${errors?.invoicewithoutRegress?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -2204,6 +2324,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTIEngineCuserName}
                                       helperText={
                                         errors?.APTIEngineCuserName?.message
+                                          ? t(
+                                              `validation:${errors?.APTIEngineCuserName?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       required
@@ -2224,6 +2348,10 @@ const ClientDetails = () => {
                                       error={!!errors.APTIEnginePassword}
                                       helperText={
                                         errors?.APTIEnginePassword?.message
+                                          ? t(
+                                              `validation:${errors?.APTIEnginePassword?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -2559,6 +2687,10 @@ const ClientDetails = () => {
                                             error={!!errors.vatName}
                                             helperText={
                                               errors?.vatName?.message
+                                                ? t(
+                                                    `validation:${errors?.vatName?.message}`
+                                                  )
+                                                : ""
                                             }
                                             variant="outlined"
                                             required
@@ -2585,6 +2717,10 @@ const ClientDetails = () => {
                                             error={!!errors.vatValue}
                                             helperText={
                                               errors?.vatValue?.message
+                                                ? t(
+                                                    `validation:${errors?.vatValue?.message}`
+                                                  )
+                                                : ""
                                             }
                                             variant="outlined"
                                             required
@@ -2614,6 +2750,10 @@ const ClientDetails = () => {
                                             helperText={
                                               errors?.bookKeepingReference
                                                 ?.message
+                                                ? t(
+                                                    `validation:${errors?.bookKeepingReference?.message}`
+                                                  )
+                                                : ""
                                             }
                                             variant="outlined"
                                             required
@@ -2696,7 +2836,13 @@ const ClientDetails = () => {
                                       autoComplete="off"
                                       value={field.value || ""}
                                       error={!!errors.fakturaB2B}
-                                      helperText={errors?.fakturaB2B?.message}
+                                      helperText={
+                                        errors?.fakturaB2B?.message
+                                          ? t(
+                                              `validation:${errors?.fakturaB2B?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth
@@ -2720,7 +2866,13 @@ const ClientDetails = () => {
                                       type="number"
                                       autoComplete="off"
                                       error={!!errors.fakturaB2C}
-                                      helperText={errors?.fakturaB2C?.message}
+                                      helperText={
+                                        errors?.fakturaB2C?.message
+                                          ? t(
+                                              `validation:${errors?.fakturaB2C?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       required
                                       fullWidth

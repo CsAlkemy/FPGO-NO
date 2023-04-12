@@ -1762,8 +1762,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.creditLimitCustomer?.message
                                       ? t(
-                                          `validation:${errors?.creditLimitCustomer?.message}`
-                                        )
+                                        `validation:${errors?.creditLimitCustomer?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1792,8 +1792,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.costLimitforCustomer?.message
                                       ? t(
-                                          `validation:${errors?.costLimitforCustomer?.message}`
-                                        )
+                                        `validation:${errors?.costLimitforCustomer?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1821,8 +1821,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.costLimitforOrder?.message
                                       ? t(
-                                          `validation:${errors?.costLimitforOrder?.message}`
-                                        )
+                                        `validation:${errors?.costLimitforOrder?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1850,8 +1850,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.invoicewithRegress?.message
                                       ? t(
-                                          `validation:${errors?.invoicewithRegress?.message}`
-                                        )
+                                        `validation:${errors?.invoicewithRegress?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1879,8 +1879,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.invoicewithoutRegress?.message
                                       ? t(
-                                          `validation:${errors?.invoicewithoutRegress?.message}`
-                                        )
+                                        `validation:${errors?.invoicewithoutRegress?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"

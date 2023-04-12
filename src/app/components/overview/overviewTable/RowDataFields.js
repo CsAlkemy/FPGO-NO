@@ -38,6 +38,7 @@ export const approvalListForFPAdminRowDataFields = [
 export const clientsListRowDataFields = [
   "name",
   "orgId",
+  // "orgType",
   "primaryContact",
   "phone",
   "email",
