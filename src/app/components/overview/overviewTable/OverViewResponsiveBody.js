@@ -56,6 +56,7 @@ export default function OverViewResponsiveBody(props) {
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
   const { t } = useTranslation();
+  const [amountBank, setAmountBank] = useState(null);
 
   const handleTooltipClose = () => {
     setOpenHigh(false);
@@ -71,6 +72,7 @@ export default function OverViewResponsiveBody(props) {
 
   const handleModalOpen = (decision) => {
     setOpen(true);
+    setAmountBank(null);
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
@@ -2295,7 +2297,10 @@ export default function OverViewResponsiveBody(props) {
                   color="secondary"
                   startIcon={<UndoIcon />}
                   className="rounded-4 border-1 hover:bg-white border-MonochromeGray-100 text-MonochromeGray-100 hover:text-primary-500"
-                  onClick={() => handleModalOpen("refundReservations")}
+                  onClick={() => {
+                    handleModalOpen("refundReservations");
+                    setAmountBank(props.row.amountInBank)
+                  }}
                 >
                   {t("label:refundFromReservation")}
                 </Button>
@@ -2309,6 +2314,7 @@ export default function OverViewResponsiveBody(props) {
                 orderAmount={props.row.reservedAmount}
                 customerPhone={props.row.phone}
                 customerEmail={props.row.email}
+                amountInBank={amountBank}
               />
             </>
           ) : (

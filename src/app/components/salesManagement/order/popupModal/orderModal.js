@@ -514,7 +514,7 @@ const OrderModal = (props) => {
                     loadingPosition="center"
                     disabled={
                       isDisableRefundRequest ||
-                      (headerTitle === "Resend Order" &&
+                      (["Resend Order", "Resend Reservation"].includes(headerTitle) &&
                         checkEmail === false &&
                         checkPhone === false)
                     }

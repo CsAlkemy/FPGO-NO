@@ -52,6 +52,7 @@ export default function OverViewMainTableBody(props) {
   const [openApprove, setOpenApprove] = useState(false);
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
+  const [amountBank, setAmountBank] = useState(null);
 
   const handleTooltipClose = () => {
     setOpenHigh(false);
@@ -67,6 +68,7 @@ export default function OverViewMainTableBody(props) {
 
   const handleModalOpen = (decision) => {
     setOpen(true);
+    setAmountBank(null);
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
@@ -1746,7 +1748,10 @@ export default function OverViewMainTableBody(props) {
                     component="span"
                     className="py-8 px-4 hover:border-primary-500"
                     sx={resendRefundBoxSX}
-                    onClick={() => handleModalOpen('refundReservations') }
+                    onClick={() => {
+                      handleModalOpen('refundReservations');
+                      setAmountBank(props.row.amountInBank);
+                    }}
                   >
                     <UndoIcon style={{ paddingBottom: "3px" }} />
                   </Box>
@@ -1760,6 +1765,7 @@ export default function OverViewMainTableBody(props) {
                   orderAmount={props.row.reservedAmount}
                   customerPhone={props.row.phone}
                   customerEmail={props.row.email}
+                  amountInBank={amountBank}
                 />
               </TableCell>
             ) : 
