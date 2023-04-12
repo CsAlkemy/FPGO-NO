@@ -10,6 +10,10 @@ const ReservationDetails = lazy(() =>
   import("../../components/salesManagement/reservations/details")
 );
 
+const ReservationCheckout = lazy(() =>
+  import("../../components/salesManagement/reservations/checkout")
+);
+
 export const ReservationsConfig = {
   settings: {
     layout: {
@@ -79,6 +83,37 @@ export const ReservationsConfEx = {
     {
       path: "/reservations-details/:uuid",
       element: <ReservationDetails />
+    }
+  ]
+};
+
+export const ReservationCart = {
+  settings: {
+    layout: {
+      config: {
+        navbar: {
+          display: false,
+        },
+        toolbar: {
+          display: false,
+        },
+        footer: {
+          display: false,
+        },
+        leftSidePanel: {
+          display: false,
+        },
+        rightSidePanel: {
+          display: false,
+        },
+      },
+    },
+  },
+  auth: authRoles.allUserInclucingUnAuthenticatedUser,
+  routes: [
+    {
+      path: "/reservations/:uuid/checkout",
+      element: <ReservationCheckout />
     }
   ]
 };
