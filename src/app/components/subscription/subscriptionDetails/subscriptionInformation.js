@@ -18,35 +18,28 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import CreateIcon from "@mui/icons-material/Create";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import DiscardConfirmModal from "../common/confirmDiscard";
-import { quickOrderDefaultValue, quickOrderValidation } from "./utils/helper";
-import InfoIcon from "@mui/icons-material/Info";
+import DiscardConfirmModal from "../../common/confirmDiscard";
+import { quickOrderDefaultValue, quickOrderValidation } from "../utils/helper";
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import CharCount from "../common/charCount";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
+import CharCount from "../../common/charCount";
 import { yupResolver } from "@hookform/resolvers/yup";
-import AuthService from "../../data-access/services/authService";
-import ProductService from "../../data-access/services/productsService/ProductService";
-import CustomersService from "../../data-access/services/customersService/CustomersService";
-import ClientService from "../../data-access/services/clientsService/ClientService";
-import UtilsServices from "../../data-access/utils/UtilsServices";
+import AuthService from "../../../data-access/services/authService";
+import ProductService from "../../../data-access/services/productsService/ProductService";
+import CustomersService from "../../../data-access/services/customersService/CustomersService";
+import ClientService from "../../../data-access/services/clientsService/ClientService";
+import UtilsServices from "../../../data-access/utils/UtilsServices";
 import { useCreateQuickOrderMutation } from "app/store/api/apiSlice";
-import OrdersService from "../../data-access/services/ordersService/OrdersService";
+import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import { useSnackbar } from "notistack";
-import { ThousandSeparator } from "../../utils/helperFunctions";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
-import FuseUtils from "@fuse/utils";
-import PhoneInput from "react-phone-input-2";
-import { Close, Edit } from "@mui/icons-material";
 
-const CreateSubscription = () => {
+const SubscriptionInformation = () => {
   const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
   const { enqueueSnackbar } = useSnackbar();
@@ -62,13 +55,6 @@ const CreateSubscription = () => {
     useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
-  const [val, setVal] = useState([]);
-  const [newCustomer, setNewCustomer] = useState([]);
-  const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
-  const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
-  const [createQuickOrder, response] = useCreateQuickOrderMutation();
-  const [customerType, setCustomerType] = useState();
-  const [isEdit, setIsEdit] = useState(false);
 
   let subTotal = 0;
   let totalTax = 0;
@@ -76,16 +62,7 @@ const CreateSubscription = () => {
   let grandTotal = 0;
 
   let defaultTaxValue;
-  const [countries, setCountries] = React.useState([
-    {
-      title: "Norway",
-      name: "norway",
-    },
-    {
-      title: "Sweden",
-      name: "sweden",
-    },
-  ]);
+
   const [billingFrequency, setBillingFrequency] = React.useState([
     {
       title: "Monthly",
@@ -101,42 +78,10 @@ const CreateSubscription = () => {
     },
   ]);
 
-  const addNewOrder = () => {
-    // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
-    setItemLoader(true);
-    setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].quantity`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].rate`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
-    setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
-    setTimeout(() => {
-      setItemLoader(false);
-    }, [500]);
-  };
-  const onDelete = (index) => {
-    setItemLoader(true);
-    setValue(`order[${index}].productName`, "");
-    setValue(`order[${index}].productID`, "");
-    setValue(`order[${index}].quantity`, "");
-    setValue(`order[${index}].rate`, "");
-    setValue(`order[${index}].discount`, "");
-    setValue(`order[${index}].tax`, "");
-    enableCurrentProductRow(index);
-    addOrderIndex.length > 1
-      ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
-      : setAddOrderIndex([...addOrderIndex]);
-    setTimeout(() => {
-      setItemLoader(false);
-    }, [500]);
-  };
   const enableCurrentProductRow = (ind) => {
     setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
   };
   const [open, setOpen] = React.useState(false);
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [searchText, setSearchText] = useState("");
 
   const {
     control,
@@ -153,150 +98,13 @@ const CreateSubscription = () => {
   });
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
-  useEffect(() => {
-    AuthService.axiosRequestHelper().then((isAuthenticated) => {
-      ProductService.productsList(true)
-        .then((res) => {
-          let data = [];
-          if (res?.status_code === 200 && res.length) {
-            res
-              .filter((r) => r.status === "Active")
-              .map((row) => {
-                return data.push({
-                  uuid: row.uuid,
-                  name: row.name,
-                  id: row.id,
-                  price: row.pricePerUnit,
-                  tax: row.taxRate,
-                });
-              });
-          }
-          setProductsList(data);
-        })
-        .catch((e) => {
-          setProductsList([]);
-        });
-      CustomersService.customersList(true)
-        .then((res) => {
-          let data = [];
-          if (res?.status_code === 200 && res.length) {
-            res
-              .filter((item) => {
-                return item.status === "Active";
-              })
-              .map((row) => {
-                return data.push({
-                  uuid: row.uuid,
-                  name: row?.name ? row?.name : null,
-                  orgOrPNumber: row?.orgIdOrPNumber
-                    ? row?.orgIdOrPNumber
-                    : null,
-                  email: row?.email ? row?.email : null,
-                  phone: row?.phone ? row?.phone : null,
-                  type: row.type,
-                  street: row?.street,
-                  city: row?.city,
-                  zip: row?.zip,
-                  country: row?.country,
-                  searchString:
-                    row?.name + " ( " + row?.phone + " )" + row.uuid,
-                });
-              });
-          }
-          setCustomersList(data);
-          setSearchCustomersList(data);
-        })
-        .catch((e) => {
-          setCustomersList([]);
-          setSearchCustomersList([]);
-        });
-      if (userInfo?.user_data?.organization?.uuid) {
-        ClientService.vateRatesList(
-          userInfo?.user_data?.organization?.uuid,
-          true
-        )
-          .then((res) => {
-            if (res?.status_code === 200) {
-              setTaxes(res?.data);
-            } else {
-              setTaxes([]);
-            }
-          })
-          .catch((e) => {
-            setTaxes([]);
-          });
-      }
-    });
-  }, []);
-
-  const watchRate = watch(`order[${Math.min(...addOrderIndex)}].rate`) || "";
-
   const pnameOnBlur = (e) => {
     if (!e.target.value.length) {
       resetField(`${e.target.name}`);
     }
   };
   const onSubmit = (values) => {
-    setLoading(true);
-    subTotal = (subTotal / 2).toFixed(2);
-    totalTax = (totalTax / 2).toFixed(2);
-    totalDiscount = (totalDiscount / 2).toFixed(2);
-    grandTotal = (grandTotal / 2).toFixed(2);
-    const data = OrdersService.prepareCreateQuickOrderPayload({
-      ...values,
-      orderSummary: {
-        subTotal,
-        totalTax,
-        totalDiscount,
-        grandTotal,
-      },
-      customers: [...val],
-    });
-    createQuickOrder(data).then((response) => {
-      setLoading(false);
-      if (response?.data?.status_code === 201) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), {
-          variant: "success",
-        });
-        navigate(`/sales/orders-list`);
-      } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
-          variant: "error",
-        });
-      }
-    });
-    // setLoading(false);
-  };
-  const handleDelete = () => {
-    console.info("Clicked.");
-  };
-
-  const searchCustomerOnFocus = (e) => {
-    setSearchText(e.target.value);
-
-    setCustomerSearchBoxDropdownOpen(false);
-    const searchByPhone =
-      customersList.filter((customer) =>
-        customer.phone.startsWith(e.target.value)
-      ) || [];
-    const searchByName =
-      customersList.filter(
-        (customer) =>
-          customer?.name &&
-          customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
-      ) || [];
-    setSearchCustomersList(
-      searchByName.length
-        ? searchByName
-        : searchByPhone.length
-        ? searchByPhone
-        : []
-    );
-    setCustomerSearchBy(
-      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
-    );
-    setCustomerSearchBoxLength(e.target.value.length);
-    setCustomerSearchBoxDropdownOpen(true);
+    //console.log(values);
   };
 
   const disableCurrentProductRow = (index) => {
@@ -319,10 +127,6 @@ const CreateSubscription = () => {
     setValue(`order[${index}].discount`, "");
     setValue(`order[${index}].tax`, "");
     enableCurrentProductRow(index);
-    // addNewOrder()
-    // addOrderIndex.length > 1
-    //   ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
-    //   : setAddOrderIndex([...addOrderIndex]);
   };
 
   const productWiseTotal = (index) => {
@@ -332,41 +136,6 @@ const CreateSubscription = () => {
     const watchTax = watch(`order[${index}].tax`);
     const watchName = watch(`order[${index}].productName`);
     const watchId = watch(`order[${index}].productID`);
-    //%%%%%%%%%%%%%%%%%%%%%%
-    //Vat Exclusive Calculation
-    //----------------------------------------
-    // const total =
-    //   parseInt(watchQuantity) * parseFloat(watchRate) -
-    //   parseFloat(watchDiscount) +
-    //   (parseInt(watchQuantity) * parseFloat(watchRate) -
-    //     parseFloat(watchDiscount)) *
-    //   (watchTax / 100);
-    // const subTotalCalculation = parseInt(watchQuantity) * parseFloat(watchRate);
-    // const totalTaxCalculation =
-    //   (parseInt(watchQuantity) * parseFloat(watchRate) -
-    //     parseFloat(watchDiscount)) *
-    //   (watchTax / 100);
-    // const grandTotalCalculation =
-    //   parseInt(watchQuantity) * parseFloat(watchRate) -
-    //   parseFloat(watchDiscount) +
-    //   (parseInt(watchQuantity) * parseFloat(watchRate) -
-    //     parseFloat(watchDiscount)) *
-    //   (watchTax / 100);
-    // if (watchTax) defaultTaxValue = watchTax;
-    // if (subTotalCalculation)
-    //   subTotal = subTotal + parseFloat(subTotalCalculation);
-    // if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
-    // if (watchDiscount)
-    //   totalDiscount = totalDiscount + parseFloat(watchDiscount);
-    // if (grandTotalCalculation) grandTotal = grandTotal + grandTotalCalculation;
-    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    // Vat Inclusive Calculation
-    // Subtotal : (Qty*Rate*100%)/(100+Tax)%
-    // Tax : subtotal * (tax/100)
-    //Amount : (Rate * Qty) - discount
-    //Discount : Sum of discounts
-    //Grand Total : Sum of amounts
     let rate, splitedRate, dotFormatRate, floatRate;
     if (!!watchRate) {
       rate = watchRate;
@@ -401,7 +170,6 @@ const CreateSubscription = () => {
   const watchOrderDate = watch(`orderDate`)
     ? watch(`orderDate`)
     : setValue("orderDate", new Date());
-  const watchDueDatePaymentLink = watch(`dueDatePaymentLink`);
 
   useEffect(() => {
     if (
@@ -457,11 +225,6 @@ const CreateSubscription = () => {
     }
   };
 
-  const handleEditOrCreate = (customerType, isEdit) => {
-    setEditOpen(true);
-    setCustomerType(customerType);
-    setIsEdit(isEdit);
-  };
   return (
     <div className="create-product-container">
       <div className="inside-div-product">
@@ -471,548 +234,28 @@ const CreateSubscription = () => {
             noValidate
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className=" header-click-to-action">
-              <div className="header-text header6">
-                {t("label:createSubscription")}
-              </div>
-              <div className="button-container-product">
-                <Button
-                  color="secondary"
-                  variant="outlined"
-                  className="button-outline-product"
-                  onClick={() => setOpen(true)}
-                >
-                  {t("label:discard")}
-                </Button>
-                <LoadingButton
-                  variant="contained"
-                  color="secondary"
-                  className="rounded-4 button2"
-                  aria-label="Confirm"
-                  size="large"
-                  type="submit"
-                  loading={loading}
-                  loadingPosition="center"
-                  disabled={!isValid || val.length === 0 || !watchRate}
-                >
-                  {t("label:sendOrder")}
-                </LoadingButton>
-              </div>
-            </div>
-            <div className="p-10 md:p-20">
-              <Controller
-                control={control}
-                name="searchCustomer"
-                render={({ field: { ref, onChange, ...field } }) => (
-                  <Autocomplete
-                    open={customerSearchBoxDropdownOpen}
-                    // freeSolo
-                    disablePortal
-                    // filterSelectedOptions
-                    options={searchCustomersList}
-                    getOptionLabel={(option) => option.searchString}
-                    renderTags={() => {}}
-                    fullWidth
-                    onChange={(e, newValue) => {
-                      setCustomerSearchBy(undefined);
-                      setCustomerSearchBoxLength(0);
-                      setVal(newValue);
-                    }}
-                    onInputChange={(event, value) => {
-                      setNewCustomer(value);
-                      if (value.length === 0) setCustomerSearchBy(undefined);
-                    }}
-                    onClose={() => setCustomerSearchBoxDropdownOpen(false)}
-                    value={val}
-                    noOptionsText={
-                      <div className="flex items-center justify-between my-2">
-                        <span className="subtitle3 font-600">
-                          {t("label:noCustomersFound")}
-                        </span>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          size={"medium"}
-                          className="rounded-4 button2 min-w-[104px]"
-                          type="button"
-                          startIcon={<AddIcon fontSize="small" />}
-                          onClick={() => {
-                            setVal([
-                              ...val,
-                              { name: "", phone: `${newCustomer}` },
-                            ]);
-                            setCustomerSearchBoxDropdownOpen(false);
-                          }}
-                        >
-                          {t(`label:add`)}
-                        </Button>
-                      </div>
-                    }
-                    renderOption={(props, option, { selected }) => (
-                      <MenuItem {...props}>
-                        {/*{`${option.name}`}*/}
-                        {customerSearchBy ? (
-                          <div>
-                            {customerSearchBy === "name" &&
-                            option?.name &&
-                            customerSearchBoxLength > 0 ? (
-                              <div>
-                                <span
-                                  style={{ color: "#0088AE" }}
-                                >{`${option.name.slice(
-                                  0,
-                                  customerSearchBoxLength
-                                )}`}</span>
-                                <span>{`${option.name.slice(
-                                  customerSearchBoxLength
-                                )}`}</span>
-                              </div>
-                            ) : (
-                              <div>{`${option.name}`}</div>
-                            )}
-                            {customerSearchBy === "phone" &&
-                            customerSearchBoxLength > 0 ? (
-                              <div>
-                                <span
-                                  style={{ color: "#0088AE" }}
-                                >{`${option.phone.slice(
-                                  0,
-                                  customerSearchBoxLength
-                                )}`}</span>
-                                <span>{`${option.phone.slice(
-                                  customerSearchBoxLength
-                                )}`}</span>
-                              </div>
-                            ) : (
-                              <div>{`${option.phone}`}</div>
-                            )}
-                          </div>
-                        ) : (
-                          <div>
-                            <div>{`${option.name}`}</div>
-                            <div>{`${option.phone}`}</div>
-                          </div>
-                        )}
-                      </MenuItem>
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        onChange={searchCustomerOnFocus}
-                        onClick={() =>
-                          setCustomerSearchBoxDropdownOpen(
-                            !customerSearchBoxDropdownOpen
-                          )
-                        }
-                        className="mt-10 w-full sm:w-2/4"
-                        placeholder={t("label:searchCustomersByNameOrPhoneNo")}
-                      />
-                    )}
-                  />
-                )}
-              />
+            <div className="">
               <div className="my-20">
                 <div className="mt-32">
                   <div className="col-span-1 md:col-span-4 bg-white">
-                    {!!val && val.length !== 0 && (
-                      <div className="p-20 rounded-8 border-MonochromeGray-50 border-2 mb-20 w-full md:w-2/4">
-                        <div className="flex justify-between items-center">
-                          <div className="subtitle1 text-MonochromeGray-700">
-                            {val?.name || "_"}
-                          </div>
-                          <div>
-                            <IconButton
-                              aria-label="delete"
-                              className="bg-primary-25"
-                              onClick={() => setVal([])}
-                              type="button"
-                            >
-                              <Close className="text-primary-500 icon-size-20" />
-                            </IconButton>
-                          </div>
-                        </div>
-                        <div className="">
-                          <div className="text-MonochromeGray-700 body2 mt-16">
-                            {val?.phone || "_"}
-                          </div>
-                          <div className="text-MonochromeGray-700 body2">
-                            {val?.email || "_"}
-                          </div>
-                          <div className="text-MonochromeGray-700 body2">
-                            {`${val?.street || "_"} , ${val?.zip || "_"}`}
-                          </div>
-                        </div>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          className="mt-16 rounded-md hover:text-white bg-primary-50 text-primary-700 button2 button-min-height"
-                          aria-label="Sign in"
-                          type="button"
-                          onClick={() => {
-                            handleEditOrCreate(val?.type, true);
-                          }}
-                          size="medium"
-                          startIcon={<Edit />}
-                        >
-                          {t("label:editDetails")}
-                        </Button>
-                      </div>
-                    )}
-                    {val.length === 0 && (
-                      <div className="p-20 rounded-8 border-MonochromeGray-50 border-2 mb-20 w-full md:w-2/4">
-                        <div className="flex justify-between items-center">
-                          <div className="subtitle2 text-MonochromeGray-700">
-                            No Customer Selected
-                          </div>
-                        </div>
-                        <div className="text-MonochromeGray-300 body3 mt-16">
-                          Please select a customer from the search box or create
-                          a new one.
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mt-16">
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            className=" w-full mt-16 rounded-md hover:text-white bg-primary-50 text-primary-700 button2 button-min-height"
-                            aria-label="Sign in"
-                            type="button"
-                            onClick={() => {
-                              handleEditOrCreate("Private", false);
-                            }}
-                            size="large"
-                          >
-                            {t("label:createPrivateCustomer")}
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            className=" w-full mt-16 rounded-md hover:text-white button2 bg-primary-50 text-primary-700 button-min-height"
-                            aria-label="Sign in"
-                            type="button"
-                            size="large"
-                            onClick={() => {
-                              handleEditOrCreate("Corporate", false);
-                            }}
-                          >
-                            {t("label:createCorporateCustomer")}
-                          </Button>
+                    <div className="p-20 rounded-8 border-MonochromeGray-50 border-2 mb-20 w-full md:w-2/4">
+                      <div className="flex justify-between items-center">
+                        <div className="subtitle1 text-MonochromeGray-700">
+                          ELECTRIC CONTROL SYSTEM AUTOMATION AS
                         </div>
                       </div>
-                    )}
-
-                    <Dialog
-                      open={editOpen}
-                      maxWidth={"md"}
-                      onClose={() => setEditOpen(false)}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                      className="rounded-2"
-                    >
-                      <div className="p-16">
-                        {!isEdit && (
-                          <DialogTitle
-                            id="alert-dialog-title"
-                            className="header6 text-MonochromeGray-700"
-                          >
-                            {customerType === "Corporate"
-                              ? t("label:createCorporateCustomer")
-                              : t("label:createPrivateCustomer")}
-                          </DialogTitle>
-                        )}
-                        {!!isEdit && (
-                          <DialogTitle
-                            id="alert-dialog-title"
-                            className="header6 text-MonochromeGray-700"
-                          >
-                            {customerType === "Corporate"
-                              ? t("label:editCorporateCustomer")
-                              : t("label:editPrivateCustomer")}
-                          </DialogTitle>
-                        )}
-
-                        <DialogContent className="p-10 md:p-40">
-                          <div id="customer-information-payment">
-                            <div className="bg-white px-5">
-                              <div className="w-full my-32">
-                                <div className="form-pair-input gap-x-20">
-                                  <Controller
-                                    name="phone"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <FormControl
-                                        error={!!errors.phone}
-                                        fullWidth
-                                      >
-                                        <PhoneInput
-                                          {...field}
-                                          className={
-                                            errors.phone
-                                              ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                              : "input-phone-number-field"
-                                          }
-                                          country="no"
-                                          countryCodeEditable={false}
-                                          specialLabel={`${t("label:phone")}*`}
-                                          value={field.value || ""}
-                                        />
-                                        <FormHelperText>
-                                          {errors?.phone?.message
-                                            ? t(
-                                                `validation:${errors?.phone?.message}`
-                                              )
-                                            : ""}
-                                        </FormHelperText>
-                                      </FormControl>
-                                    )}
-                                  />
-                                  <Controller
-                                    name="email"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={t("label:email")}
-                                        type="email"
-                                        className="mb-32 md:mb-auto"
-                                        autoComplete="off"
-                                        error={!!errors.email}
-                                        helperText={
-                                          errors?.email?.message
-                                            ? t(
-                                                `validation:${errors?.email?.message}`
-                                              )
-                                            : ""
-                                        }
-                                        variant="outlined"
-                                        fullWidth
-                                        // required={
-                                        //   customData.customerType ===
-                                        //     "corporate" ||
-                                        //   customData.orderBy === "email"
-                                        // }
-                                        required
-                                        value={field.value || ""}
-                                      />
-                                    )}
-                                  />
-                                </div>
-                                <div className="">
-                                  <div className="form-pair-input gap-x-20">
-                                    <Controller
-                                      name="customerName"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          {...field}
-                                          label={t("label:customerName")}
-                                          type="text"
-                                          autoComplete="off"
-                                          error={!!errors.customerName}
-                                          helperText={
-                                            errors?.customerName?.message
-                                              ? t(
-                                                  `validation:${errors?.customerName?.message}`
-                                                )
-                                              : ""
-                                          }
-                                          required
-                                          variant="outlined"
-                                          fullWidth
-                                          value={field.value || ""}
-                                        />
-                                      )}
-                                    />
-                                    <Controller
-                                      name="orgIdOrPNumber"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          {...field}
-                                          label={
-                                            customerType === "Private"
-                                              ? t("label:pNumber")
-                                              : t("label:organizationId")
-                                          }
-                                          type="number"
-                                          autoComplete="off"
-                                          error={!!errors.orgIdOrPNumber}
-                                          required={customerType !== "Private"}
-                                          helperText={
-                                            errors?.orgIdOrPNumber?.message
-                                              ? t(
-                                                  `validation:${errors?.orgIdOrPNumber?.message}`
-                                                )
-                                              : ""
-                                          }
-                                          variant="outlined"
-                                          fullWidth
-                                          value={field.value || ""}
-                                        />
-                                      )}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div id="billing-address-payment">
-                            <div className="w-full px-5">
-                              <div className="form-pair-three-by-one custom-margin-two-payment">
-                                <div className="col-span-3">
-                                  <Controller
-                                    name="billingAddress"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={t("label:streetAddress")}
-                                        type="text"
-                                        autoComplete="off"
-                                        error={!!errors.billingAddress}
-                                        helperText={
-                                          errors?.billingAddress?.message
-                                            ? t(
-                                                `validation:${errors?.billingAddress?.message}`
-                                              )
-                                            : ""
-                                        }
-                                        variant="outlined"
-                                        fullWidth
-                                        value={field.value || ""}
-                                        required
-                                      />
-                                    )}
-                                  />
-                                </div>
-                                <div className="col-span-1">
-                                  <Controller
-                                    name="billingZip"
-                                    className="col-span-1"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={t("label:zipCode")}
-                                        type="text"
-                                        autoComplete="off"
-                                        error={!!errors.billingZip}
-                                        helperText={
-                                          errors?.billingZip?.message
-                                            ? t(
-                                                `validation:${errors?.billingZip?.message}`
-                                              )
-                                            : ""
-                                        }
-                                        variant="outlined"
-                                        fullWidth
-                                        value={field.value || ""}
-                                        required
-                                      />
-                                    )}
-                                  />
-                                </div>
-                              </div>
-                              <div className="form-pair-input gap-x-20">
-                                <Controller
-                                  name="billingCity"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <TextField
-                                      {...field}
-                                      label={t("label:city")}
-                                      type="text"
-                                      autoComplete="off"
-                                      error={!!errors.billingCity}
-                                      helperText={
-                                        errors?.billingCity?.message
-                                          ? t(
-                                              `validation:${errors?.billingCity?.message}`
-                                            )
-                                          : ""
-                                      }
-                                      variant="outlined"
-                                      fullWidth
-                                      value={field.value || ""}
-                                      required
-                                    />
-                                  )}
-                                />
-
-                                <Controller
-                                  name="billingCountry"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <FormControl
-                                      error={!!errors.billingCountry}
-                                      fullWidth
-                                    >
-                                      <InputLabel id="billingCountry">
-                                        {t("label:country")} *
-                                      </InputLabel>
-                                      <Select
-                                        {...field}
-                                        labelId="billingCountry"
-                                        id="select"
-                                        label={t("label:country")}
-                                        value={field.value || ""}
-                                      >
-                                        {countries.length ? (
-                                          countries.map((country, index) => {
-                                            return (
-                                              <MenuItem
-                                                key={index}
-                                                value={country.name}
-                                              >
-                                                {country.title}
-                                              </MenuItem>
-                                            );
-                                          })
-                                        ) : (
-                                          <MenuItem key={0} value="norway">
-                                            Norway
-                                          </MenuItem>
-                                        )}
-                                      </Select>
-                                      <FormHelperText>
-                                        {errors?.billingCountry?.message
-                                          ? t(
-                                              `validation:${errors?.billingCountry?.message}`
-                                            )
-                                          : ""}
-                                      </FormHelperText>
-                                    </FormControl>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-end mt-40">
-                            <div className="flex gap-10 items-center">
-                              <Button
-                                variant="contained"
-                                className="font-semibold rounded-4 bg-primary-50 text-primary-800 w-full md:w-auto z-99 px-32"
-                                onClick={() => setEditOpen(false)}
-                              >
-                                {t("label:cancel")}
-                              </Button>
-                              <Button
-                                variant="contained"
-                                type="submit"
-                                className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40"
-                                // onClick={() => setEditOpen(false)}
-                                //onClick={() => handleUpdate()}
-                                disabled={!isValid}
-                              >
-                                {!!isEdit
-                                  ? t("label:update")
-                                  : t("label:create")}
-                              </Button>
-                            </div>
-                          </div>
-                        </DialogContent>
+                      <div className="">
+                        <div className="text-MonochromeGray-700 body2 mt-16">
+                          +4756464545
+                        </div>
+                        <div className="text-MonochromeGray-700 body2">
+                          ELECTRICCONTROL@yopmail.com
+                        </div>
+                        <div className="text-MonochromeGray-700 body2">
+                          Industrivegen 2 , 4344
+                        </div>
                       </div>
-                    </Dialog>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1028,6 +271,7 @@ const CreateSubscription = () => {
                       inputFormat="dd.MM.yyyy"
                       value={!value ? new Date() : value}
                       required
+                      disabled
                       onChange={onChange}
                       minDate={new Date().setDate(new Date().getDate() - 30)}
                       maxDate={new Date().setDate(new Date().getDate() + 30)}
@@ -1071,6 +315,7 @@ const CreateSubscription = () => {
                       label={t("label:dueDateForPaymentLink")}
                       mask=""
                       inputFormat="dd.MM.yyyy"
+                      disabled
                       value={
                         !value
                           ? new Date().setDate(new Date().getDate() + 2)
@@ -1135,6 +380,7 @@ const CreateSubscription = () => {
                         id="select"
                         label={t("label:billingFrequency")}
                         defaultValue={30}
+                        disabled
                         value={field.value || 30}
                         required
                       >
@@ -1171,6 +417,7 @@ const CreateSubscription = () => {
                       type="number"
                       required
                       autoComplete="off"
+                      disabled
                       error={!!errors.repeatsNoOfTimes}
                       helperText={
                         errors?.repeatsNoOfTimes?.message
@@ -1244,31 +491,14 @@ const CreateSubscription = () => {
                   <Button
                     variant="outlined"
                     className="create-order-capsule-button-active"
-                    // onClick={() => {
-                    //   setCustomData({
-                    //     ...customData,
-                    //     isCeditCheck: true,
-                    //   });
-                    // }}
-                    // disabled={
-                    //   !(
-                    //     (customData.orderBy === "sms" ||
-                    //       customData.orderBy === "email") &&
-                    //     customData.paymentMethod.includes("invoice")
-                    //   )
-                    // }
+                    disabled
                   >
                     {t("label:sms")}
                   </Button>
                   <Button
                     variant="outlined"
+                    disabled
                     className="create-order-capsule-button"
-                    // onClick={() => {
-                    //   setCustomData({
-                    //     ...customData,
-                    //     isCeditCheck: false,
-                    //   });
-                    // }}
                   >
                     {t("label:email")}
                   </Button>
@@ -1308,17 +538,6 @@ const CreateSubscription = () => {
                       </div>
                     </AccordionSummary>
                     <AccordionDetails className="bg-white px-0">
-                      <div className="sticky top-28 z-40">
-                        <Button
-                          className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
-                          startIcon={<AddIcon className="text-main" />}
-                          variant="contained"
-                          onClick={() => addNewOrder()}
-                          disabled={addOrderIndex.length >= 20 ? true : false}
-                        >
-                          {t("label:addItem")}
-                        </Button>
-                      </div>
                       {addOrderIndex.map((index) => (
                         <div
                           className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
@@ -1635,17 +854,6 @@ const CreateSubscription = () => {
                               {t("label:nok")} {productWiseTotal(index)}
                             </div>
                           </div>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
-                            startIcon={
-                              <RemoveCircleOutlineIcon className="text-red-400" />
-                            }
-                            onClick={() => onDelete(index)}
-                          >
-                            {t("label:removeItem")}
-                          </Button>
                         </div>
                       ))}
                       <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
@@ -1694,22 +902,7 @@ const CreateSubscription = () => {
                           name={`order[${index}].productName`}
                           render={({ field: { ref, onChange, ...field } }) => (
                             <Autocomplete
-                              disabled={
-                                index === 0 ||
-                                index === Math.min(...addOrderIndex)
-                                  ? false
-                                  : !watch(
-                                      `order[${
-                                        index -
-                                        (addOrderIndex[
-                                          addOrderIndex.indexOf(index)
-                                        ] -
-                                          addOrderIndex[
-                                            addOrderIndex.indexOf(index) - 1
-                                          ])
-                                      }].productName`
-                                    )
-                              }
+                              disabled
                               freeSolo
                               autoSelect
                               options={productsList}
@@ -1854,7 +1047,7 @@ const CreateSubscription = () => {
                               helperText={errors?.productID?.message}
                               variant="outlined"
                               fullWidth
-                              disabled={disableRowIndexes.includes(index)}
+                              disabled
                             />
                           )}
                         />
@@ -1868,6 +1061,7 @@ const CreateSubscription = () => {
                               {...field}
                               className="bg-white custom-input-height"
                               type="number"
+                              disabled
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.quantity}
                               // helperText={
@@ -1894,7 +1088,7 @@ const CreateSubscription = () => {
                               variant="outlined"
                               required
                               fullWidth
-                              disabled={disableRowIndexes.includes(index)}
+                              disabled
                             />
                           )}
                         />
@@ -1910,6 +1104,7 @@ const CreateSubscription = () => {
                               className="bg-white custom-input-height"
                               type="number"
                               autoComplete="off"
+                              disabled
                               error={!!errors.discount}
                               helperText={errors?.discount?.message}
                               variant="outlined"
@@ -1936,7 +1131,7 @@ const CreateSubscription = () => {
                                   sx={{ height: 44 }}
                                   defaultValue={defaultTaxValue}
                                   className="custom-select-create-order pt-8 mt-1"
-                                  disabled={disableRowIndexes.includes(index)}
+                                  disabled
                                 >
                                   {taxes && taxes.length ? (
                                     taxes.map((tax, index) =>
@@ -1984,7 +1179,7 @@ const CreateSubscription = () => {
                                 }
                                 variant="outlined"
                                 required
-                                disabled={disableRowIndexes.includes(index)}
+                                disabled
                                 fullWidth
                               />
                             )}
@@ -2006,30 +1201,15 @@ const CreateSubscription = () => {
                       <div className="my-auto">
                         <div
                           className="body3 text-right"
-                          onClick={() => setEditOpen(true)}
+                          // onClick={() => setEditOpen(true)}
                         >
                           {t("label:nok")}{" "}
                           {ThousandSeparator(productWiseTotal(index))}
                         </div>
                       </div>
-                      <div className="my-auto">
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onDelete(index)}
-                        >
-                          <RemoveCircleOutlineIcon className="icon-size-20 text-red-500" />
-                        </IconButton>
-                      </div>
                     </div>
                   ))}
-                  <Button
-                    className="mt-20 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
-                    startIcon={<AddIcon />}
-                    onClick={() => addNewOrder()}
-                    disabled={addOrderIndex.length >= 20 ? true : false}
-                  >
-                    {t("label:addItem")}
-                  </Button>
+
                   <hr className=" mt-20 border-half-bottom" />
                 </div>
               </Hidden>
@@ -2047,6 +1227,7 @@ const CreateSubscription = () => {
                           label={t("label:customerNotes")}
                           type="text"
                           autoComplete="off"
+                          disabled
                           error={!!errors.customerNotes}
                           helperText={
                             errors?.customerNotes?.message
@@ -2075,6 +1256,7 @@ const CreateSubscription = () => {
                           {...field}
                           multiline
                           rows={5}
+                          disabled
                           label={t("label:tnc")}
                           type="text"
                           autoComplete="off"
@@ -2157,7 +1339,7 @@ const CreateSubscription = () => {
                           {t("label:repeats")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                         12 Times
+                          12 Times
                         </div>
                       </div>
                     </div>
@@ -2179,4 +1361,4 @@ const CreateSubscription = () => {
     </div>
   );
 };
-export default CreateSubscription;
+export default SubscriptionInformation;

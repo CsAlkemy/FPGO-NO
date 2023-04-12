@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import authRoles from "../../data-access/utils/AuthRoles";
 import OrdersListOverview from "../overviews/orders/OrdersListOverview";
-import OrderDetails from "../../components/salesManagement/order/orderDetails";
+import SubscriptionDetails from "../../components/subscription/subscriptionDetails";
 
 const CreateSubscription = lazy(() =>
   import("../../components/subscription/index")
@@ -75,7 +75,7 @@ export const SubscriptionsConfigRBAC = {
     },
     {
       path: "/subscription/details/:uuid",
-      element: <OrderDetails />,
+      element: <SubscriptionDetails />,
     },
     {
       path: "/subscription/list",
