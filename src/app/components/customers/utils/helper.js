@@ -8,7 +8,7 @@ export const validateSchema = yup.object().shape({
     .max(9, "idMustBeNineDigit"),
   orgEmail: yup
     .string()
-    .required("youMustEnterYourEmail")
+    .required("youMustEnterAEmail")
     .email("youMustEnterAValidEmail"),
   OrganizationName: yup.string().required("youMustEnterYourOrganizationName"),
   primaryPhoneNumber: yup
@@ -30,6 +30,9 @@ export const validateSchemaUpdatePrivateCustomer = yup.object().shape({
     .required("youMustEnterYourPhoneNumber")
     .min(8, "enterValidPhoneNumber")
     .max(15, "enterValidPhoneNumber"),
+  customerName: yup
+    .string()
+    .required("youMustEnterCustomerName"),
   customerEmail: yup
     .string()
     .required("youMustEnterAEmail")
@@ -68,7 +71,7 @@ export const validateSchemaPrivate = yup.object().shape({
     .transform((o, c) => (o === "" ? null : c))
     .min(11, "mustBeExactlyElevenNumbers")
     .max(11, "mustBeExactlyElevenNumbers"),
-  customerName: yup.string().required("youMustEnterYourPhoneNumber"),
+  customerName: yup.string().required("youMustEnterCustomerName"),
   customerEmail: yup
     .string()
     .required("youMustEnterAEmail")

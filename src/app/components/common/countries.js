@@ -58,7 +58,7 @@ export default function CountrySelect({
               fullWidth
               type="text"
               error={!!error}
-              helperText={error?.message}
+              helperText={error?.message ? t(`validation:${error?.message}`) : ""}
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password", // disable autocomplete and autofill

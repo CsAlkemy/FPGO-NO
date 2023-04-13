@@ -380,9 +380,10 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.customerName}
-                                    helperText={errors?.customerName?.message}
+                                    helperText={errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""}
                                     variant="outlined"
                                     fullWidth
+                                    required
                                     value={field.value || ""}
                                   />
                                 )}
@@ -398,7 +399,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     type="email"
                                     autoComplete="off"
                                     error={!!errors.customerEmail}
-                                    helperText={errors?.customerEmail?.message}
+                                    helperText={errors?.customerEmail?.message ? t(`validation:${errors?.customerEmail?.message}`) : ""}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -419,7 +420,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     type="number"
                                     autoComplete="off"
                                     error={!!errors.pNumber}
-                                    helperText={errors?.pNumber?.message}
+                                    helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
                                     variant="outlined"
                                     fullWidth
                                     value={field.value || ""}
@@ -467,9 +468,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.billingAddress}
-                                          helperText={
-                                            errors?.billingAddress?.message
-                                          }
+                                          helperText={errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""}
                                           variant="outlined"
                                           required
                                           fullWidth
@@ -490,9 +489,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.billingZip}
-                                          helperText={
-                                            errors?.billingZip?.message
-                                          }
+                                          helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
                                           variant="outlined"
                                           fullWidth
                                           required
@@ -513,9 +510,8 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                         type="text"
                                         autoComplete="off"
                                         error={!!errors.billingCity}
-                                        helperText={
-                                          errors?.billingCity?.message
-                                        }
+                                        helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
+                                      
                                         variant="outlined"
                                         fullWidth
                                         required
@@ -527,7 +523,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                       control={control}
                                       name={"billingCountry"}
                                       label= {'country'}
-                                      placeholder={"billingCountry"}
+                                      placeholder={"country"}
                                       required = {true}
                                       error = {errors.billingCountry}
                                       defaultValue = {

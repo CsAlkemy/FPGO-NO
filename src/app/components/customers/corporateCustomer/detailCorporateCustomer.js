@@ -784,6 +784,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             }
                                             variant="outlined"
                                             fullWidth
+                                            required
                                             value={field.value || ""}
                                           />
                                         )}
@@ -810,6 +811,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             }
                                             variant="outlined"
                                             fullWidth
+                                            required
                                             value={field.value || ""}
                                           />
                                         )}
@@ -836,6 +838,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           }
                                           variant="outlined"
                                           fullWidth
+                                          required
                                           value={field.value || ""}
                                         />
                                       )}
