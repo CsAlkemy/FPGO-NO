@@ -30,6 +30,7 @@ import { CreateCorporateDefaultValue, validateSchema } from '../utils/helper';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
 import { useCreateCorporateCustomerMutation } from 'app/store/api/apiSlice';
+import CountrySelect from '../../common/countries';
 
 const createCorporateCustomer = () => {
   const { t } = useTranslation()
@@ -182,13 +183,13 @@ const createCorporateCustomer = () => {
                 <div className=" subtitle3  header-bg-900-product flex flex-row items-center gap-10">
                   {t("label:primaryInformation")}
                   {dirtyFields.organizationID &&
-                    dirtyFields.OrganizationName &&
-                    dirtyFields.orgEmail &&
-                    dirtyFields.primaryPhoneNumber &&
-                    dirtyFields.billingAddress &&
-                    dirtyFields.billingZip &&
-                    dirtyFields.billingCity &&
-                    dirtyFields.billingCountry ? (
+                  dirtyFields.OrganizationName &&
+                  dirtyFields.orgEmail &&
+                  dirtyFields.primaryPhoneNumber &&
+                  dirtyFields.billingAddress &&
+                  dirtyFields.billingZip &&
+                  dirtyFields.billingCity &&
+                  dirtyFields.billingCountry ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
                     <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -252,10 +253,10 @@ const createCorporateCustomer = () => {
                         fullWidth
                         required
                         value={field.value || ''}
-                      // inputlabelprops={{
-                      //   shrink:
-                      //     !!field.value || touchedFields.OrganizationName,
-                      // }}
+                        // inputlabelprops={{
+                        //   shrink:
+                        //     !!field.value || touchedFields.OrganizationName,
+                        // }}
                       />
                     )}
                   />
@@ -301,7 +302,7 @@ const createCorporateCustomer = () => {
                             value={field.value || ''}
                             countryCodeEditable={false}
                             specialLabel={`${t("label:phone")}*`}
-                          // onBlur={handleOnBlurGetDialCode}
+                            // onBlur={handleOnBlurGetDialCode}
 
                           />
                           <FormHelperText>
@@ -376,7 +377,15 @@ const createCorporateCustomer = () => {
                       />
                     )}
                   />
-                  <Controller
+                  <CountrySelect
+                    control={control}
+                    name={"billingCountry"}
+                    label={"country"}
+                    placeholder={"billingCountry"}
+                    required={true}
+                    error={errors.billingCountry}
+                  />
+                  {/* <Controller
                     name="billingCountry"
                     control={control}
                     render={({ field }) => (
@@ -418,7 +427,7 @@ const createCorporateCustomer = () => {
                         </FormHelperText>
                       </FormControl>
                     )}
-                  />
+                  /> */}
                 </div>
                 <div className="my-20">
                   <Accordion className={`bg-primary-25 shadow-0 border-0 ${!expanded ? "bg-primary-25" : "bg-primary-700"}`}>
@@ -468,128 +477,140 @@ const createCorporateCustomer = () => {
                             </div>
                           </div>
                           {!sameAddress && (
-                              <div className="">
-                                <div className="form-pair-three-by-one mt-0-i">
-                                  <div className="col-span-3">
-                                    <Controller
-                                      name="shippingAddress"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          {...field}
-                                          label={t("label:streetAddress")}
-                                          type="text"
-                                          autoComplete="off"
-                                          disabled={sameAddress}
-                                          error={!!errors.shippingAddress}
-                                          helperText={
-                                            errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
-                                          }
-                                          variant="outlined"
-                                          fullWidth
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.shippingAddress,
-                                          }}
-                                        />
-                                      )}
-                                    />
-                                  </div>
-                                  <div className="col-span-1">
-                                    <Controller
-                                      name="shippingZip"
-                                      className="col-span-1"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <TextField
-                                          {...field}
-                                          label={t("label:zipCode")}
-                                          type="number"
-                                          autoComplete="off"
-                                          disabled={sameAddress}
-                                          error={!!errors.shippingZip}
-                                          helperText={
-                                            errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
-                                          }
-                                          variant="outlined"
-                                          fullWidth
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.shippingZip,
-                                          }}
-                                        />
-                                      )}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="form-pair-input gap-x-20">
+                            <div className="">
+                              <div className="form-pair-three-by-one mt-0-i">
+                                <div className="col-span-3">
                                   <Controller
-                                    name="shippingCity"
+                                    name="shippingAddress"
                                     control={control}
                                     render={({ field }) => (
                                       <TextField
                                         {...field}
-                                        label={t("label:city")}
+                                        label={t("label:streetAddress")}
                                         type="text"
                                         autoComplete="off"
                                         disabled={sameAddress}
-                                        error={!!errors.shippingCity}
+                                        error={!!errors.shippingAddress}
                                         helperText={
-                                          errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
+                                            errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
                                         }
                                         variant="outlined"
                                         fullWidth
                                         inputlabelprops={{
                                           shrink:
                                             !!field.value ||
-                                            touchedFields.shippingCity,
+                                            touchedFields.shippingAddress,
                                         }}
                                       />
                                     )}
                                   />
+                                </div>
+                                <div className="col-span-1">
                                   <Controller
-                                    name="shippingCountry"
+                                    name="shippingZip"
+                                    className="col-span-1"
                                     control={control}
                                     render={({ field }) => (
-                                      <FormControl
-                                        error={!!errors.shippingCountry}
+                                      <TextField
+                                        {...field}
+                                        label={t("label:zipCode")}
+                                        type="number"
+                                        autoComplete="off"
+                                        disabled={sameAddress}
+                                        error={!!errors.shippingZip}
+                                        helperText={
+                                            errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
+                                        }
+                                        variant="outlined"
                                         fullWidth
-                                      >
-                                        <InputLabel id="demo-simple-select-label">
-                                          {t("label:country")}
-                                        </InputLabel>
-                                        <Select
-                                          {...field}
-                                          labelId="demo-simple-select-label"
-                                          id="demo-simple-select"
-                                          label={t("label:country")}
-                                          disabled={sameAddress}
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.shippingCountry,
-                                          }}
-                                        >
-                                          {countries.map((country, index) => (
-                                            <MenuItem
-                                              key={index}
-                                              value={country.name}
-                                            >
-                                              {country.title}
-                                            </MenuItem>
-                                          ))}
-                                        </Select>
-                                        <FormHelperText>
-                                          {errors?.shippingCountry?.message ? t(`validation:${errors?.shippingCountry?.message}`) : ""}
-                                        </FormHelperText>
-                                      </FormControl>
+                                        inputlabelprops={{
+                                          shrink:
+                                            !!field.value ||
+                                            touchedFields.shippingZip,
+                                        }}
+                                      />
                                     )}
                                   />
                                 </div>
                               </div>
-                            )}
+                              <div className="form-pair-input gap-x-20">
+                                <Controller
+                                  name="shippingCity"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:city")}
+                                      type="text"
+                                      autoComplete="off"
+                                      disabled={sameAddress}
+                                      error={!!errors.shippingCity}
+                                      helperText={
+                                          errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
+                                      }
+                                      variant="outlined"
+                                      fullWidth
+                                      inputlabelprops={{
+                                        shrink:
+                                          !!field.value ||
+                                          touchedFields.shippingCity,
+                                      }}
+                                    />
+                                  )}
+                                />
+                                <CountrySelect
+                                  control={control}
+                                  name={"shippingCountry"}
+                                  label={"country"}
+                                  placeholder={"country"}
+                                  required={false}
+                                  error={errors.shippingCountry}
+                                />
+                                {/* <Controller
+                                  name="shippingCountry"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <FormControl
+                                      error={!!errors.shippingCountry}
+                                      fullWidth
+                                    >
+                                      <InputLabel id="demo-simple-select-label">
+                                        {t("label:country")}
+                                      </InputLabel>
+                                      <Select
+                                        {...field}
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        label={t("label:country")}
+                                        disabled={sameAddress}
+                                        inputlabelprops={{
+                                          shrink:
+                                            !!field.value ||
+                                            touchedFields.shippingCountry,
+                                        }}
+                                      >
+                                        {countries.map((country, index) => (
+                                          <MenuItem
+                                            key={index}
+                                            value={country.name}
+                                          >
+                                            {country.title}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                      <FormHelperText>
+                                        {errors?.shippingCountry?.message
+                                          ? t(
+                                              `validation:${errors?.shippingCountry?.message}`
+                                            )
+                                          : ""}
+                                      </FormHelperText>
+                                    </FormControl>
+                                  )}
+                                /> */}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </AccordionDetails>
@@ -609,15 +630,15 @@ const createCorporateCustomer = () => {
                       id="panel2a-header"
                     >
                       <div className={`subtitle3  flex gap-10 my-auto ${!expandedPanel2
-                        ? "text-MonochromeGray-700"
-                        : "text-white"
+                            ? "text-MonochromeGray-700"
+                            : "text-white"
                         }`}
                       >{t("label:additionalContacts")}
                         {dirtyFields.fullName &&
-                          dirtyFields.designation &&
-                          dirtyFields.phone &&
-                          dirtyFields.email &&
-                          dirtyFields.notes ? (
+                        dirtyFields.designation &&
+                        dirtyFields.phone &&
+                        dirtyFields.email &&
+                        dirtyFields.notes ? (
                           <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                         ) : (
                           <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
@@ -629,10 +650,10 @@ const createCorporateCustomer = () => {
                         <div className="billing-address-head no-padding-x my-14">
                           {t("label:primaryContact")}
                           {dirtyFields.fullName &&
-                            dirtyFields.designation &&
-                            dirtyFields.phone &&
-                            dirtyFields.email &&
-                            dirtyFields.notes ? (
+                          dirtyFields.designation &&
+                          dirtyFields.phone &&
+                          dirtyFields.email &&
+                          dirtyFields.notes ? (
                             <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                           ) : (
                             <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -653,10 +674,10 @@ const createCorporateCustomer = () => {
                                   helperText={errors?.fullName?.message ? t(`validation:${errors?.fullName?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
-                                // inputlabelprops={{
-                                //   shrink:
-                                //     !!field.value || touchedFields.fullName,
-                                // }}
+                                  // inputlabelprops={{
+                                  //   shrink:
+                                  //     !!field.value || touchedFields.fullName,
+                                  // }}
                                 />
                               )}
                             />
@@ -673,11 +694,11 @@ const createCorporateCustomer = () => {
                                   helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
-                                // inputlabelprops={{
-                                //   shrink:
-                                //     !!field.value ||
-                                //     touchedFields.designation,
-                                // }}
+                                  // inputlabelprops={{
+                                  //   shrink:
+                                  //     !!field.value ||
+                                  //     touchedFields.designation,
+                                  // }}
                                 />
                               )}
                             />
@@ -700,11 +721,11 @@ const createCorporateCustomer = () => {
                                     autocompleteSearch
                                     countryCodeEditable={false}
                                     specialLabel={t("label:phone")}
-                                  // onBlur={handleOnBlurGetDialCode}
-                                  // inputlabelprops={{
-                                  //   shrink:
-                                  //     !!field.value || touchedFields.phone,
-                                  // }}
+                                    // onBlur={handleOnBlurGetDialCode}
+                                    // inputlabelprops={{
+                                    //   shrink:
+                                    //     !!field.value || touchedFields.phone,
+                                    // }}
                                   />
                                   <FormHelperText>
                                     {errors?.billingPhoneNumber?.message}
@@ -725,10 +746,10 @@ const createCorporateCustomer = () => {
                                   helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
-                                // inputlabelprops={{
-                                //   shrink:
-                                //     !!field.value || touchedFields.email,
-                                // }}
+                                  // inputlabelprops={{
+                                  //   shrink:
+                                  //     !!field.value || touchedFields.email,
+                                  // }}
                                 />
                               )}
                             />
@@ -749,10 +770,10 @@ const createCorporateCustomer = () => {
                                   helperText={errors?.notes?.message ? t(`validation:${errors?.notes?.message}`) : ""}
                                   variant="outlined"
                                   fullWidth
-                                // inputlabelprops={{
-                                //   shrink:
-                                //     !!field.value || touchedFields.notes,
-                                // }}
+                                  // inputlabelprops={{
+                                  //   shrink:
+                                  //     !!field.value || touchedFields.notes,
+                                  // }}
                                 />
                               )}
                             />
@@ -764,10 +785,10 @@ const createCorporateCustomer = () => {
                               <div className="billing-address-head no-padding-x">
                                 {t("label:contact")} {index + 1}
                                 {dirtyFields.fullName &&
-                                  dirtyFields.designation &&
-                                  dirtyFields.phone &&
-                                  dirtyFields.email &&
-                                  dirtyFields.notes ? (
+                                dirtyFields.designation &&
+                                dirtyFields.phone &&
+                                dirtyFields.email &&
+                                dirtyFields.notes ? (
                                   <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                                 ) : (
                                   <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
@@ -797,11 +818,11 @@ const createCorporateCustomer = () => {
                                       helperText={errors?.fullName ? t(`validation:${errors?.fullName}`) : ""}
                                       variant="outlined"
                                       fullWidth
-                                    // inputlabelprops={{
-                                    //   shrink:
-                                    //     !!field.value ||
-                                    //     touchedFields.contact[index].fullName,
-                                    // }}
+                                      // inputlabelprops={{
+                                      //   shrink:
+                                      //     !!field.value ||
+                                      //     touchedFields.contact[index].fullName,
+                                      // }}
                                     />
                                   )}
                                 />
@@ -818,12 +839,12 @@ const createCorporateCustomer = () => {
                                       helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
-                                    // inputlabelprops={{
-                                    //   shrink:
-                                    //     !!field.value ||
-                                    //     touchedFields.contact[index]
-                                    //       .designation,
-                                    // }}
+                                      // inputlabelprops={{
+                                      //   shrink:
+                                      //     !!field.value ||
+                                      //     touchedFields.contact[index]
+                                      //       .designation,
+                                      // }}
                                     />
                                   )}
                                 />
@@ -849,12 +870,12 @@ const createCorporateCustomer = () => {
                                         autocompleteSearch
                                         countryCodeEditable={false}
                                         specialLabel={t("label:phone")}
-                                      // onBlur={handleOnBlurGetDialCode}
-                                      // inputlabelprops={{
-                                      //   shrink:
-                                      //     !!field.value ||
-                                      //     touchedFields.contact[index].phone,
-                                      // }}
+                                        // onBlur={handleOnBlurGetDialCode}
+                                        // inputlabelprops={{
+                                        //   shrink:
+                                        //     !!field.value ||
+                                        //     touchedFields.contact[index].phone,
+                                        // }}
                                       />
                                       <FormHelperText>
                                         {errors?.phone?.message}
@@ -875,11 +896,11 @@ const createCorporateCustomer = () => {
                                       // helperText={errors?.contact[index]?.email?.message}
                                       variant="outlined"
                                       fullWidth
-                                    // inputlabelprops={{
-                                    //   shrink:
-                                    //     !!field.value ||
-                                    //     touchedFields.contact[index].email,
-                                    // }}
+                                      // inputlabelprops={{
+                                      //   shrink:
+                                      //     !!field.value ||
+                                      //     touchedFields.contact[index].email,
+                                      // }}
                                     />
                                   )}
                                 />
@@ -900,11 +921,11 @@ const createCorporateCustomer = () => {
                                       helperText={errors?.message ? t(`validation:${errors?.message}`) : ""}
                                       variant="outlined"
                                       fullWidth
-                                    // inputlabelprops={{
-                                    //   shrink:
-                                    //     !!field.value ||
-                                    //     touchedFields.contact[index].notes,
-                                    // }}
+                                      // inputlabelprops={{
+                                      //   shrink:
+                                      //     !!field.value ||
+                                      //     touchedFields.contact[index].notes,
+                                      // }}
                                     />
                                   )}
                                 />

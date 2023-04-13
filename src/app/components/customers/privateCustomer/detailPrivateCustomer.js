@@ -35,6 +35,7 @@ import Journal from "./PrivateCustomerDetails/Journal";
 import Orders from "./PrivateCustomerDetails/Orders";
 import Timeline from "./PrivateCustomerDetails/Timeline";
 import { useUpdatePrivateCustomerMutation } from "app/store/api/apiSlice";
+import CountrySelect from "../../common/countries";
 
 const detailPrivateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -522,7 +523,20 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                       />
                                     )}
                                   />
-                                  <Controller
+                                    <CountrySelect
+                                      control={control}
+                                      name={"billingCountry"}
+                                      label= {'country'}
+                                      placeholder={"billingCountry"}
+                                      required = {true}
+                                      error = {errors.billingCountry}
+                                      defaultValue = {
+                                        info?.addresses &&
+                                        info?.addresses?.billing &&
+                                        info?.addresses?.billing?.country || 'Norway'
+                                      }
+                                    />
+                                  {/* <Controller
                                     name="billingCountry"
                                     control={control}
                                     render={({ field }) => (
@@ -559,7 +573,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                         </FormHelperText>
                                       </FormControl>
                                     )}
-                                  />
+                                  /> */}
                                 </div>
                               </div>
                             </div>
@@ -732,7 +746,15 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                             />
                                           )}
                                         />
-                                        <Controller
+                                        <CountrySelect
+                                          control={control}
+                                          name={"shippingCountry"}
+                                          label={"country"}
+                                          placeholder={"country"}
+                                          required={false}
+                                          error={errors.shippingCountry}
+                                        />
+                                        {/* <Controller
                                           name="shippingCountry"
                                           control={control}
                                           render={({ field }) => (
@@ -769,7 +791,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                               </FormHelperText>
                                             </FormControl>
                                           )}
-                                        />
+                                        /> */}
                                       </div>
                                     </div>
                                   )}
