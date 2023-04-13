@@ -13,6 +13,7 @@ export default function CountrySelect({
   placeholder,
   error,
   defaultValue,
+  disable,
 }) {
   const { t } = useTranslation();
   return (
@@ -25,14 +26,20 @@ export default function CountrySelect({
           sx={{ width: "auto" }}
           options={countryList}
           autoHighlight
+          disabled={disable}
+          inputlabelprops={{
+            shrink: !!value,
+          }}
           value={
-            value ? value?.charAt(0)?.toUpperCase() + value?.slice(1) : value
+            value
+              ? value?.charAt(0)?.toUpperCase() + value?.slice(1)
+              : value || ""
           }
           onChange={(event, newValue) => {
             onChange(newValue?.label);
           }}
           getOptionLabel={(option) => option["label"] || option}
-          defaultValue={{ code: "NO", label: "Norway", phone: "47" }}
+          // defaultValue={{ code: "NO", label: "Norway", phone: "47" }}
           renderOption={(props, option) => (
             <Box
               component="li"
@@ -56,9 +63,12 @@ export default function CountrySelect({
               required={required}
               placeholder={t(`label:${placeholder}`)}
               fullWidth
+              disabled={disable}
               type="text"
               error={!!error}
-              helperText={error?.message ? t(`validation:${error?.message}`) : ""}
+              helperText={
+                error?.message ? t(`validation:${error?.message}`) : ""
+              }
               inputProps={{
                 ...params.inputProps,
                 autoComplete: "new-password", // disable autocomplete and autofill

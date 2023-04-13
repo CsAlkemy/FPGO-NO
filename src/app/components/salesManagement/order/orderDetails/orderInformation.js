@@ -48,6 +48,7 @@ import OrdersService from "../../../../data-access/services/ordersService/Orders
 import AuthService from "../../../../data-access/services/authService";
 import ClientService from "../../../../data-access/services/clientsService/ClientService";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
+import CountrySelect from "../../../common/countries";
 
 const OrderInformation = ({ info }) => {
   const { t } = useTranslation();
@@ -1560,8 +1561,16 @@ const OrderInformation = ({ info }) => {
                                         />
                                       )}
                                     />
-
-                                    <Controller
+                                     <CountrySelect
+                                      control={control}
+                                      name={"billingCountry"}
+                                      label={"country"}
+                                      placeholder={"country"}
+                                      required={true}
+                                      error={errors.billingCountry}
+                                      disable={true}
+                                    />
+                                    {/* <Controller
                                       name="billingCountry"
                                       control={control}
                                       render={({ field }) => (
@@ -1617,7 +1626,7 @@ const OrderInformation = ({ info }) => {
                                           </FormHelperText>
                                         </FormControl>
                                       )}
-                                    />
+                                    /> */}
                                   </div>
                                 </div>
                               </div>

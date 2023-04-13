@@ -282,7 +282,7 @@ const createPrivateCustomer = () => {
                       control={control}
                       name={"billingCountry"}
                       label={"Country"}
-                      placeholder={"billingCountry"}
+                      placeholder={"country"}
                       required={true}
                       error={errors.billingCountry}
                     />
