@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Hidden, IconButton } from "@mui/material";
-import PaymentHeader from "../payment/paymentHeader";
+import PaymentHeader from "../../payment/paymentHeader";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { ThousandSeparator } from "../../../../app/utils/helperFunctions";
+import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const ReservationCheckout = () => {
     const { t } = useTranslation();
@@ -32,7 +32,7 @@ const ReservationCheckout = () => {
 
     useEffect(() => {
         setIsLoading(false);
-        console.log(param.uuid)
+        setOrderDetails({uuid: param.uuid});
     }, [isLoading]);
 
     window.addEventListener("scroll", toggleVisible);
@@ -193,13 +193,13 @@ const ReservationCheckout = () => {
                             <Hidden mdUp>
                                 <div className="bg-white">
                                     <div className="flex justify-between items-center bg-MonochromeGray-25 py-20 px-16 mb-20 body4 font-700">
-                                    <div className="subtitle3 text-MonochromeGray-700">
-                                        {t("label:grandTotal")}
-                                    </div>
-                                    <div className="body3 text-MonochromeGray-700">
-                                        {t("label:nok")}{" "}
-                                        {ThousandSeparator(8000)}
-                                    </div>
+                                        <div className="text-MonochromeGray-700">
+                                            {t("label:grandTotal")}
+                                        </div>
+                                        <div className="text-MonochromeGray-700">
+                                            {t("label:nok")}{" "}
+                                            {ThousandSeparator(8000)}
+                                        </div>
                                     </div>
                                 </div>
                             </Hidden>
@@ -211,6 +211,9 @@ const ReservationCheckout = () => {
                             color="secondary"
                             variant="contained"
                             className="font-semibold rounded-4 bg-primary-500"
+                            onClick={() => {
+                                navigate(`/reservations/${orderDetails.uuid}/payment`);
+                            }}
                         >
                             {t("label:toCustomerDetails")}
                         </Button>
@@ -225,6 +228,9 @@ const ReservationCheckout = () => {
                     color="secondary"
                     variant="contained"
                     className="rounded-full bg-primary-500 button2"
+                    onClick={() => {
+                        navigate(`/reservations/${orderDetails.uuid}/payment`);
+                    }}
                 >
                     {t("label:toCustomerDetails")}
                 </Button>
