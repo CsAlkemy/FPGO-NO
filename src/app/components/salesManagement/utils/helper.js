@@ -526,7 +526,7 @@ export const validateSchemaReservationCaptureCardModal = yup.object().shape({
 });
 
 /************* For reservation create *********************/
-export const validateSchemaCreateResPrivate = yup.object().shape({
+export const validateSchemaCreateReservation = yup.object().shape({
   orderDate: yup
     .string()
     .typeError("youMustEnterOrderDate")
@@ -537,27 +537,16 @@ export const validateSchemaCreateResPrivate = yup.object().shape({
     yup.object().shape({
       // productName: yup.string().required('name'),
       productName: yup.lazy(() =>
-        yup.string().when(["quantity", "rate", "tax"], {
-          is: (quantity, rate, tax) => quantity || rate || tax,
+        yup.string().when(["reservationAmount", "tax"], {
+          is: (reservationAmount, tax) => reservationAmount || tax,
           // is: "",
           then: yup.string().required(""),
           // otherwise: yup.string()
         })
       ),
-      quantity: yup.lazy(() =>
-        yup.string().when(["productName", "rate", "tax"], {
-          is: (productName, rate, tax) => productName || rate || tax,
-          // is: "",
-          then: yup
-            .string()
-            .required("")
-            .matches(/^[0-9]+$/),
-          // otherwise: yup.string()
-        })
-      ),
-      rate: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "tax"], {
-          is: (productName, quantity, tax) => productName || quantity || tax,
+      reservationAmount: yup.lazy(() =>
+        yup.string().when(["productName", "tax"], {
+          is: (productName, tax) => productName || tax,
           // is: "",
           then: yup
             .string()
@@ -567,165 +556,8 @@ export const validateSchemaCreateResPrivate = yup.object().shape({
         })
       ),
       tax: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "rate"], {
-          is: (productName, quantity, rate) => productName || quantity || rate,
-          // is:"",
-          then: yup.string().required(""),
-          // otherwise: yup.string()
-        })
-      ),
-    })
-  ),
-});
-export const validateSchemaCreateResPrivateByEmail = yup.object().shape({
-  orderDate: yup
-    .string()
-    .typeError("youMustEnterOrderDate")
-    .required("youMustEnterOrderDate"),
-  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
-  // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  order: yup.array().of(
-    yup.object().shape({
-      // productName: yup.string().required('name'),
-      productName: yup.lazy(() =>
-        yup.string().when(["quantity", "rate", "tax"], {
-          is: (quantity, rate, tax) => quantity || rate || tax,
-          // is: "",
-          then: yup.string().required(""),
-          // otherwise: yup.string()
-        })
-      ),
-      quantity: yup.lazy(() =>
-        yup.string().when(["productName", "rate", "tax"], {
-          is: (productName, rate, tax) => productName || rate || tax,
-          // is: "",
-          then: yup
-            .string()
-            .required("")
-            .matches(/^[0-9]+$/),
-          // otherwise: yup.string()
-        })
-      ),
-      rate: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "tax"], {
-          is: (productName, quantity, tax) => productName || quantity || tax,
-          // is: "",
-          then: yup
-            .string()
-            .required("")
-            .matches(/^[0-9,]+$/),
-          // otherwise: yup.string()
-        })
-      ),
-      tax: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "rate"], {
-          is: (productName, quantity, rate) => productName || quantity || rate,
-          // is:"",
-          then: yup.string().required(""),
-          // otherwise: yup.string()
-        })
-      ),
-    })
-  ),
-});
-
-export const validateSchemaCreateResCorporate = yup.object().shape({
-  orderDate: yup
-    .string()
-    .typeError("youMustEnterOrderDate")
-    .required("youMustEnterOrderDate"),
-  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
-  // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  // orgorPID: yup
-  order: yup.array().of(
-    yup.object().shape({
-      // productName: yup.string().required('name'),
-      productName: yup.lazy(() =>
-        yup.string().when(["quantity", "rate", "tax"], {
-          is: (quantity, rate, tax) => quantity || rate || tax,
-          // is: "",
-          then: yup.string().required(""),
-          // otherwise: yup.string()
-        })
-      ),
-      quantity: yup.lazy(() =>
-        yup.string().when(["productName", "rate", "tax"], {
-          is: (productName, rate, tax) => productName || rate || tax,
-          // is: "",
-          then: yup
-            .string()
-            .required("")
-            .matches(/^[0-9]+$/),
-          // otherwise: yup.string()
-        })
-      ),
-      rate: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "tax"], {
-          is: (productName, quantity, tax) => productName || quantity || tax,
-          // is: "",
-          then: yup
-            .string()
-            .required("")
-            .matches(/^[0-9,]+$/),
-          // otherwise: yup.string()
-        })
-      ),
-      tax: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "rate"], {
-          is: (productName, quantity, rate) => productName || quantity || rate,
-          // is:"",
-          then: yup.string().required(""),
-          // otherwise: yup.string()
-        })
-      ),
-    })
-  ),
-});
-
-export const validateSchemaCreateResCorporateBySms = yup.object().shape({
-  orderDate: yup
-    .string()
-    .typeError("youMustEnterOrderDate")
-    .required("youMustEnterOrderDate"),
-  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
-  // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
-  // orgorPID: yup
-  order: yup.array().of(
-    yup.object().shape({
-      // productName: yup.string().required('name'),
-      productName: yup.lazy(() =>
-        yup.string().when(["quantity", "rate", "tax"], {
-          is: (quantity, rate, tax) => quantity || rate || tax,
-          // is: "",
-          then: yup.string().required(""),
-          // otherwise: yup.string()
-        })
-      ),
-      quantity: yup.lazy(() =>
-        yup.string().when(["productName", "rate", "tax"], {
-          is: (productName, rate, tax) => productName || rate || tax,
-          // is: "",
-          then: yup
-            .string()
-            .required("")
-            .matches(/^[0-9]+$/),
-          // otherwise: yup.string()
-        })
-      ),
-      rate: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "tax"], {
-          is: (productName, quantity, tax) => productName || quantity || tax,
-          // is: "",
-          then: yup
-            .string()
-            .required("")
-            .matches(/^[0-9,]+$/),
-          // otherwise: yup.string()
-        })
-      ),
-      tax: yup.lazy(() =>
-        yup.string().when(["productName", "quantity", "rate"], {
-          is: (productName, quantity, rate) => productName || quantity || rate,
+        yup.string().when(["productName", "reservationAmount"], {
+          is: (productName, reservationAmount) => productName || reservationAmount,
           // is:"",
           then: yup.string().required(""),
           // otherwise: yup.string()

@@ -57,10 +57,9 @@ import ProductService from "../../../data-access/services/productsService/Produc
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import {
   CreateReservationDefaultValue,
-  validateSchemaCreateResCorporate,
-  validateSchemaCreateResCorporateBySms,
-  validateSchemaCreateResPrivate,
-  validateSchemaCreateResPrivateByEmail,
+
+  validateSchemaCreateReservation,
+
   CustomerDefaultValue,
   validateSchemaCustomerCorporate,
   validateSchemaCustomerCorporateBySms,
@@ -100,6 +99,7 @@ const ReservationCreate = () => {
   const [createReservation, response] = useCreateReservationMutation();
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [openCreateCustomer, setOpenCreateCustomer] = useState(false);
+  const [val, setVal] = useState([]);
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -132,31 +132,9 @@ const ReservationCreate = () => {
 
   const [taxes, setTaxes] = React.useState([]);
 
-  const activeSchema = () => {
-    if (
-      customData.orderBy === "sms" && customData.customerType === "private"
-    )
-      return validateSchemaCreateResPrivate;
-    else if (
-      customData.orderBy === "email" &&
-      customData.customerType === "private"
-    )
-      return validateSchemaCreateResPrivateByEmail;
-    else if (
-      customData.orderBy === "email" &&
-        customData.customerType === "corporate"
-    )
-      return validateSchemaCreateResCorporate;
-    else if (
-      customData.orderBy === "sms" &&
-      customData.customerType === "corporate"
-    )
-      return validateSchemaCreateResCorporateBySms;
-  };
-  let schema = activeSchema();
+  //let schema = activeSchema();
   useEffect(() => {
-    schema = activeSchema();
-    console.log(schema);
+    //schema = activeSchema();
     if (recheckSchema) {
       if (customData.customerType === "corporate") {
         clearErrors(["pNumber", "orgID"]);
@@ -187,7 +165,7 @@ const ReservationCreate = () => {
     mode: "onChange",
     CreateReservationDefaultValue,
     // reValidateMode: "all",
-    resolver: yupResolver(validateSchemaCreateResCorporate),
+    resolver: yupResolver(validateSchemaCreateReservation),
   });
   const watchAllFields = watch();
 
@@ -216,7 +194,7 @@ const ReservationCreate = () => {
   };
   let customerSchema = activeCustomerSchema();
   useEffect(() => {
-    schema = activeCustomerSchema();
+    customerSchema = activeCustomerSchema();
     if (recheckSchema) {
       if (customData.customerType === "corporate") {
         clearErrors(["pNumber", "orgID"]);
@@ -292,6 +270,8 @@ const ReservationCreate = () => {
   };
 
   const onSubmit = (values) => {
+    console.log(values);
+    return;
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
@@ -595,17 +575,18 @@ const ReservationCreate = () => {
       //   ? setSelectedFromList("Corporate")
       //   : setSelectedFromList("Private");
       setSelectedCustomer(customerData);
+      resetField('searchCustomer');
       //console.log(customerData);
     } else {
-      setValue("primaryPhoneNumber", "");
-      setValue("email", "");
-      setValue("customerName", "");
-      setValue("orgID", "");
-      setValue("pNumber", "");
-      setValue("billingAddress", "");
-      setValue("billingZip", "");
-      setValue("billingCity", "");
-      setValue("billingCountry", "");
+      setValueCustomer("primaryPhoneNumber", "");
+      setValueCustomer("email", "");
+      setValueCustomer("customerName", "");
+      setValueCustomer("orgID", "");
+      setValueCustomer("pNumber", "");
+      setValueCustomer("billingAddress", "");
+      setValueCustomer("billingZip", "");
+      setValueCustomer("billingCity", "");
+      setValueCustomer("billingCountry", "");
       // setSelectedFromList(null);
       setSelectedCustomer('');
     }
@@ -688,6 +669,8 @@ const ReservationCreate = () => {
     }
   }
 
+  const watchFirstProductName = watch(`order[0].productName`);
+
     return (
         <>
           <form
@@ -717,7 +700,7 @@ const ReservationCreate = () => {
                               className="font-semibold rounded-4 w-full sm:w-auto"
                               type="submit"
                               // disabled={!(isValid && customData.paymentMethod.length)}
-                              disabled={!isValid || !selectedCustomer}
+                              disabled={!isValid || !selectedCustomer || !watchFirstProductName}
                               startIcon={<SendIcon />}
                               loading={loading}
                               loadingPosition="center"
@@ -738,14 +721,17 @@ const ReservationCreate = () => {
                             field: { ref, onChange, ...field },
                         }) => (
                             <Autocomplete
-                            freeSolo
+                            //freeSolo
+                            popupIcon={<Search/>}
                             options={customersList}
+                            //value={val || null}
                             //forcePopupIcon={<Search />}
                             getOptionLabel={(option) => option.searchString}
                             className=""
                             fullWidth
                             onChange={(_, data) => {
                               triggerSelectCustomer(data);
+                              //setVal('');
                               return onChange(data);
                             }}
                             renderOption={(props, option, { selected }) => (
@@ -811,12 +797,19 @@ const ReservationCreate = () => {
                                 // }}
                                 />
                             )}
+                            noOptionsText={
+                              <div className="flex items-center justify-between my-2">
+                                <span className="subtitle3 font-600">
+                                  {t("label:noCustomersFound")}
+                                </span>
+                              </div>
+                            }
                             />
                         )}
                         />
-                        <span className="search-icon">
+                        {/* <span className="search-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        </span>
+                        </span> */}
                     </div>
 
                     <div className="customer-selection-info pb-20">
