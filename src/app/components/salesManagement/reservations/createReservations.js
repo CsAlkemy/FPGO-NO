@@ -53,6 +53,7 @@ import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
+import ReservationService from "../../../data-access/services/reservationService/reservationService";
 import ProductService from "../../../data-access/services/productsService/ProductService";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import {
@@ -97,6 +98,7 @@ const ReservationCreate = () => {
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createReservation, response] = useCreateReservationMutation();
+  //const [getReservationList] = useGetReservationListQuery();
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [openCreateCustomer, setOpenCreateCustomer] = useState(false);
   const [val, setVal] = useState([]);
@@ -230,7 +232,7 @@ const ReservationCreate = () => {
 
   const { isValid: isValidCustomer, dirtyFields: dirtyFieldsCustomer, errors: errorsCustomer, touchedFields: touchedFieldsCustomer } = formStateCustomer;
   const onSubmitCustomer = (values) => {
-    console.log(values);
+    //console.log(values);
     let customerIDNo = '';
     if( customData.customerType == 'corporate' ){
       customerIDNo = values.orgID;
@@ -270,16 +272,17 @@ const ReservationCreate = () => {
   };
 
   const onSubmit = (values) => {
-    console.log(values);
-    return;
+    //console.log(values);
+    //return;
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
     totalDiscount = (totalDiscount / 2).toFixed(2);
     grandTotal = (grandTotal / 2).toFixed(2);
-    const data = OrdersService.prepareCreateOrderPayload({
+    const data = ReservationService.prepareCreateReservationPayload({
       ...values,
       ...customData,
+      ...selectedCustomer,
       orderSummary: {
         subTotal,
         totalTax,
@@ -293,7 +296,7 @@ const ReservationCreate = () => {
         enqueueSnackbar(t(`message:${response?.data?.message}`), {
           variant: "success",
         });
-        navigate(`/reservations`);
+        //navigate(`/reservations`);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
