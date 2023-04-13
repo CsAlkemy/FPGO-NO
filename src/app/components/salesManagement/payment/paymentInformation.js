@@ -33,6 +33,7 @@ import PaymentHeader from "./paymentHeader";
 import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import CountrySelect from "../../common/countries";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -669,7 +670,15 @@ const paymentInformation = () => {
                                   />
                                 )}
                               />
-
+                              <CountrySelect
+                                control={control}
+                                name={"billingCountry"}
+                                label={"country"}
+                                placeholder={"country"}
+                                required={true}
+                                error={errors.billingCountry}
+                              />
+{/* 
                               <Controller
                                 name="billingCountry"
                                 control={control}
@@ -714,7 +723,7 @@ const paymentInformation = () => {
                                     </FormHelperText>
                                   </FormControl>
                                 )}
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>

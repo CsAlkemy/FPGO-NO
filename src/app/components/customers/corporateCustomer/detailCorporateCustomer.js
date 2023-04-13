@@ -847,7 +847,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       control={control}
                                       name={"billingCountry"}
                                       label={"country"}
-                                      placeholder={"billingCountry"}
+                                      placeholder={"country"}
                                       required={true}
                                       error={errors.billingCountry}
                                     />
