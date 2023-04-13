@@ -543,3 +543,13 @@ export const quickOrderDefaultValue = {
   customerNotes: "",
   termsConditions: "",
 };
+
+export const validateSchemaCompleteReservationModal = yup.object().shape({
+  cancellationNote: yup
+    .string()
+    .max(200, "completionNoteRules")
+    .required("youMustEnterTheCompletionNote"),
+});
+export const validateSchemaReservationCaptureCardModal = yup.object().shape({
+  chargeAmount: yup.string().required("youMustEnterTheChargeAmount"),
+});
