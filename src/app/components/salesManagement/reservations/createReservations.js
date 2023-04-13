@@ -56,11 +56,15 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import ProductService from "../../../data-access/services/productsService/ProductService";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import {
-  CreateOrderDefaultValue,
-  validateSchemaCreateOrderCorporate,
-  validateSchemaCreateOrderCorporateOrderBySms,
-  validateSchemaCreateOrderPrivate,
-  validateSchemaCreateOrderPrivateOrderByEmail,
+  CreateReservationDefaultValue,
+
+  validateSchemaCreateReservation,
+
+  CustomerDefaultValue,
+  validateSchemaCustomerCorporate,
+  validateSchemaCustomerCorporateBySms,
+  validateSchemaCustomerPrivate,
+  validateSchemaCustomerPrivateByEmail,
 } from "../utils/helper";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import { useCreateReservationMutation } from "app/store/api/apiSlice";
@@ -93,8 +97,9 @@ const ReservationCreate = () => {
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createReservation, response] = useCreateReservationMutation();
-  const [selectedCustomer, setselectedCustomer] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState('');
   const [openCreateCustomer, setOpenCreateCustomer] = useState(false);
+  const [val, setVal] = useState([]);
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -127,30 +132,9 @@ const ReservationCreate = () => {
 
   const [taxes, setTaxes] = React.useState([]);
 
-  const activeSchema = () => {
-    if (
-      customData.orderBy === "sms" && customData.customerType === "private"
-    )
-      return validateSchemaCreateOrderPrivate;
-    else if (
-      customData.orderBy === "email" &&
-      customData.customerType === "private"
-    )
-      return validateSchemaCreateOrderPrivateOrderByEmail;
-    else if (
-      customData.orderBy === "email" &&
-        customData.customerType === "corporate"
-    )
-      return validateSchemaCreateOrderCorporate;
-    else if (
-      customData.orderBy === "sms" &&
-      customData.customerType === "corporate"
-    )
-      return validateSchemaCreateOrderCorporateOrderBySms;
-  };
-  let schema = activeSchema();
+  //let schema = activeSchema();
   useEffect(() => {
-    schema = activeSchema();
+    //schema = activeSchema();
     if (recheckSchema) {
       if (customData.customerType === "corporate") {
         clearErrors(["pNumber", "orgID"]);
@@ -178,14 +162,97 @@ const ReservationCreate = () => {
     setFocus,
     clearErrors,
   } = useForm({
-    mode: "all",
-    CreateOrderDefaultValue,
+    mode: "onChange",
+    CreateReservationDefaultValue,
     // reValidateMode: "all",
-    resolver: yupResolver(schema),
+    resolver: yupResolver(validateSchemaCreateReservation),
   });
   const watchAllFields = watch();
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
+
+  const activeCustomerSchema = () => {
+    if (
+      customData.orderBy === "sms" && customData.customerType === "private"
+    )
+      return validateSchemaCustomerPrivate;
+    else if (
+      customData.orderBy === "email" &&
+      customData.customerType === "private"
+    )
+      return validateSchemaCustomerPrivateByEmail;
+    else if (
+      customData.orderBy === "email" &&
+        customData.customerType === "corporate"
+    )
+      return validateSchemaCustomerCorporate;
+    else if (
+      customData.orderBy === "sms" &&
+      customData.customerType === "corporate"
+    )
+      return validateSchemaCustomerCorporateBySms;
+  };
+  let customerSchema = activeCustomerSchema();
+  useEffect(() => {
+    customerSchema = activeCustomerSchema();
+    if (recheckSchema) {
+      if (customData.customerType === "corporate") {
+        clearErrors(["pNumber", "orgID"]);
+        setValue("orgID", "", { shouldValidate: true });
+        setError("orgID", { type: "focus" }, { shouldFocus: true });
+      } else {
+        setValue("pNumber", "", { shouldValidate: true });
+        clearErrors(["pNumber", "orgID"]);
+      }
+    }
+  }, [customData.customerType]);
+  const {
+    control: controlCustomer,
+    formState: formStateCustomer,
+    handleSubmit: handleSubmitCustomer,
+    getValues: getValuesCustomer,
+    reset: resetCustomer,
+    watch: watchCustomer,
+    setValue: setValueCustomer,
+    resetField: resetFieldCustomer,
+    getFieldState: getFieldStateCustomer,
+    trigger: triggerCustomer,
+    setError: setErrorCustomer,
+    setFocus: setFocusCustomer,
+    clearErrors: clearErrorsCustomer,
+  } = useForm({
+    mode: "all",
+    CustomerDefaultValue,
+    // reValidateMode: "all",
+    resolver: yupResolver(customerSchema),
+  });
+  const watchAllCustomerFields = watchCustomer();
+
+  const { isValid: isValidCustomer, dirtyFields: dirtyFieldsCustomer, errors: errorsCustomer, touchedFields: touchedFieldsCustomer } = formStateCustomer;
+  const onSubmitCustomer = (values) => {
+    console.log(values);
+    let customerIDNo = '';
+    if( customData.customerType == 'corporate' ){
+      customerIDNo = values.orgID;
+    } else if( values.pNumber != undefined ){
+      customerIDNo = values.pNumber;
+    }
+    const customerUpData = {
+      name: values.customerName,
+      orgOrPNumber: customerIDNo,
+      email: values.email,
+      phone: values.primaryPhoneNumber,
+      street: values.billingAddress,
+      city: values.billingCity,
+      zip: values.billingZip,
+      country: values.billingCountry,
+      type: customData.customerType
+    };
+    //console.log(customerUpData);
+    setSelectedCustomer(customerUpData);
+    clearErrors(["pNumber", "orgID"]);
+    setOpenCreateCustomer(false);
+  }
 
   const searchCustomerOnFocus = (e) => {
     const searchByPhone =
@@ -203,6 +270,8 @@ const ReservationCreate = () => {
   };
 
   const onSubmit = (values) => {
+    console.log(values);
+    return;
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
@@ -481,16 +550,16 @@ const ReservationCreate = () => {
       setRecheckSchema(false);
       setCustomerSearchBy(undefined);
       setCustomerSearchBoxLength(0);
-      setValue("primaryPhoneNumber", customerData.phone);
-      setValue("email", customerData.email);
-      setValue("customerName", customerData.name);
+      setValueCustomer("primaryPhoneNumber", customerData.phone);
+      setValueCustomer("email", customerData.email);
+      setValueCustomer("customerName", customerData.name);
       customerData.type === "Corporate"
-          ? setValue("orgID", customerData.orgOrPNumber)
-          : setValue("pNumber", customerData.orgOrPNumber);
-      setValue("billingAddress", customerData.street);
-      setValue("billingZip", customerData.zip);
-      setValue("billingCity", customerData.city);
-      setValue("billingCountry", customerData.country);
+          ? setValueCustomer("orgID", customerData.orgOrPNumber)
+          : setValueCustomer("pNumber", customerData.orgOrPNumber);
+          setValueCustomer("billingAddress", customerData.street);
+          setValueCustomer("billingZip", customerData.zip);
+          setValueCustomer("billingCity", customerData.city);
+          setValueCustomer("billingCountry", customerData.country);
       if( customerData.type === "Corporate" ){
         setCustomData({
           ...customData,
@@ -505,19 +574,21 @@ const ReservationCreate = () => {
       // data.type === "Corporate"
       //   ? setSelectedFromList("Corporate")
       //   : setSelectedFromList("Private");
-      setselectedCustomer(customerData);
+      setSelectedCustomer(customerData);
+      resetField('searchCustomer');
+      //console.log(customerData);
     } else {
-      setValue("primaryPhoneNumber", "");
-      setValue("email", "");
-      setValue("customerName", "");
-      setValue("orgID", "");
-      setValue("pNumber", "");
-      setValue("billingAddress", "");
-      setValue("billingZip", "");
-      setValue("billingCity", "");
-      setValue("billingCountry", "");
+      setValueCustomer("primaryPhoneNumber", "");
+      setValueCustomer("email", "");
+      setValueCustomer("customerName", "");
+      setValueCustomer("orgID", "");
+      setValueCustomer("pNumber", "");
+      setValueCustomer("billingAddress", "");
+      setValueCustomer("billingZip", "");
+      setValueCustomer("billingCity", "");
+      setValueCustomer("billingCountry", "");
       // setSelectedFromList(null);
-      setselectedCustomer('');
+      setSelectedCustomer('');
     }
   }
 
@@ -598,6 +669,8 @@ const ReservationCreate = () => {
     }
   }
 
+  const watchFirstProductName = watch(`order[0].productName`);
+
     return (
         <>
           <form
@@ -627,7 +700,7 @@ const ReservationCreate = () => {
                               className="font-semibold rounded-4 w-full sm:w-auto"
                               type="submit"
                               // disabled={!(isValid && customData.paymentMethod.length)}
-                              disabled={!isValid}
+                              disabled={!isValid || !selectedCustomer || !watchFirstProductName}
                               startIcon={<SendIcon />}
                               loading={loading}
                               loadingPosition="center"
@@ -648,14 +721,17 @@ const ReservationCreate = () => {
                             field: { ref, onChange, ...field },
                         }) => (
                             <Autocomplete
-                            freeSolo
+                            //freeSolo
+                            popupIcon={<Search/>}
                             options={customersList}
+                            //value={val || null}
                             //forcePopupIcon={<Search />}
                             getOptionLabel={(option) => option.searchString}
                             className=""
                             fullWidth
                             onChange={(_, data) => {
                               triggerSelectCustomer(data);
+                              //setVal('');
                               return onChange(data);
                             }}
                             renderOption={(props, option, { selected }) => (
@@ -721,12 +797,19 @@ const ReservationCreate = () => {
                                 // }}
                                 />
                             )}
+                            noOptionsText={
+                              <div className="flex items-center justify-between my-2">
+                                <span className="subtitle3 font-600">
+                                  {t("label:noCustomersFound")}
+                                </span>
+                              </div>
+                            }
                             />
                         )}
                         />
-                        <span className="search-icon">
+                        {/* <span className="search-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        </span>
+                        </span> */}
                     </div>
 
                     <div className="customer-selection-info pb-20">
@@ -1775,97 +1858,77 @@ const ReservationCreate = () => {
               </Hidden>
           </form>
           <div className="modal-container">
-            <Dialog 
-              className="create-customer-modal" 
-              open={openCreateCustomer} 
-              onClose={ () => {
-                setOpenCreateCustomer(false); 
-              }}
-            >
-              <DialogTitle>
-                { selectedCustomer 
-                  ? t("label:editCustomerDetails") 
-                  : customData.customerType == 'corporate' 
-                    ? t("label:createCorporateCustomer") 
-                    : t("label:createPrivateCustomer")}
-              </DialogTitle>
-              <DialogContent>
-                <div className="w-full my-32">
-                  <div className="form-pair-input gap-x-20">
-                    <Controller
-                      name="primaryPhoneNumber"
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl
-                          error={!!errors.primaryPhoneNumber}
-                          fullWidth
-                        >
-                          <PhoneInput
-                            {...field}
-                            className={
-                              errors.primaryPhoneNumber
-                                ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                : "input-phone-number-field"
-                            }
-                            country="no"
-                            enableSearch
-                            autocompleteSearch
-                            countryCodeEditable={false}
-                            specialLabel={`${t("label:phone")}*`}
-                            // onBlur={handleOnBlurGetDialCode}
-                            value={field.value || ""}
-                          />
-                          <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message
-                              ? t(
-                                  `validation:${errors?.primaryPhoneNumber?.message}`
-                                )
-                              : ""}
-                          </FormHelperText>
-                        </FormControl>
-                      )}
-                    />
-                    <Controller
-                      name="email"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label={t("label:email")}
-                          type="email"
-                          autoComplete="off"
-                          error={!!errors.email}
-                          helperText={
-                            errors?.email?.message
-                              ? t(
-                                  `validation:${errors?.email?.message}`
-                                )
-                              : ""
-                          }
-                          variant="outlined"
-                          fullWidth
-                          required
-                          value={field.value || ""}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="mt-32 sm:mt-0">
+            <div className="customer-modal-container">
+              
+              <Dialog 
+                className="create-customer-modal" 
+                open={openCreateCustomer} 
+                onClose={ () => {
+                  setOpenCreateCustomer(false); 
+                }}
+              >
+                <form
+                name="customerDataForm"
+                noValidate
+                onSubmit={handleSubmitCustomer(onSubmitCustomer)}
+                >
+                <DialogTitle>
+                  { selectedCustomer 
+                    ? t("label:editCustomerDetails") 
+                    : customData.customerType == 'corporate' 
+                      ? t("label:createCorporateCustomer") 
+                      : t("label:createPrivateCustomer")}
+                </DialogTitle>
+                <DialogContent>
+                  <div className="w-full my-32">
                     <div className="form-pair-input gap-x-20">
                       <Controller
-                        name="customerName"
-                        control={control}
+                        name="primaryPhoneNumber"
+                        control={controlCustomer}
+                        render={({ field }) => (
+                          <FormControl
+                            error={!!errorsCustomer.primaryPhoneNumber}
+                            fullWidth
+                          >
+                            <PhoneInput
+                              {...field}
+                              className={
+                                errorsCustomer.primaryPhoneNumber
+                                  ? "input-phone-number-field border-1 rounded-md border-red-300"
+                                  : "input-phone-number-field"
+                              }
+                              country="no"
+                              enableSearch
+                              autocompleteSearch
+                              countryCodeEditable={false}
+                              specialLabel={`${t("label:phone")}*`}
+                              // onBlur={handleOnBlurGetDialCode}
+                              value={field.value || ""}
+                            />
+                            <FormHelperText>
+                              {errorsCustomer?.primaryPhoneNumber?.message
+                                ? t(
+                                    `validation:${errorsCustomer?.primaryPhoneNumber?.message}`
+                                  )
+                                : ""}
+                            </FormHelperText>
+                          </FormControl>
+                        )}
+                      />
+                      <Controller
+                        name="email"
+                        control={controlCustomer}
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            label={t("label:customerName")}
-                            type="text"
+                            label={t("label:email")}
+                            type="email"
                             autoComplete="off"
-                            error={!!errors.customerName}
+                            error={!!errorsCustomer.email}
                             helperText={
-                              errors?.customerName?.message
+                              errorsCustomer?.email?.message
                                 ? t(
-                                    `validation:${errors?.customerName?.message}`
+                                    `validation:${errorsCustomer?.email?.message}`
                                   )
                                 : ""
                             }
@@ -1876,230 +1939,271 @@ const ReservationCreate = () => {
                           />
                         )}
                       />
-                      {customData.customerType === "corporate" && (
+                    </div>
+                    <div className="mt-32 sm:mt-0">
+                      <div className="form-pair-input gap-x-20">
                         <Controller
-                          name="orgID"
-                          control={control}
+                          name="customerName"
+                          control={controlCustomer}
                           render={({ field }) => (
                             <TextField
                               {...field}
-                              label={t("label:organizationId")}
-                              type="number"
+                              label={t("label:customerName")}
+                              type="text"
                               autoComplete="off"
-                              error={!!errors.orgID}
+                              error={!!errorsCustomer.customerName}
+                              helperText={
+                                errorsCustomer?.customerName?.message
+                                  ? t(
+                                      `validation:${errorsCustomer?.customerName?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
                               required
-                              helperText={
-                                errors?.orgID?.message
-                                  ? t(
-                                      `validation:${errors?.orgID?.message}`
-                                    )
-                                  : ""
-                              }
-                              variant="outlined"
-                              fullWidth
                               value={field.value || ""}
                             />
                           )}
                         />
-                      )}
-                      {customData.customerType === "private" && (
-                        <Controller
-                          name="pNumber"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={t("label:pNumber")}
-                              type="number"
-                              autoComplete="off"
-                              error={!!errors.pNumber}
-                              helperText={
-                                errors?.pNumber?.message
-                                  ? t(
-                                      `validation:${errors?.pNumber?.message}`
-                                    )
-                                  : ""
-                              }
-                              // ref={orgOrPNumberRef}
-                              variant="outlined"
-                              fullWidth
-                              value={field.value || ""}
-                            />
-                          )}
-                        />
-                      )}
-                    </div>
-                  </div>
-                  <div className="">
-                    <div className="form-pair-three-by-one">
-                      <div className="col-span-3">
-                        <Controller
-                          name="billingAddress"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={t("label:streetAddress")}
-                              type="text"
-                              autoComplete="off"
-                              error={!!errors.billingAddress}
-                              helperText={
-                                errors?.billingAddress?.message
-                                  ? t(
-                                      `validation:${errors?.billingAddress?.message}`
-                                    )
-                                  : ""
-                              }
-                              variant="outlined"
-                              fullWidth
-                              inputlabelprops={{
-                                shrink:
-                                  !!field.value ||
-                                  touchedFields.billingAddress,
-                              }}
-                              required={customData.paymentMethod.includes(
-                                "invoice"
-                              )}
-                              value={field.value || ""}
-                            />
-                          )}
-                        />
-                      </div>
-                      <div className="col-span-1">
-                        <Controller
-                          name="billingZip"
-                          className="col-span-1"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={t("label:zipCode")}
-                              type="text"
-                              autoComplete="off"
-                              error={!!errors.billingZip}
-                              helperText={
-                                errors?.billingZip?.message
-                                  ? t(
-                                      `validation:${errors?.billingZip?.message}`
-                                    )
-                                  : ""
-                              }
-                              variant="outlined"
-                              fullWidth
-                              inputlabelprops={{
-                                shrink:
-                                  !!field.value ||
-                                  touchedFields.billingZip,
-                              }}
-                              required={customData.paymentMethod.includes(
-                                "invoice"
-                              )}
-                              value={field.value || ""}
-                            />
-                          )}
-                        />
-                      </div>
-                    </div>
-                    <div className="form-pair-input gap-x-20">
-                      <Controller
-                        name="billingCity"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:city")}
-                            type="text"
-                            autoComplete="off"
-                            error={!!errors.billingCity}
-                            helperText={
-                              errors?.billingCity?.message
-                                ? t(
-                                    `validation:${errors?.billingCity?.message}`
-                                  )
-                                : ""
-                            }
-                            variant="outlined"
-                            fullWidth
-                            inputlabelprops={{
-                              shrink:
-                                !!field.value ||
-                                touchedFields.billingCity,
-                            }}
-                            required={customData.paymentMethod.includes(
-                              "invoice"
+                        {customData.customerType === "corporate" && (
+                          <Controller
+                            name="orgID"
+                            control={controlCustomer}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:organizationId")}
+                                type="number"
+                                autoComplete="off"
+                                error={!!errorsCustomer.orgID}
+                                required
+                                helperText={
+                                  errorsCustomer?.orgID?.message
+                                    ? t(
+                                        `validation:${errorsCustomer?.orgID?.message}`
+                                      )
+                                    : ""
+                                }
+                                variant="outlined"
+                                fullWidth
+                                value={field.value || ""}
+                              />
                             )}
-                            value={field.value || ""}
                           />
                         )}
-                      />
-
-                      <Controller
-                        name="billingCountry"
-                        control={control}
-                        render={({ field }) => (
-                          <FormControl
-                            error={!!errors.billingCountry}
-                            fullWidth
-                          >
-                            <InputLabel id="billingCountry">
-                              {t("label:country")}*
-                            </InputLabel>
-                            <Select
-                              {...field}
-                              labelId="billingCountry"
-                              id="select"
-                              label={t("label:country")}
-                              inputlabelprops={{
-                                shrink: !!field.value,
-                              }}
-                              value={field.value || ""}
-                            >
-                              {countries.length ? (
-                                countries.map((country, index) => {
-                                  return (
-                                    <MenuItem
-                                      key={index}
-                                      value={country.name}
-                                    >
-                                      {country.title}
-                                    </MenuItem>
-                                  );
-                                })
-                              ) : (
-                                <MenuItem key={0} value="norway">
-                                  Norway
-                                </MenuItem>
-                              )}
-                            </Select>
-                            <FormHelperText>
-                              {errors?.billingCountry?.message
-                                ? t(
-                                    `validation:${errors?.billingCountry?.message}`
-                                  )
-                                : ""}
-                            </FormHelperText>
-                          </FormControl>
+                        {customData.customerType === "private" && (
+                          <Controller
+                            name="pNumber"
+                            control={controlCustomer}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:pNumber")}
+                                type="number"
+                                autoComplete="off"
+                                error={!!errorsCustomer.pNumber}
+                                helperText={
+                                  errorsCustomer?.pNumber?.message
+                                    ? t(
+                                        `validation:${errorsCustomer?.pNumber?.message}`
+                                      )
+                                    : ""
+                                }
+                                // ref={orgOrPNumberRef}
+                                variant="outlined"
+                                fullWidth
+                                value={field.value || ""}
+                              />
+                            )}
+                          />
                         )}
-                      />
+                      </div>
+                    </div>
+                    <div className="">
+                      <div className="form-pair-three-by-one">
+                        <div className="col-span-3">
+                          <Controller
+                            name="billingAddress"
+                            control={controlCustomer}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:streetAddress")}
+                                type="text"
+                                autoComplete="off"
+                                error={!!errorsCustomer.billingAddress}
+                                helperText={
+                                  errorsCustomer?.billingAddress?.message
+                                    ? t(
+                                        `validation:${errorsCustomer?.billingAddress?.message}`
+                                      )
+                                    : ""
+                                }
+                                variant="outlined"
+                                fullWidth
+                                inputlabelprops={{
+                                  shrink:
+                                    !!field.value ||
+                                    touchedFields.billingAddress,
+                                }}
+                                required={customData.paymentMethod.includes(
+                                  "invoice"
+                                )}
+                                value={field.value || ""}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="col-span-1">
+                          <Controller
+                            name="billingZip"
+                            className="col-span-1"
+                            control={controlCustomer}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:zipCode")}
+                                type="text"
+                                autoComplete="off"
+                                error={!!errorsCustomer.billingZip}
+                                helperText={
+                                  errorsCustomer?.billingZip?.message
+                                    ? t(
+                                        `validation:${errorsCustomer?.billingZip?.message}`
+                                      )
+                                    : ""
+                                }
+                                variant="outlined"
+                                fullWidth
+                                inputlabelprops={{
+                                  shrink:
+                                    !!field.value ||
+                                    touchedFields.billingZip,
+                                }}
+                                required={customData.paymentMethod.includes(
+                                  "invoice"
+                                )}
+                                value={field.value || ""}
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+                      <div className="form-pair-input gap-x-20">
+                        <Controller
+                          name="billingCity"
+                          control={controlCustomer}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:city")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errorsCustomer.billingCity}
+                              helperText={
+                                errorsCustomer?.billingCity?.message
+                                  ? t(
+                                      `validation:${errorsCustomer?.billingCity?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                              inputlabelprops={{
+                                shrink:
+                                  !!field.value ||
+                                  touchedFields.billingCity,
+                              }}
+                              required={customData.paymentMethod.includes(
+                                "invoice"
+                              )}
+                              value={field.value || ""}
+                            />
+                          )}
+                        />
+
+                        <Controller
+                          name="billingCountry"
+                          control={controlCustomer}
+                          render={({ field }) => (
+                            <FormControl
+                              error={!!errorsCustomer.billingCountry}
+                              fullWidth
+                            >
+                              <InputLabel id="billingCountry">
+                                {t("label:country")}*
+                              </InputLabel>
+                              <Select
+                                {...field}
+                                labelId="billingCountry"
+                                id="select"
+                                label={t("label:country")}
+                                inputlabelprops={{
+                                  shrink: !!field.value,
+                                }}
+                                value={field.value || ""}
+                              >
+                                {countries.length ? (
+                                  countries.map((country, index) => {
+                                    return (
+                                      <MenuItem
+                                        key={index}
+                                        value={country.name}
+                                      >
+                                        {country.title}
+                                      </MenuItem>
+                                    );
+                                  })
+                                ) : (
+                                  <MenuItem key={0} value="norway">
+                                    Norway
+                                  </MenuItem>
+                                )}
+                              </Select>
+                              <FormHelperText>
+                                {errorsCustomer?.billingCountry?.message
+                                  ? t(
+                                      `validation:${errorsCustomer?.billingCountry?.message}`
+                                    )
+                                  : ""}
+                              </FormHelperText>
+                            </FormControl>
+                          )}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </DialogContent>
-              <DialogActions className="dialogue-btn-container">
-                <Button className="body3x lg-blue-btn" variant="outlined" onClick={ () => {setOpenCreateCustomer(false) }}>
-                  {t("label:cancel")}
-                </Button>
-                { selectedCustomer ? (
+                </DialogContent>
+                <DialogActions className="dialogue-btn-container">
                   <Button className="body3x lg-blue-btn" variant="outlined" onClick={ () => {setOpenCreateCustomer(false) }}>
-                    {t("label:update")}
+                    {t("label:cancel")}
                   </Button>
-                ) : (
-                  <Button className="body3x lg-blue-btn" variant="outlined" onClick={ () => {console.log(errors.primaryPhoneNumber) }}>
-                  {t("label:create")}
-                  </Button>
-                )}
-              </DialogActions>
-            </Dialog>
+                  { selectedCustomer ? (
+                    <Button 
+                      className="body3x lg-blue-btn" 
+                      variant="outlined" 
+                      //onClick={ () => {setOpenCreateCustomer(false) }}
+                      disabled={!isValidCustomer}
+                      type="submit"
+                    >
+                      {t("label:update")}
+                    </Button>
+                  ) : (
+                    <Button 
+                      className="body3x lg-blue-btn" 
+                      variant="outlined" 
+                      //onClick={ () => {setOpenCreateCustomer(false) }}
+                      disabled={!isValidCustomer}
+                      type="submit"
+                    >
+                    {t("label:create")}
+                    </Button>
+                  )}
+                </DialogActions>
+                </form>
+              </Dialog>
+            </div>
           </div>
         </>
     );
