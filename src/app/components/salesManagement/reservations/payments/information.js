@@ -16,14 +16,17 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate, useParams } from "react-router-dom";
 import PaymentHeader from "../../payment/paymentHeader";
-import { LoadingButton } from "@mui/lab";
+import {
+    PaymentDefaultValue,
+    validateSchemaPaymentCheckout,
+    validateSchemaPaymentCheckoutCorporate,
+  } from "../../utils/helper";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const PaymentConfirmation = () => {
@@ -39,10 +42,7 @@ const PaymentConfirmation = () => {
         isNewCustomer: false,
         customerType: "private",
     });
-    const [creditCheckMessage, setCreditCheckMessage] = useState("");
-    const [isApproved, setIsApproved] = useState(false);
     const [orderDetails, setOrderDetails] = useState([]);
-    const [apiLoading, setApiLoading] = useState(false);
     const [updatedData, setUpdatedData] = useState({});
     const [isUpdateData, setIsUpdateData] = useState(false);
 
@@ -73,16 +73,17 @@ const PaymentConfirmation = () => {
             name: "Mastercard",
             logo: "assets/images/payment/master.png",
         },
-        {
-            id: 4,
-            name: "Invoice",
-            logo: "assets/images/payment/frontPayment.png",
-        },
     ]);
 
     const { control, formState, handleSubmit, getValues, reset, watch } = useForm(
         {
-          mode: "onChange",
+            mode: "onChange",
+            PaymentDefaultValue,
+            resolver: yupResolver(
+                customData.customerType === "private"
+                ? validateSchemaPaymentCheckout
+                : validateSchemaPaymentCheckoutCorporate
+            ),
         }
     );
 
@@ -95,10 +96,6 @@ const PaymentConfirmation = () => {
     useEffect(() => {
         
     }, [isLoading]);
-    
-    const handleCreditCheck = () => {
-    setApiLoading(true);
-    };
 
     const watchPhone = watch("phone");
     const watchEmail = watch("email");
@@ -142,7 +139,11 @@ const PaymentConfirmation = () => {
                                     <div className="p-20 rounded-8 border-MonochromeGray-50 border-2 my-40 w-full md:w-3/5">
                                         <div className="flex justify-between items-center">
                                             <div className="subtitle1 text-MonochromeGray-700">
-                                                Name
+                                                {updatedData?.customerName
+                                                ? updatedData.customerName
+                                                : orderDetails?.customerDetails?.name
+                                                ? orderDetails?.customerDetails?.name
+                                                : "-"}
                                             </div>
                                             <div>
                                                 <IconButton
@@ -158,16 +159,54 @@ const PaymentConfirmation = () => {
                                         <div className="">
                                             <div className="body3 text-MonochromeGray-300">
                                                 {t("label:pNumber")}:{" "}
-                                                34534654
+                                                {updatedData?.orgIdOrPNumber
+                                                ? updatedData.orgIdOrPNumber
+                                                : orderDetails?.customerDetails?.personalNumber
+                                                ? orderDetails?.customerDetails?.personalNumber
+                                                : "-"}
                                             </div>
                                             <div className="text-MonochromeGray-700 body2 mt-16">
-                                                4354364567
+                                                {updatedData?.phone
+                                                ? updatedData.phone
+                                                : orderDetails?.customerDetails?.countryCode &&
+                                                    orderDetails?.customerDetails?.msisdn
+                                                ? orderDetails?.customerDetails?.countryCode +
+                                                    orderDetails?.customerDetails?.msisdn
+                                                : "-"}
                                             </div>
                                             <div className="text-MonochromeGray-700 body2">
-                                            lutfur@fpgo.no
+                                                {updatedData?.email
+                                                ? updatedData.email
+                                                : orderDetails?.customerDetails?.email
+                                                ? orderDetails?.customerDetails?.email
+                                                : "-"}
                                             </div>
                                             <div className="text-MonochromeGray-700 body2">
-                                                42 manesstess, Zurich 3456, norway
+                                                {updatedData?.billingAddress
+                                                ? updatedData.billingAddress + ", "
+                                                : orderDetails?.customerDetails?.address &&
+                                                    orderDetails?.customerDetails?.address?.street
+                                                ? orderDetails?.customerDetails?.address?.street +
+                                                    ", "
+                                                : "-, "}
+                                                {updatedData?.billingCity
+                                                ? updatedData.billingCity + ", "
+                                                : orderDetails?.customerDetails?.address &&
+                                                    orderDetails?.customerDetails?.address?.city
+                                                ? orderDetails?.customerDetails?.address?.city + " "
+                                                : "-"}
+                                                {updatedData?.billingZip
+                                                ? updatedData.billingZip + ", "
+                                                : orderDetails?.customerDetails?.address &&
+                                                    orderDetails?.customerDetails?.address?.zip
+                                                ? orderDetails?.customerDetails?.address?.zip + ", "
+                                                : "-, "}
+                                                {updatedData?.billingCountry
+                                                ? updatedData.billingCountry
+                                                : orderDetails?.customerDetails?.address &&
+                                                    orderDetails?.customerDetails?.address?.country
+                                                ? orderDetails?.customerDetails?.address?.country
+                                                : "-"}
                                             </div>
                                         </div>
                                     </div>
@@ -541,7 +580,18 @@ const PaymentConfirmation = () => {
                                                     return (
                                                         <div
                                                             key={item.id}
-                                                            className={`p-10 md:p-20 rounded-6 h-auto md:h-120 flex flex-row-reverse md:flex-col items-center justify-between md:justify-end gap-10`}
+                                                            className={`p-10 md:p-20 rounded-6 h-auto md:h-120 flex flex-row-reverse md:flex-col items-center justify-between md:justify-end gap-10 ${
+                                                                customData.paymentMethod ===
+                                                                item.name.toLowerCase()
+                                                                    ? `border-2 border-primary-500`
+                                                                    : `border-1 border-MonochromeGray-50`
+                                                                }`}
+                                                            onClick={() => {
+                                                                setCustomData({
+                                                                    ...customData,
+                                                                    paymentMethod: item.name.toLowerCase(),
+                                                                });
+                                                            }}
                                                         >
                                                             <img
                                                                 className={` ${
@@ -558,53 +608,6 @@ const PaymentConfirmation = () => {
                                                         </div>
                                                     );
                                                 })}
-                                            </div>
-
-                                            <div className="mt-36 mb-20">
-                                                <div className="caption2 text-MonochromeGray-300 mb-20">
-                                                    {t("label:informationForCreditCheck")}
-                                                </div>
-                                                <div className="flex gap-10 justify-start items-center flex-col md:flex-row gap-y-10 w-full md:w-3/4">
-                                                    <Controller
-                                                        name="orgIdCreditCheck"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                        <TextField
-                                                            {...field}
-                                                            label={t("label:orgIdPNumber")}
-                                                            type="text"
-                                                            autoComplete="off"
-                                                            error={!!errors.orgIdCreditCheck}
-                                                            // helperText={
-                                                            //   errors?.orgIdCreditCheck?.message
-                                                            // }
-                                                            variant="outlined"
-                                                            fullWidth
-                                                            value={field.value || ""}
-                                                        />
-                                                        )}
-                                                    />
-                                                    <LoadingButton
-                                                        variant="contained"
-                                                        color="secondary"
-                                                        className="w-full md:w-auto font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800"
-                                                        aria-label="Confirm"
-                                                        size="large"
-                                                        type="button"
-                                                        loading={apiLoading}
-                                                        loadingPosition="center"
-                                                        onClick={() => handleCreditCheck()}
-                                                    >
-                                                        {t("label:check")}
-                                                    </LoadingButton>
-                                                </div>
-                                                <div
-                                                    className={`${
-                                                        !!isApproved ? "text-green-600" : "text-red-500"
-                                                    } text-MonochromeGray-300 my-8 mx-8`}
-                                                >
-                                                    {creditCheckMessage}
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

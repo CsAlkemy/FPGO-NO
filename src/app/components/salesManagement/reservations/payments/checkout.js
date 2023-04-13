@@ -160,7 +160,7 @@ const ReservationCheckout = () => {
 
                                 <div className="flex flex-col gap-2">
                                     <div className="body4 text-MonochromeGray-300">
-                                        {t("label:receiptNo")}
+                                        {t("label:referenceNo")}
                                     </div>
                                     <div className="body3  text-MonochromeGray-700 w-3/4">
                                         3453464

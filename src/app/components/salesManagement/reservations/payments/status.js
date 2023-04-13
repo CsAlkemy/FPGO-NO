@@ -31,8 +31,8 @@ const PaymentStatus = () => {
                                 <CheckCircle className='custom-bg-teal-500 icon-size-52' />
                             }
                             </div>
-                            <div className='header5'>{t("label:paymentSuccessful")}</div>
-                            <div className='body2 w-full md:w-3/4 mx-auto text-center'>{t("label:paymentSuccessfulMessage", {sentBy:sentBy, phoneOrEmail:phoneOrEmail})}</div>
+                            <div className='header5'>{t("label:reservationPaymentSuccessful")}</div>
+                            <div className='body2 w-full md:w-3/4 mx-auto text-center'>{t("label:reservationPaymentSuccessfulMessage", {sentBy:sentBy, phoneOrEmail:phoneOrEmail})}</div>
                         </div>
                     </div>
                 </div>
