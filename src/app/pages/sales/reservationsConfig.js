@@ -11,7 +11,15 @@ const ReservationDetails = lazy(() =>
 );
 
 const ReservationCheckout = lazy(() =>
-  import("../../components/salesManagement/reservations/checkout")
+  import("../../components/salesManagement/reservations/payments/checkout")
+);
+
+const PaymentConfirmation = lazy(() => 
+  import("../../components/salesManagement/reservations/payments/information")
+);
+
+const PaymentStatus = lazy(() => 
+  import("../../components/salesManagement/reservations/payments/status")
 );
 
 export const ReservationsConfig = {
@@ -114,6 +122,14 @@ export const ReservationCart = {
     {
       path: "/reservations/:uuid/checkout",
       element: <ReservationCheckout />
+    }, 
+    {
+      path: "/reservations/:uuid/payment",
+      element: <PaymentConfirmation />
+    },
+    {
+      path: "/reservations/:uuid/confirmation",
+      element: <PaymentStatus />
     }
   ]
 };
