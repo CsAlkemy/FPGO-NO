@@ -1,5 +1,6 @@
-.reservation-create-form .header-click-to-action {
-    @apply sm:px-16 px-0
+.reservation-create-form .header-click-to-action,
+.reservation-details-page .header-click-to-action{
+    @apply sm:px-20 px-0
 }
 .reservation-create-form .create-order-date-container {
     @apply grid grid-cols-1 md:grid-cols-4 px-0;
