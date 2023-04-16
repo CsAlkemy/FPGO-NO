@@ -173,3 +173,16 @@ export const reservationOverviewRowDataFields = [
   "status",
   "options"
 ];
+
+export const reservationOverviewFPAdminRowDataFields = [
+  "date",
+  "id", 
+  "clientName",
+  "customer",
+  "phone",
+  "reservedAmount",
+  "amountPaid",
+  "amountInBank",
+  "status",
+  "options"
+];

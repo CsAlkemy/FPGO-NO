@@ -10,9 +10,9 @@ const ReservationCheckout = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const param = useParams();
-    const [visible, setVisible] = React.useState(false);
+    const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [orderDetails, setOrderDetails] = useState([]);
+    const [reservationDetails, setReservationDetails] = useState([]);
 
     const toggleVisible = () => {
         const scrolled = document.documentElement.scrollTop;
@@ -32,7 +32,7 @@ const ReservationCheckout = () => {
 
     useEffect(() => {
         setIsLoading(false);
-        setOrderDetails({uuid: param.uuid});
+        setReservationDetails({uuid: param.uuid});
     }, [isLoading]);
 
     window.addEventListener("scroll", toggleVisible);
@@ -212,7 +212,7 @@ const ReservationCheckout = () => {
                             variant="contained"
                             className="font-semibold rounded-4 bg-primary-500"
                             onClick={() => {
-                                navigate(`/reservations/${orderDetails.uuid}/payment`);
+                                navigate(`/reservations/${reservationDetails.uuid}/payment`);
                             }}
                         >
                             {t("label:toCustomerDetails")}
@@ -229,7 +229,7 @@ const ReservationCheckout = () => {
                     variant="contained"
                     className="rounded-full bg-primary-500 button2"
                     onClick={() => {
-                        navigate(`/reservations/${orderDetails.uuid}/payment`);
+                        navigate(`/reservations/${reservationDetails.uuid}/payment`);
                     }}
                 >
                     {t("label:toCustomerDetails")}

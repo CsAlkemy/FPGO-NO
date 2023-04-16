@@ -1,13 +1,21 @@
 import React, {useState, useEffect} from "react";
 import {useTranslation} from "react-i18next";
 import Hidden from "@mui/material/Hidden";
+import {useDispatch, useSelector} from "react-redux";
 import OverViewMainTable from "../../../components/overview/overviewTable/OverviewMainTable";
 import {reservationListOverview} from "../../../components/overview/overviewTable/TablesName";
-import {reservationOverviewRowDataFields} from "../../../components/overview/overviewTable/RowDataFields"
+import {
+    reservationOverviewRowDataFields, 
+    reservationOverviewFPAdminRowDataFields
+} from "../../../components/overview/overviewTable/RowDataFields"
+import { useGetReservationListQuery } from "app/store/api/apiSlice";
+import {selectUser} from "app/store/userSlice";
+import {FP_ADMIN} from "../../../utils/user-roles/UserRoles";
+import ReservationService from "../../../data-access/services/reservationService/reservationService";
 
 const ListOverview = () => {
     const { t } = useTranslation();
-    const [isLoading, setIsLoading] = useState(true);
+    const user = useSelector(selectUser);
     const tabPanelsLabel = [
         t("label:all"),
         t("label:sent"),
@@ -39,7 +47,7 @@ const ListOverview = () => {
             id: "customer",
             align: "left",
             disablePadding: false,
-            label: t("label:customer"),
+            label: t("label:customerName"),
             sort: true,
         },
         {
@@ -86,82 +94,86 @@ const ListOverview = () => {
         },
     ];
 
-    const preparedData = [
+    const overviewHeaderRowsFPAdmin = [
         {
-            uuid: "RSV0001",
-            id: "RSV0001",
-            date: "7 April 2023",
-            customer: "Lutfur rahman",
-            phone: "+4753247564",
-            email: "lutfur@fpgo.no",
-            reservedAmount: 12000,
-            amountPaid: "0",
-            amountInBank: "0",
-            remainingAmount: "0",
-            status: 'sent',
-            translationKey: "Sent"
+            id: "date",
+            align: "left",
+            disablePadding: false,
+            label: t("label:dateCreated"),
+            sort: true,
         },
         {
-            uuid: "RSV0002",
-            id: "RSV0002",
-            date: "6 April 2023",
-            customer: "Alkemy Hossain",
-            phone: "+4753247564",
-            email: "alkemy@fpgo.no",
-            reservedAmount: 12000,
-            amountPaid: 8000,
-            amountInBank: 8000,
-            remainingAmount: 4000,
-            status: 'completed',
-            translationKey: "Completed"
+            id: "id",
+            align: "left",
+            disablePadding: false,
+            label: t("label:reservationId"),
+            sort: true,
         },
         {
-            uuid: "RSV0003",
-            id: "RSV0003",
-            date: "6 April 2023",
-            customer: "Joni Kumar",
-            phone: "+4753247564",
-            email: "joni@fpgo.no",
-            reservedAmount: 12000,
-            amountPaid: 8000,
-            amountInBank: 8000,
-            remainingAmount: 4000,
-            status: 'cancelled',
-            translationKey: "Cancelled"
+            id: "clientName",
+            align: "left",
+            disablePadding: false,
+            label: t("label:clientName"),
+            sort: true,
         },
         {
-            uuid: "RSV00004",
-            id: "RSV00004",
-            date: "6 April 2023",
-            customer: "Alkemy Hossain",
-            phone: "+4753247564",
-            email: "alkemy@fpgo.no",
-            reservedAmount: 12000,
-            amountPaid: 8000,
-            amountInBank: 8000,
-            remainingAmount: 4000,
-            status: 'reserved',
-            translationKey: "Reserved"
+            id: "customer",
+            align: "left",
+            disablePadding: false,
+            label: t("label:customerName"),
+            sort: true,
         },
         {
-            uuid: "RSV00005",
-            id: "RSV00005",
-            date: "6 April 2023",
-            customer: "Joni Kumar",
-            phone: "+4753247564",
-            email: "joni@fpgo.no",
-            reservedAmount: 12000,
-            amountPaid: 8000,
-            amountInBank: 8000,
-            remainingAmount: 4000,
-            status: 'expired',
-            translationKey: "Expired"
-        }
+            id: "phone",
+            align: "left",
+            disablePadding: false,
+            label: t("label:phoneNo"),
+            sort: true,
+        },
+        {
+            id: "reservedAmount",
+            align: "right",
+            disablePadding: false,
+            label: t("label:reservedAmount"),
+            sort: true,
+        },
+        {
+            id: "amountPaid",
+            align: "right",
+            disablePadding: false,
+            label: t("label:amountPaid"),
+            sort: true,
+        },
+        {
+            id: "amountInBank",
+            align: "right",
+            disablePadding: false,
+            label: t("label:amountInBank"),
+            sort: true,
+        },
+        {
+            id: "status",
+            align: "center",
+            disablePadding: false,
+            label: t("label:status"),
+            sort: true,
+        },
+        {
+            id: "options",
+            align: "right",
+            disablePadding: false,
+            label: "",
+            sort: false,
+        },
     ];
+    const { data, isFetching, isLoading, isSuccess, isError, error, refetch } = useGetReservationListQuery();
 
     useEffect(() => {
-        setIsLoading( false );
-    }, [isLoading]);
+        refetch();
+    }, []);
+
+    const preparedData = data?.is_data 
+        ? ReservationService.mapReservationList(data.data) : [];
 
     return (
         <>
@@ -170,13 +182,21 @@ const ListOverview = () => {
                     headerSubtitle={headerSubtitle}
                     headerButtonLabel={headerButtonLabel}
                     tableName={reservationListOverview}
-                    headerRows={overviewHeaderRows}
+                    headerRows={
+                        user.role[0] !== FP_ADMIN 
+                        ? overviewHeaderRows
+                        : overviewHeaderRowsFPAdmin
+                    }
                     tableData={preparedData}
-                    rowDataFields={reservationOverviewRowDataFields}
+                    rowDataFields={
+                        user.role[0] !== FP_ADMIN
+                        ? reservationOverviewRowDataFields 
+                        : reservationOverviewFPAdminRowDataFields
+                    }
                     tabPanelsLabel={tabPanelsLabel}
                     tabs={tabs}
-                    isLoading={isLoading}
-                    // isLoading={isFetching}
+                    // isLoading={isLoading}
+                    isLoading={isFetching}
                     isMobileScreen={true}
                 />
             </Hidden>
@@ -186,13 +206,21 @@ const ListOverview = () => {
                     headerSubtitle={headerSubtitle}
                     headerButtonLabel={headerButtonLabel}
                     tableName={reservationListOverview}
-                    headerRows={overviewHeaderRows}
+                    headerRows={
+                        user.role[0] !== FP_ADMIN 
+                        ? overviewHeaderRows
+                        : overviewHeaderRowsFPAdmin
+                    }
                     tableData={preparedData}
-                    rowDataFields={reservationOverviewRowDataFields}
+                    rowDataFields={
+                        user.role[0] !== FP_ADMIN
+                        ? reservationOverviewRowDataFields 
+                        : reservationOverviewFPAdminRowDataFields
+                    }
                     tabPanelsLabel={tabPanelsLabel}
                     tabs={tabs}
-                    isLoading={isLoading}
-                    // isLoading={isFetching}
+                    // isLoading={isLoading}
+                    isLoading={isFetching}
                     isMobileScreen={false}
                 />
             </Hidden>

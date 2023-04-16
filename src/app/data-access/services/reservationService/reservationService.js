@@ -1,3 +1,4 @@
+import { ro } from "date-fns/locale";
 
 class ReservationService {
 
@@ -163,6 +164,31 @@ class ReservationService {
     const year = date.getFullYear();
 
     return `${day} ${monthName}, ${year}`;
+  };
+
+  mapReservationList = (data) => {
+    let lists;
+    lists = data.map(row => {
+      const preparePhone = row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
+
+      return {
+        uuid: row.reservationUuid,
+        id: row.reservationUuid,
+        date: row.dateCreated,
+        phone: preparePhone,
+        email: row.email,
+        clientName: row?.clientName,
+        customer: row.customerName,
+        amountPaid: row.amountPaid,
+        amountInBank: row.amountInBank,
+        reservedAmount: row.reservedAmount,
+        remainingAmount: row.remainingCaptureRunway,
+        status: row.status.toLowerCase(),
+        translationKey: row.translationKey
+      }
+    });
+
+    return lists;
   };
 
 }
