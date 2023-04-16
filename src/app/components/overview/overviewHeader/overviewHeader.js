@@ -238,7 +238,7 @@ export default function OverviewHeader(props) {
               />
             </Paper>
             <div className="flex gap-10">
-              {/* {props.tableRef === ordersListOverview && (
+              {props.tableRef === ordersListOverview && (
                 <div className="button2">
                   <Button
                     color="secondary"
@@ -250,7 +250,7 @@ export default function OverviewHeader(props) {
                     {t("label:export")}
                   </Button>
                 </div>
-              )} */}
+              )}
               {props.tableRef === customersListOverview ? (
                 <div>
                   <Button
