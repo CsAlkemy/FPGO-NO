@@ -1,14 +1,8 @@
-import React from "react";
-import axios from "axios";
-import { EnvVariable } from "../../utils/EnvVariables";
-import AuthService from "../authService/AuthService";
-import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-import UtilsServices from "../../utils/UtilsServices";
 
 class ReservationService {
 
   prepareCreateReservationPayload = (params) => {
-    console.log(params);
+    //console.log(params);
     const products =
       params.order.length &&
       params.order

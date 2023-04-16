@@ -15,7 +15,7 @@ import ModeIcon from '@mui/icons-material/Mode';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+//import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import {
@@ -52,7 +52,7 @@ import { IoMdAdd } from "react-icons/io";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
 import CustomersService from "../../../data-access/services/customersService/CustomersService";
-import OrdersService from "../../../data-access/services/ordersService/OrdersService";
+//import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import ReservationService from "../../../data-access/services/reservationService/reservationService";
 import ProductService from "../../../data-access/services/productsService/ProductService";
 import DiscardConfirmModal from "../../common/confirmDiscard";
@@ -68,7 +68,7 @@ import {
   validateSchemaCustomerPrivateByEmail,
 } from "../utils/helper";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
-import { useCreateReservationMutation } from "app/store/api/apiSlice";
+import { useCreateReservationMutation, useGetReservationListQuery } from "app/store/api/apiSlice";
 import UtilsServices from "../../../data-access/utils/UtilsServices";
 import AuthService from "../../../data-access/services/authService";
 import CharCount from "../../common/charCount";
@@ -81,24 +81,22 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 const ReservationCreate = () => {
     const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
-  const [open, setOpen] = React.useState(false);
-  const [expanded1, setExpanded1] = React.useState(false);
-  const [expanded0, setExpanded0] = React.useState(false);
+  //const [open, setOpen] = React.useState(false);
   const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
-  const [expandedPanel2, setExpandedPanel2] = React.useState(false);
   const [productsList, setProductsList] = useState([]);
   const [customersList, setCustomersList] = useState([]);
-  const [selectedFromList, setSelectedFromList] = useState(null);
+  //const [selectedFromList, setSelectedFromList] = useState(null);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [customDateDropDown, setCustomDateDropDown] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [recheckSchema, setRecheckSchema] = useState(true);
-  const [itemLoader, setItemLoader] = useState(false);
+  //const [itemLoader, setItemLoader] = useState(false);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createReservation, response] = useCreateReservationMutation();
-  //const [getReservationList] = useGetReservationListQuery();
+  /*const {data: reservationList} = useGetReservationListQuery();
+  /console.log(reservationList);*/
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [openCreateCustomer, setOpenCreateCustomer] = useState(false);
   const [val, setVal] = useState([]);
