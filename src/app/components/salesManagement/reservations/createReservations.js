@@ -712,7 +712,7 @@ const ReservationCreate = () => {
                       </Hidden>
                   </div>
                 </div>
-                <div className="main-content-wrap px-28">
+                <div className="main-content-wrap px-20">
                   <div className="customer-info-section">
                     <div className="search-customer-order-create my-32">
                         <Controller
