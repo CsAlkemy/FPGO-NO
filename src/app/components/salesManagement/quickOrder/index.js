@@ -28,6 +28,7 @@ import CharCount from "../../common/charCount";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import SendInvoiceModal from "./sendInvoiceModal";
+import RedoIcon from "@mui/icons-material/Redo";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "../../../data-access/services/authService";
 import ProductService from "../../../data-access/services/productsService/ProductService";
@@ -40,6 +41,7 @@ import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import FuseUtils from "@fuse/utils";
+import { Cancel } from "@mui/icons-material";
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -1705,6 +1707,37 @@ const createProducts = () => {
                 </div>
               </div>
             </div>
+            <Hidden mdUp>
+              <div className="fixed bottom-0 grid grid-cols-2 justify-center items-center gap-20 w-full mb-20 px-20 z-50">
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  className="bg-white text-MonochromeGray-700 button2 shadow-5 "
+                  onClick={() => setOpen(true)}
+                  startIcon={<Cancel className="text-red-500" />}
+                >
+                  {t("label:discard")}
+                </Button>
+                <LoadingButton
+                  color="secondary"
+                  variant="contained"
+                  type="submit"
+                  className="rounded-full bg-primary-500 button2 py-5"
+                  disabled={!isValid || val.length === 0 || !watchRate}
+                  sx={{
+                    "&.Mui-disabled": {
+                      background: "#eaeaea",
+                      color: "#c0c0c0",
+                    },
+                  }}
+                  startIcon={<RedoIcon />}
+                  loading={loading}
+                  loadingPosition="center"
+                >
+                   {t("label:sendOrder")}
+                </LoadingButton>
+              </div>
+            </Hidden>
           </form>
         </div>
       </div>
