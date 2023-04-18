@@ -118,7 +118,7 @@ export const apiSlice = createApi({
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
-        result ? ["OrdersList"] : [""],
+        result ? ["OrdersList", "ReservationList"] : [""],
     }),
     resendOrder: builder.mutation({
       query: (payload) => ({
@@ -130,7 +130,7 @@ export const apiSlice = createApi({
           email: payload.email,
         },
       }),
-      invalidatesTags: ["OrdersList"],
+      invalidatesTags: ["OrdersList", "ReservationList"],
     }),
     cancelOrder: builder.mutation({
       query: (payload) => ({
@@ -142,7 +142,7 @@ export const apiSlice = createApi({
             : null,
         },
       }),
-      invalidatesTags: ["OrdersList"],
+      invalidatesTags: ["OrdersList", "ReservationList"],
     }),
     getCustomersList: builder.query({
       query: () => "/customers/list",

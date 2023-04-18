@@ -150,7 +150,7 @@ const OrderModal = (props) => {
         setFlag(false);
         setApiLoading(false);
       });
-    } else if (headerTitle === "Resend Order") {
+    } else if (["Resend Order", "Resend Reservation"].includes(headerTitle)) {
       setApiLoading(true);
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
@@ -163,15 +163,17 @@ const OrderModal = (props) => {
           enqueueSnackbar(t(`message:${res?.error?.data?.message}`), {
             variant: "error",
           });
-        if (window.location.pathname === "/create-order/details")
+        if (window.location.pathname === `/create-order/details/${orderId}`)
           navigate(`/sales/orders-list`);
+        else if (window.location.pathname === `/reservations-details/${orderId}`)
+          navigate('/reservations');
         // else window.location.reload();
         setTimeout(() => {
           setOpen(false);
         }, 1000);
         setApiLoading(false);
       });
-    } else if (headerTitle === "Cancel Order") {
+    } else if (["Cancel Order", "Cancel Reservation"].includes(headerTitle)) {
       setApiLoading(true);
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
@@ -180,15 +182,17 @@ const OrderModal = (props) => {
           });
           // setApiLoading(false);
         }
-        if (window.location.pathname === "/create-order/details")
+        if (window.location.pathname === `/create-order/details/${orderId}`)
           navigate(`/sales/orders-list`);
+        else if (window.location.pathname === `/reservations-details/${orderId}`)
+          navigate('/reservations');
         // else window.location.reload();
         setTimeout(() => {
           setOpen(false);
         }, 1000);
         setApiLoading(false);
       });
-    } else if (["Send Refund", "Refund Order"].includes(headerTitle) ) {
+    } else if (["Send Refund", "Refund Order", "Refund from Reservation"].includes(headerTitle) ) {
       setApiLoading(true);
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
@@ -197,9 +201,10 @@ const OrderModal = (props) => {
               variant: "success",
             });
             setOpen(false);
-            window.location.pathname.includes("/create-order/details/")
-              ? navigate(-1)
-              : "";
+            if (window.location.pathname === `/create-order/details/${orderId}`)
+              navigate(`/sales/orders-list`);
+            else if (window.location.pathname === `/reservations-details/${orderId}`)
+              navigate('/reservations');
             // setApiLoading(false);
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
