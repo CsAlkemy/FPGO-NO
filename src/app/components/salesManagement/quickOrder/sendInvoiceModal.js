@@ -29,6 +29,7 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import CountrySelect from "../../common/countries";
 
 const SendInvoiceModal = (props) => {
   const { t } = useTranslation();
@@ -438,8 +439,15 @@ const SendInvoiceModal = (props) => {
                         />
                       )}
                     />
-
-                    <Controller
+                    <CountrySelect
+                      control={control}
+                      name={"country"}
+                      label={"country"}
+                      placeholder={"country"}
+                      required={true}
+                      error={errors.country}
+                    />
+                    {/* <Controller
                       name="country"
                       control={control}
                       render={({ field }) => (
@@ -475,7 +483,7 @@ const SendInvoiceModal = (props) => {
                           </FormHelperText>
                         </FormControl>
                       )}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
