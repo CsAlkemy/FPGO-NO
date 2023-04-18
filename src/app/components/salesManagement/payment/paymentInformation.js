@@ -432,6 +432,7 @@ useEffect(() => {
                                     setRecheckSchema(true);
 
                                   }}
+                                  disabled = {orderDetails.type === 'REGULAR' && orderDetails?.customerDetails?.type ==='Corporate'}
                                   // disabled={
                                   //   orderDetails &&
                                   //   orderDetails?.customerDetails?.type ===
@@ -456,6 +457,7 @@ useEffect(() => {
                                     setRecheckSchema(true);
 
                                   }}
+                                  disabled = {orderDetails.type === 'REGULAR' && orderDetails?.customerDetails?.type ==='Private'}
                                   // disabled={
                                   //   orderDetails &&
                                   //   orderDetails?.customerDetails?.type ===
