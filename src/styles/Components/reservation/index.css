@@ -6,6 +6,9 @@
     @apply grid grid-cols-1 md:grid-cols-4 px-0;
     /* @apply grid grid-cols-1 md:grid-cols-3 gap-20 w-full my-20 px-10; */
 }
+.reservation-details-page .create-order-date-container {
+    @apply grid grid-cols-1 md:grid-cols-4 px-0;
+}
 .lg-blue-btn {
     @apply rounded-4 min-w-120 border-2 border-none bg-primary-50 flex my-auto;
 }
@@ -17,6 +20,9 @@
 }
 .reservation-create-form .product-list-grid-container {
     grid-template-columns: 26% 20% 20% 11% 15% 6%;
+}
+.reservation-details-page .product-list-grid-container {
+    grid-template-columns: 26% 20% 20% 11% 17%;
 }
 .reservation-create-form .customer-section {
     max-width: 510px;
@@ -79,6 +85,10 @@
 }
 .search-customer-order-create .MuiAutocomplete-hasClearIcon + .search-icon {
     display: none;
+}
+.reservation-details-page .create-order-send-order-conf {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 @media only screen and (min-width: 960px) {
