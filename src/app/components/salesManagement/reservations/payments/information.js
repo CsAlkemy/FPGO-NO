@@ -32,7 +32,7 @@ import { ThousandSeparator } from "../../../../utils/helperFunctions";
 const PaymentConfirmation = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const reservationUuid = useParams.uuid;
+    const reservationUuid = useParams().uuid;
     const [open, setOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -615,7 +615,7 @@ const PaymentConfirmation = () => {
                                     <Hidden mdUp>
                                         <div className="col-span-2 mt-20">
                                             <div className="py-16 px-10 bg-primary-25 subtitle2 ">
-                                                {t("label:orderSummary")}
+                                                {t("label:reservationSummary")}
                                             </div>
 
                                             <div className="px-14">
@@ -636,7 +636,7 @@ const PaymentConfirmation = () => {
                                 <Hidden mdDown>
                                     <div className="col-span-2 mt-20">
                                         <div className="py-16 px-10 bg-primary-25 subtitle2 ">
-                                            {t("label:orderSummary")}
+                                            {t("label:reservationSummary")}
                                         </div>
                                         <div className="px-14">
                                             <div className="flex justify-between items-center py-20 px-16 my-20">
@@ -661,7 +661,7 @@ const PaymentConfirmation = () => {
                                             navigate(`/reservations/${reservationUuid}/checkout`);    
                                         }}
                                     >
-                                    {t("label:backToOrderDetails")}
+                                    {t("label:backToReservationDetails")}
                                     </Button>
                                 </Hidden>
 
@@ -686,7 +686,7 @@ const PaymentConfirmation = () => {
                                     navigate(`/reservations/${reservationUuid}/checkout`);
                                 }}
                             >
-                                {t("label:backToOrderDetails")}
+                                {t("label:backToReservationDetails")}
                             </Button>
                             <Button
                                 color="secondary"

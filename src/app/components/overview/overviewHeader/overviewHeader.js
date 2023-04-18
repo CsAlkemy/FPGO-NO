@@ -169,7 +169,7 @@ export default function OverviewHeader(props) {
       case categoriesListOverview:
         return t("label:searchByCategoryNameAndID");
       case reservationListOverview:
-        return t("label:searchByOrderIDNameOrPhoneNo");
+        return t("label:searchByReservationIDNameOrPhoneNo");
       default:
         return t("label:searchByNameEmailPhoneNo");
     }
