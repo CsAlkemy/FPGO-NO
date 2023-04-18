@@ -294,7 +294,7 @@ const ReservationCreate = () => {
         enqueueSnackbar(t(`message:${response?.data?.message}`), {
           variant: "success",
         });
-        //navigate(`/reservations`);
+        navigate(`/reservations`);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
