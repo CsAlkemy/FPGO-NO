@@ -237,6 +237,10 @@ const OrderInformation = ({ info }) => {
       info.customerDetails?.countryCode && info.customerDetails?.msisdn
         ? info.customerDetails?.countryCode + info.customerDetails?.msisdn
         : "+47";
+    CreateOrderDefaultValue.billingCountry =
+    info?.customerDetails?.address?.country
+      ? info?.customerDetails?.address?.country
+      : "norway";
 
     reset({ ...CreateOrderDefaultValue });
 
