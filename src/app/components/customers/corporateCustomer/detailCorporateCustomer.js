@@ -40,6 +40,7 @@ import {
   useUpdateCorporateCustomerMutation,
   useUpdateCustomerStatusMutation,
 } from "app/store/api/apiSlice";
+import CountrySelect from "../../common/countries";
 
 const detailCorporateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -783,6 +784,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             }
                                             variant="outlined"
                                             fullWidth
+                                            required
                                             value={field.value || ""}
                                           />
                                         )}
@@ -809,6 +811,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             }
                                             variant="outlined"
                                             fullWidth
+                                            required
                                             value={field.value || ""}
                                           />
                                         )}
@@ -835,11 +838,20 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           }
                                           variant="outlined"
                                           fullWidth
+                                          required
                                           value={field.value || ""}
                                         />
                                       )}
                                     />
-                                    <Controller
+                                    <CountrySelect
+                                      control={control}
+                                      name={"billingCountry"}
+                                      label={"country"}
+                                      placeholder={"country"}
+                                      required={true}
+                                      error={errors.billingCountry}
+                                    />
+                                    {/* <Controller
                                       name="billingCountry"
                                       control={control}
                                       render={({ field }) => (
@@ -879,7 +891,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                           </FormHelperText>
                                         </FormControl>
                                       )}
-                                    />
+                                    /> */}
                                   </div>
                                 </div>
                               </div>
@@ -1002,55 +1014,13 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                             />
                                           )}
                                         />
-                                        <Controller
-                                          name="shippingCountry"
+                                        <CountrySelect
                                           control={control}
-                                          render={({ field }) => (
-                                            <FormControl
-                                              error={!!errors.shippingCountry}
-                                              fullWidth
-                                            >
-                                              <InputLabel id="demo-simple-select-label">
-                                                {t("label:country")}
-                                              </InputLabel>
-                                              <Select
-                                                {...field}
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                label="Country"
-                                                disabled={sameAddress}
-                                                defaultValue={
-                                                  info?.addresses &&
-                                                  info?.addresses?.shipping &&
-                                                  info?.addresses?.shipping
-                                                    ?.country
-                                                    ? info?.addresses?.shipping?.country.toLowerCase()
-                                                    : ""
-                                                }
-                                              >
-                                                {/*<MenuItem value="" />*/}
-                                                {/*<MenuItem value="norway">{t("label:norway")}</MenuItem>*/}
-                                                {countries.map(
-                                                  (country, index) => (
-                                                    <MenuItem
-                                                      key={index}
-                                                      value={country.name}
-                                                    >
-                                                      {country.title}
-                                                    </MenuItem>
-                                                  )
-                                                )}
-                                              </Select>
-                                              <FormHelperText>
-                                                {errors?.shippingCountry
-                                                  ?.message
-                                                  ? t(
-                                                      `validation:${errors?.shippingCountry?.message}`
-                                                    )
-                                                  : ""}
-                                              </FormHelperText>
-                                            </FormControl>
-                                          )}
+                                          name={"shippingCountry"}
+                                          label={"country"}
+                                          placeholder={"country"}
+                                          required={false}
+                                          error={errors.shippingCountry}
                                         />
                                       </div>
                                     </div>
