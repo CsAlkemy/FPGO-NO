@@ -155,7 +155,7 @@ const SendInvoiceModal = (props) => {
               <div id="customer-information-payment">
                 <div className="bg-white px-10">
                   <div className="search-customer-order-create-type my-20">
-                    <div className="flex flex-col sm:flex-row gap-20 w-full md:w-3/4">
+                    <div className="flex gap-20 w-full justify-between md:justify-start md:w-3/4">
                       <Button
                         variant="outlined"
                         className={`${
@@ -443,7 +443,7 @@ const SendInvoiceModal = (props) => {
                       control={control}
                       name={"country"}
                       label={"country"}
-                      placeholder={"country"}
+                      // placeholder={"country"}
                       required={true}
                       error={errors.country}
                     />
@@ -487,8 +487,8 @@ const SendInvoiceModal = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end mt-40 px-10">
-                <div className="flex gap-10 items-center">
+              <div className="flex justify-between md:justify-end mt-40 px-10">
+                <div className="flex gap-10 justify-between md:justify-end w-full items-center">
                   <Button
                     variant="contained"
                     className="font-semibold rounded-4 bg-primary-50 text-primary-800 w-full md:w-auto z-99 px-32"

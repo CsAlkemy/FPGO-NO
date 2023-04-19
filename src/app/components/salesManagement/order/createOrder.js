@@ -2524,7 +2524,7 @@ const createOrder = () => {
                                   control={control}
                                   name={"billingCountry"}
                                   label={"country"}
-                                  placeholder={"country"}
+                                  // placeholder={"country"}
                                   required={true}
                                   error={errors.billingCountry}
                                 />
