@@ -238,9 +238,9 @@ const OrderInformation = ({ info }) => {
         ? info.customerDetails?.countryCode + info.customerDetails?.msisdn
         : "+47";
     CreateOrderDefaultValue.billingCountry =
-    info?.customerDetails?.address?.country
-      ? info?.customerDetails?.address?.country
-      : "norway";
+      info?.customerDetails?.address?.country
+        ? info?.customerDetails?.address?.country
+        : "norway";
 
     reset({ ...CreateOrderDefaultValue });
 
@@ -1565,16 +1565,17 @@ const OrderInformation = ({ info }) => {
                                         />
                                       )}
                                     />
-                                     <CountrySelect
+                                      <CountrySelect
                                       control={control}
                                       name={"billingCountry"}
                                       label={"country"}
-                                      placeholder={"country"}
+                                      // placeholder={"country"}
                                       required={true}
                                       error={errors.billingCountry}
                                       disable={true}
                                     />
-                                    {/* <Controller
+{/* 
+                                    <Controller
                                       name="billingCountry"
                                       control={control}
                                       render={({ field }) => (

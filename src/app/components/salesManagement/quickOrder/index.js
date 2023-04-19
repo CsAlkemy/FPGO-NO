@@ -170,7 +170,7 @@ const createProducts = () => {
                   zip: row?.zip,
                   country: row?.country,
                   searchString:
-                    // row?.name + " ( " + row?.phone + " )" + row.uuid,
+                  // row?.name + " ( " + row?.phone + " )" + row.uuid,
                     row?.phone.toString().slice(3) + row.uuid,
                 });
               });
@@ -269,8 +269,8 @@ const createProducts = () => {
     // );
     setSearchCustomersList(
       searchByPhone.length
-          ? searchByPhone
-          : []
+      ? searchByPhone
+      : []
     );
     setCustomerSearchBy(searchByPhone.length ? "phone" : undefined);
     setCustomerSearchBoxLength(e.target.value.length ? 3+e.target.value.length : e.target.value.length);
@@ -624,7 +624,6 @@ const createProducts = () => {
                           )
                         }
                         className="mt-10 w-full sm:w-2/4"
-                        // placeholder={t("label:searchCustomersByNameOrPhoneNo")}
                         placeholder={t("label:searchCustomersByPhoneNo")}
                         InputProps={{
                           ...params.InputProps,

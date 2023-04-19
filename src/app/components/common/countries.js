@@ -61,7 +61,7 @@ export default function CountrySelect({
               {...params}
               label={t(`label:${label}`)}
               required={required}
-              placeholder={t(`label:${placeholder}`)}
+              // placeholder={t(`label:${placeholder}`)}
               fullWidth
               disabled={disable}
               type="text"

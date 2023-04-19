@@ -48,8 +48,7 @@ const paymentInformation = () => {
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
   const [isCreditChecked, setIsCreditChecked] = React.useState(false);
-  const [recheckSchema, setRecheckSchema] = React.useState(false);
-
+  const [recheckSchema, setRecheckSchema] = React.useState(false)
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -681,7 +680,7 @@ useEffect(() => {
                                 control={control}
                                 name={"billingCountry"}
                                 label={"country"}
-                                placeholder={"country"}
+                                // placeholder={"country"}
                                 required={true}
                                 error={errors.billingCountry}
                               />

@@ -511,7 +511,6 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                         autoComplete="off"
                                         error={!!errors.billingCity}
                                         helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
-                                      
                                         variant="outlined"
                                         fullWidth
                                         required
