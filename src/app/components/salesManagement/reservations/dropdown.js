@@ -101,62 +101,103 @@ const ReservationDropdown = (props) => {
             </>
         );
     } else if(data.status.toLowerCase() === 'reserved') {
-        dropDownMenu = (
-            <>
-                <Menu
-                    id={dropdownId}
-                    anchorEl={anchorEl}
-                    open={menuOpen}
-                    onClose={handleClose}
-                    MenuListProps={{
-                    'aria-labelledby': buttonId,
-                    }}
-                >
-                    <MenuItem onClick={() => handleModalOpen('chargeFromCard') }>
-                        <ListItemIcon>
-                            <CreditCardIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t("label:chargeFromCard")}</ListItemText>
-                    </MenuItem>
-                    <MenuItem onClick={() => handleModalOpen('capturePayments') }>
-                        <ListItemIcon>
-                            <PaymentsIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t("label:capturePayments")}</ListItemText>
-                    </MenuItem>
-                    <MenuItem onClick={() => handleModalOpen('refundReservation') }>
-                        <ListItemIcon>
-                            <UndoIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t("label:refundFromReservations")}</ListItemText>
-                    </MenuItem>
-                    <MenuItem onClick={() => handleModalOpen('completeReservation') }>
-                        <ListItemIcon>
-                            <DoneAllIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t("label:completeReservation")}</ListItemText>
-                    </MenuItem>
-                    <MenuItem onClick={() => handleModalOpen('cancelReservation') }>
-                        <ListItemIcon>
-                            <CancelIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t("label:cancelReservation")}</ListItemText>
-                    </MenuItem>
-                </Menu>
-                <OrderModal
-                    open={open}
-                    setOpen={setOpen}
-                    headerTitle={headerTitle}
-                    orderId={data.id}
-                    orderName={data.customer}
-                    orderAmount={data.reservedAmount}
-                    customerPhone={data.phone}
-                    customerEmail={data.email}
-                    amountInBank={amountBank}
-                    remainingAmount={remainingAmount}
-                />
-            </>
-        );
+        if(data.isPaid) {
+            dropDownMenu = (
+                <>
+                    <Menu
+                        id={dropdownId}
+                        anchorEl={anchorEl}
+                        open={menuOpen}
+                        onClose={handleClose}
+                        MenuListProps={{
+                        'aria-labelledby': buttonId,
+                        }}
+                    >
+                        <MenuItem onClick={() => handleModalOpen('chargeFromCard') }>
+                            <ListItemIcon>
+                                <CreditCardIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t("label:chargeFromCard")}</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={() => handleModalOpen('capturePayments') }>
+                            <ListItemIcon>
+                                <PaymentsIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t("label:capturePayments")}</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={() => handleModalOpen('refundReservation') }>
+                            <ListItemIcon>
+                                <UndoIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t("label:refundFromReservations")}</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={() => handleModalOpen('completeReservation') }>
+                            <ListItemIcon>
+                                <DoneAllIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t("label:completeReservation")}</ListItemText>
+                        </MenuItem>
+                    </Menu>
+                    <OrderModal
+                        open={open}
+                        setOpen={setOpen}
+                        headerTitle={headerTitle}
+                        orderId={data.id}
+                        orderName={data.customer}
+                        orderAmount={data.reservedAmount}
+                        customerPhone={data.phone}
+                        customerEmail={data.email}
+                        amountInBank={amountBank}
+                        remainingAmount={remainingAmount}
+                    />
+                </>
+            );
+        } else {
+            dropDownMenu = (
+                <>
+                    <Menu
+                        id={dropdownId}
+                        anchorEl={anchorEl}
+                        open={menuOpen}
+                        onClose={handleClose}
+                        MenuListProps={{
+                        'aria-labelledby': buttonId,
+                        }}
+                    >
+                        <MenuItem onClick={() => handleModalOpen('chargeFromCard') }>
+                            <ListItemIcon>
+                                <CreditCardIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t("label:chargeFromCard")}</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={() => handleModalOpen('capturePayments') }>
+                            <ListItemIcon>
+                                <PaymentsIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t("label:capturePayments")}</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={() => handleModalOpen('cancelReservation') }>
+                            <ListItemIcon>
+                                <CancelIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t("label:cancelReservation")}</ListItemText>
+                        </MenuItem>
+                    </Menu>
+                    <OrderModal
+                        open={open}
+                        setOpen={setOpen}
+                        headerTitle={headerTitle}
+                        orderId={data.id}
+                        orderName={data.customer}
+                        orderAmount={data.reservedAmount}
+                        customerPhone={data.phone}
+                        customerEmail={data.email}
+                        amountInBank={amountBank}
+                        remainingAmount={remainingAmount}
+                    />
+                </>
+            );
+        }
     }
 
     let dropDownButton;

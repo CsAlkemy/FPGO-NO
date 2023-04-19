@@ -32,6 +32,7 @@ import {
   useRefundRequestDecisionMutation,
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
+  useCompleteReservationMutation
 } from "app/store/api/apiSlice";
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
@@ -66,6 +67,7 @@ const OrderModal = (props) => {
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
+  const [completeReservation] = useCompleteReservationMutation();
 
   const newString = flagMessage.split(":");
 
@@ -251,6 +253,21 @@ const OrderModal = (props) => {
         }
         setOpen(false);
         setFlag(false);
+        setApiLoading(false);
+      });
+    } else if (["Complete Reservation"].includes(headerTitle)) {
+      setApiLoading(true);
+      completeReservation(data).then((res) => {
+        if (res?.data?.status_code === 202) {
+          enqueueSnackbar(t(`message:${res?.data?.message}`), {
+            variant: "success",
+          });
+        }
+        if (window.location.pathname === `/reservations-details/${orderId}`)
+          navigate('/reservations');
+        setTimeout(() => {
+          setOpen(false);
+        }, 1000);
         setApiLoading(false);
       });
     }

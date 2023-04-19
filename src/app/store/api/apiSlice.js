@@ -410,6 +410,18 @@ export const apiSlice = createApi({
       query: () => "/reservations/list",
       providesTags: ["ReservationList"],
     }),
+    completeReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/complete/${payload.uuid}`,
+        method: "PUT",
+        body: {
+          note: payload?.cancellationNote
+            ? payload.cancellationNote
+            : null,
+        },
+      }),
+      invalidatesTags: ["ReservationList"]
+    }),
   }),
 });
 
@@ -458,5 +470,6 @@ export const {
   useUpdateQuickOrderCustomerMutation,
   useOrderExportToApticQuery,
   useCreateReservationMutation,
-  useGetReservationListQuery
+  useGetReservationListQuery,
+  useCompleteReservationMutation
 } = apiSlice;
