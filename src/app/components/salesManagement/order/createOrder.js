@@ -63,6 +63,7 @@ import AuthService from "../../../data-access/services/authService";
 // import { es, nn, nb } from "date-fns/locale";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import CountrySelect from "../../common/countries";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -2519,8 +2520,16 @@ const createOrder = () => {
                                   />
                                 )}
                               />
+                               <CountrySelect
+                                  control={control}
+                                  name={"billingCountry"}
+                                  label={"country"}
+                                  // placeholder={"country"}
+                                  required={true}
+                                  error={errors.billingCountry}
+                                />
 
-                              <Controller
+                              {/* <Controller
                                 name="billingCountry"
                                 control={control}
                                 render={({ field }) => (
@@ -2567,7 +2576,7 @@ const createOrder = () => {
                                     </FormHelperText>
                                   </FormControl>
                                 )}
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>
