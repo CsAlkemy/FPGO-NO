@@ -53,6 +53,7 @@ const createProducts = () => {
   const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
+  const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] = useState("+47");
   const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
     useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
@@ -167,7 +168,8 @@ const createProducts = () => {
                   zip: row?.zip,
                   country: row?.country,
                   searchString:
-                    row?.name + " ( " + row?.phone + " )" + row.uuid,
+                  // row?.name + " ( " + row?.phone + " )" + row.uuid,
+                    row?.phone.toString().slice(3) + row.uuid,
                 });
               });
           }
@@ -247,23 +249,29 @@ const createProducts = () => {
       customersList.filter((customer) =>
         customer.phone.startsWith(e.target.value)
       ) || [];
-    const searchByName =
-      customersList.filter(
-        (customer) =>
-          customer?.name &&
-          customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
-      ) || [];
+    // const searchByName =
+    //   customersList.filter(
+    //     (customer) =>
+    //       customer?.name &&
+    //       customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+    //   ) || [];
+    // setSearchCustomersList(
+    //   searchByName.length
+    //     ? searchByName
+    //     : searchByPhone.length
+    //     ? searchByPhone
+    //     : []
+    // );
+    // setCustomerSearchBy(
+    //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
+    // );
     setSearchCustomersList(
-      searchByName.length
-        ? searchByName
-        : searchByPhone.length
-        ? searchByPhone
-        : []
+      searchByPhone.length
+      ? searchByPhone
+      : []
     );
-    setCustomerSearchBy(
-      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
-    );
-    setCustomerSearchBoxLength(e.target.value.length);
+    setCustomerSearchBy(searchByPhone.length ? "phone" : undefined);
+    setCustomerSearchBoxLength(e.target.value.length ? 3+e.target.value.length : e.target.value.length);
     setCustomerSearchBoxDropdownOpen(true);
   };
 
@@ -516,7 +524,7 @@ const createProducts = () => {
                       setVal(newValue);
                     }}
                     onInputChange={(event, value) => {
-                      setNewCustomer(value);
+                      setNewCustomer(searchCustomerPrefixCountryCode+value);
                       if (value.length === 0) setCustomerSearchBy(undefined);
                     }}
                     onClose={() => setCustomerSearchBoxDropdownOpen(false)}
@@ -526,23 +534,27 @@ const createProducts = () => {
                         <span className="subtitle3 font-600">
                           {t("label:noCustomersFound")}
                         </span>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          size={"medium"}
-                          className="rounded-4 button2 min-w-[104px]"
-                          type="button"
-                          startIcon={<AddIcon fontSize="small" />}
-                          onClick={() => {
-                            setVal([
-                              ...val,
-                              { name: "", phone: `${newCustomer}` },
-                            ]);
-                            setCustomerSearchBoxDropdownOpen(false);
-                          }}
-                        >
-                          {t(`label:add`)}
-                        </Button>
+                        {
+                          !isNaN(newCustomer) && (
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              size={"medium"}
+                              className="rounded-4 button2 min-w-[104px]"
+                              type="button"
+                              startIcon={<AddIcon fontSize="small" />}
+                              onClick={() => {
+                                setVal([
+                                  ...val,
+                                  { name: "", phone: `${newCustomer}` },
+                                ]);
+                                setCustomerSearchBoxDropdownOpen(false);
+                              }}
+                            >
+                              {t(`label:add`)}
+                            </Button>
+                          )
+                        }
                       </div>
                     }
                     renderOption={(props, option, { selected }) => (
@@ -550,38 +562,44 @@ const createProducts = () => {
                         {/*{`${option.name}`}*/}
                         {customerSearchBy ? (
                           <div>
-                            {customerSearchBy === "name" &&
-                            option?.name &&
-                            customerSearchBoxLength > 0 ? (
-                              <div>
-                                <span
-                                  style={{ color: "#0088AE" }}
-                                >{`${option.name.slice(
-                                  0,
-                                  customerSearchBoxLength
-                                )}`}</span>
-                                <span>{`${option.name.slice(
-                                  customerSearchBoxLength
-                                )}`}</span>
-                              </div>
-                            ) : (
-                              <div>{`${option.name}`}</div>
-                            )}
+                            {/*{customerSearchBy === "name" &&*/}
+                            {/*option?.name &&*/}
+                            {/*customerSearchBoxLength > 0 ? (*/}
+                            {/*  <div>*/}
+                            {/*    <span*/}
+                            {/*      style={{ color: "#0088AE" }}*/}
+                            {/*    >{`${option.name.slice(*/}
+                            {/*      0,*/}
+                            {/*      customerSearchBoxLength*/}
+                            {/*    )}`}</span>*/}
+                            {/*    <span>{`${option.name.slice(*/}
+                            {/*      customerSearchBoxLength*/}
+                            {/*    )}`}</span>*/}
+                            {/*  </div>*/}
+                            {/*) : (*/}
+                            {/*  <div>{`${option.name}`}</div>*/}
+                            {/*)}*/}
                             {customerSearchBy === "phone" &&
                             customerSearchBoxLength > 0 ? (
                               <div>
+                                <div>{`${option.name}`}</div>
+                                <div>
                                 <span
                                   style={{ color: "#0088AE" }}
                                 >{`${option.phone.slice(
                                   0,
                                   customerSearchBoxLength
                                 )}`}</span>
-                                <span>{`${option.phone.slice(
-                                  customerSearchBoxLength
-                                )}`}</span>
+                                  <span>{`${option.phone.slice(
+                                    customerSearchBoxLength
+                                  )}`}</span>
+                                </div>
                               </div>
                             ) : (
-                              <div>{`${option.phone}`}</div>
+                              <div>
+                                <div>{`${option.name}`}</div>
+                                <div>{`${option.phone}`}</div>
+                              </div>
                             )}
                           </div>
                         ) : (
@@ -602,7 +620,15 @@ const createProducts = () => {
                           )
                         }
                         className="mt-10 w-full sm:w-2/4"
-                        placeholder={t("label:searchCustomersByNameOrPhoneNo")}
+                        placeholder={t("label:searchCustomersByPhoneNo")}
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: (
+                            <div>
+                              {searchCustomerPrefixCountryCode}
+                            </div>
+                          ),
+                        }}
                       />
                     )}
                   />
