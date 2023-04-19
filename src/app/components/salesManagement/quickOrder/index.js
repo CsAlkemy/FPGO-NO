@@ -249,7 +249,7 @@ const createProducts = () => {
     setCustomerSearchBoxDropdownOpen(false);
     const searchByPhone =
       customersList.filter((customer) =>
-        customer.phone.startsWith(e.target.value)
+        customer.searchString.startsWith(e.target.value)
       ) || [];
     // const searchByName =
     //   customersList.filter(
