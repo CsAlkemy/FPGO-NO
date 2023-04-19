@@ -33,6 +33,7 @@ import PaymentHeader from "./paymentHeader";
 import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import CountrySelect from "../../common/countries";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -47,6 +48,7 @@ const paymentInformation = () => {
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
   const [isCreditChecked, setIsCreditChecked] = React.useState(false);
+  const [recheckSchema, setRecheckSchema] = React.useState(false)
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -57,17 +59,6 @@ const paymentInformation = () => {
   const [isUpdateData, setIsUpdateData] = useState(false);
 
   const navigate = useNavigate();
-
-  const [countries, setCountries] = React.useState([
-    {
-      title: "Norway",
-      name: "norway",
-    },
-    {
-      title: "Sweden",
-      name: "sweden",
-    },
-  ]);
 
   const [paymentMethodList, setPaymentMethodList] = React.useState([
     {
@@ -91,17 +82,35 @@ const paymentInformation = () => {
       logo: "assets/images/payment/frontPayment.png",
     },
   ]);
+  let schema =
+  customData?.customerType === "private"
+    ? validateSchemaPaymentCheckout
+    : validateSchemaPaymentCheckoutCorporate;
+useEffect(() => {
+  schema =
+  customData?.customerType === "private"
+      ? validateSchemaPaymentCheckout
+      : validateSchemaPaymentCheckoutCorporate;
+  if (recheckSchema) {
+    if (customData?.customerType === "corporate") {
+      clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
+      setValue("orgIdOrPNumber", "", { shouldValidate: true });
+      setError("orgIdOrPNumber", { type: "focus" }, { shouldFocus: true });
+    } else {
+      setValue("orgIdOrPNumber", "", { shouldValidate: true });
+      clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
+    }
+  }
+}, [customData?.customerType]);
 
-  const { control, formState, handleSubmit, getValues, reset, watch } = useForm(
+  const { control, formState, handleSubmit, getValues, reset, watch,setValue, clearErrors, setError } = useForm(
     {
       mode: "onChange",
       PaymentDefaultValue,
       resolver: yupResolver(
         customData.isCeditCheck
           ? validateSchemaCreditCheckForCheckout
-          : customData.customerType === "private"
-          ? validateSchemaPaymentCheckout
-          : validateSchemaPaymentCheckoutCorporate
+          : schema
       ),
     }
   );
@@ -402,19 +411,15 @@ const paymentInformation = () => {
                       >
                         {t("label:customerDetails")}
                       </DialogTitle>
-                      <DialogContent className="p-10 md:p-40">
+                      <DialogContent className="p-5 md:p-40">
                         <div id="customer-information-payment">
                           <div className="bg-white px-5">
                             <div className="search-customer-order-create-type my-32">
-                              <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20">
+                              <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20 justify-between sm:justify-start">
                                 <Button
                                   variant="outlined"
                                   className={`body2 ${
-                                    customData?.customerType === "private" ||
-                                    (orderDetails &&
-                                      orderDetails?.customerDetails?.type ===
-                                        "Private" &&
-                                      !customData?.isNewCustomer)
+                                    customData?.customerType === "private"
                                       ? "create-order-capsule-button-active"
                                       : "create-order-capsule-button"
                                   }`}
@@ -423,24 +428,23 @@ const paymentInformation = () => {
                                       ...customData,
                                       customerType: "private",
                                     });
+                                    setRecheckSchema(true);
+
                                   }}
-                                  disabled={
-                                    orderDetails &&
-                                    orderDetails?.customerDetails?.type ===
-                                      "Corporate" &&
-                                    !customData?.isNewCustomer
-                                  }
+                                  disabled = {orderDetails.type === 'REGULAR' && orderDetails?.customerDetails?.type ==='Corporate'}
+                                  // disabled={
+                                  //   orderDetails &&
+                                  //   orderDetails?.customerDetails?.type ===
+                                  //     "Corporate" &&
+                                  //   !customData?.isNewCustomer
+                                  // }
                                 >
                                   {t("label:private")}
                                 </Button>
                                 <Button
                                   variant="outlined"
                                   className={`body2 ${
-                                    customData?.customerType === "corporate" ||
-                                    (orderDetails &&
-                                      orderDetails?.customerDetails?.type ===
-                                        "Corporate" &&
-                                      !customData?.isNewCustomer)
+                                    customData?.customerType === "corporate" 
                                       ? "create-order-capsule-button-active"
                                       : "create-order-capsule-button"
                                   }`}
@@ -449,20 +453,23 @@ const paymentInformation = () => {
                                       ...customData,
                                       customerType: "corporate",
                                     });
+                                    setRecheckSchema(true);
+
                                   }}
-                                  disabled={
-                                    orderDetails &&
-                                    orderDetails?.customerDetails?.type ===
-                                      "Private" &&
-                                    !customData?.isNewCustomer
-                                  }
+                                  disabled = {orderDetails.type === 'REGULAR' && orderDetails?.customerDetails?.type ==='Private'}
+                                  // disabled={
+                                  //   orderDetails &&
+                                  //   orderDetails?.customerDetails?.type ===
+                                  //     "Private" &&
+                                  //   !customData?.isNewCustomer
+                                  // }
                                 >
                                   {t("label:corporate")}
                                 </Button>
                               </div>
                             </div>
                             <div className="w-full my-32">
-                              <div className="form-pair-input gap-x-20">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-32 mt-10 my0i mb-0 md:mb-32 gap-x-20">
                                 <Controller
                                   name="phone"
                                   control={control}
@@ -669,7 +676,15 @@ const paymentInformation = () => {
                                   />
                                 )}
                               />
-
+                              <CountrySelect
+                                control={control}
+                                name={"billingCountry"}
+                                label={"country"}
+                                // placeholder={"country"}
+                                required={true}
+                                error={errors.billingCountry}
+                              />
+{/* 
                               <Controller
                                 name="billingCountry"
                                 control={control}
@@ -714,31 +729,29 @@ const paymentInformation = () => {
                                     </FormHelperText>
                                   </FormControl>
                                 )}
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex justify-end mt-40">
-                          <div className="flex gap-10 items-center">
-                            <Button
-                              variant="contained"
-                              className="font-semibold rounded-4 bg-primary-50 text-primary-800 w-full md:w-auto z-99 px-32"
-                              onClick={() => setEditOpen(false)}
-                            >
-                              {t("label:cancel")}
-                            </Button>
-                            <Button
-                              variant="contained"
-                              type="submit"
-                              className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40"
-                              // onClick={() => setEditOpen(false)}
-                              onClick={() => handleUpdate()}
-                              disabled={!isValid}
-                            >
-                              {t("label:update")}
-                            </Button>
-                          </div>
+                        <div className="flex mt-40 justify-between sm:justify-end  gap-10 items-center">
+                          <Button
+                            variant="contained"
+                            className="font-semibold rounded-4 bg-primary-50 text-primary-800 w-full md:w-auto z-99 px-32"
+                            onClick={() => setEditOpen(false)}
+                          >
+                            {t("label:cancel")}
+                          </Button>
+                          <Button
+                            variant="contained"
+                            type="submit"
+                            className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40"
+                            // onClick={() => setEditOpen(false)}
+                            onClick={() => handleUpdate()}
+                            disabled={!isValid}
+                          >
+                            {t("label:update")}
+                          </Button>
                         </div>
                       </DialogContent>
                     </div>
