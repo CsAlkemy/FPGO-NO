@@ -518,10 +518,12 @@ const createProducts = () => {
                     getOptionLabel={(option) => option.searchString}
                     renderTags={() => {}}
                     fullWidth
-                    onChange={(e, newValue) => {
-                      setCustomerSearchBy(undefined);
-                      setCustomerSearchBoxLength(0);
-                      setVal(newValue);
+                    onChange={(e, newValue, reason) => {
+                      if (reason !== "removeOption") {
+                        setCustomerSearchBy(undefined);
+                        setCustomerSearchBoxLength(0);
+                        setVal(newValue);
+                      }
                     }}
                     onInputChange={(event, value) => {
                       setNewCustomer(searchCustomerPrefixCountryCode+value);
