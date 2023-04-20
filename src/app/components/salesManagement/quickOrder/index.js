@@ -270,7 +270,7 @@ const createProducts = () => {
     setSearchCustomersList(
       searchByPhone.length
       ? searchByPhone
-      : []
+      : customersList
     );
     setCustomerSearchBy(searchByPhone.length ? "phone" : undefined);
     setCustomerSearchBoxLength(e.target.value.length ? 3+e.target.value.length : e.target.value.length);
@@ -525,6 +525,7 @@ const createProducts = () => {
                         setCustomerSearchBy(undefined);
                         setCustomerSearchBoxLength(0);
                         setVal(newValue);
+                        setSearchCustomersList(customersList)
                       }
                     }}
                     onInputChange={(event, value) => {
@@ -566,23 +567,6 @@ const createProducts = () => {
                         {/*{`${option.name}`}*/}
                         {customerSearchBy ? (
                           <div>
-                            {/*{customerSearchBy === "name" &&*/}
-                            {/*option?.name &&*/}
-                            {/*customerSearchBoxLength > 0 ? (*/}
-                            {/*  <div>*/}
-                            {/*    <span*/}
-                            {/*      style={{ color: "#0088AE" }}*/}
-                            {/*    >{`${option.name.slice(*/}
-                            {/*      0,*/}
-                            {/*      customerSearchBoxLength*/}
-                            {/*    )}`}</span>*/}
-                            {/*    <span>{`${option.name.slice(*/}
-                            {/*      customerSearchBoxLength*/}
-                            {/*    )}`}</span>*/}
-                            {/*  </div>*/}
-                            {/*) : (*/}
-                            {/*  <div>{`${option.name}`}</div>*/}
-                            {/*)}*/}
                             {customerSearchBy === "phone" &&
                             customerSearchBoxLength > 0 ? (
                               <div>
