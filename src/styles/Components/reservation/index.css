@@ -90,6 +90,20 @@
     padding-left: 0;
     padding-right: 0;
 }
+.reserve-log-sidebar {
+    background: #F7F7F7;
+    padding: 12px;
+}
+.action-button {
+    -webkit-border-radius: 0.4rem;
+    border-radius: 0.4rem;
+    border-width: 1px;
+    border: 1px solid #E8E8E8;
+    width: 100%;
+    margin-top: 12px;
+    height: 56px;
+    max-height: unset;
+}
 
 @media only screen and (min-width: 960px) {
     .customer-info-section {

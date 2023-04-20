@@ -254,11 +254,15 @@ const ReservationInformation = ({ info }) => {
                                 autoComplete="off"
                                 variant="outlined"
                                 fullWidth
-                                inputlabelprops={{
-                                shrink:
-                                    !!field.value ||
-                                    touchedFields.referenceNumber,
-                                }}
+                                disabled
+                                value={
+                                    field.value ||
+                                        (info.invoiceReferences
+                                            ?.referenceNumber
+                                            ? info.invoiceReferences
+                                                ?.referenceNumber
+                                            : "")
+                                }
                             />
                             )}
                         />
@@ -275,11 +279,15 @@ const ReservationInformation = ({ info }) => {
                                 autoComplete="off"
                                 variant="outlined"
                                 fullWidth
-                                inputlabelprops={{
-                                shrink:
-                                    !!field.value ||
-                                    touchedFields.customerReference,
-                                }}
+                                disabled
+                                value={
+                                field.value ||
+                                    (info.invoiceReferences
+                                        ?.customerReference
+                                        ? info.invoiceReferences
+                                            ?.customerReference
+                                        : "")
+                                }
                             />
                             )}
                         />
