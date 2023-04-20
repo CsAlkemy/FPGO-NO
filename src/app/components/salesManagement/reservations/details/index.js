@@ -1,7 +1,9 @@
 
 import SendIcon from "@mui/icons-material/Send";
 import RedoIcon from '@mui/icons-material/Redo';
+import UTurnLeftIcon from "@mui/icons-material/UTurnLeft";
 import CancelIcon from '@mui/icons-material/Cancel';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import {
     DesktopDatePicker,
     DesktopDateTimePicker,
@@ -14,7 +16,9 @@ import { Box } from "@mui/system";
 import {
     Button,
     Hidden,
-    Tab
+    Tab,
+    Backdrop,
+    CircularProgress
   } from "@mui/material";
 
 import { useNavigate, useParams} from "react-router-dom";
@@ -22,18 +26,24 @@ import { useSnackbar } from "notistack";
 import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
 import ReservationInformation from "./reservationInformation";
+import ReservationLog from "./reservationLog";
+import { selectUser } from "app/store/userSlice";
+import { FP_ADMIN } from "../../../../utils/user-roles/UserRoles";
 
 const ReservationDetails = () => {
     const { t } = useTranslation();
 
     const [value, setValue] = React.useState("2");
     const [isLoading, setIsLoading] = useState(true);
-    const [info, setInfo] = useState([]);
+    const [info, setInfo] = useState({status: ''});
     const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
     const queryParams = useParams();
+    const user = useSelector(selectUser);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -44,6 +54,8 @@ const ReservationDetails = () => {
             OrdersService.getOrdersDetailsByUUID(queryParams.uuid)
         .then((res) => {
           let info = res?.data;
+          //info.status = 'completed';
+          //info.isPaid = true;
           
           setInfo(info);
           setIsLoading(false);
@@ -57,6 +69,19 @@ const ReservationDetails = () => {
     }, [isLoading]);
     return (
         <>
+        {!!isLoading && (
+            <Backdrop
+            sx={{
+                zIndex: (theme) => theme.zIndex.drawer + 2,
+                color: "#0088AE",
+                background: "white",
+            }}
+            open={true}
+            >
+            <CircularProgress color="inherit" />
+            </Backdrop>
+        )}
+        {!isLoading && (
             <div className="reservation-details-page">
                 <div className="reserv-header-click-to-action">
                     <div className=" header-click-to-action">
@@ -85,6 +110,7 @@ const ReservationDetails = () => {
                         </div>
                         <Hidden smDown>
                             <div className="button-container-product">
+                            { (info.status.toLowerCase() === "sent" || (info.status.toLowerCase() === "reserved" && info?.isPaid == false )) && (
                             <Button
                                 color="secondary"
                                 variant="outlined"
@@ -94,11 +120,12 @@ const ReservationDetails = () => {
                             >
                                 {t("label:cancelReservation")}
                             </Button>
+                            )}
+                            { info.status.toLowerCase() === "sent" && (
                             <LoadingButton
                                 color="secondary"
                                 variant="contained"
                                 className="font-semibold rounded-4 w-full sm:w-auto"
-                                type="submit"
                                 // disabled={!(isValid && customData.paymentMethod.length)}
                                 //disabled="disabled"
                                 startIcon={<RedoIcon />}
@@ -107,6 +134,36 @@ const ReservationDetails = () => {
                             >
                                 {t("label:resend")}
                             </LoadingButton>
+                            )}
+                            { (info.status.toLowerCase() === "reserved" && info?.isPaid == true ) && (
+                            <Button
+                                color="secondary"
+                                variant="contained"
+                                className="font-semibold rounded-4 w-full sm:w-auto"
+                                disabled={user.role[0] === FP_ADMIN}
+                                startIcon={
+                                    <DoneAllIcon className="" />
+                                }
+                                //onClick={() => handleResendRefundOrder()}
+                            >
+                                {t("label:complete")}
+                            </Button>
+                            )}
+                            { info.status.toLowerCase() === "paid" && (
+                            <Button
+                                color="secondary"
+                                variant="contained"
+                                className="font-semibold rounded-4 w-full sm:w-auto"
+                                type="submit"
+                                disabled={user.role[0] === FP_ADMIN}
+                                startIcon={
+                                    <UTurnLeftIcon className="rotate-90" />
+                                }
+                                //onClick={() => handleResendRefundOrder()}
+                            >
+                                {t("label:refund")}
+                            </Button>
+                            )}
                             </div>
                         </Hidden>
                     </div>
@@ -138,16 +195,74 @@ const ReservationDetails = () => {
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                            <div className="reservation-log-content py-32 px-0">
-                                
-                            </div>
+                            <ReservationLog info={info} />
                         </TabPanel>
                         <TabPanel value="2" className="py-32 px-0">
                             <ReservationInformation info={info} />
                         </TabPanel>
                     </TabContext>
                 </div>
+
+                <Hidden smUp>
+                <div className="button-container-product-mobile fixed bottom-0 grid grid-cols-1 justify-center items-center gap-10 w-full mb-10 mt-10 px-20">
+                    { (info.status.toLowerCase() === "sent" || (info.status.toLowerCase() === "reserved" && info?.isPaid == false )) && (
+                    <Button
+                        color="secondary"
+                        variant="outlined"
+                        className="bg-white text-MonochromeGray-700 button2 shadow-5 border-0"
+                        startIcon={<CancelIcon style={{fill: "#F36562"}} />}
+                        onClick={() => setOpen(true)}
+                    >
+                        {t("label:cancel")}
+                    </Button>
+                    )}
+                    { info.status.toLowerCase() === "sent" && (
+                    <LoadingButton
+                        color="secondary"
+                        variant="contained"
+                        className="rounded-full bg-primary-500 button2 py-5"
+                        // disabled={!(isValid && customData.paymentMethod.length)}
+                        //disabled="disabled"
+                        startIcon={<RedoIcon />}
+                        loading={isLoading}
+                        loadingPosition="center"
+                    >
+                        {t("label:resend")}
+                    </LoadingButton>
+                    )}
+                    { (info.status.toLowerCase() === "reserved" && info?.isPaid == true ) && (
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className="rounded-full bg-primary-500 button2 py-5"
+                        disabled={user.role[0] === FP_ADMIN}
+                        startIcon={
+                            <DoneAllIcon className="" />
+                        }
+                        //onClick={() => handleResendRefundOrder()}
+                    >
+                        {t("label:complete")}
+                    </Button>
+                    )}
+                    { info.status.toLowerCase() === "paid" && (
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className="font-semibold rounded-4 w-full sm:w-auto"
+                        type="submit"
+                        disabled={user.role[0] === FP_ADMIN}
+                        startIcon={
+                            <UTurnLeftIcon className="rotate-90" />
+                        }
+                        //onClick={() => handleResendRefundOrder()}
+                    >
+                        {t("label:refund")}
+                    </Button>
+                    )}
+                </div>
+                </Hidden>
             </div>
+        )}
         </>
     );
 };
