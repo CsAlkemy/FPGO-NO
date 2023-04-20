@@ -5,6 +5,7 @@ import { Button, Hidden, IconButton } from "@mui/material";
 import PaymentHeader from "../../payment/paymentHeader";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
+import OrderService from "../../../../data-access/services/ordersService/OrdersService";
 
 const ReservationCheckout = () => {
     const { t } = useTranslation();
@@ -30,12 +31,22 @@ const ReservationCheckout = () => {
         });
     };
 
-    useEffect(() => {
-        setIsLoading(false);
-        setReservationDetails({uuid: param.uuid});
-    }, [isLoading]);
-
     window.addEventListener("scroll", toggleVisible);
+
+    useEffect(() => {
+        OrderService.getOrdersDetailsByUUIDPayment(param.uuid)
+        .then(response => {
+            if (response?.status_code === 200 && response?.is_data) {
+                if (response?.data?.status !== "SENT") return navigate("404");
+                setReservationDetails(response.data);
+            }
+            setIsLoading(false);
+        })
+        .catch((e) => {
+            setIsLoading(false);
+            return navigate("404");
+        });
+    }, [isLoading]);
 
     return (
         <div className="flex flex-col flex-auto min-w-0 max-w-screen-xl my-32">
@@ -70,112 +81,144 @@ const ReservationCheckout = () => {
                                 <div className="my-auto"></div>
                             </div>
                             
-                            <div className="grid grid-cols-6 gap-10 px-10 body4 border-b-1 border-MonochromeGray-50 text-MonochromeGray-700">
-                                <div className="my-auto py-16 px-10">1.</div>
-                                <div className="my-auto py-16 px-10 col-span-2">Lorem Ipsum</div>
-                                <div className="my-auto py-16 px-10">RSV0001</div>
-                                <div className="my-auto py-16 px-10 text-center">
-                                    { ThousandSeparator(5) } % {t("label:vat")}
-                                </div>
-                                <div className="my-auto py-16 px-10 text-right">
-                                    {t("label:nok")} { ThousandSeparator(12000) }
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-6 gap-10 px-10 body4 border-b-1 border-MonochromeGray-50 text-MonochromeGray-700">
-                                <div className="my-auto py-16 px-10 ">2.</div>
-                                <div className="my-auto py-16 px-10 col-span-2">Lorem Ipsum</div>
-                                <div className="my-auto py-16 px-10">RSV0002</div>
-                                <div className="my-auto py-16 px-10 text-center">
-                                    { ThousandSeparator(5) } % {t("label:vat")}
-                                </div>
-                                <div className="my-auto py-16 px-10 text-right">
-                                    {t("label:nok")} { ThousandSeparator(12000) }
-                                </div>
-                            </div>
+                            {
+                                reservationDetails?.productList &&
+                                reservationDetails?.productList.length &&
+                                reservationDetails?.productList.map( (row, index) => (
+                                    <div
+                                        key={index} 
+                                        className="grid grid-cols-6 gap-10 px-10 body4 border-b-1 border-MonochromeGray-50 text-MonochromeGray-700"
+                                    >
+                                        <div className="my-auto py-16 px-10">{index + 1}.</div>
+                                        <div className="my-auto py-16 px-10 col-span-2">{row.name}</div>
+                                        <div className="my-auto py-16 px-10">{row.productId}</div>
+                                        <div className="my-auto py-16 px-10 text-center">
+                                            { ThousandSeparator(row.tax) } % {t("label:vat")}
+                                        </div>
+                                        <div className="my-auto py-16 px-10 text-right">
+                                        {t("label:nok")} { ThousandSeparator(row.amount) }
+                                        </div>
+                                    </div>
+                                ))
+                            }
                         </div>
                     </Hidden>
 
                     <Hidden mdUp>
-                        <div className="p-20 border-1 border-MonochromeGray-100"
-                        >
-                            <div>
-                                <div className="flex justify-between items-center subtitle2 text-MonochromeGray-700 pb-10 border-b-1 border-MonochromeGray-50">
-                                    <div>1</div>
+                        {
+                            reservationDetails?.productList &&
+                            reservationDetails?.productList.length &&
+                            reservationDetails?.productList.map( (row, index) => (
+                                <div 
+                                    key={index}
+                                    className={`p-20 border-1 border-MonochromeGray-100  ${
+                                        !index ? "rounded-t-8" : "border-t-0"
+                                      }`}
+                                >
                                     <div>
-                                    {t("label:nok")} { ThousandSeparator(1200) }
+                                        <div className="flex justify-between items-center subtitle2 text-MonochromeGray-700 pb-10 border-b-1 border-MonochromeGray-50">
+                                            <div>{index + 1}</div>
+                                            <div>
+                                                {t("label:nok")} { ThousandSeparator(row.amount) }
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-10 mt-20">
+                                            <div className="grid grid-cols-2 justify-between items-center">
+                                                <div className="subtitle3 text-MonochromeGray-700">
+                                                    {t("label:productName")}
+                                                </div>
+                                                <div className="body3 text-MonochromeGray-700">
+                                                    {row.name}
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 justify-between items-center">
+                                                <div className="subtitle3 text-MonochromeGray-700">
+                                                    {t("label:productId")}
+                                                </div>
+                                                <div className="body3 text-MonochromeGray-700">
+                                                    {row.productId}
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 justify-between items-center">
+                                                <div className="subtitle3 text-MonochromeGray-700">
+                                                    Tax
+                                                </div>
+                                                <div className="body3 text-MonochromeGray-700">
+                                                    { ThousandSeparator(row.tax) } % {t("label:vat")}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-10 mt-20">
-                                    <div className="grid grid-cols-2 justify-between items-center">
-                                        <div className="subtitle3 text-MonochromeGray-700">
-                                            {t("label:productName")}
-                                        </div>
-                                        <div className="body3 text-MonochromeGray-700">
-                                            Lorem Ipsum
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 justify-between items-center">
-                                        <div className="subtitle3 text-MonochromeGray-700">
-                                            {t("label:productId")}
-                                        </div>
-                                        <div className="body3 text-MonochromeGray-700">
-                                            RSV0001
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 justify-between items-center">
-                                        <div className="subtitle3 text-MonochromeGray-700">
-                                            Tax
-                                        </div>
-                                        <div className="body3 text-MonochromeGray-700">
-                                            { ThousandSeparator(15) } % {t("label:vat")}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            ))
+                        }
                     </Hidden>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 my-32">
                         <div className="col-span-2 order-2 md:order-1">
-                            <div className="flex flex-col gap-20 mb-32">
-                            <div className="flex flex-col gap-2">
-                                    <div className="body4 text-MonochromeGray-300">
-                                        {t("label:customerNotes")}
-                                    </div>
-                                    <div className="body3  text-MonochromeGray-700 w-3/4">
-                                        lorem ipsu dolor sit emit.
-                                    </div>
-                                </div>
+                            {
+                                (reservationDetails?.invoiceReferences &&
+                                reservationDetails?.invoiceReferences?.customerNotes ||
+                                reservationDetails?.invoiceReferences?.termsAndCondition ||
+                                reservationDetails?.invoiceReferences?.referenceNumber ||
+                                reservationDetails?.invoiceReferences?.customerReference) && (
+                                    <div className="flex flex-col gap-20 mb-32">
+                                        {
+                                            reservationDetails?.invoiceReferences?.customerNotes && (
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="body4 text-MonochromeGray-300">
+                                                        {t("label:customerNotes")}
+                                                    </div>
+                                                    <div className="body3  text-MonochromeGray-700 w-3/4">
+                                                        { reservationDetails?.invoiceReferences?.customerNotes }
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                        
+                                        {
+                                            reservationDetails?.invoiceReferences?.termsAndCondition && (
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="body4 text-MonochromeGray-300">
+                                                        {t("label:tnc")}
+                                                    </div>
+                                                    <div className="body3  text-MonochromeGray-700 w-3/4">
+                                                        { reservationDetails?.invoiceReferences?.termsAndCondition }
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
 
-                                <div className="flex flex-col gap-2">
-                                    <div className="body4 text-MonochromeGray-300">
-                                        {t("label:tnc")}
-                                    </div>
-                                    <div className="body3  text-MonochromeGray-700 w-3/4">
-                                        Lorem ipsum dolor sit emi
-                                    </div>
-                                </div>
+                                        {
+                                            reservationDetails?.invoiceReferences?.referenceNumber && (
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="body4 text-MonochromeGray-300">
+                                                        {t("label:referenceNo")}
+                                                    </div>
+                                                    <div className="body3  text-MonochromeGray-700 w-3/4">
+                                                        { reservationDetails?.invoiceReferences?.referenceNumber }
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
 
-                                <div className="flex flex-col gap-2">
-                                    <div className="body4 text-MonochromeGray-300">
-                                        {t("label:referenceNo")}
+                                        {
+                                            reservationDetails?.invoiceReferences?.customerReference && (
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="body4 text-MonochromeGray-300">
+                                                        {t("label:customerReference")}
+                                                    </div>
+                                                    <div className="body3  text-MonochromeGray-700 w-3/4">
+                                                        { reservationDetails?.invoiceReferences?.customerReference  }
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
                                     </div>
-                                    <div className="body3  text-MonochromeGray-700 w-3/4">
-                                        3453464
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-2">
-                                    <div className="body4 text-MonochromeGray-300">
-                                        {t("label:customerReference")}
-                                    </div>
-                                    <div className="body3  text-MonochromeGray-700 w-3/4">
-                                        another lorem ipusm dolor
-                                    </div>
-                                </div>
-                            </div>
+                                )
+                            }
                         </div>
 
                         <div className="order-1 md:order-2">
@@ -184,8 +227,10 @@ const ReservationCheckout = () => {
                                     <div className="flex justify-between items-center border-b-1 border-MonochromeGray-50 pb-10 mb-20 body4 font-700">
                                         <div>{t("label:grandTotal")}</div>
                                         <div className="px-12">
-                                        {t("label:nok")}{" "}
-                                        {ThousandSeparator(8000)}
+                                            {t("label:nok")}{" "}
+                                            {reservationDetails?.orderSummary?.grandTotal
+                                                ? ThousandSeparator(reservationDetails?.orderSummary?.grandTotal)
+                                                : ""}
                                         </div>
                                     </div>
                                 </div>
@@ -198,7 +243,9 @@ const ReservationCheckout = () => {
                                         </div>
                                         <div className="text-MonochromeGray-700">
                                             {t("label:nok")}{" "}
-                                            {ThousandSeparator(8000)}
+                                            {reservationDetails?.orderSummary?.grandTotal
+                                                ? ThousandSeparator(reservationDetails?.orderSummary?.grandTotal)
+                                                : ""}
                                         </div>
                                     </div>
                                 </div>
@@ -212,7 +259,7 @@ const ReservationCheckout = () => {
                             variant="contained"
                             className="font-semibold rounded-4 bg-primary-500"
                             onClick={() => {
-                                navigate(`/reservations/${reservationDetails.uuid}/payment`);
+                                navigate(`/reservations/${reservationDetails.orderUuid}/payment`);
                             }}
                         >
                             {t("label:toCustomerDetails")}
@@ -229,7 +276,7 @@ const ReservationCheckout = () => {
                     variant="contained"
                     className="rounded-full bg-primary-500 button2"
                     onClick={() => {
-                        navigate(`/reservations/${reservationDetails.uuid}/payment`);
+                        navigate(`/reservations/${reservationDetails.orderUuid}/payment`);
                     }}
                 >
                     {t("label:toCustomerDetails")}

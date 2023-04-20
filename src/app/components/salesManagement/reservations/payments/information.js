@@ -28,6 +28,7 @@ import {
     validateSchemaPaymentCheckoutCorporate,
   } from "../../utils/helper";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
+import OrderService from "../../../../data-access/services/ordersService/OrdersService";
 
 const PaymentConfirmation = () => {
     const { t } = useTranslation();
@@ -42,7 +43,7 @@ const PaymentConfirmation = () => {
         isNewCustomer: false,
         customerType: "private",
     });
-    const [orderDetails, setOrderDetails] = useState([]);
+    const [reservationDetails, setReservationDetails] = useState([]);
     const [updatedData, setUpdatedData] = useState({});
     const [isUpdateData, setIsUpdateData] = useState(false);
 
@@ -91,10 +92,126 @@ const PaymentConfirmation = () => {
 
     const onSubmit = (values) => {
         setOpen(true);
+        const data = isUpdateData
+        ? {
+            ...updatedData,
+            ...customData,
+            orderUuid: reservationUuid,
+            customerUuid: reservationDetails?.customerDetails?.uuid
+                ? reservationDetails?.customerDetails?.uuid
+                : null,
+            }
+        : {
+            ...values,
+            ...customData,
+            orderUuid: reservationUuid,
+            customerUuid: reservationDetails?.customerDetails?.uuid
+                ? reservationDetails?.customerDetails?.uuid
+                : null,
+        };
+        
+        OrderService.updateOrder(data)
+        .then(response => {
+            if (
+                response?.status_code === 202 &&
+                response?.is_data &&
+                response?.data?.paymentUrl
+              ) {
+                setOpen(false);
+                localStorage.setItem(
+                    "reservationConfirmationData",
+                    JSON.stringify({
+                        reservationUuid: reservationDetails?.orderUuid,
+                        sentBy: reservationDetails?.sendOrderBy?.sms ? "sms" : "email",
+                        phoneOrEmail: reservationDetails?.sendOrderBy?.sms
+                        ? reservationDetails?.customerDetails?.countryCode +
+                        reservationDetails?.customerDetails?.msisdn
+                        : reservationDetails?.customerDetails?.email,
+                    })
+                );
+                window.location.href = `${response?.data?.paymentUrl}`;
+            } else if (response?.status_code === 202 && !response?.is_data) {
+                navigate(`/reservations/${reservationUuid}/confirmation`);
+            }
+        })
+        .catch((e) => {
+            enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+            setOpen(false);
+        });
     };
 
     useEffect(() => {
+        OrderService.getOrdersDetailsByUUIDPayment(reservationUuid)
+        .then(response => {
+            if (response?.status_code === 200 && response?.is_data) {
+                if (response?.data?.status !== "SENT") return navigate("404");
+                setReservationDetails(response.data);
+
+                PaymentDefaultValue.phone =
+                    response?.data?.customerDetails?.countryCode &&
+                    response?.data?.customerDetails?.msisdn
+                    ? response?.data?.customerDetails?.countryCode +
+                        response?.data?.customerDetails?.msisdn
+                    : "";
+                PaymentDefaultValue.email = response?.data?.customerDetails?.email
+                    ? response?.data?.customerDetails?.email
+                    : "";
+                PaymentDefaultValue.customerName = response?.data?.customerDetails
+                    ?.name
+                    ? response?.data?.customerDetails?.name
+                    : "";
+                PaymentDefaultValue.orgIdOrPNumber = response?.data?.customerDetails
+                    ?.personalNumber
+                    ? response?.data?.customerDetails?.personalNumber
+                    : response?.data?.customerDetails?.organizationId
+                    ? response?.data?.customerDetails?.organizationId
+                    : "";
+                PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
+                    ?.personalNumber
+                    ? response?.data?.customerDetails?.personalNumber
+                    : response?.data?.customerDetails?.organizationId
+                    ? response?.data?.customerDetails?.organizationId
+                    : "";
         
+                PaymentDefaultValue.billingAddress =
+                    response?.data?.customerDetails?.address &&
+                    response?.data?.customerDetails?.address?.street
+                    ? response?.data?.customerDetails?.address?.street
+                    : "";
+                PaymentDefaultValue.billingZip =
+                    response?.data?.customerDetails?.address &&
+                    response?.data?.customerDetails?.address?.zip
+                    ? response?.data?.customerDetails?.address?.zip
+                    : "";
+                PaymentDefaultValue.billingCity =
+                    response?.data?.customerDetails?.address &&
+                    response?.data?.customerDetails?.address?.city
+                    ? response?.data?.customerDetails?.address?.city
+                    : "";
+                PaymentDefaultValue.billingCountry =
+                    response?.data?.customerDetails?.address &&
+                    response?.data?.customerDetails?.address?.country
+                    ? response?.data?.customerDetails?.address?.country
+                    : "";
+                setCustomData({
+                    ...customData,
+                    customerType:
+                    response?.data?.customerDetails?.type === "Private"
+                        ? "private"
+                        : "corporate",
+                    isCeditCheck: response?.data?.creditCheck
+                    ? response?.data?.creditCheck
+                    : false,
+                });
+                reset({ ...PaymentDefaultValue });
+            }
+
+            setIsLoading(false);
+        })
+        .catch((e) => {
+            setIsLoading(false);
+            return navigate("404");
+          });
     }, [isLoading]);
 
     const watchPhone = watch("phone");
@@ -141,8 +258,8 @@ const PaymentConfirmation = () => {
                                             <div className="subtitle1 text-MonochromeGray-700">
                                                 {updatedData?.customerName
                                                 ? updatedData.customerName
-                                                : orderDetails?.customerDetails?.name
-                                                ? orderDetails?.customerDetails?.name
+                                                : reservationDetails?.customerDetails?.name
+                                                ? reservationDetails?.customerDetails?.name
                                                 : "-"}
                                             </div>
                                             <div>
@@ -161,51 +278,51 @@ const PaymentConfirmation = () => {
                                                 {t("label:pNumber")}:{" "}
                                                 {updatedData?.orgIdOrPNumber
                                                 ? updatedData.orgIdOrPNumber
-                                                : orderDetails?.customerDetails?.personalNumber
-                                                ? orderDetails?.customerDetails?.personalNumber
+                                                : reservationDetails?.customerDetails?.personalNumber
+                                                ? reservationDetails?.customerDetails?.personalNumber
                                                 : "-"}
                                             </div>
                                             <div className="text-MonochromeGray-700 body2 mt-16">
                                                 {updatedData?.phone
                                                 ? updatedData.phone
-                                                : orderDetails?.customerDetails?.countryCode &&
-                                                    orderDetails?.customerDetails?.msisdn
-                                                ? orderDetails?.customerDetails?.countryCode +
-                                                    orderDetails?.customerDetails?.msisdn
+                                                : reservationDetails?.customerDetails?.countryCode &&
+                                                    reservationDetails?.customerDetails?.msisdn
+                                                ? reservationDetails?.customerDetails?.countryCode +
+                                                    reservationDetails?.customerDetails?.msisdn
                                                 : "-"}
                                             </div>
                                             <div className="text-MonochromeGray-700 body2">
                                                 {updatedData?.email
                                                 ? updatedData.email
-                                                : orderDetails?.customerDetails?.email
-                                                ? orderDetails?.customerDetails?.email
+                                                : reservationDetails?.customerDetails?.email
+                                                ? reservationDetails?.customerDetails?.email
                                                 : "-"}
                                             </div>
                                             <div className="text-MonochromeGray-700 body2">
                                                 {updatedData?.billingAddress
                                                 ? updatedData.billingAddress + ", "
-                                                : orderDetails?.customerDetails?.address &&
-                                                    orderDetails?.customerDetails?.address?.street
-                                                ? orderDetails?.customerDetails?.address?.street +
+                                                : reservationDetails?.customerDetails?.address &&
+                                                    reservationDetails?.customerDetails?.address?.street
+                                                ? reservationDetails?.customerDetails?.address?.street +
                                                     ", "
                                                 : "-, "}
                                                 {updatedData?.billingCity
                                                 ? updatedData.billingCity + ", "
-                                                : orderDetails?.customerDetails?.address &&
-                                                    orderDetails?.customerDetails?.address?.city
-                                                ? orderDetails?.customerDetails?.address?.city + " "
+                                                : reservationDetails?.customerDetails?.address &&
+                                                    reservationDetails?.customerDetails?.address?.city
+                                                ? reservationDetails?.customerDetails?.address?.city + " "
                                                 : "-"}
                                                 {updatedData?.billingZip
                                                 ? updatedData.billingZip + ", "
-                                                : orderDetails?.customerDetails?.address &&
-                                                    orderDetails?.customerDetails?.address?.zip
-                                                ? orderDetails?.customerDetails?.address?.zip + ", "
+                                                : reservationDetails?.customerDetails?.address &&
+                                                    reservationDetails?.customerDetails?.address?.zip
+                                                ? reservationDetails?.customerDetails?.address?.zip + ", "
                                                 : "-, "}
                                                 {updatedData?.billingCountry
                                                 ? updatedData.billingCountry
-                                                : orderDetails?.customerDetails?.address &&
-                                                    orderDetails?.customerDetails?.address?.country
-                                                ? orderDetails?.customerDetails?.address?.country
+                                                : reservationDetails?.customerDetails?.address &&
+                                                    reservationDetails?.customerDetails?.address?.country
+                                                ? reservationDetails?.customerDetails?.address?.country
                                                 : "-"}
                                             </div>
                                         </div>
@@ -236,8 +353,8 @@ const PaymentConfirmation = () => {
                                                                 variant="outlined"
                                                                 className={`body2 ${
                                                                     customData?.customerType === "private" ||
-                                                                    (orderDetails &&
-                                                                    orderDetails?.customerDetails?.type ===
+                                                                    (reservationDetails &&
+                                                                    reservationDetails?.customerDetails?.type ===
                                                                         "Private" &&
                                                                     !customData?.isNewCustomer)
                                                                     ? "create-order-capsule-button-active"
@@ -250,8 +367,8 @@ const PaymentConfirmation = () => {
                                                                     });
                                                                 }}
                                                                 disabled={
-                                                                    orderDetails &&
-                                                                    orderDetails?.customerDetails?.type ===
+                                                                    reservationDetails &&
+                                                                    reservationDetails?.customerDetails?.type ===
                                                                     "Corporate" &&
                                                                     !customData?.isNewCustomer
                                                                 }
@@ -262,8 +379,8 @@ const PaymentConfirmation = () => {
                                                                 variant="outlined"
                                                                 className={`body2 ${
                                                                     customData?.customerType === "corporate" ||
-                                                                    (orderDetails &&
-                                                                    orderDetails?.customerDetails?.type ===
+                                                                    (reservationDetails &&
+                                                                    reservationDetails?.customerDetails?.type ===
                                                                         "Corporate" &&
                                                                     !customData?.isNewCustomer)
                                                                     ? "create-order-capsule-button-active"
@@ -276,8 +393,8 @@ const PaymentConfirmation = () => {
                                                                     });
                                                                 }}
                                                                 disabled={
-                                                                    orderDetails &&
-                                                                    orderDetails?.customerDetails?.type ===
+                                                                    reservationDetails &&
+                                                                    reservationDetails?.customerDetails?.type ===
                                                                     "Private" &&
                                                                     !customData?.isNewCustomer
                                                                 }
@@ -625,7 +742,11 @@ const PaymentConfirmation = () => {
                                                     </div>
                                                     <div className="body3 text-MonochromeGray-700">
                                                         {t("label:nok")}{" "}
-                                                        {ThousandSeparator(26000)}
+                                                        {
+                                                            reservationDetails?.orderSummary?.grandTotal
+                                                            ? ThousandSeparator(reservationDetails?.orderSummary?.grandTotal)
+                                                            : ""
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -644,7 +765,12 @@ const PaymentConfirmation = () => {
                                                     {t("label:totalReservationAmount")}
                                                 </div>
                                                 <div className="body3 text-MonochromeGray-700">
-                                                    {t("label:nok")}{" "} {ThousandSeparator(26000)}
+                                                    {t("label:nok")}{" "}
+                                                    {
+                                                        reservationDetails?.orderSummary?.grandTotal
+                                                        ? ThousandSeparator(reservationDetails?.orderSummary?.grandTotal)
+                                                        : ""
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -711,7 +837,7 @@ const PaymentConfirmation = () => {
                 >
                     <div className="p-16">
                         <DialogTitle id="alert-dialog-title" className="modeal-header">
-                        {t("label:redirectingYouToThePaymentGateway")}
+                            {t("label:redirectingYouToThePaymentGateway")}
                         </DialogTitle>
 
                         <DialogContent>
@@ -719,10 +845,10 @@ const PaymentConfirmation = () => {
                                 id="alert-dialog-description"
                                 className="modeal-text"
                             >
-                                <div>{t("label:thisWillOnlyTakeAMoment")}</div>
-                                <div className="flex justify-center items-center my-20">
-                                <CircularProgress color="secondary" />
-                                </div>
+                                <span className="block">{t("label:thisWillOnlyTakeAMoment")}</span>
+                                <span className="flex justify-center items-center my-20">
+                                    <CircularProgress color="secondary" />
+                                </span>
                             </DialogContentText>
                         </DialogContent>
                     </div>

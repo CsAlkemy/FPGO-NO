@@ -6,14 +6,14 @@ import { useParams } from "react-router-dom";
 
 const PaymentStatus = () => {
     const {t} = useTranslation();
-    const queryParams = useParams();
+    const reservationUuid = useParams().uuid;
     const [isLoading, setIsLoading] = useState(true);
     const [sentBy, setSentBy] = useState("");
     const [phoneOrEmail, setPhoneOrEmail] = useState("");
 
     useEffect(() => {
         const reservationConfirmationData = JSON.parse(localStorage.getItem("reservationConfirmationData"));
-        if (queryParams.uuid === reservationConfirmationData.orderUuid){
+        if (reservationUuid === reservationConfirmationData.reservationUuid){
           setSentBy(reservationConfirmationData?.sentBy);
           setPhoneOrEmail(reservationConfirmationData?.phoneOrEmail);
         }
