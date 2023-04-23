@@ -14,7 +14,7 @@ import {
   ordersListOverview,
   customerOrdersListOverview,
   refundRequestsOverview,
-  clientOrdersListOverview,
+  clientOrdersListOverview, subscriptionsListOverview
 } from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
@@ -2138,6 +2138,300 @@ export default function OverViewResponsiveBody(props) {
         } else {
           return (
             <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        }
+        // return rdt.includes("amount") || rdt.includes("stage") ? (
+        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+        //   </TableCell>
+        // )
+        // :
+        // (
+        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+        //   </TableCell>
+        // )
+      });
+    case subscriptionsListOverview:
+      return props.headerRows.map((rdt) => {
+        if (rdt.id === "stage") {
+          switch (props.row.stage) {
+            case "sent":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Sent"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "on going":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="On Going"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "cancelled":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Cancelled"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "completed":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Completed"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+          }
+        } else if (rdt.id === "amount") {
+          return (
+            <div
+              className="grid grid-cols-2 justify-between items-center"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        } else if (rdt.id === "refundResend") {
+          return props.row.refundResend === "Resend" &&
+          user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<RedoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  {t("label:resendOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : props.row.refundResend === "Refund" &&
+          user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<UndoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleModalOpen("refund")}
+                >
+                  {t("label:refundOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<ReceiptLongOutlinedIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => setEditOpen(true)}
+                >
+                  {t("label:sendInvoice")}
+                </Button>
+              </CustomTooltip>
+              <SendInvoiceModal
+                editOpen={editOpen}
+                setEditOpen={setEditOpen}
+                customerInfo={props.row}
+                // headerTitle={headerTitle}
+                // orderId={props.row.id}
+                // orderName={props.row.name}
+                // orderAmount={props.row.amount}
+                // customerPhone={props.row.phone}
+                // customerEmail={props.row.email}
+              />
+            </>
+          ) : (
+            ""
+          );
+        } else if (rdt.id === "cancel") {
+          return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title="Cancel Order"
+                TransitionComponent={Zoom}
+                placement="bottom-start"
+                enterDelay={300}
+              >
+                <Button
+                  Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<CancelIcon className="text-red-500" />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100 text-MonochromeGray-900"
+                  onClick={() => handleModalOpen("cancel")}
+                >
+                  {t("label:cancelOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <>
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<RedoIcon />}
+                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  {t("label:resendOrder")}
+                </Button>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </>
+          ) : (
+            ""
+          );
+        } else {
+          return (
+            <div
+              className="grid grid-cols-2 justify-between items-center"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
               <div className="subtitle3 text-primary-900">
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
