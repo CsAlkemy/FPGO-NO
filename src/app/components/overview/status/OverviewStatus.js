@@ -66,7 +66,7 @@ export const overviewStatuses = [
   {
     id: 11,
     name: "Completed",
-    color: "bg-sent text-m-grey-700",
+    color: "bg-paid text-m-grey-700",
   },
   {
     id: 12,
@@ -87,6 +87,11 @@ export const overviewStatuses = [
     id: 15,
     name: "Refund Pending",
     color: "bg-pending text-m-grey-700",
+  },
+  {
+    id: 16,
+    name: "On Going",
+    color: "bg-invoiced text-m-grey-700",
   },
 ];
 
@@ -110,7 +115,7 @@ function OverviewStatus(props) {
     ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : props.name === "Partial Refunded"
     ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
-    : props.name === "Completed"
+    : props.name === "Completed" || props.name === "On Going"
     ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : props.name === "Reminder Sent"
     ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")

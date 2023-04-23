@@ -161,3 +161,15 @@ export const refundRequestsOverviewRowDataFields = [
   "approveAction",
   "cancel",
 ];
+
+export const subscriptionsListOverviewRowDataFields = [
+  "date",
+  "id",
+  "name",
+  "phone",
+  "paymentsMade",
+  "amount",
+  "stage",
+  "refundResend",
+  "cancel",
+];

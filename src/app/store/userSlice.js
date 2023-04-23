@@ -190,7 +190,7 @@ export const setUser = createAsyncThunk(
                   translate: 'allSubscriptions',
                   type: "item",
                   icon: "material-solid:fiber_manual_record",
-                  url: "/subscriptions/subscription-list",
+                  url: "/subscriptions/list",
                 },
                 {
                   id: "failedPayments",
@@ -198,7 +198,7 @@ export const setUser = createAsyncThunk(
                   translate: 'failedPayments',
                   type: "item",
                   icon: "material-solid:fiber_manual_record",
-                  url: "/subscriptions/failed-payments",
+                  url: "/subscriptions/failed-payments-list",
                 },
               ],
             },

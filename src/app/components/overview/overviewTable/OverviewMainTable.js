@@ -42,8 +42,8 @@ import {
   organizationWiseUsersOverview,
   productsListOverview,
   refundRequestsOverview,
-  subClientAdminOverview,
-  userListOverview,
+  subClientAdminOverview, subscriptionsListOverview,
+  userListOverview
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from '../../../utils/UtilsService';
@@ -522,6 +522,63 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const subscriptionsListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "sent"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "sent"
+          )
+        );
+        break;
+      case 2:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "on going"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "on going"
+          )
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "completed"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "completed"
+          )
+        );
+        break;
+      case 4:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "cancelled"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "cancelled"
+          )
+        );
+        break;
+    }
+  };
+
   const handleTabChange = (event, newValue) => {
     setPage(0);
     switch (props.tableName) {
@@ -576,6 +633,9 @@ export default function OverviewMainTable(props) {
         break;
       case refundRequestsOverview:
         refundRequestsListTableTabPanelsData(event, newValue);
+        break;
+      case subscriptionsListOverview:
+        subscriptionsListTableTabPanelsData(event, newValue);
         break;
     }
     setValue(newValue);

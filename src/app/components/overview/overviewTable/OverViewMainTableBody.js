@@ -13,8 +13,8 @@ import {
   ordersListOverview,
   organizationWiseUsersOverview,
   productsListOverview,
-  refundRequestsOverview,
-  userListOverview,
+  refundRequestsOverview, subscriptionsListOverview,
+  userListOverview
 } from "./TablesName";
 import Skeleton from "@mui/material/Skeleton";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -1618,6 +1618,255 @@ export default function OverViewMainTableBody(props) {
                 <Skeleton variant="text" />
               )}
             </TableCell>
+          );
+        } else {
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="left"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
+      });
+    case subscriptionsListOverview:
+      return props.rowDataFields.map((rdt) => {
+        if (rdt === "stage") {
+          switch (props.row.stage) {
+            case "sent":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Sent"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "on going":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="On Going"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "completed":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Completed"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "cancelled":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Cancelled"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+          }
+        } else if (rdt === "refundResend") {
+          return props.row.refundResend === "Resend" &&
+          user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
+                  sx={resendRefundBoxSX}
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  <RedoIcon
+                    style={{ paddingBottom: "3px" }}
+                    // onClick={() => }
+                  />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+                refundRequestsCount={props.refundRequestCount}
+                setRefundRequestsCount={props.setRefundRequestsCount}
+              />
+            </TableCell>
+          ) : props.row.refundResend === "Refund" &&
+          user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
+                  sx={resendRefundBoxSX}
+                  onClick={() => handleModalOpen("refund")}
+                >
+                  <UndoIcon
+                    style={{ paddingBottom: "3px" }}
+                    // onClick={() => }
+                  />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </TableCell>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title="Send Invoice"
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  sx={quickOrderSendInvoiceSX}
+                  onClick={() => handleSendInvoiceModalOpen()}
+                >
+                  <ReceiptLongOutlinedIcon style={{ paddingBottom: "3px" }} />
+                </Box>
+              </CustomTooltip>
+              <SendInvoiceModal
+                editOpen={editOpen}
+                setEditOpen={setEditOpen}
+                customerInfo={props.row}
+              />
+            </TableCell>
+          ) : (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              {/*<OverviewStatus name="Invoiced" />*/}
+            </TableCell>
+          );
+        } else if (rdt === "cancel") {
+          return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title="Cancel Order"
+                TransitionComponent={Zoom}
+                placement="bottom-start"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F7F7F7" }}
+                  sx={cancelBoxSX}
+                  onClick={() => handleModalOpen("cancel")}
+                >
+                  <CancelIcon style={{ paddingBottom: "3px" }} />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </TableCell>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={`${props.row.refundResend} Order`}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4"
+                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
+                  sx={resendRefundBoxSX}
+                  onClick={() => handleModalOpen("resend")}
+                >
+                  <RedoIcon
+                    style={{ paddingBottom: "3px" }}
+                    // onClick={() => }
+                  />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.uuid}
+                orderName={props.row.name}
+                orderAmount={props.row.amount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+              />
+            </TableCell>
+          ) : (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+            ></TableCell>
           );
         } else {
           return (
