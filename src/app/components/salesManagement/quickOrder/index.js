@@ -28,6 +28,7 @@ import CharCount from "../../common/charCount";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import SendInvoiceModal from "./sendInvoiceModal";
+import RedoIcon from "@mui/icons-material/Redo";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "../../../data-access/services/authService";
 import ProductService from "../../../data-access/services/productsService/ProductService";
@@ -40,6 +41,7 @@ import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import FuseUtils from "@fuse/utils";
+import { Cancel } from "@mui/icons-material";
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -53,6 +55,7 @@ const createProducts = () => {
   const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
+  const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] = useState("+47");
   const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
     useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
@@ -167,7 +170,8 @@ const createProducts = () => {
                   zip: row?.zip,
                   country: row?.country,
                   searchString:
-                    row?.name + " ( " + row?.phone + " )" + row.uuid,
+                  // row?.name + " ( " + row?.phone + " )" + row.uuid,
+                    row?.phone.toString().slice(3) + row.uuid,
                 });
               });
           }
@@ -245,25 +249,31 @@ const createProducts = () => {
     setCustomerSearchBoxDropdownOpen(false);
     const searchByPhone =
       customersList.filter((customer) =>
-        customer.phone.startsWith(e.target.value)
+        customer.searchString.startsWith(e.target.value)
       ) || [];
-    const searchByName =
-      customersList.filter(
-        (customer) =>
-          customer?.name &&
-          customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
-      ) || [];
+    // const searchByName =
+    //   customersList.filter(
+    //     (customer) =>
+    //       customer?.name &&
+    //       customer.name.toLowerCase().startsWith(e.target.value.toLowerCase())
+    //   ) || [];
+    // setSearchCustomersList(
+    //   searchByName.length
+    //     ? searchByName
+    //     : searchByPhone.length
+    //     ? searchByPhone
+    //     : []
+    // );
+    // setCustomerSearchBy(
+    //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
+    // );
     setSearchCustomersList(
-      searchByName.length
-        ? searchByName
-        : searchByPhone.length
-        ? searchByPhone
-        : []
+      searchByPhone.length
+      ? searchByPhone
+      : customersList
     );
-    setCustomerSearchBy(
-      searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
-    );
-    setCustomerSearchBoxLength(e.target.value.length);
+    setCustomerSearchBy(searchByPhone.length ? "phone" : undefined);
+    setCustomerSearchBoxLength(e.target.value.length ? 3+e.target.value.length : e.target.value.length);
     setCustomerSearchBoxDropdownOpen(true);
   };
 
@@ -510,13 +520,16 @@ const createProducts = () => {
                     getOptionLabel={(option) => option.searchString}
                     renderTags={() => {}}
                     fullWidth
-                    onChange={(e, newValue) => {
-                      setCustomerSearchBy(undefined);
-                      setCustomerSearchBoxLength(0);
-                      setVal(newValue);
+                    onChange={(e, newValue, reason) => {
+                      if (reason !== "removeOption") {
+                        setCustomerSearchBy(undefined);
+                        setCustomerSearchBoxLength(0);
+                        setVal(newValue);
+                        setSearchCustomersList(customersList)
+                      }
                     }}
                     onInputChange={(event, value) => {
-                      setNewCustomer(value);
+                      setNewCustomer(searchCustomerPrefixCountryCode+value);
                       if (value.length === 0) setCustomerSearchBy(undefined);
                     }}
                     onClose={() => setCustomerSearchBoxDropdownOpen(false)}
@@ -526,23 +539,27 @@ const createProducts = () => {
                         <span className="subtitle3 font-600">
                           {t("label:noCustomersFound")}
                         </span>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          size={"medium"}
-                          className="rounded-4 button2 min-w-[104px]"
-                          type="button"
-                          startIcon={<AddIcon fontSize="small" />}
-                          onClick={() => {
-                            setVal([
-                              ...val,
-                              { name: "", phone: `${newCustomer}` },
-                            ]);
-                            setCustomerSearchBoxDropdownOpen(false);
-                          }}
-                        >
-                          {t(`label:add`)}
-                        </Button>
+                        {
+                          !isNaN(newCustomer) && (
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              size={"medium"}
+                              className="rounded-4 button2 min-w-[104px]"
+                              type="button"
+                              startIcon={<AddIcon fontSize="small" />}
+                              onClick={() => {
+                                setVal([
+                                  ...val,
+                                  { name: "", phone: `${newCustomer}` },
+                                ]);
+                                setCustomerSearchBoxDropdownOpen(false);
+                              }}
+                            >
+                              {t(`label:add`)}
+                            </Button>
+                          )
+                        }
                       </div>
                     }
                     renderOption={(props, option, { selected }) => (
@@ -550,38 +567,27 @@ const createProducts = () => {
                         {/*{`${option.name}`}*/}
                         {customerSearchBy ? (
                           <div>
-                            {customerSearchBy === "name" &&
-                            option?.name &&
-                            customerSearchBoxLength > 0 ? (
-                              <div>
-                                <span
-                                  style={{ color: "#0088AE" }}
-                                >{`${option.name.slice(
-                                  0,
-                                  customerSearchBoxLength
-                                )}`}</span>
-                                <span>{`${option.name.slice(
-                                  customerSearchBoxLength
-                                )}`}</span>
-                              </div>
-                            ) : (
-                              <div>{`${option.name}`}</div>
-                            )}
                             {customerSearchBy === "phone" &&
                             customerSearchBoxLength > 0 ? (
                               <div>
+                                <div>{`${option.name}`}</div>
+                                <div>
                                 <span
                                   style={{ color: "#0088AE" }}
                                 >{`${option.phone.slice(
                                   0,
                                   customerSearchBoxLength
                                 )}`}</span>
-                                <span>{`${option.phone.slice(
-                                  customerSearchBoxLength
-                                )}`}</span>
+                                  <span>{`${option.phone.slice(
+                                    customerSearchBoxLength
+                                  )}`}</span>
+                                </div>
                               </div>
                             ) : (
-                              <div>{`${option.phone}`}</div>
+                              <div>
+                                <div>{`${option.name}`}</div>
+                                <div>{`${option.phone}`}</div>
+                              </div>
                             )}
                           </div>
                         ) : (
@@ -602,7 +608,15 @@ const createProducts = () => {
                           )
                         }
                         className="mt-10 w-full sm:w-2/4"
-                        placeholder={t("label:searchCustomersByNameOrPhoneNo")}
+                        placeholder={t("label:searchCustomersByPhoneNo")}
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: (
+                            <div>
+                              {searchCustomerPrefixCountryCode}
+                            </div>
+                          ),
+                        }}
                       />
                     )}
                   />
@@ -1705,6 +1719,37 @@ const createProducts = () => {
                 </div>
               </div>
             </div>
+            <Hidden mdUp>
+              <div className="fixed bottom-0 grid grid-cols-2 justify-center items-center gap-20 w-full mb-20 px-20 z-50">
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  className="bg-white text-MonochromeGray-700 button2 shadow-5 "
+                  onClick={() => setOpen(true)}
+                  startIcon={<Cancel className="text-red-500" />}
+                >
+                  {t("label:discard")}
+                </Button>
+                <LoadingButton
+                  color="secondary"
+                  variant="contained"
+                  type="submit"
+                  className="rounded-full bg-primary-500 button2 py-5"
+                  disabled={!isValid || val.length === 0 || !watchRate}
+                  sx={{
+                    "&.Mui-disabled": {
+                      background: "#eaeaea",
+                      color: "#c0c0c0",
+                    },
+                  }}
+                  startIcon={<RedoIcon />}
+                  loading={loading}
+                  loadingPosition="center"
+                >
+                   {t("label:sendOrder")}
+                </LoadingButton>
+              </div>
+            </Hidden>
           </form>
         </div>
       </div>

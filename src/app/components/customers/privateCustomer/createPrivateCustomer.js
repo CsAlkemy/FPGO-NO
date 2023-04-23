@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
+  Autocomplete,
   Button,
   Drawer,
   FormControl,
@@ -32,6 +33,7 @@ import {
   useCreatePrivateCustomerMutation,
   useGetCustomersListQuery,
 } from "app/store/api/apiSlice";
+import CountrySelect from "../../common/countries";
 
 const createPrivateCustomer = () => {
   const { t } = useTranslation();
@@ -41,12 +43,6 @@ const createPrivateCustomer = () => {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [createPrivateCustomer] = useCreatePrivateCustomerMutation();
-  const [countries, setCountries] = React.useState([
-    {
-      title: "Norway",
-      name: "norway",
-    },
-  ]);
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -282,33 +278,13 @@ const createPrivateCustomer = () => {
                         />
                       )}
                     />
-                    <Controller
-                      name="billingCountry"
+                    <CountrySelect
                       control={control}
-                      render={({ field }) => (
-                        <FormControl error={!!errors.billingCountry} fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            {t("label:country")} *
-                          </InputLabel>
-                          <Select
-                            {...field}
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label={t("label:country")}
-                            defaultValue=""
-                            required
-                          >
-                            {countries.map((country, index) => (
-                              <MenuItem key={index} value={country.name}>
-                                {country.title}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          <FormHelperText>
-                            {errors?.billingCountry?.message ? t(`validation:${errors?.billingCountry?.message}`) : ""}
-                          </FormHelperText>
-                        </FormControl>
-                      )}
+                      name={"billingCountry"}
+                      label={"Country"}
+                      placeholder={"country"}
+                      required={true}
+                      error={errors.billingCountry}
                     />
                   </div>
                 </div>
@@ -451,35 +427,13 @@ const createPrivateCustomer = () => {
                                       />
                                     )}
                                   />
-                                  <Controller
-                                    name="shippingCountry"
+                                  <CountrySelect
                                     control={control}
-                                    render={({ field }) => (
-                                      <FormControl
-                                        error={!!errors.shippingCountry}
-                                        fullWidth
-                                      >
-                                        <InputLabel id="demo-simple-select-label">
-                                          {t("label:country")}
-                                        </InputLabel>
-                                        <Select
-                                          {...field}
-                                          labelId="demo-simple-select-label"
-                                          id="demo-simple-select"
-                                          label={t("label:country")}
-                                          disabled={sameAddress}
-                                          defaultValue=""
-                                        >
-                                          <MenuItem value="" />
-                                          <MenuItem value="norway">
-                                            Norway
-                                          </MenuItem>
-                                        </Select>
-                                        <FormHelperText>
-                                          {errors?.shippingCountry?.message ? t(`validation:${errors?.shippingCountry?.message}`) : ""}
-                                        </FormHelperText>
-                                      </FormControl>
-                                    )}
+                                    name={"shippingCountry"}
+                                    label={"country"}
+                                    placeholder={"country"}
+                                    required={false}
+                                    error={errors.shippingCountry}
                                   />
                                 </div>
                               </div>
