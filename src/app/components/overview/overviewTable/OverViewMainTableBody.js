@@ -8,7 +8,7 @@ import {
   clientsListOverview,
   creditChecksListOverview,
   customerOrdersListOverview,
-  customersListOverview,
+  customersListOverview, failedPaymentsListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
   organizationWiseUsersOverview,
@@ -1868,6 +1868,70 @@ export default function OverViewMainTableBody(props) {
               align="right"
             ></TableCell>
           );
+        } else {
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="left"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
+      });
+    case failedPaymentsListOverview:
+      return props.rowDataFields.map((rdt) => {
+        if (rdt === "status") {
+          switch (props.row.status) {
+            case "paid":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Paid"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "invoiced":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Invoiced"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "debt collection":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Debt Collection2"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+          }
         } else {
           return (
             <TableCell

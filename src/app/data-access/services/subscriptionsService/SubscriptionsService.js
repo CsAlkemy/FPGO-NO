@@ -33,6 +33,26 @@ class SubscriptionsService {
     return d;
   };
 
+  mapFailedPaymentsList = (data) => {
+    let d;
+    d = data.map((row) => {
+      return {
+        uuid: row.uuid,
+        date: row.date,
+        orderId: row.orderId,
+        name: row.name,
+        phone: row?.countryCode && row?.msisdn ? row.countryCode+row.msisdn : "",
+        subscriptionId: row.subscriptionId,
+        amount: row.amount,
+        status: row.status.toLowerCase(),
+        translationKey: row.translationKey,
+      };
+    });
+    d.status_code = 200;
+    d.is_data = true;
+    return d;
+  };
+
   prepareCreateSubscriptionPayload = (params) => {
     const categoryUuids = params.assignedCategories
       ? params.assignedCategories.map((product) => {

@@ -2,6 +2,7 @@ import { lazy } from "react";
 import authRoles from "../../data-access/utils/AuthRoles";
 import SubscriptionDetails from "../../components/subscription/subscriptionDetails";
 import SubscriptionsListOverview from "../overviews/subscriptions/SubscriptionsListOverview";
+import FailedPaymentsListOverview from "../overviews/subscriptions/FailedPaymentsListOverview";
 
 const CreateSubscription = lazy(() =>
   import("../../components/subscription/index")
@@ -80,6 +81,10 @@ export const SubscriptionsConfigRBAC = {
     {
       path: "/subscriptions/list",
       element: <SubscriptionsListOverview />,
+    },
+    {
+      path: "/subscriptions/failed-payments-list",
+      element: <FailedPaymentsListOverview />,
     },
   ],
 };

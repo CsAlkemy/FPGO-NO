@@ -14,7 +14,7 @@ import {
   ordersListOverview,
   customerOrdersListOverview,
   refundRequestsOverview,
-  clientOrdersListOverview, subscriptionsListOverview
+  clientOrdersListOverview, subscriptionsListOverview, failedPaymentsListOverview
 } from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
@@ -2453,6 +2453,107 @@ export default function OverViewResponsiveBody(props) {
         //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
         //   </TableCell>
         // )
+      });
+    case failedPaymentsListOverview:
+      return props.headerRows.map((rdt) => {
+        if (rdt.id === "status") {
+          switch (props.row.status) {
+            case "paid":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Paid"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "invoiced":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Invoiced"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "debt collection":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Debt Collection2"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+          }
+        } else if (rdt.id === "amount") {
+          return (
+            <div
+              className="grid grid-cols-2 justify-between items-center"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div
+              className="grid grid-cols-2 justify-between items-center"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        }
       });
   }
 }

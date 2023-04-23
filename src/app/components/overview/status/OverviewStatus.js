@@ -93,6 +93,11 @@ export const overviewStatuses = [
     name: "On Going",
     color: "bg-invoiced text-m-grey-700",
   },
+  {
+    id: 17,
+    name: "Debt Collection2",
+    color: "bg-expired text-m-grey-700",
+  },
 ];
 
 function OverviewStatus(props) {

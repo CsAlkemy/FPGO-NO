@@ -173,3 +173,13 @@ export const subscriptionsListOverviewRowDataFields = [
   "refundResend",
   "cancel",
 ];
+
+export const failedPaymentsListOverviewRowDataFields = [
+  "date",
+  "orderId",
+  "name",
+  "phone",
+  "subscriptionId",
+  "amount",
+  "status",
+];

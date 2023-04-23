@@ -36,7 +36,7 @@ import {
   clientsListOverview,
   creditChecksListOverview,
   customerOrdersListOverview,
-  customersListOverview,
+  customersListOverview, failedPaymentsListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
   organizationWiseUsersOverview,
@@ -579,6 +579,51 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const failedPaymentsListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "paid"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "paid"
+          )
+        );
+        break;
+      case 2:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "invoiced"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "invoiced"
+          )
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "debt collection"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "debt collection"
+          )
+        );
+        break;
+    }
+  };
+
   const handleTabChange = (event, newValue) => {
     setPage(0);
     switch (props.tableName) {
@@ -636,6 +681,9 @@ export default function OverviewMainTable(props) {
         break;
       case subscriptionsListOverview:
         subscriptionsListTableTabPanelsData(event, newValue);
+        break;
+      case failedPaymentsListOverview:
+        failedPaymentsListTableTabPanelsData(event, newValue);
         break;
     }
     setValue(newValue);

@@ -15,3 +15,4 @@ export const businessAdminUsersOverview = 'business-admin-users-overview'
 export const organizationWiseUsersOverview = 'organization-wise-users-overview'
 export const refundRequestsOverview = 'refund-requests-overview';
 export const subscriptionsListOverview = 'subscriptions-list-overview';
+export const failedPaymentsListOverview = 'failed-payment-list-overview';

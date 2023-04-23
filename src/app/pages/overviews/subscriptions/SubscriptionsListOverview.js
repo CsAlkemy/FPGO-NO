@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../../../../styles/colors.css";
 import OverviewMainTable from "../../../components/overview/overviewTable/OverviewMainTable";
-import { customersListHeaderRows } from "../../../components/overview/overviewTable/HeaderRows";
 import {
-  customersListOverview,
   subscriptionsListOverview
 } from "../../../components/overview/overviewTable/TablesName";
 import {
-  customersListRowDataFields,
   subscriptionsListOverviewRowDataFields
 } from "../../../components/overview/overviewTable/RowDataFields";
-import CustomersService from "../../../data-access/services/customersService/CustomersService";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { useTranslation } from 'react-i18next';
