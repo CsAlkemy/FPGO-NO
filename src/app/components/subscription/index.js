@@ -505,49 +505,21 @@ const CreateSubscription = () => {
                 name="searchCustomer"
                 render={({ field: { ref, onChange, ...field } }) => (
                   <Autocomplete
-                    open={customerSearchBoxDropdownOpen}
-                    // freeSolo
-                    disablePortal
-                    // filterSelectedOptions
+                    freeSolo
                     options={searchCustomersList}
+                    // forcePopupIcon={<Search />}
                     getOptionLabel={(option) => option.searchString}
-                    renderTags={() => {}}
+                    className=""
                     fullWidth
-                    onChange={(e, newValue) => {
-                      setCustomerSearchBy(undefined);
+                    onChange={(_, data) => {
                       setCustomerSearchBoxLength(0);
-                      setVal(newValue);
+                      if (data) setVal(data)
+                      else setVal([])
+                      return onChange(data);
                     }}
                     onInputChange={(event, value) => {
-                      setNewCustomer(value);
                       if (value.length === 0) setCustomerSearchBy(undefined);
                     }}
-                    onClose={() => setCustomerSearchBoxDropdownOpen(false)}
-                    value={val}
-                    noOptionsText={
-                      <div className="flex items-center justify-between my-2">
-                        <span className="subtitle3 font-600">
-                          {t("label:noCustomersFound")}
-                        </span>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          size={"medium"}
-                          className="rounded-4 button2 min-w-[104px]"
-                          type="button"
-                          startIcon={<AddIcon fontSize="small" />}
-                          onClick={() => {
-                            setVal([
-                              ...val,
-                              { name: "", phone: `${newCustomer}` },
-                            ]);
-                            setCustomerSearchBoxDropdownOpen(false);
-                          }}
-                        >
-                          {t(`label:add`)}
-                        </Button>
-                      </div>
-                    }
                     renderOption={(props, option, { selected }) => (
                       <MenuItem {...props}>
                         {/*{`${option.name}`}*/}
@@ -597,15 +569,12 @@ const CreateSubscription = () => {
                     )}
                     renderInput={(params) => (
                       <TextField
+                        id="searchBox"
                         {...params}
+                        {...field}
+                        inputRef={ref}
                         onChange={searchCustomerOnFocus}
-                        onClick={() =>
-                          setCustomerSearchBoxDropdownOpen(
-                            !customerSearchBoxDropdownOpen
-                          )
-                        }
-                        className="mt-10 w-full sm:w-2/4"
-                        placeholder={t("label:searchCustomersByNameOrPhoneNo")}
+                        placeholder={t("label:searchCustomersByPhoneNo")}
                       />
                     )}
                   />
@@ -2157,7 +2126,7 @@ const CreateSubscription = () => {
                           {t("label:repeats")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                         12 Times
+                          12 Times
                         </div>
                       </div>
                     </div>
