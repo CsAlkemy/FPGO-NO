@@ -532,12 +532,16 @@ export const quickOrderValidation = yup.object().shape({
     })
   ),
 });
-export const quickOrderDefaultValue = {
+
+export const createSubscriptionDefaultValue = {
   searchCustomer: "",
   orderDate: "",
   dueDatePaymentLink: "",
-  referenceNumber: "",
-  customerReference: "",
+  billingFrequency: "",
+  repeatsNoOfTimes: "",
+  subscriptionEnds: new Date(),
+  // referenceNumber: "",
+  // customerReference: "",
   order: [],
   customerNotes: "",
   termsConditions: "",

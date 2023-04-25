@@ -22,7 +22,10 @@ import CreateIcon from "@mui/icons-material/Create";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../common/confirmDiscard";
-import { quickOrderDefaultValue, quickOrderValidation } from "./utils/helper";
+import {
+  createSubscriptionDefaultValue,
+  quickOrderValidation,
+} from "./utils/helper";
 import InfoIcon from "@mui/icons-material/Info";
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
@@ -92,11 +95,11 @@ const CreateSubscription = () => {
       value: 30,
     },
     {
-      title: "weekly",
+      title: "Weekly",
       value: 7,
     },
     {
-      title: "daily",
+      title: "Daily",
       value: 1,
     },
   ]);
@@ -144,11 +147,12 @@ const CreateSubscription = () => {
     handleSubmit,
     reset,
     setValue,
+    getValues,
     watch,
     resetField,
   } = useForm({
     mode: "onChange",
-    quickOrderDefaultValue,
+    createSubscriptionDefaultValue,
     resolver: yupResolver(quickOrderValidation),
   });
   const { isValid, dirtyFields, errors, touchedFields } = formState;
@@ -250,7 +254,7 @@ const CreateSubscription = () => {
         totalDiscount,
         grandTotal,
       },
-      customers: [...val],
+      customers: val,
     });
     createQuickOrder(data).then((response) => {
       setLoading(false);
@@ -402,6 +406,9 @@ const CreateSubscription = () => {
     ? watch(`orderDate`)
     : setValue("orderDate", new Date());
   const watchDueDatePaymentLink = watch(`dueDatePaymentLink`);
+  const watchBillingFrequency =
+    watch("billingFrequency") || setValue("billingFrequency", 30);
+  const watchRepeatsNoOfTimes = watch("repeatsNoOfTimes") || "";
 
   useEffect(() => {
     if (
@@ -433,6 +440,57 @@ const CreateSubscription = () => {
     }
   }, [watch(`orderDate`)]);
 
+  useEffect(() => {
+    const orderDate = watch(`orderDate`) || new Date();
+    const billingFrequency = watchBillingFrequency;
+    const repeatsNoOfTimes = watchRepeatsNoOfTimes;
+    const orderDateDate = orderDate.getDate();
+    const orderDateMonth = orderDate.getMonth();
+    const orderDateYear = orderDate.getFullYear();
+
+    if (repeatsNoOfTimes) {
+      if (billingFrequency === 30) {
+        // setValue(
+        //   "subscriptionEnds",
+        //   new Date(
+        //     new Date().setMonth(
+        //       parseInt(orderDateMonth) + parseInt(repeatsNoOfTimes)
+        //     )
+        //   )
+        // );
+        setValue(
+          "subscriptionEnds",
+          new Date(
+            `${
+              parseInt(orderDateMonth)+ 1 + parseInt(repeatsNoOfTimes)
+            }, ${orderDateDate}, ${orderDateYear}`
+          )
+        );
+      } else if (billingFrequency === 1 || billingFrequency === 7) {
+        // setValue(
+        //   "subscriptionEnds",
+        //   new Date(
+        //     new Date().setDate(
+        //       orderDateDate + repeatsNoOfTimes * billingFrequency
+        //     )
+        //   )
+        // );
+        setValue(
+          "subscriptionEnds",
+          new Date(
+            orderDate.getFullYear(),orderDate.getMonth(), orderDateDate + repeatsNoOfTimes * billingFrequency
+          )
+        );
+      }
+    } else {
+      setValue("subscriptionEnds", new Date());
+    }
+  }, [
+    watch(`orderDate`),
+    watch("repeatsNoOfTimes"),
+    watch("billingFrequency"),
+  ]);
+
   const setDueDateMinDate = () => {
     if (
       watchOrderDate &&
@@ -462,6 +520,22 @@ const CreateSubscription = () => {
     setCustomerType(customerType);
     setIsEdit(isEdit);
   };
+
+  const handleUpdate = () => {
+    setVal({
+      ...val,
+      phone: `+${getValues("phone")}`,
+      email: getValues("email"),
+      name: getValues("customerName"),
+      orgOrPNumber: getValues("orgIdOrPNumber"),
+      street: getValues("billingAddress"),
+      zip: getValues("billingZip"),
+      city: getValues("billingCity"),
+      country: getValues("billingCountry"),
+    });
+    setEditOpen(false);
+  };
+
   return (
     <div className="create-product-container">
       <div className="inside-div-product">
@@ -513,8 +587,19 @@ const CreateSubscription = () => {
                     fullWidth
                     onChange={(_, data) => {
                       setCustomerSearchBoxLength(0);
-                      if (data) setVal(data)
-                      else setVal([])
+                      if (data) {
+                        setVal(data);
+                        console.log("DATA : ", data);
+                        //phone,email,name,orgID,st,zp,ct,cnt
+                        setValue("phone", data?.phone || "");
+                        setValue("email", data?.email || "");
+                        setValue("customerName", data?.name || "");
+                        setValue("orgIdOrPNumber", data?.orgOrPNumber || "");
+                        setValue("billingAddress", data?.street || "");
+                        setValue("billingCity", data?.city || "");
+                        setValue("billingZip", data?.zip || "");
+                        setValue("billingCountry", data?.country || "");
+                      } else setVal([]);
                       return onChange(data);
                     }}
                     onInputChange={(event, value) => {
@@ -970,7 +1055,7 @@ const CreateSubscription = () => {
                                 type="submit"
                                 className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40"
                                 // onClick={() => setEditOpen(false)}
-                                //onClick={() => handleUpdate()}
+                                onClick={() => handleUpdate()}
                                 disabled={!isValid}
                               >
                                 {!!isEdit
@@ -1091,7 +1176,7 @@ const CreateSubscription = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-20 my-32">
                 <Controller
-                  name="billingFrequency*"
+                  name="billingFrequency"
                   control={control}
                   render={({ field }) => (
                     <FormControl error={!!errors.billingFrequency} fullWidth>
@@ -1162,8 +1247,6 @@ const CreateSubscription = () => {
                       value={!value ? new Date() : value}
                       required
                       onChange={onChange}
-                      minDate={new Date().setDate(new Date().getDate() - 30)}
-                      maxDate={new Date().setDate(new Date().getDate() + 30)}
                       PopperProps={{
                         sx: {
                           "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":

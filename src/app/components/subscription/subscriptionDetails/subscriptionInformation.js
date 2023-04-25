@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
-import { quickOrderDefaultValue, quickOrderValidation } from "../utils/helper";
+import { createSubscriptionDefaultValue, quickOrderValidation } from "../utils/helper";
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
 import AddIcon from "@mui/icons-material/Add";
@@ -93,7 +93,7 @@ const SubscriptionInformation = () => {
     resetField,
   } = useForm({
     mode: "onChange",
-    quickOrderDefaultValue,
+    createSubscriptionDefaultValue,
     resolver: yupResolver(quickOrderValidation),
   });
   const { isValid, dirtyFields, errors, touchedFields } = formState;
