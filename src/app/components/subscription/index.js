@@ -658,6 +658,7 @@ const CreateSubscription = () => {
                         {...params}
                         {...field}
                         inputRef={ref}
+                        className="mt-10 w-full sm:w-2/4"
                         onChange={searchCustomerOnFocus}
                         placeholder={t("label:searchCustomersByPhoneNo")}
                       />
