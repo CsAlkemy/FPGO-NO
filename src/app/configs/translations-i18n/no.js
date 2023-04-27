@@ -192,7 +192,6 @@ const no = {
     userCount: "Antall brukere",
     nameOrganizationId: "Navn (Organisasjons-ID)",
     role: "Rolle",
-    passwordUpdatedSuccessfully: "Passord oppdatert med suksess",
     passwordRules:
       "Passordet må være mellom 8-15 sifre og inneholde både tall og bokstaver",
     forgotPassword: "Glemt Passord",
@@ -397,7 +396,6 @@ const no = {
     norwegian: "Norsk",
     sendOrderByDetailsMessage:
       "Sending via SMS eller faktura medfører en ekstra kostnad for hver bestilling. Bestillinger uten fakturaadresse kan ikke faktureres.",
-    passwordUpdatedSuccessfully: "Passord oppdatert med suksess",
     apply: "Søke om",
     newCustomer: "Ny kunde",
     totalRevenue: "Totale inntekter",
