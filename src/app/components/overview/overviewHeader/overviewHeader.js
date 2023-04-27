@@ -350,7 +350,9 @@ export default function OverviewHeader(props) {
                           user.role[0] === GENERAL_USER) ||
                         ((props.tableRef === ordersListOverview ||
                           props.tableRef === productsListOverview ||
-                          props.tableRef === categoriesListOverview) &&
+                          props.tableRef === categoriesListOverview ||
+                          props.tableRef === subscriptionsListOverview ||
+                          props.tableRef === failedPaymentsListOverview) &&
                           user.role[0] === FP_ADMIN) ||
                         (props.tableRef === clientsListOverview &&
                           user.role[0] !== FP_ADMIN)
