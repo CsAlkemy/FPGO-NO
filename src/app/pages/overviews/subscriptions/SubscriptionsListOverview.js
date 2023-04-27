@@ -99,7 +99,7 @@ export default function SubscriptionsListOverview() {
     {
       uuid : "UUID0001",
       date : "12.08.2022",
-      id : "3852300",
+      id : "3852300", //From table body, sending id as uuid, need to set uuid as id at api res or change the row.id to row.uuid
       name : "Gudmund Tharaldson",
       countryCode : "+47",
       msisdn : "990 65 708",

@@ -72,6 +72,7 @@ const CreateSubscription = () => {
   const [createQuickOrder, response] = useCreateQuickOrderMutation();
   const [customerType, setCustomerType] = useState();
   const [isEdit, setIsEdit] = useState(false);
+  const [sendOrderBy, setSendOrderBy] = useState("sms");
 
   let subTotal = 0;
   let totalTax = 0;
@@ -255,6 +256,7 @@ const CreateSubscription = () => {
         grandTotal,
       },
       customers: val,
+      sendOrderBy
     });
     createQuickOrder(data).then((response) => {
       setLoading(false);
@@ -1296,13 +1298,15 @@ const CreateSubscription = () => {
                 <div className="flex gap-20 w-full md:w-3/4 my-32">
                   <Button
                     variant="outlined"
-                    className="create-order-capsule-button-active"
-                    // onClick={() => {
-                    //   setCustomData({
-                    //     ...customData,
-                    //     isCeditCheck: true,
-                    //   });
-                    // }}
+                    // className="create-order-capsule-button-active"
+                    className={`${
+                      sendOrderBy === "sms"
+                        ? "create-order-capsule-button-active"
+                        : "create-order-capsule-button"
+                    }`}
+                    onClick={() => {
+                      setSendOrderBy("sms")
+                    }}
                     // disabled={
                     //   !(
                     //     (customData.orderBy === "sms" ||
@@ -1315,13 +1319,15 @@ const CreateSubscription = () => {
                   </Button>
                   <Button
                     variant="outlined"
-                    className="create-order-capsule-button"
-                    // onClick={() => {
-                    //   setCustomData({
-                    //     ...customData,
-                    //     isCeditCheck: false,
-                    //   });
-                    // }}
+                    // className="create-order-capsule-button"
+                    className={`${
+                      sendOrderBy === "email"
+                        ? "create-order-capsule-button-active"
+                        : "create-order-capsule-button"
+                    }`}
+                    onClick={() => {
+                      setSendOrderBy("email")
+                    }}
                   >
                     {t("label:email")}
                   </Button>
