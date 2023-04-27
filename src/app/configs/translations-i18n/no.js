@@ -396,7 +396,6 @@ const no = {
     norwegian: "Norsk",
     sendOrderByDetailsMessage:
       "Sending via SMS eller faktura medfører en ekstra kostnad for hver bestilling. Bestillinger uten fakturaadresse kan ikke faktureres.",
-    passwordUpdatedSuccessfully: "Passord oppdatert med suksess",
     apply: "Søke om",
     newCustomer: "Ny kunde",
     totalRevenue: "Totale inntekter",

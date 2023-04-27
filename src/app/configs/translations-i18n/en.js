@@ -417,7 +417,6 @@ const en = {
       "Your account has been created but it’s currently under review. You will receive an email once your account has been activated.",
     english: "English",
     norwegian: "Norwegian",
-    passwordUpdatedSuccessfully: "Password Updated Successfully",
     days: "days",
     orderInformation: "Order Information",
     orderLog: "Order Log",
