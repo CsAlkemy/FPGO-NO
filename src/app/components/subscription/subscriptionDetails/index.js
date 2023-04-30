@@ -18,7 +18,7 @@ import SubscriptionInformation from "./subscriptionInformation";
 const OrderLog = lazy(() => import("./subscriptionLog"));
 const OrderReceipt = lazy(() => import("./subscriptionReceipt"));
 
-const createOrder = () => {
+const subscriptionDetails = () => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("2");
@@ -250,4 +250,4 @@ const createOrder = () => {
   );
 };
 
-export default createOrder;
+export default subscriptionDetails;

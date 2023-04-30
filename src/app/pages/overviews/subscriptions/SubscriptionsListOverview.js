@@ -97,7 +97,7 @@ export default function SubscriptionsListOverview() {
   // const preparedData = data?.is_data ?  SubscriptionsService.mapSubscriptionsList(data.data) : []
   const preparedData = SubscriptionsService.mapSubscriptionsList([
     {
-      uuid : "UUID0001",
+      uuid : "ODR4238196457",
       date : "12.08.2022",
       id : "3852300", //From table body, sending id as uuid, need to set uuid as id at api res or change the row.id to row.uuid
       name : "Gudmund Tharaldson",
@@ -110,7 +110,7 @@ export default function SubscriptionsListOverview() {
       translationKey : "sent"
     },
     {
-      uuid : "UUID0002",
+      uuid : "ODR4238196457",
       date : "12.08.2022",
       id : "3725688",
       name : "Norske Skogindustrier ASA",
@@ -123,7 +123,7 @@ export default function SubscriptionsListOverview() {
       translationKey : "completed"
     },
     {
-      uuid : "UUID0003",
+      uuid : "ODR4238196457",
       date : "12.08.2022",
       id : "4896116",
       name : "Norske ConocoPhillips AS",
@@ -136,7 +136,7 @@ export default function SubscriptionsListOverview() {
       translationKey : "onGoing"
     },
     {
-      uuid : "UUID0004",
+      uuid : "ODR4238196457",
       date : "12.08.2022",
       id : "4233735",
       name : "Trond Hoyland",
@@ -149,7 +149,7 @@ export default function SubscriptionsListOverview() {
       translationKey : "cancelled"
     },
     {
-      uuid : "UUID0005",
+      uuid : "ODR4238196457",
       date : "12.08.2022",
       id : "3146789",
       name : "ConocoPhillips Norge",

@@ -829,6 +829,12 @@ export default function OverviewMainTable(props) {
       case ordersListOverview:
         navigate(`/create-order/details/${info.uuid}`);
         break;
+      case subscriptionsListOverview:
+        navigate(`/subscription/details/${info.uuid}`);
+        break;
+      case failedPaymentsListOverview:
+        navigate(`/subscription/details/${info.uuid}`);
+        break;
     }
   };
 
@@ -936,7 +942,9 @@ export default function OverviewMainTable(props) {
                       onClick={() => {
                         if (
                           props.tableName !== ordersListOverview &&
-                          props.tableName !== customerOrdersListOverview
+                          props.tableName !== customerOrdersListOverview &&
+                          props.tableName !== subscriptionsListOverview &&
+                          props.tableName !== failedPaymentsListOverview
                         )
                           handleTableRowClick(row);
                       }}
@@ -1057,7 +1065,9 @@ export default function OverviewMainTable(props) {
                                   props.tableName !== ordersListOverview &&
                                   props.tableName !==
                                     customerOrdersListOverview &&
-                                  props.tableName !== refundRequestsOverview
+                                  props.tableName !== refundRequestsOverview &&
+                                  props.tableName !== subscriptionsListOverview &&
+                                  props.tableName !== failedPaymentsListOverview
                                 )
                                   handleTableRowClick(row);
                               }}
