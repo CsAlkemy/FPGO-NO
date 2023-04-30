@@ -32,7 +32,8 @@ import {
   useRefundRequestDecisionMutation,
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
-  useCompleteReservationMutation
+  useCompleteReservationMutation,
+  useCapturePaymentMutation
 } from "app/store/api/apiSlice";
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
@@ -68,6 +69,7 @@ const OrderModal = (props) => {
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
   const [completeReservation] = useCompleteReservationMutation();
+  const [capturePayment] = useCapturePaymentMutation();
 
   const newString = flagMessage.split(":");
 
@@ -270,6 +272,13 @@ const OrderModal = (props) => {
         }, 1000);
         setApiLoading(false);
       });
+    } else if(headerTitle === "Capture Payment") {
+      setApiLoading(true);
+      capturePayment({ ...data, isPartial: refundType === "partial" })
+      .then((response) => {
+        console.log(response?.data)
+        setApiLoading(false);
+      });
     }
   };
   const headerTitleText =
@@ -432,7 +441,7 @@ const OrderModal = (props) => {
                           }`}
                           onClick={ setFullAmount }
                         >
-                          {t("label:fullRefund")}
+                          {(headerTitle === "Capture Payment") ? t("label:fullPayment") : t("label:fullRefund")}
                         </Button>
                         <Button
                           variant="outlined"
@@ -446,7 +455,7 @@ const OrderModal = (props) => {
                             setValue("refundAmount", "");
                           }}
                         >
-                          {t("label:partialRefund")}
+                          {(headerTitle === "Capture Payment") ? t("label:partialPayment") : t("label:partialRefund")}
                         </Button>
                       </div>
                       <Controller

@@ -422,6 +422,18 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["ReservationList"]
     }),
+    capturePayment: builder.mutation({
+      query: (payload) => ({
+        url: `/payment/capture/${payload.uuid}`,
+        method: "POST",
+        body: {
+          isPartial: payload.isPartial,
+          amount: parseFloat(payload.refundAmount),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
   }),
 });
 
@@ -471,5 +483,6 @@ export const {
   useOrderExportToApticQuery,
   useCreateReservationMutation,
   useGetReservationListQuery,
-  useCompleteReservationMutation
+  useCompleteReservationMutation,
+  useCapturePaymentMutation
 } = apiSlice;
