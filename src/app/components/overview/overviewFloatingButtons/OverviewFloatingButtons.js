@@ -192,7 +192,7 @@ export default function OverviewFloatingButtons(props) {
       {/*</Select>*/}
       {props.tableRef === ordersListOverview && (
         <div className="button2">
-          {/* <Button
+          <Button
             color="secondary"
             variant="outlined"
             aria-haspopup="true"
@@ -203,7 +203,7 @@ export default function OverviewFloatingButtons(props) {
             disabled={!exportTableData}
           >
             {t("label:export")}
-          </Button>*/}
+          </Button>
         </div>
       )}
       {props.tableRef === customersListOverview ? (
