@@ -42,6 +42,8 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import FuseUtils from "@fuse/utils";
 import { Cancel } from "@mui/icons-material";
+import { countryList } from "src/app/utils/countries";
+import { Box } from "@mui/system";
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -71,7 +73,6 @@ const createProducts = () => {
   let grandTotal = 0;
 
   let defaultTaxValue;
-
   const addNewOrder = () => {
     // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
     setItemLoader(true);
@@ -506,7 +507,54 @@ const createProducts = () => {
               </div>
             </div>
             <div className="p-10 md:p-20">
-              <Controller
+              <div className="flex justify-center items-center">
+                <Controller
+                  control={control}
+                  name='countrySwitcher'
+                  render={({ field: { onChange, value, onBlur, ref } }) => (
+                    <Autocomplete
+                      id="country-select-demo"
+                      sx={{ width: 130 }}
+                      options={countryList}
+                      autoHighlight
+                      onChange={(event, newValue) => {
+                        onChange(newValue?.phone);
+                        setSearchCustomerPrefixCountryCode(`+ ${newValue?.phone}`);
+                      }}
+                      disableClearable = {true}
+                      getOptionLabel={(option) => `+` + option["phone"]}
+                      defaultValue={{ code: "NO", label: "Norway", phone: "47" }}
+                      renderOption={(props, option) => (
+                        <Box
+                          component="li"
+                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                          {...props}
+                        >
+                          <img
+                            loading="lazy"
+                            width="20"
+                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                            alt=""
+                          />
+                          +{option.phone}
+                        </Box>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          variant="outlined"
+                          className="mt-10 w-full"
+                          type="text"
+                          onBlur={onBlur}
+                          inputRef={ref}
+                        />
+                      )}
+                    />
+                  )}
+                />
+                <Controller
                 control={control}
                 name="searchCustomer"
                 render={({ field: { ref, onChange, ...field } }) => (
@@ -609,14 +657,14 @@ const createProducts = () => {
                         }
                         className="mt-10 w-full sm:w-2/4"
                         placeholder={t("label:searchCustomersByPhoneNo")}
-                        InputProps={{
-                          ...params.InputProps,
-                          startAdornment: (
-                            <div>
-                              {searchCustomerPrefixCountryCode}
-                            </div>
-                          ),
-                        }}
+                        // InputProps={{
+                        //   ...params.InputProps,
+                        //   startAdornment: (
+                        //     <div>
+                        //       {searchCustomerPrefixCountryCode}
+                        //     </div>
+                        //   ),
+                        // }}
                       />
                     )}
                   />
@@ -673,6 +721,9 @@ const createProducts = () => {
                   // />
                 )}
               />
+              </div>
+            
+              
               <div className="flex gap-5 m-5 items-center">
                 <InfoIcon className="text-primary-500 h-[15px] w-[15px]" />
                 <span className="body4 text-m-grey-500">
@@ -1724,7 +1775,7 @@ const createProducts = () => {
                 <Button
                   color="secondary"
                   variant="contained"
-                  className="bg-white text-MonochromeGray-700 button2 shadow-5 "
+                  className="bg-white text-MonochromeGray-700 button2  shadow-1"
                   onClick={() => setOpen(true)}
                   startIcon={<Cancel className="text-red-500" />}
                 >
@@ -1734,7 +1785,7 @@ const createProducts = () => {
                   color="secondary"
                   variant="contained"
                   type="submit"
-                  className="rounded-full bg-primary-500 button2 py-5"
+                  className="rounded-full bg-primary-500 button2 py-5  shadow-1"
                   disabled={!isValid || val.length === 0 || !watchRate}
                   sx={{
                     "&.Mui-disabled": {

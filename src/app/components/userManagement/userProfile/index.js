@@ -34,6 +34,8 @@ const index = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+
 
   React.useEffect(() => {
     if (isLoading) {
@@ -134,7 +136,7 @@ const index = () => {
                         color="secondary"
                         type="submit"
                         variant="contained"
-                        disabled={!isDirty}
+                        disabled={!isDirty || !isValid}
                         className={`font-semibold rounded-4 px-40 ${
                           role === 0 ? "w-auto" : "w-full"
                         }`}
@@ -153,6 +155,7 @@ const index = () => {
                     {role === 0 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
+                        setIsValid= {setIsValid}
                         submitRef={submitRef}
                         role={0}
                         userProfile={userProfile}
@@ -161,6 +164,7 @@ const index = () => {
                     {role === 1 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
+                        setIsValid= {setIsValid}
                         submitRef={submitRef}
                         role={1}
                         userProfile={userProfile}
@@ -169,6 +173,7 @@ const index = () => {
                     {role === 2 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
+                        setIsValid= {setIsValid}
                         submitRef={submitRef}
                         role={2}
                         userProfile={userProfile}
@@ -177,6 +182,7 @@ const index = () => {
                     {role === 3 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
+                        setIsValid= {setIsValid}
                         submitRef={submitRef}
                         role={3}
                         userProfile={userProfile}
@@ -185,6 +191,7 @@ const index = () => {
                     {role === 4 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
+                        setIsValid= {setIsValid}
                         submitRef={submitRef}
                         role={4}
                         userProfile={userProfile}
@@ -193,6 +200,7 @@ const index = () => {
                     {role === 5 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
+                        setIsValid= {setIsValid}
                         submitRef={submitRef}
                         role={5}
                         userProfile={userProfile}
