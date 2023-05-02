@@ -252,7 +252,7 @@ const createProducts = () => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN || !isDirty}
+                      disabled={user.role[0] === FP_ADMIN || !isDirty || !isValid }
                       loadingPosition="center"
                     >
                       {t("label:updateProduct")}

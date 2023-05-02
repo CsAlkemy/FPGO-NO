@@ -829,7 +829,7 @@ const ClientDetails = () => {
                       disabled={
                         !isDirty &&
                         sameAddress === initialSameAddressRef &&
-                        initialIsPurchasable === customApticInfoData
+                        initialIsPurchasable === customApticInfoData || !isValid
                       }
                     >
                       {t("label:update")}

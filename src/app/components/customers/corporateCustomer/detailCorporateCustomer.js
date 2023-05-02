@@ -538,7 +538,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                       loading={loading}
                       disabled={
                         user.role[0] === FP_ADMIN ||
-                        (!isDirty && sameAddress === initialSameAddressRef)
+                        (!isDirty && sameAddress === initialSameAddressRef) || !isValid
                       }
                       loadingPosition="center"
                     >
