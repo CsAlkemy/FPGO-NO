@@ -21,6 +21,7 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
+  reservationListOverview
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -87,6 +88,9 @@ export default function OverviewHeader(props) {
         break;
       case ordersListOverview:
         navigate(`/create-order`);
+        break;
+      case reservationListOverview:
+        navigate(`/create-reservations`);
         break;
     }
     setAnchorEl(event.currentTarget);
@@ -164,6 +168,8 @@ export default function OverviewHeader(props) {
         return t("label:searchByProductNameAndID");
       case categoriesListOverview:
         return t("label:searchByCategoryNameAndID");
+      case reservationListOverview:
+        return t("label:searchByReservationIDNameOrPhoneNo");
       default:
         return t("label:searchByNameEmailPhoneNo");
     }
