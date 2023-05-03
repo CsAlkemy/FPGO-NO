@@ -4,6 +4,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 import UTurnLeftIcon from "@mui/icons-material/UTurnLeft";
 import CancelIcon from '@mui/icons-material/Cancel';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import OrderModal from '../../order/popupModal/orderModal';
 import {
     DesktopDatePicker,
     DesktopDateTimePicker,
@@ -45,8 +46,40 @@ const ReservationDetails = () => {
     const queryParams = useParams();
     const user = useSelector(selectUser);
 
+    const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [headerTitle, setHeaderTitle] = useState();
+    const [amountBank, setAmountBank] = useState(null);
+    const [remainingAmount, setRemainingAmount] = useState(null);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+
+    const handleModalOpen = (decision) => {
+        setOpen(true);
+        setAnchorEl(null);
+        setRemainingAmount(null);
+        setAmountBank(null);
+        
+        if(decision === "resendReservations") setHeaderTitle("Resend Reservation");
+        if (decision === "cancelReservation") setHeaderTitle("Cancel Reservation");
+        if (decision === "chargeFromCard") {
+            setHeaderTitle("Charge Amount");
+            //setAmountBank(data.amountInBank);
+        }
+        if (decision === "capturePayments") { 
+            setHeaderTitle("Capture Payment");
+            //setRemainingAmount(data.remainingAmount);
+        }
+        if (decision === "refundReservation") {
+            setHeaderTitle("Refund from Reservation");
+            //setAmountBank(data.amountInBank);
+        }
+        if (decision === "completeReservation") {
+            setHeaderTitle("Complete Reservation");
+            //setAmountBank(data.amountInBank);
+        }
     };
 
     useEffect(() => {
@@ -55,6 +88,7 @@ const ReservationDetails = () => {
         .then((res) => {
           let info = res?.data;
           //info.status = 'completed';
+          //info.status = 'paid';
           //info.isPaid = true;
           
           setInfo(info);
@@ -116,7 +150,7 @@ const ReservationDetails = () => {
                                 variant="outlined"
                                 className="button-outline-product text-MonochromeGray-700"
                                 startIcon={<CancelIcon style={{fill: "#F36562"}} />}
-                                onClick={() => setOpen(true)}
+                                onClick={() => handleModalOpen('cancelReservation') }
                             >
                                 {t("label:cancelReservation")}
                             </Button>
@@ -131,6 +165,7 @@ const ReservationDetails = () => {
                                 startIcon={<RedoIcon />}
                                 loading={isLoading}
                                 loadingPosition="center"
+                                onClick={() => { handleModalOpen('resendReservations') }}
                             >
                                 {t("label:resend")}
                             </LoadingButton>
@@ -144,7 +179,7 @@ const ReservationDetails = () => {
                                 startIcon={
                                     <DoneAllIcon className="" />
                                 }
-                                //onClick={() => handleResendRefundOrder()}
+                                onClick={() => handleModalOpen('completeReservation') }
                             >
                                 {t("label:complete")}
                             </Button>
@@ -159,7 +194,7 @@ const ReservationDetails = () => {
                                 startIcon={
                                     <UTurnLeftIcon className="rotate-90" />
                                 }
-                                //onClick={() => handleResendRefundOrder()}
+                                onClick={() => handleModalOpen('refundReservation') }
                             >
                                 {t("label:refund")}
                             </Button>
@@ -183,19 +218,19 @@ const ReservationDetails = () => {
                                 allowScrollButtonsMobile
                             >
                                 <Tab 
-                                    label={ t("label:orderLog") } 
+                                    label={ t("label:reservationLog") } 
                                     className="subtitle3" 
                                     value="1" 
                                 />
                                 <Tab
-                                    label={ t("label:orderInformation") }
+                                    label={ t("label:reservationDetails") }
                                     className="subtitle3"
                                     value="2"
                                 />
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                            <ReservationLog info={info} />
+                            <ReservationLog info={info} handleActionModal={handleModalOpen} />
                         </TabPanel>
                         <TabPanel value="2" className="py-32 px-0">
                             <ReservationInformation info={info} />
@@ -211,7 +246,7 @@ const ReservationDetails = () => {
                         variant="outlined"
                         className="bg-white text-MonochromeGray-700 button2 shadow-5 border-0"
                         startIcon={<CancelIcon style={{fill: "#F36562"}} />}
-                        onClick={() => setOpen(true)}
+                        onClick={() => handleModalOpen('cancelReservation') }
                     >
                         {t("label:cancel")}
                     </Button>
@@ -226,6 +261,7 @@ const ReservationDetails = () => {
                         startIcon={<RedoIcon />}
                         loading={isLoading}
                         loadingPosition="center"
+                        onClick={() => { handleModalOpen('resendReservations') }}
                     >
                         {t("label:resend")}
                     </LoadingButton>
@@ -239,7 +275,7 @@ const ReservationDetails = () => {
                         startIcon={
                             <DoneAllIcon className="" />
                         }
-                        //onClick={() => handleResendRefundOrder()}
+                        onClick={() => handleModalOpen('completeReservation') }
                     >
                         {t("label:complete")}
                     </Button>
@@ -254,13 +290,25 @@ const ReservationDetails = () => {
                         startIcon={
                             <UTurnLeftIcon className="rotate-90" />
                         }
-                        //onClick={() => handleResendRefundOrder()}
+                        onClick={() => handleModalOpen('refundReservation') }
                     >
                         {t("label:refund")}
                     </Button>
                     )}
                 </div>
                 </Hidden>
+                <OrderModal
+                    open={open}
+                    setOpen={setOpen}
+                    headerTitle={headerTitle}
+                    orderId={info.orderUuid}
+                    orderName={info.customerDetails.name}
+                    //orderAmount={data.reservedAmount}
+                    customerPhone={info.customerDetails.msisdn}
+                    customerEmail={info.customerDetails.email}
+                    //amountInBank={amountBank}
+                    //remainingAmount={remainingAmount}
+                />
             </div>
         )}
         </>

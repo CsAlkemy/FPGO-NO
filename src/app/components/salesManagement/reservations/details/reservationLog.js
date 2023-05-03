@@ -19,9 +19,12 @@ import RefundIcon from "../../../../icons/RefundReservation";
 import ChargeCardIcon from "../../../../icons/ChargeFromCard";
 import CapturePaymentIcon from "../../../../icons/CapturePayment";
 import RedoIcon from '@mui/icons-material/Redo';
+import UndoIcon from '@mui/icons-material/Undo';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 import {CharCont} from "../../../../utils/helperFunctions";
 
-const ReservationLog = ({ info }) => {
+const ReservationLog = ({ info }, {handleModal}) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
@@ -239,21 +242,22 @@ const ReservationLog = ({ info }) => {
                         //color="secondary"
                         variant="outlined"
                         className="body2 action-button button2"
-                        startIcon={<ChargeCardIcon fillColor="#50C9B1" />}
+                        startIcon={<CreditCardIcon style={{color: '#50C9B1'}} />}
+                        //onClick={() => handleModal('refundReservation') }
                     >
                         {t("label:chargeFromCard")}
                     </Button>
                     <Button
                         variant="outlined"
                         className="body2 action-button button2"
-                        startIcon={<CapturePaymentIcon fillColor="#68C7E7" />}
+                        startIcon={<PaymentsIcon style={{color: '#68C7E7'}} />}
                     >
                         {t("label:capturePayment")}
                     </Button>
                     <Button
                         variant="outlined"
                         className="body2 action-button button2"
-                        startIcon={<RefundIcon fillColor="#0088AE" />}
+                        startIcon={<UndoIcon style={{color: '#0088AE'}} />}
                     >
                         {t("label:refundFromReservation")}
                     </Button>
