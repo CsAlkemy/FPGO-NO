@@ -33,28 +33,11 @@ export const setUser = createAsyncThunk(
             },
             {
               id: "sales",
-              title: "Sales",
+              title: "Orders",
               translate: "sales",
-              type: "collapse",
+              type: "item",
               icon: "material-outline:receipt_long",
-              children: [
-                {
-                  id: "orders",
-                  title: "Orders",
-                  translate: 'orders',
-                  type: "item",
-                  icon: "material-solid:fiber_manual_record",
-                  url: "/sales/orders-list",
-                },
-                {
-                  id: "reservations",
-                  title: "Reservations",
-                  translate: 'reservations',
-                  type: "item",
-                  icon: "material-solid:fiber_manual_record",
-                  url: "/reservations",
-                },
-              ]
+              url: "/sales/orders-list",
             },
             {
               id: "clients",
@@ -163,28 +146,11 @@ export const setUser = createAsyncThunk(
             },
             {
               id: "sales",
-              title: "Sales",
+              title: "Orders",
               translate: "sales",
-              type: "collapse",
+              type: "item",
               icon: "material-outline:receipt_long",
-              children: [
-                {
-                  id: "orders",
-                  title: "Orders",
-                  translate: 'orders',
-                  type: "item",
-                  icon: "material-solid:fiber_manual_record",
-                  url: "/sales/orders-list",
-                },
-                {
-                  id: "reservations",
-                  title: "Reservations",
-                  translate: 'reservations',
-                  type: "item",
-                  icon: "material-solid:fiber_manual_record",
-                  url: "/reservations",
-                },
-              ]
+              url: "/sales/orders-list",
             },
             {
               id: "customers",
@@ -252,28 +218,11 @@ export const setUser = createAsyncThunk(
             // },
             {
               id: "sales",
-              title: "Sales",
+              title: "Orders",
               translate: "sales",
-              type: "collapse",
+              type: "item",
               icon: "material-outline:receipt_long",
-              children: [
-                {
-                  id: "orders",
-                  title: "Orders",
-                  translate: 'orders',
-                  type: "item",
-                  icon: "material-solid:fiber_manual_record",
-                  url: "/sales/orders-list",
-                },
-                {
-                  id: "reservations",
-                  title: "Reservations",
-                  translate: 'reservations',
-                  type: "item",
-                  icon: "material-solid:fiber_manual_record",
-                  url: "/reservations",
-                },
-              ]
+              url: "/sales/orders-list",
             },
             {
               id: "customers",

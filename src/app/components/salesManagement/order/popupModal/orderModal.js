@@ -22,8 +22,6 @@ import {
   validateSchemaOrderCancelModal,
   validateSchemaOrderRefundModal,
   validateSchemaOrderResendModal,
-  validateSchemaCompleteReservationModal,
-  validateSchemaReservationCaptureCardModal
 } from "../../utils/helper";
 import { useTranslation } from "react-i18next";
 import {
@@ -32,14 +30,12 @@ import {
   useRefundRequestDecisionMutation,
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
-  useCompleteReservationMutation,
-  useCapturePaymentMutation
 } from "app/store/api/apiSlice";
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
-import _, { head } from "lodash";
+import _ from "lodash";
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -52,8 +48,6 @@ const OrderModal = (props) => {
     orderAmount,
     customerPhone,
     customerEmail,
-    amountInBank = null,
-    remainingAmount = null
   } = props;
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
@@ -68,8 +62,6 @@ const OrderModal = (props) => {
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
-  const [completeReservation] = useCompleteReservationMutation();
-  const [capturePayment] = useCapturePaymentMutation();
 
   const newString = flagMessage.split(":");
 
@@ -96,13 +88,10 @@ const OrderModal = (props) => {
     mode: "onChange",
     OrderModalDefaultValue,
     resolver: yupResolver(
-      (["Resend Order", "Resend Reservation"].includes(headerTitle))
+      headerTitle === "Resend Order"
         ? validateSchemaOrderResendModal
-        : headerTitle === "Complete Reservation" 
-        ? validateSchemaCompleteReservationModal 
-        : headerTitle === "Charge Amount" 
-        ? validateSchemaReservationCaptureCardModal
-        : (["Cancel Order", "Reject Refund Request", "Cancel Reservation"].includes(headerTitle))
+        : headerTitle === "Cancel Order" ||
+          headerTitle === "Reject Refund Request"
         ? validateSchemaOrderCancelModal
         : flag
         ? validateSchemaMoreThanFiveThousand
@@ -116,12 +105,6 @@ const OrderModal = (props) => {
     OrderModalDefaultValue.email = customerEmail ? customerEmail : "";
     reset({ ...OrderModalDefaultValue });
   }, []);
-
-  const setFullAmount = () => {
-      setRefundType("full");
-      let amount = (headerTitle === "Capture Payment") ? remainingAmount : (headerTitle === "Refund from Reservation") ? amountInBank : orderAmount;
-      setValue("refundAmount", amount);
-  }
 
   const onSubmit = (values) => {
     const data = {
@@ -154,7 +137,7 @@ const OrderModal = (props) => {
         setFlag(false);
         setApiLoading(false);
       });
-    } else if (["Resend Order", "Resend Reservation"].includes(headerTitle)) {
+    } else if (headerTitle === "Resend Order") {
       setApiLoading(true);
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
@@ -167,17 +150,15 @@ const OrderModal = (props) => {
           enqueueSnackbar(t(`message:${res?.error?.data?.message}`), {
             variant: "error",
           });
-        if (window.location.pathname === `/create-order/details/${orderId}`)
+        if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
-        else if (window.location.pathname === `/reservations-details/${orderId}`)
-          navigate('/reservations');
         // else window.location.reload();
         setTimeout(() => {
           setOpen(false);
         }, 1000);
         setApiLoading(false);
       });
-    } else if (["Cancel Order", "Cancel Reservation"].includes(headerTitle)) {
+    } else if (headerTitle === "Cancel Order") {
       setApiLoading(true);
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
@@ -186,17 +167,18 @@ const OrderModal = (props) => {
           });
           // setApiLoading(false);
         }
-        if (window.location.pathname === `/create-order/details/${orderId}`)
+        if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
-        else if (window.location.pathname === `/reservations-details/${orderId}`)
-          navigate('/reservations');
         // else window.location.reload();
         setTimeout(() => {
           setOpen(false);
         }, 1000);
         setApiLoading(false);
       });
-    } else if (["Send Refund", "Refund Order", "Refund from Reservation"].includes(headerTitle) ) {
+    } else if (
+      headerTitle === "Send Refund" ||
+      headerTitle === "Refund Order"
+    ) {
       setApiLoading(true);
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
@@ -205,10 +187,9 @@ const OrderModal = (props) => {
               variant: "success",
             });
             setOpen(false);
-            if (window.location.pathname === `/create-order/details/${orderId}`)
-              navigate(`/sales/orders-list`);
-            else if (window.location.pathname === `/reservations-details/${orderId}`)
-              navigate('/reservations');
+            window.location.pathname.includes("/create-order/details/")
+              ? navigate(-1)
+              : "";
             // setApiLoading(false);
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
@@ -257,28 +238,6 @@ const OrderModal = (props) => {
         setFlag(false);
         setApiLoading(false);
       });
-    } else if (["Complete Reservation"].includes(headerTitle)) {
-      setApiLoading(true);
-      completeReservation(data).then((res) => {
-        if (res?.data?.status_code === 202) {
-          enqueueSnackbar(t(`message:${res?.data?.message}`), {
-            variant: "success",
-          });
-        }
-        if (window.location.pathname === `/reservations-details/${orderId}`)
-          navigate('/reservations');
-        setTimeout(() => {
-          setOpen(false);
-        }, 1000);
-        setApiLoading(false);
-      });
-    } else if(headerTitle === "Capture Payment") {
-      setApiLoading(true);
-      capturePayment({ ...data, isPartial: refundType === "partial" })
-      .then((response) => {
-        console.log(response?.data)
-        setApiLoading(false);
-      });
     }
   };
   const headerTitleText =
@@ -319,26 +278,14 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
-
-              {(amountInBank || remainingAmount) && (
-                <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
-                  <div className="text-MonochromeGray-700">
-                    {amountInBank ? t("label:amountInBank") : t("label:remainingAmount") }
-                  </div>
-                  <div className="text-MonochromeGray-700">
-                    {t("label:nok")}{" "}
-                    {amountInBank ? ThousandSeparator(amountInBank) : ThousandSeparator(remainingAmount) }
-                  </div>
-                </div>
-              )}
-
               <form
                 name="modalForm"
                 noValidate
                 onSubmit={handleSubmit(onSubmit)}
                 className="pt-32"
               >
-                {(["Cancel Order", "Reject Refund Request", "Cancel Reservation", "Complete Reservation"].includes(headerTitle)) && (
+                {(headerTitle === "Cancel Order" ||
+                  headerTitle === "Reject Refund Request") && (
                   <div>
                     <Controller
                       name="cancellationNote"
@@ -351,8 +298,7 @@ const OrderModal = (props) => {
                           label={t(
                             headerTitle === "Reject Refund Request"
                               ? "label:rejectionNote"
-                              : headerTitle === "Complete Reservation" 
-                              ? "label:completionNote" : "label:cancellationNote"
+                              : "label:cancellationNote"
                           )}
                           type="text"
                           autoComplete="off"
@@ -370,7 +316,7 @@ const OrderModal = (props) => {
                     />
                   </div>
                 )}
-                {(["Resend Order", "Resend Reservation"].includes(headerTitle)) && (
+                {headerTitle === "Resend Order" && (
                   <div className="flex flex-col gap-32">
                     <div className="flex justify-start items-center border-b-1 border-MonochromeGray-50 pb-20">
                       <Checkbox
@@ -427,7 +373,8 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
-                {(["Send Refund", "Refund Order", "Capture Payment", "Refund from Reservation"].includes(headerTitle)) &&
+                {(headerTitle === "Send Refund" ||
+                  headerTitle === "Refund Order") &&
                   !flag && (
                     <div>
                       <div className="caption2">{t("label:refundType")}</div>
@@ -439,9 +386,12 @@ const OrderModal = (props) => {
                               ? "create-order-capsule-button-active"
                               : "create-order-capsule-button"
                           }`}
-                          onClick={ setFullAmount }
+                          onClick={() => {
+                            setRefundType("full");
+                            setValue("refundAmount", orderAmount);
+                          }}
                         >
-                          {(headerTitle === "Capture Payment") ? t("label:fullPayment") : t("label:fullRefund")}
+                          {t("label:fullRefund")}
                         </Button>
                         <Button
                           variant="outlined"
@@ -455,7 +405,7 @@ const OrderModal = (props) => {
                             setValue("refundAmount", "");
                           }}
                         >
-                          {(headerTitle === "Capture Payment") ? t("label:partialPayment") : t("label:partialRefund")}
+                          {t("label:partialRefund")}
                         </Button>
                       </div>
                       <Controller
@@ -465,7 +415,7 @@ const OrderModal = (props) => {
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            label={(headerTitle === "Capture Payment") ? t("label:amount") : t("label:refundAmount")}
+                            label={t("label:refundAmount")}
                             type="number"
                             autoComplete="off"
                             variant="outlined"
@@ -492,35 +442,6 @@ const OrderModal = (props) => {
                 {/*    Further refunds have to be approved by the FP Admin.*/}
                 {/*  </div>*/}
                 {/*)}*/}
-                {(["Charge Amount"].includes(headerTitle)) && (
-                  <div>
-                    <Controller
-                        name="chargeAmount"
-                        className="mt-32"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:amount")}
-                            type="number"
-                            autoComplete="off"
-                            variant="outlined"
-                            error={!!errors.chargeAmount}
-                            helperText={errors?.chargeAmount?.message}
-                            fullWidth
-                            required
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        )}
-                      />
-                  </div>
-                )}
                 {flag && (
                   <div>
                     {t(`message:${newString[0]}`)} {newString[1] || ""}
@@ -545,7 +466,7 @@ const OrderModal = (props) => {
                     loadingPosition="center"
                     disabled={
                       isDisableRefundRequest ||
-                      (["Resend Order", "Resend Reservation"].includes(headerTitle) &&
+                      (headerTitle === "Resend Order" &&
                         checkEmail === false &&
                         checkPhone === false)
                     }

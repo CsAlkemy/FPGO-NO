@@ -92,8 +92,7 @@ export const apiSlice = createApi({
     "ClientOrganizationsSummaryList",
     "ApprovedClientsList",
     "ApprovalClientsList",
-    "RefundRequestsList",
-    "ReservationList"
+    "RefundRequestsList"
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -118,7 +117,7 @@ export const apiSlice = createApi({
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
-        result ? ["OrdersList", "ReservationList"] : [""],
+        result ? ["OrdersList"] : [""],
     }),
     resendOrder: builder.mutation({
       query: (payload) => ({
@@ -130,7 +129,7 @@ export const apiSlice = createApi({
           email: payload.email,
         },
       }),
-      invalidatesTags: ["OrdersList", "ReservationList"],
+      invalidatesTags: ["OrdersList"],
     }),
     cancelOrder: builder.mutation({
       query: (payload) => ({
@@ -142,7 +141,7 @@ export const apiSlice = createApi({
             : null,
         },
       }),
-      invalidatesTags: ["OrdersList", "ReservationList"],
+      invalidatesTags: ["OrdersList"],
     }),
     getCustomersList: builder.query({
       query: () => "/customers/list",
@@ -398,42 +397,6 @@ export const apiSlice = createApi({
       query: (uuid) => `/orders/export/aptic/${uuid}`,
       providesTags: ["OrdersList"],
     }),
-    createReservation: builder.mutation({
-      query: (payload) => ({
-        url: "/reservations/submit",
-        method: "POST",
-        body: payload,
-      }),
-      invalidatesTags: ["ReservationList"],
-    }),
-    getReservationList: builder.query({
-      query: () => "/reservations/list",
-      providesTags: ["ReservationList"],
-    }),
-    completeReservation: builder.mutation({
-      query: (payload) => ({
-        url: `/reservations/complete/${payload.uuid}`,
-        method: "PUT",
-        body: {
-          note: payload?.cancellationNote
-            ? payload.cancellationNote
-            : null,
-        },
-      }),
-      invalidatesTags: ["ReservationList"]
-    }),
-    capturePayment: builder.mutation({
-      query: (payload) => ({
-        url: `/payment/capture/${payload.uuid}`,
-        method: "POST",
-        body: {
-          isPartial: payload.isPartial,
-          amount: parseFloat(payload.refundAmount),
-        },
-      }),
-      invalidatesTags: (result, error, arg, meta) =>
-        result ? ["ReservationList"] : [""],
-    }),
   }),
 });
 
@@ -481,8 +444,4 @@ export const {
   useCreateQuickOrderMutation,
   useUpdateQuickOrderCustomerMutation,
   useOrderExportToApticQuery,
-  useCreateReservationMutation,
-  useGetReservationListQuery,
-  useCompleteReservationMutation,
-  useCapturePaymentMutation
 } = apiSlice;

@@ -161,28 +161,3 @@ export const refundRequestsOverviewRowDataFields = [
   "approveAction",
   "cancel",
 ];
-
-export const reservationOverviewRowDataFields = [
-  "date",
-  "id", 
-  "customer",
-  "phone",
-  "reservedAmount",
-  "amountPaid",
-  "amountInBank",
-  "status",
-  "options"
-];
-
-export const reservationOverviewFPAdminRowDataFields = [
-  "date",
-  "id", 
-  "clientName",
-  "customer",
-  "phone",
-  "reservedAmount",
-  "amountPaid",
-  "amountInBank",
-  "status",
-  "options"
-];
