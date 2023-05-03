@@ -8,11 +8,11 @@ import {
   FormControl,
   FormHelperText,
   Hidden,
-  IconButton,
+  IconButton, InputAdornment,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
+  TextField
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -44,6 +44,7 @@ import FuseUtils from "@fuse/utils";
 import { Cancel } from "@mui/icons-material";
 import { countryList } from "src/app/utils/countries";
 import { Box } from "@mui/system";
+import EventIcon from "@mui/icons-material/Event";
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -58,6 +59,7 @@ const createProducts = () => {
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
   const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] = useState("+47");
+  const [searchCustomerPrefixCountry, setSearchCustomerPrefixCountry] = useState("NO");
   const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
     useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
@@ -172,7 +174,8 @@ const createProducts = () => {
                   country: row?.country,
                   searchString:
                   // row?.name + " ( " + row?.phone + " )" + row.uuid,
-                    row?.phone.toString().slice(3) + row.uuid,
+                  //   row?.phone.toString().slice(searchCustomerPrefixCountryCode.length) + row.uuid,
+                    row?.phone + row.uuid,
                 });
               });
           }
@@ -250,7 +253,7 @@ const createProducts = () => {
     setCustomerSearchBoxDropdownOpen(false);
     const searchByPhone =
       customersList.filter((customer) =>
-        customer.searchString.startsWith(e.target.value)
+        customer.searchString.startsWith(searchCustomerPrefixCountryCode+e.target.value)
       ) || [];
     // const searchByName =
     //   customersList.filter(
@@ -274,7 +277,7 @@ const createProducts = () => {
       : customersList
     );
     setCustomerSearchBy(searchByPhone.length ? "phone" : undefined);
-    setCustomerSearchBoxLength(e.target.value.length ? 3+e.target.value.length : e.target.value.length);
+    setCustomerSearchBoxLength(e.target.value.length ? searchCustomerPrefixCountryCode.length+e.target.value.length : e.target.value.length);
     setCustomerSearchBoxDropdownOpen(true);
   };
 
@@ -514,15 +517,17 @@ const createProducts = () => {
                   render={({ field: { onChange, value, onBlur, ref } }) => (
                     <Autocomplete
                       id="country-select-demo"
-                      sx={{ width: 130 }}
+                      sx={{ width: 300 }}
+                      // className={`sm:w-1/2`}
                       options={countryList}
                       autoHighlight
                       onChange={(event, newValue) => {
                         onChange(newValue?.phone);
-                        setSearchCustomerPrefixCountryCode(`+ ${newValue?.phone}`);
+                        setSearchCustomerPrefixCountryCode(`+${newValue?.phone}`);
+                        setSearchCustomerPrefixCountry(newValue?.code);
                       }}
                       disableClearable = {true}
-                      getOptionLabel={(option) => `+` + option["phone"]}
+                      getOptionLabel={(option) => `+${option.phone} `+ option.label}
                       defaultValue={{ code: "NO", label: "Norway", phone: "47" }}
                       renderOption={(props, option) => (
                         <Box
@@ -537,7 +542,7 @@ const createProducts = () => {
                             srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
                             alt=""
                           />
-                          +{option.phone}
+                          +{option.phone} {option.label}
                         </Box>
                       )}
                       renderInput={(params) => (
@@ -549,6 +554,22 @@ const createProducts = () => {
                           type="text"
                           onBlur={onBlur}
                           inputRef={ref}
+                          InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                              <InputAdornment
+                                position="start"
+                              >
+                                <img
+                                  loading="lazy"
+                                  width="28"
+                                  src={`https://flagcdn.com/w20/${searchCustomerPrefixCountry.toLowerCase()}.png`}
+                                  srcSet={`https://flagcdn.com/w40/${searchCustomerPrefixCountry.toLowerCase()}.png 2x`}
+                                  alt=""
+                                />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       )}
                     />
@@ -577,7 +598,7 @@ const createProducts = () => {
                       }
                     }}
                     onInputChange={(event, value) => {
-                      setNewCustomer(searchCustomerPrefixCountryCode+value);
+                      setNewCustomer(parseInt(searchCustomerPrefixCountryCode)+value);
                       if (value.length === 0) setCustomerSearchBy(undefined);
                     }}
                     onClose={() => setCustomerSearchBoxDropdownOpen(false)}
@@ -599,7 +620,7 @@ const createProducts = () => {
                               onClick={() => {
                                 setVal([
                                   ...val,
-                                  { name: "", phone: `${newCustomer}` },
+                                  { name: "", phone: newCustomer.toString().includes("+") ? `${newCustomer}` : `+${newCustomer}` },
                                 ]);
                                 setCustomerSearchBoxDropdownOpen(false);
                               }}
@@ -722,8 +743,8 @@ const createProducts = () => {
                 )}
               />
               </div>
-            
-              
+
+
               <div className="flex gap-5 m-5 items-center">
                 <InfoIcon className="text-primary-500 h-[15px] w-[15px]" />
                 <span className="body4 text-m-grey-500">
