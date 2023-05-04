@@ -9,10 +9,11 @@ import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { FP_ADMIN } from '../../../../../utils/user-roles/UserRoles';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from 'app/store/userSlice';
 import { useTranslation } from 'react-i18next';
 import { selectFuseCurrentSettings } from 'app/store/fuse/settingsSlice';
+import { navbarCloseMobile } from 'app/store/fuse/navbarSlice';
 
 const Root = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -43,6 +44,7 @@ function NavbarStyle1Content(props) {
   const navigate = useNavigate();
   const user = useSelector(selectUser)
   const { t } = useTranslation()
+  const dispatch = useDispatch();
 
   const settings = useSelector(selectFuseCurrentSettings);
   const { config } = settings.layout;
@@ -63,7 +65,10 @@ function NavbarStyle1Content(props) {
             color="secondary"
             variant="outlined"
             className="button-outline-product flex justify-center items-center custom-position-for-nav-button mt-20 mb-10"
-            onClick={()=> navigate(`/quick-order`)}
+              onClick={()=> {
+              navigate(`/quick-order`)
+              dispatch(navbarCloseMobile());
+            }}
             disabled={user.role[0] === FP_ADMIN}
           >
             {t("label:quickOrder")}

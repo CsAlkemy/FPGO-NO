@@ -257,7 +257,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                     type="submit"
                     disabled={
                       user.role[0] === FP_ADMIN ||
-                      (!isDirty && sameAddress === initialSameAddressRef)
+                      (!isDirty && sameAddress === initialSameAddressRef) || !isValid
                     }
                     loading={loading}
                     loadingPosition="center"
