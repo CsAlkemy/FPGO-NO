@@ -48,7 +48,7 @@ const paymentInformation = () => {
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
   const [isCreditChecked, setIsCreditChecked] = React.useState(false);
-  const [recheckSchema, setRecheckSchema] = React.useState(false)
+  const [recheckSchema, setRecheckSchema] = React.useState(false);
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -83,37 +83,43 @@ const paymentInformation = () => {
     },
   ]);
   let schema =
-  customData?.customerType === "private"
-    ? validateSchemaPaymentCheckout
-    : validateSchemaPaymentCheckoutCorporate;
-useEffect(() => {
-  schema =
-  customData?.customerType === "private"
+    customData?.customerType === "private"
       ? validateSchemaPaymentCheckout
       : validateSchemaPaymentCheckoutCorporate;
-  if (recheckSchema) {
-    if (customData?.customerType === "corporate") {
-      clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
-      setValue("orgIdOrPNumber", "", { shouldValidate: true });
-      setError("orgIdOrPNumber", { type: "focus" }, { shouldFocus: true });
-    } else {
-      setValue("orgIdOrPNumber", "", { shouldValidate: true });
-      clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
+  useEffect(() => {
+    schema =
+      customData?.customerType === "private"
+        ? validateSchemaPaymentCheckout
+        : validateSchemaPaymentCheckoutCorporate;
+    if (recheckSchema) {
+      if (customData?.customerType === "corporate") {
+        clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
+        setValue("orgIdOrPNumber", "", { shouldValidate: true });
+        setError("orgIdOrPNumber", { type: "focus" }, { shouldFocus: true });
+      } else {
+        setValue("orgIdOrPNumber", "", { shouldValidate: true });
+        clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
+      }
     }
-  }
-}, [customData?.customerType]);
+  }, [customData?.customerType]);
 
-  const { control, formState, handleSubmit, getValues, reset, watch,setValue, clearErrors, setError } = useForm(
-    {
-      mode: "onChange",
-      PaymentDefaultValue,
-      resolver: yupResolver(
-        customData.isCeditCheck
-          ? validateSchemaCreditCheckForCheckout
-          : schema
-      ),
-    }
-  );
+  const {
+    control,
+    formState,
+    handleSubmit,
+    getValues,
+    reset,
+    watch,
+    setValue,
+    clearErrors,
+    setError,
+  } = useForm({
+    mode: "onChange",
+    PaymentDefaultValue,
+    resolver: yupResolver(
+      customData.isCeditCheck ? validateSchemaCreditCheckForCheckout : schema
+    ),
+  });
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
@@ -276,6 +282,7 @@ useEffect(() => {
         setIsApproved(false);
         setCreditCheckMessage("Credit check was declined");
         setApiLoading(false);
+        setIsCreditChecked(false);
       }
     });
     setCustomData({
@@ -429,9 +436,12 @@ useEffect(() => {
                                       customerType: "private",
                                     });
                                     setRecheckSchema(true);
-
                                   }}
-                                  disabled = {orderDetails.type === 'REGULAR' && orderDetails?.customerDetails?.type ==='Corporate'}
+                                  disabled={
+                                    orderDetails.type === "REGULAR" &&
+                                    orderDetails?.customerDetails?.type ===
+                                      "Corporate"
+                                  }
                                   // disabled={
                                   //   orderDetails &&
                                   //   orderDetails?.customerDetails?.type ===
@@ -444,7 +454,7 @@ useEffect(() => {
                                 <Button
                                   variant="outlined"
                                   className={`body2 ${
-                                    customData?.customerType === "corporate" 
+                                    customData?.customerType === "corporate"
                                       ? "create-order-capsule-button-active"
                                       : "create-order-capsule-button"
                                   }`}
@@ -454,9 +464,12 @@ useEffect(() => {
                                       customerType: "corporate",
                                     });
                                     setRecheckSchema(true);
-
                                   }}
-                                  disabled = {orderDetails.type === 'REGULAR' && orderDetails?.customerDetails?.type ==='Private'}
+                                  disabled={
+                                    orderDetails.type === "REGULAR" &&
+                                    orderDetails?.customerDetails?.type ===
+                                      "Private"
+                                  }
                                   // disabled={
                                   //   orderDetails &&
                                   //   orderDetails?.customerDetails?.type ===
@@ -684,7 +697,7 @@ useEffect(() => {
                                 required={true}
                                 error={errors.billingCountry}
                               />
-{/* 
+                              {/* 
                               <Controller
                                 name="billingCountry"
                                 control={control}
@@ -995,7 +1008,14 @@ useEffect(() => {
                     })
                   }
                   disabled={
-                    customData.paymentMethod === "invoice" && !isCreditChecked
+                    apiLoading ||
+                    (customData.paymentMethod === "invoice" &&
+                      ((orderDetails.type.toLowerCase() === "regular" &&
+                          orderDetails?.creditCheck &&
+                          !isCreditChecked) ||
+                        (orderDetails.type.toLowerCase() === "quick" &&
+                          !Object.keys(updatedData).length &&
+                          !orderDetails?.customerDetails?.address)))
                   }
                 >
                   {t("label:payNow")}
@@ -1027,7 +1047,14 @@ useEffect(() => {
                   })
                 }
                 disabled={
-                  customData.paymentMethod === "invoice" && !isCreditChecked
+                  apiLoading ||
+                  (customData.paymentMethod === "invoice" &&
+                    ((orderDetails.type.toLowerCase() === "regular" &&
+                        orderDetails?.creditCheck &&
+                        !isCreditChecked) ||
+                      (orderDetails.type.toLowerCase() === "quick" &&
+                        !Object.keys(updatedData).length &&
+                        !orderDetails?.customerDetails?.address)))
                 }
               >
                 {t("label:payNow")}
