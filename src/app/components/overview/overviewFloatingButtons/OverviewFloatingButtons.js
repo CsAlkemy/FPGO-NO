@@ -194,7 +194,7 @@ export default function OverviewFloatingButtons(props) {
             aria-haspopup="true"
             onClick={() => handleExport()}
             // className="rounded-md button2 flex-nowrap"
-            className="bg-white text-MonochromeGray-700 button2 shadow-5 "
+            className="bg-white text-MonochromeGray-700 button2 shadow-1 "
             // disabled={user.role[0] === FP_ADMIN}
             disabled={!exportTableData}
           >

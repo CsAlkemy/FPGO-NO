@@ -2980,7 +2980,7 @@ const createOrder = () => {
                 <Button
                   color="secondary"
                   variant="contained"
-                  className="bg-white text-MonochromeGray-700 button2 shadow-5 "
+                  className="bg-white text-MonochromeGray-700 button2 shadow-1 "
                   onClick={() => setOpen(true)}
                   startIcon={<Cancel className="text-red-500" />}
                 >
