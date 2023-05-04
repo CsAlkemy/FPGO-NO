@@ -60,6 +60,10 @@ const ClientDetails = () => {
   const [sameAddress, setSameAddress] = React.useState(false);
   const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
   const [initialIsPurchasable, setInitialIsPurchasable] = useState("purchase");
+  const [initialCurrency, setInitialCurrency] = useState({
+    currency: "Norwegian Krone",
+    code: "NOK",
+  });
   const [uploadDocuments, setUploadDocuments] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -374,6 +378,19 @@ const ClientDetails = () => {
 
           if (info?.settings?.currencies && info?.settings?.currencies.length) {
             setCurrency({
+              code: info?.settings?.currencies[0].code || "NOK",
+              currency:
+                info?.settings?.currencies[0].code === "NOK"
+                  ? "Norwegian Krone"
+                  : info?.settings?.currencies[0].code === "SEK"
+                  ? "Swedish Krona"
+                  : info?.settings?.currencies[0].code === "DKK"
+                  ? "Danish Krone"
+                  : info?.settings?.currencies[0].code === "EUR"
+                    ? "European Euro"
+                    : "Norwegian Krone",
+            });
+            setInitialCurrency({
               code: info?.settings?.currencies[0].code || "NOK",
               currency:
                 info?.settings?.currencies[0].code === "NOK"
@@ -831,7 +848,8 @@ const ClientDetails = () => {
                       disabled={
                         !isDirty &&
                         sameAddress === initialSameAddressRef &&
-                        initialIsPurchasable === customApticInfoData || !isValid
+                        initialIsPurchasable === customApticInfoData &&
+                        initialCurrency.code === currency.code || !isValid
                       }
                     >
                       {t("label:update")}
