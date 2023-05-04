@@ -24,7 +24,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import {CharCont} from "../../../../utils/helperFunctions";
 
-const ReservationLog = ({ info }, {handleModal}) => {
+const ReservationLog = ({ info, handleModalOpen }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
@@ -59,13 +59,14 @@ const ReservationLog = ({ info }, {handleModal}) => {
           setLoading(false);
         });
     }
+    //info.status = 'completed';
   }, [loading]);
 
   return (
     <div className="reservation-log-content pb-32 px-0 grid grid-cols-1 md:grid-cols-6">
         <div className="mb-32 md:mb-0 col-span-1 md:col-span-4">
             <div className="amount-section">
-                <div className="amount-section-inner flex ">
+                <div className="amount-section-inner flex flex-wrap">
                     <div className="amount-col amount-reserved-col">
                         <div className="subtitle3">
                             {t("Label:amountReserved")}
@@ -238,12 +239,15 @@ const ReservationLog = ({ info }, {handleModal}) => {
                     {t("label:actions")}
                 </div>
                 <div className="px-12 bg-white pb-20">
+                    {/* {info.status} */}
+                    {info.status == 'reserved' && (
+                    <>
                     <Button
                         //color="secondary"
                         variant="outlined"
                         className="body2 action-button button2"
                         startIcon={<CreditCardIcon style={{color: '#50C9B1'}} />}
-                        //onClick={() => handleModal('refundReservation') }
+                        onClick={() => handleModalOpen('chargeFromCard') }
                     >
                         {t("label:chargeFromCard")}
                     </Button>
@@ -251,16 +255,22 @@ const ReservationLog = ({ info }, {handleModal}) => {
                         variant="outlined"
                         className="body2 action-button button2"
                         startIcon={<PaymentsIcon style={{color: '#68C7E7'}} />}
+                        onClick={() => handleModalOpen('capturePayments') }
                     >
                         {t("label:capturePayment")}
                     </Button>
+                    </>
+                    )}
+                    { (info.status == 'reserved' || info.status == 'completed') && (
                     <Button
                         variant="outlined"
                         className="body2 action-button button2"
                         startIcon={<UndoIcon style={{color: '#0088AE'}} />}
+                        onClick={() => handleModalOpen('refundReservation') }
                     >
                         {t("label:refundFromReservation")}
                     </Button>
+                    )}
                 </div>
             </div>
         </div>

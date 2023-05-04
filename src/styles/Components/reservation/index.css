@@ -144,8 +144,19 @@
         max-width: 532px;
     }
 }
+@media only screen and (max-width: 767px) {
+    .amount-section .amount-col {
+        width: 50%;
+        margin-bottom: 8px;
+    }
+}
 @media only screen and (min-width: 600px) {
     .create-customer-modal .MuiDialog-container {
         display: flex;
+    }
+}
+@media only screen and (max-width: 440px) {
+    .amount-section .amount-col {
+        width: 100%;
     }
 }

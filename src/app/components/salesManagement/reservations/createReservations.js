@@ -81,7 +81,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 const ReservationCreate = () => {
     const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
-  //const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
   const [productsList, setProductsList] = useState([]);
   const [customersList, setCustomersList] = useState([]);
@@ -237,11 +237,12 @@ const ReservationCreate = () => {
     } else if( values.pNumber != undefined ){
       customerIDNo = values.pNumber;
     }
+    const primary_phone_number = values.primaryPhoneNumber.indexOf("+") == 0 ? values.primaryPhoneNumber : '+' + values.primaryPhoneNumber;
     const customerUpData = {
       name: values.customerName,
       orgOrPNumber: customerIDNo,
       email: values.email,
-      phone: values.primaryPhoneNumber,
+      phone: primary_phone_number,
       street: values.billingAddress,
       city: values.billingCity,
       zip: values.billingZip,
@@ -270,8 +271,6 @@ const ReservationCreate = () => {
   };
 
   const onSubmit = (values) => {
-    //console.log(values);
-    //return;
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
@@ -288,6 +287,8 @@ const ReservationCreate = () => {
         grandTotal,
       },
     });
+    // console.log(data);
+    // return;
     createReservation(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
@@ -2206,6 +2207,16 @@ const ReservationCreate = () => {
               </Dialog>
             </div>
           </div>
+
+          <DiscardConfirmModal
+            open={open}
+            defaultValue={CreateReservationDefaultValue}
+            setOpen={setOpen}
+            reset={reset}
+            title={t("label:areYouSureThatYouWouldLikeToDiscardTheProcess")}
+            subTitle={t("label:onceConfirmedThisActionCannotBeReverted")}
+            route={-1}
+          />
         </>
     );
 };

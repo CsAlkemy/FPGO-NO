@@ -1,13 +1,11 @@
 
-import SendIcon from "@mui/icons-material/Send";
+//import SendIcon from "@mui/icons-material/Send";
 import RedoIcon from '@mui/icons-material/Redo';
 import UTurnLeftIcon from "@mui/icons-material/UTurnLeft";
 import CancelIcon from '@mui/icons-material/Cancel';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import OrderModal from '../../order/popupModal/orderModal';
 import {
-    DesktopDatePicker,
-    DesktopDateTimePicker,
     LoadingButton,
     TabContext,
     TabList, 
@@ -93,6 +91,7 @@ const ReservationDetails = () => {
           
           setInfo(info);
           setIsLoading(false);
+          console.log();
         })
         .catch((error) => {
           if (error) navigate("/reservations");
@@ -230,7 +229,7 @@ const ReservationDetails = () => {
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                            <ReservationLog info={info} handleActionModal={handleModalOpen} />
+                            <ReservationLog info={info} handleModalOpen={handleModalOpen} />
                         </TabPanel>
                         <TabPanel value="2" className="py-32 px-0">
                             <ReservationInformation info={info} />
@@ -304,8 +303,8 @@ const ReservationDetails = () => {
                     orderId={info.orderUuid}
                     orderName={info.customerDetails.name}
                     //orderAmount={data.reservedAmount}
-                    customerPhone={info.customerDetails.msisdn}
-                    customerEmail={info.customerDetails.email}
+                    customerPhone={info.customerDetails.countryCode + info.customerDetails.msisdn}
+                    customerEmail={ info.customerDetails.email}
                     //amountInBank={amountBank}
                     //remainingAmount={remainingAmount}
                 />
