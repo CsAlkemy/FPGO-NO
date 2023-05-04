@@ -270,7 +270,7 @@ const createProducts = () => {
     setSearchCustomersList(
       searchByPhone.length
       ? searchByPhone
-      : []
+      : customersList
     );
     setCustomerSearchBy(searchByPhone.length ? "phone" : undefined);
     setCustomerSearchBoxLength(e.target.value.length ? 3+e.target.value.length : e.target.value.length);
@@ -525,6 +525,7 @@ const createProducts = () => {
                         setCustomerSearchBy(undefined);
                         setCustomerSearchBoxLength(0);
                         setVal(newValue);
+                        setSearchCustomersList(customersList)
                       }
                     }}
                     onInputChange={(event, value) => {
