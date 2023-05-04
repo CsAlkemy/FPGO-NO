@@ -370,7 +370,7 @@ const ClientDetails = () => {
 
           if (info?.settings?.currencies && info?.settings?.currencies.length) {
             setCurrency({
-              code: info?.settings?.currencies[0].code,
+              code: info?.settings?.currencies[0].code || "NOK",
               currency:
                 info?.settings?.currencies[0].code === "NOK"
                   ? "Norwegian Krone"
@@ -378,7 +378,9 @@ const ClientDetails = () => {
                   ? "Swedish Krona"
                   : info?.settings?.currencies[0].code === "DKK"
                   ? "Danish Krone"
-                  : "European Euro",
+                  : info?.settings?.currencies[0].code === "EUR"
+                  ? "European Euro"
+                  : "Norwegian Krone",
             });
           }
 
@@ -737,13 +739,13 @@ const ClientDetails = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
-        setLoading(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
       }
+      setLoading(false);
     });
     // ClientService.updateClient(clientUpdatedData, params.uuid)
     //   .then((res) => {
