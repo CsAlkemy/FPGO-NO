@@ -374,7 +374,7 @@ const ClientDetails = () => {
 
           if (info?.settings?.currencies && info?.settings?.currencies.length) {
             setCurrency({
-              code: info?.settings?.currencies[0].code,
+              code: info?.settings?.currencies[0].code || "NOK",
               currency:
                 info?.settings?.currencies[0].code === "NOK"
                   ? "Norwegian Krone"
