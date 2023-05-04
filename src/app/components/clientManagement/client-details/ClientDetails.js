@@ -823,7 +823,7 @@ const ClientDetails = () => {
                       loading={loading}
                       loadingPosition="center"
                       disabled={
-                        !isDirty && sameAddress === initialSameAddressRef && initialIsPurchasable === customApticInfoData
+                        !isDirty && sameAddress === initialSameAddressRef && initialIsPurchasable === customApticInfoData || !isValid
                       }
                     >
                       {t("label:update")}
