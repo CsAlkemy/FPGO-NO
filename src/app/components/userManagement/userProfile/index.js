@@ -135,7 +135,7 @@ const index = () => {
                         color="secondary"
                         type="submit"
                         variant="contained"
-                        disabled={!isDirty || isValid}
+                        disabled={!isDirty || !isValid}
                         className={`font-semibold rounded-4 px-40 ${
                           role === 0 ? "w-auto" : "w-full"
                         }`}
