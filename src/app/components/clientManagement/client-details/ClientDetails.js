@@ -368,17 +368,19 @@ const ClientDetails = () => {
             setAddVatIndex(addVatIndex.filter((item, index) => item < 1));
           }
 
-          if (info?.settings?.currency && info?.settings?.currency.length) {
+          if (info?.settings?.currencies && info?.settings?.currencies.length) {
             setCurrency({
-              code: info?.settings?.currency[0].code,
+              code: info?.settings?.currencies[0].code || "NOK",
               currency:
-                info?.settings?.currency[0].code === "NOK"
+                info?.settings?.currencies[0].code === "NOK"
                   ? "Norwegian Krone"
-                  : info?.settings?.currency[0].code === "SEK"
+                  : info?.settings?.currencies[0].code === "SEK"
                   ? "Swedish Krona"
-                  : info?.settings?.currency[0].code === "DKK"
+                  : info?.settings?.currencies[0].code === "DKK"
                   ? "Danish Krone"
-                  : "European Euro",
+                  : info?.settings?.currencies[0].code === "EUR"
+                  ? "European Euro"
+                  : "Norwegian Krone",
             });
           }
 
@@ -737,13 +739,13 @@ const ClientDetails = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
-        setLoading(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
       }
+      setLoading(false);
     });
     // ClientService.updateClient(clientUpdatedData, params.uuid)
     //   .then((res) => {
