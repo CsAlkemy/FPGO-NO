@@ -1178,6 +1178,7 @@ const createProducts = () => {
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.rate}
                                   variant="outlined"
+                                  type='number'
                                   required
                                   value={field.value || ""}
                                   fullWidth
@@ -1552,6 +1553,7 @@ const createProducts = () => {
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.rate}
                               // helperText={errors?.order?.[index]?.rate?.message}
+                              type='number'
                               variant="outlined"
                               required
                               fullWidth
