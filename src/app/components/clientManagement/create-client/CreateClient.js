@@ -139,7 +139,7 @@ const CreateClient = () => {
     setValue(`vat[${0}].vatValue`, "0");
     setValue(`vat[${0}].bookKeepingReference`, "");
     setValue(`vat[${1}].vatName`, "VAT 2");
-    setValue(`vat[${1}].vatValue`, "8");
+    setValue(`vat[${1}].vatValue`, "10");
     setValue(`vat[${1}].bookKeepingReference`, "");
     setValue(`vat[${2}].vatName`, "VAT 3");
     setValue(`vat[${2}].vatValue`, "15");
@@ -353,14 +353,13 @@ const CreateClient = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
-        setLoading(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
           autoHideDuration: 3000,
         });
-        setLoading(false);
       }
+      setLoading(false);
     });
     // ClientService.createClient(createClientData)
     //   .then((res) => {

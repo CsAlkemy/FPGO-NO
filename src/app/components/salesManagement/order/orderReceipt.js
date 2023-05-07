@@ -36,32 +36,39 @@ const orderReceipt = () => {
 
   return (
     <div>
-      <Pdf
-        targetRef={ref}
-        filename={`kvittering_${orderDetails?.organizationDetails?.name}_${orderDetails?.orderUuid}.pdf`}
-        x={0.5}
-        y={0.5}
-      >
-        {({ toPdf }) => (
-            <LoadingButton
-                variant="contained"
-                color="secondary"
-                className="button2 rounded-4 mb-20 hover:bg-MonochromeGray-25 hover:text-MonochromeGray-700"
-                size="large"
-                loading={loading}
-                onClick={() => {
-                  toPdf();
-                  setLoading(true);
-                  setTimeout(() => {
-                    setLoading(false);
-                  }, [1000]);
-                }}
-                loadingPosition="center"
-            >
-              {t("label:exportToPdf")}
-            </LoadingButton>
-        )}
-      </Pdf>
+      <div className="flex flex-auto min-w-0 max-w-screen-xl">
+        <div className="flex justify-between w-full max-w-lg">
+          <p></p>
+          <Pdf
+            targetRef={ref}
+            filename={`kvittering_${info?.organizationDetails?.name}_${info?.orderUuid}.pdf`}
+            // x={0.5}
+            // y={0.5}
+          >
+            {({ toPdf }) => (
+              <div>
+                <LoadingButton
+                  variant="contained"
+                  color="secondary"
+                  className="button2 rounded-4 mb-20 hover:bg-MonochromeGray-25 hover:text-MonochromeGray-700"
+                  size="large"
+                  loading={loading}
+                  onClick={() => {
+                    toPdf();
+                    setLoading(true);
+                    setTimeout(() => {
+                      setLoading(false);
+                    }, [1000]);
+                  }}
+                  loadingPosition="center"
+                >
+                  {t("label:ExportToPdf")}
+                </LoadingButton>
+              </div>
+            )}
+          </Pdf>
+        </div>
+      </div>
       <div className="flex flex-col flex-auto min-w-0 max-w-screen-xl">
         <div
           className="flex-auto  w-full  border-1 border-MonochromeGray-50 max-w-lg"

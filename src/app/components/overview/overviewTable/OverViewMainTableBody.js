@@ -460,7 +460,7 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "refundResend") {
           return props.row.refundResend === "Resend" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -494,7 +494,7 @@ export default function OverViewMainTableBody(props) {
             </TableCell>
           ) : props.row.refundResend === "Refund" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -527,7 +527,7 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title="Send Invoice"
@@ -557,7 +557,7 @@ export default function OverViewMainTableBody(props) {
           );
         } else if (rdt === "cancel") {
           return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title="Cancel Order"
@@ -587,10 +587,10 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
-                title={`${props.row.refundResend} Order`}
+                title={`Resend Order`}
                 TransitionComponent={Zoom}
                 placement="bottom"
                 enterDelay={300}
@@ -1046,7 +1046,7 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "refundResend") {
           return props.row.refundResend === "Resend" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -1082,7 +1082,7 @@ export default function OverViewMainTableBody(props) {
             </TableCell>
           ) : props.row.refundResend === "Refund" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -1115,7 +1115,7 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title="Send Invoice"
@@ -1145,7 +1145,7 @@ export default function OverViewMainTableBody(props) {
           );
         } else if (rdt === "cancel") {
           return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
                 title="Cancel Order"
@@ -1175,10 +1175,10 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
               <CustomTooltip
                 disableFocusListener
-                title={`${props.row.refundResend} Order`}
+                title={`Resend Order`}
                 TransitionComponent={Zoom}
                 placement="bottom"
                 enterDelay={300}
@@ -1360,7 +1360,7 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "cancel") {
           return (
             props.row.isCancel && (
-              <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
                 <CustomTooltip
                   disableFocusListener
                   title="Reject Refund Request"
