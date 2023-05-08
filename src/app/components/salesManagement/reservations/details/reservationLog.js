@@ -59,7 +59,7 @@ const ReservationLog = ({ info, handleModalOpen }) => {
           setLoading(false);
         });
     }
-    //info.status = 'completed';
+    info.status = 'reserved';
   }, [loading]);
 
   return (

@@ -668,7 +668,7 @@ const ReservationInformation = ({ info }) => {
                             />
                             <CharCount
                             current={info.invoiceReferences
-                                ?.customerNotes.length || 0}
+                                ?.customerNotes?.length || 0}
                             total={200}
                             />
                         </div>
@@ -701,7 +701,7 @@ const ReservationInformation = ({ info }) => {
                             />
                             <CharCount
                             current={info.invoiceReferences
-                                ?.termsAndCondition.length || 0}
+                                ?.termsAndCondition?.length || 0}
                             total={200}
                             />
                         </div>
