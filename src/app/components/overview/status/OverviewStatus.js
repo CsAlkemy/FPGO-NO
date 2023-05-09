@@ -159,6 +159,18 @@ function OverviewStatus(props) {
     ? (classes = "inline text-12 py-4 px-6 rounded-sm min-w-3xl")
     : props.name === "Refund Pending"
     ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Unpaid"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Overdue"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Over Payment"
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Reminder"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Credited"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Converted to Account"
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
     : (classes = "inline text-12 py-4 px-10 rounded-sm min-w-3xl");
 
   return (
