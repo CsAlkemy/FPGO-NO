@@ -88,6 +88,41 @@ export const overviewStatuses = [
     name: "Refund Pending",
     color: "bg-pending text-m-grey-700",
   },
+  {
+    id: 16,
+    name: "Unpaid",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 17,
+    name: "Overdue",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 18,
+    name: "Over Payment",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 19,
+    name: "Reminder",
+    color: "bg-sent text-m-grey-700",
+  },
+  {
+    id: 20,
+    name: "Collection",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 21,
+    name: "Credited",
+    color: "bg-paid text-m-grey-700",
+  },
+  {
+    id: 22,
+    name: "Converted to Account",
+    color: "bg-paid text-m-grey-700",
+  },
 ];
 
 function OverviewStatus(props) {
