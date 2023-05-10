@@ -26,7 +26,9 @@ const ReservationDetails = () => {
 
   const [value, setValue] = React.useState("2");
   const [isLoading, setIsLoading] = useState(true);
+  const [isLogLoading, setIsLogLoading] = useState(true);
   const [info, setInfo] = useState({ status: "" });
+  const [logs, setLogs] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const queryParams = useParams();
@@ -64,7 +66,7 @@ const ReservationDetails = () => {
     }
     if (decision === "completeReservation") {
       setHeaderTitle("Complete Reservation");
-      //setAmountBank(data.amountInBank);
+      setAmountBank(50);
     }
   };
 
@@ -73,9 +75,10 @@ const ReservationDetails = () => {
       OrdersService.getOrdersDetailsByUUID(queryParams.uuid)
         .then((res) => {
           let info = res?.data;
+          info.status = "reserved";
           //info.status = 'completed';
           //info.status = 'paid';
-          //info.isPaid = true;
+          info.isPaid = true;
 
           setInfo(info);
           setIsLoading(false);
@@ -88,9 +91,44 @@ const ReservationDetails = () => {
         });
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (!isLoading && isLogLoading) {
+      OrdersService.getOrdersLogByUUID(queryParams.uuid)
+        .then((res) => {
+          let orderData = [];
+          let data = res?.data;
+          let checkExpired = data.findIndex(
+            (item) => item.slug === "order-expired-and-was-not-paid"
+          );
+
+          if (info.status.toLowerCase() === "expired" && checkExpired < 0) {
+            orderData.push({
+              title: "orderExpiredAndWasNotPaid",
+              slug: "order-expired",
+              datetime: info.paymentLinkDueDate,
+              sentTo: null,
+              actionBy: null,
+              note: null,
+              paymentMethod: null,
+              refundAmount: null,
+            });
+          }
+          orderData.push(...data);
+
+          setLogs(orderData);
+          setIsLogLoading(false);
+        })
+        .catch((e) => {
+          setLogs([]);
+          setIsLogLoading(false);
+        });
+    }
+  }, [isLoading, isLogLoading]);
+
   return (
     <>
-      {!!isLoading && (
+      {!!isLogLoading && (
         <Backdrop
           sx={{
             zIndex: (theme) => theme.zIndex.drawer + 2,
@@ -102,7 +140,7 @@ const ReservationDetails = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {!isLoading && (
+      {!isLoading && !isLogLoading && (
         <div className="reservation-details-page">
           <div className="reserv-header-click-to-action">
             <div className=" header-click-to-action">
@@ -218,7 +256,11 @@ const ReservationDetails = () => {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <ReservationLog info={info} handleModalOpen={handleModalOpen} />
+                <ReservationLog
+                  info={info}
+                  logContent={logs}
+                  handleModalOpen={handleModalOpen}
+                />
               </TabPanel>
               <TabPanel value="2" className="py-32 px-0">
                 <ReservationInformation info={info} />
@@ -291,8 +333,9 @@ const ReservationDetails = () => {
             setOpen={setOpen}
             headerTitle={headerTitle}
             orderId={info.orderUuid}
+            orderIdText={t("label:reservationId")}
             orderName={info.customerDetails.name}
-            //orderAmount={data.reservedAmount}
+            orderAmount={info.orderSummary.grandTotal}
             customerPhone={
               info.customerDetails.countryCode + info.customerDetails.msisdn
             }
