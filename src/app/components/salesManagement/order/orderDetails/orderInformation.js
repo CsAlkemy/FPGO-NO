@@ -237,10 +237,10 @@ const OrderInformation = ({ info }) => {
       info.customerDetails?.countryCode && info.customerDetails?.msisdn
         ? info.customerDetails?.countryCode + info.customerDetails?.msisdn
         : "+47";
-    CreateOrderDefaultValue.billingCountry =
-      info?.customerDetails?.address?.country
-        ? info?.customerDetails?.address?.country
-        : "norway";
+    CreateOrderDefaultValue.billingCountry = info?.customerDetails?.address
+      ?.country
+      ? info?.customerDetails?.address?.country
+      : "norway";
 
     reset({ ...CreateOrderDefaultValue });
 
@@ -1406,15 +1406,15 @@ const OrderInformation = ({ info }) => {
                                           (info.customerDetails?.type ===
                                           "Private"
                                             ? info.customerDetails
-                                              ?.personalNumber
-                                              ? info.customerDetails
                                                 ?.personalNumber
+                                              ? info.customerDetails
+                                                  ?.personalNumber
                                               : ""
                                             : info.customerDetails
-                                              ?.organizationId
-                                              ? info.customerDetails
                                                 ?.organizationId
-                                              : "")
+                                            ? info.customerDetails
+                                                ?.organizationId
+                                            : "")
                                         }
                                         defaultValue={
                                           info.customerDetails?.type ===
@@ -1466,7 +1466,7 @@ const OrderInformation = ({ info }) => {
                                               (info.customerDetails.address
                                                 ?.street
                                                 ? info.customerDetails.address
-                                                  ?.street
+                                                    ?.street
                                                 : "")
                                             }
                                             defaultValue={
@@ -1510,7 +1510,7 @@ const OrderInformation = ({ info }) => {
                                               field.value ||
                                               (info.customerDetails.address?.zip
                                                 ? info.customerDetails.address
-                                                  ?.zip
+                                                    ?.zip
                                                 : "")
                                             }
                                             defaultValue={
@@ -1553,7 +1553,7 @@ const OrderInformation = ({ info }) => {
                                             field.value ||
                                             (info.customerDetails.address?.city
                                               ? info.customerDetails.address
-                                                ?.city
+                                                  ?.city
                                               : "")
                                           }
                                           defaultValue={
@@ -1565,7 +1565,7 @@ const OrderInformation = ({ info }) => {
                                         />
                                       )}
                                     />
-                                      <CountrySelect
+                                    <CountrySelect
                                       control={control}
                                       name={"billingCountry"}
                                       label={"country"}
@@ -1574,7 +1574,7 @@ const OrderInformation = ({ info }) => {
                                       error={errors.billingCountry}
                                       disable={true}
                                     />
-{/* 
+                                    {/* 
                                     <Controller
                                       name="billingCountry"
                                       control={control}
@@ -1868,7 +1868,7 @@ const OrderInformation = ({ info }) => {
                                             (info.internalReferences
                                               ?.referenceNumber
                                               ? info.internalReferences
-                                                ?.referenceNumber
+                                                  ?.referenceNumber
                                               : "")
                                           }
                                           defaultValue={
