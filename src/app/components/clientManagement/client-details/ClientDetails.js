@@ -2733,6 +2733,7 @@ const ClientDetails = () => {
                                           <TextField
                                             {...field}
                                             type="number"
+                                            onWheel={event => { event.target.blur()}}
                                             value={
                                               field.value === 0
                                                 ? 0
