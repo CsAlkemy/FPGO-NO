@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {useSelector} from "react-redux";
-import {selectUser} from "app/store/userSlice";
+import React, { useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "app/store/userSlice";
 import {
   BRAND_MANAGER,
   BUSINESS_ADMIN,
@@ -9,13 +9,13 @@ import {
   GENERAL_USER,
   GROUP_MANAGER,
 } from "../../../utils/user-roles/UserRoles";
-import {Backdrop, Button, CircularProgress} from "@mui/material";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
 import UserService from "../../../data-access/services/userService/UserService";
-import {useSnackbar} from "notistack";
-import {useTranslation} from "react-i18next";
-import {useUpdateUserStatusMutation} from "app/store/api/apiSlice";
-import ProfileForm from './profileForm'
-import UpdatePassword from './updatePassword'
+import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
+import { useUpdateUserStatusMutation } from "app/store/api/apiSlice";
+import ProfileForm from "./profileForm";
+import UpdatePassword from "./updatePassword";
 
 const index = () => {
   const { t } = useTranslation();
@@ -35,7 +35,6 @@ const index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
   const [isValid, setIsValid] = useState(false);
-
 
   React.useEffect(() => {
     if (isLoading) {
@@ -119,7 +118,13 @@ const index = () => {
                         </div>
                       </div>
                     )}
-                    <div className={`${role === 0 ? 'grid grid-cols-1 sm:grid-cols-2 gap-10 w-full items-center sm:w-auto':'flex w-full sm:w-auto'} `}>
+                    <div
+                      className={`${
+                        role === 0
+                          ? "grid grid-cols-1 sm:grid-cols-2 gap-10 w-full items-center sm:w-auto"
+                          : "flex w-full sm:w-auto"
+                      } `}
+                    >
                       {role === 0 && (
                         <Button
                           color="secondary"
@@ -155,7 +160,7 @@ const index = () => {
                     {role === 0 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
-                        setIsValid= {setIsValid}
+                        setIsValid={setIsValid}
                         submitRef={submitRef}
                         role={0}
                         userProfile={userProfile}
@@ -164,7 +169,7 @@ const index = () => {
                     {role === 1 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
-                        setIsValid= {setIsValid}
+                        setIsValid={setIsValid}
                         submitRef={submitRef}
                         role={1}
                         userProfile={userProfile}
@@ -173,7 +178,7 @@ const index = () => {
                     {role === 2 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
-                        setIsValid= {setIsValid}
+                        setIsValid={setIsValid}
                         submitRef={submitRef}
                         role={2}
                         userProfile={userProfile}
@@ -182,7 +187,7 @@ const index = () => {
                     {role === 3 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
-                        setIsValid= {setIsValid}
+                        setIsValid={setIsValid}
                         submitRef={submitRef}
                         role={3}
                         userProfile={userProfile}
@@ -191,7 +196,7 @@ const index = () => {
                     {role === 4 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
-                        setIsValid= {setIsValid}
+                        setIsValid={setIsValid}
                         submitRef={submitRef}
                         role={4}
                         userProfile={userProfile}
@@ -200,7 +205,7 @@ const index = () => {
                     {role === 5 && (
                       <ProfileForm
                         setIsDirty={setIsDirty}
-                        setIsValid= {setIsValid}
+                        setIsValid={setIsValid}
                         submitRef={submitRef}
                         role={5}
                         userProfile={userProfile}

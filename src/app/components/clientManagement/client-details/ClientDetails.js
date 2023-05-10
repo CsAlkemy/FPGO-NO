@@ -387,8 +387,8 @@ const ClientDetails = () => {
                   : info?.settings?.currencies[0].code === "DKK"
                   ? "Danish Krone"
                   : info?.settings?.currencies[0].code === "EUR"
-                    ? "European Euro"
-                    : "Norwegian Krone",
+                  ? "European Euro"
+                  : "Norwegian Krone",
             });
             setInitialCurrency({
               code: info?.settings?.currencies[0].code || "NOK",
@@ -400,8 +400,8 @@ const ClientDetails = () => {
                   : info?.settings?.currencies[0].code === "DKK"
                   ? "Danish Krone"
                   : info?.settings?.currencies[0].code === "EUR"
-                    ? "European Euro"
-                    : "Norwegian Krone",
+                  ? "European Euro"
+                  : "Norwegian Krone",
             });
           }
 
@@ -846,10 +846,11 @@ const ClientDetails = () => {
                       loading={loading}
                       loadingPosition="center"
                       disabled={
-                        !isDirty &&
-                        sameAddress === initialSameAddressRef &&
-                        initialIsPurchasable === customApticInfoData &&
-                        initialCurrency.code === currency.code || !isValid
+                        (!isDirty &&
+                          sameAddress === initialSameAddressRef &&
+                          initialIsPurchasable === customApticInfoData &&
+                          initialCurrency.code === currency.code) ||
+                        !isValid
                       }
                     >
                       {t("label:update")}
@@ -2733,7 +2734,9 @@ const ClientDetails = () => {
                                           <TextField
                                             {...field}
                                             type="number"
-                                            onWheel={event => { event.target.blur()}}
+                                            onWheel={(event) => {
+                                              event.target.blur();
+                                            }}
                                             value={
                                               field.value === 0
                                                 ? 0

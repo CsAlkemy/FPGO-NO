@@ -80,7 +80,9 @@ const createCategory = (onSubmit = () => {}) => {
         navigate("/categories/categories-list");
         setLoading(false);
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
     // CategoryService.updateCategoryByUUID(info.uuid, values)
@@ -147,9 +149,7 @@ const createCategory = (onSubmit = () => {}) => {
     }
     defaultValue.name = info?.name ? info?.name : "";
     defaultValue.description = info?.description ? info?.description : "";
-    defaultValue.assignToProducts = info?.productList
-      ? info?.productList
-      : "";
+    defaultValue.assignToProducts = info?.productList ? info?.productList : "";
     reset({ ...defaultValue });
   }, [isLoading]);
 
@@ -198,7 +198,9 @@ const createCategory = (onSubmit = () => {}) => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN || !isDirty || !isValid}
+                      disabled={
+                        user.role[0] === FP_ADMIN || !isDirty || !isValid
+                      }
                       loadingPosition="center"
                     >
                       {t("label:updateCategory")}
@@ -222,7 +224,11 @@ const createCategory = (onSubmit = () => {}) => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.name}
-                            helperText={errors?.name?.message ? t(`validation:${errors?.name?.message}`) : ""}
+                            helperText={
+                              errors?.name?.message
+                                ? t(`validation:${errors?.name?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -243,7 +249,13 @@ const createCategory = (onSubmit = () => {}) => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.description}
-                            helperText={errors?.description?.message ? t(`validation:${errors?.description?.message}`) : ""}
+                            helperText={
+                              errors?.description?.message
+                                ? t(
+                                    `validation:${errors?.description?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             value={field.value || ""}
