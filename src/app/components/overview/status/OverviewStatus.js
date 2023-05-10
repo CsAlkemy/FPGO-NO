@@ -127,7 +127,6 @@ export const overviewStatuses = [
 
 function OverviewStatus(props) {
   const {t} = useTranslation()
-
   let classes = "";
   props.name === "Active"
     ? (classes = "inline text-12 py-4 px-16 rounded-sm min-w-3xl")

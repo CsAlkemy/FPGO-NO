@@ -2157,6 +2157,7 @@ const CreateClient = () => {
                                   onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   className="text-right  custom-input-height"
                                   autoComplete="off"
                                   error={!!errors.vatValue}

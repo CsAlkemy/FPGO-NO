@@ -163,7 +163,7 @@ const createProducts = () => {
       : "";
     defaultValueCreateProduct.tax =
       info?.taxRate === 0 ? 0 : info?.taxRate ? info?.taxRate : "";
-    defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
+    // defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
     reset({ ...defaultValueCreateProduct });
   }, [isLoading]);
 
@@ -223,11 +223,11 @@ const createProducts = () => {
                     </div>
                     {info.status === "Active" ? (
                       <div className="bg-confirmed rounded-4 px-16 py-4 body3">
-                        {info.status}
+                        {t(`label:${info.status.toLowerCase()}`)}
                       </div>
                     ) : (
                       <div className="bg-rejected rounded-4 px-16 py-4 body3">
-                        {info.status}
+                        {t(`label:${info.status.toLowerCase()}`)}
                       </div>
                     )}
                   </div>
@@ -544,7 +544,7 @@ const createProducts = () => {
                       <div className="create-user-form-header subtitle3 bg-m-grey-25">
                         {t("label:salesInformation")}
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 px-10 my-32 gap-20">
+                      <div className="grid grid-cols-1 w-full sm:w-2/3 px-10 my-32 gap-20">
                         <Controller
                           name="tax"
                           control={control}
@@ -598,35 +598,35 @@ const createProducts = () => {
                             </FormControl>
                           )}
                         />
-                        <Controller
-                          name="cost"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={t("label:costPerUnit")}
-                              className="bg-white"
-                              type="number"
-                              autoComplete="off"
-                              error={!!errors.cost}
-                              helperText={
-                                errors?.cost?.message
-                                  ? t(`validation:${errors?.cost?.message}`)
-                                  : ""
-                              }
-                              variant="outlined"
-                              fullWidth
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    {t("label:kr")}
-                                  </InputAdornment>
-                                ),
-                              }}
-                              value={field.value || ""}
-                            />
-                          )}
-                        />
+                        {/*<Controller*/}
+                        {/*  name="cost"*/}
+                        {/*  control={control}*/}
+                        {/*  render={({ field }) => (*/}
+                        {/*    <TextField*/}
+                        {/*      {...field}*/}
+                        {/*      label={t("label:costPerUnit")}*/}
+                        {/*      className="bg-white"*/}
+                        {/*      type="number"*/}
+                        {/*      autoComplete="off"*/}
+                        {/*      error={!!errors.cost}*/}
+                        {/*      helperText={*/}
+                        {/*        errors?.cost?.message*/}
+                        {/*          ? t(`validation:${errors?.cost?.message}`)*/}
+                        {/*          : ""*/}
+                        {/*      }*/}
+                        {/*      variant="outlined"*/}
+                        {/*      fullWidth*/}
+                        {/*      InputProps={{*/}
+                        {/*        endAdornment: (*/}
+                        {/*          <InputAdornment position="end">*/}
+                        {/*            {t("label:kr")}*/}
+                        {/*          </InputAdornment>*/}
+                        {/*        ),*/}
+                        {/*      }}*/}
+                        {/*      value={field.value || ""}*/}
+                        {/*    />*/}
+                        {/*  )}*/}
+                        {/*/>*/}
                       </div>
                     </div>
                   </div>
