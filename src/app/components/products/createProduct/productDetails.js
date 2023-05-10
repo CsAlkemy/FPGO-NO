@@ -223,11 +223,11 @@ const createProducts = () => {
                     </div>
                     {info.status === "Active" ? (
                       <div className="bg-confirmed rounded-4 px-16 py-4 body3">
-                        {info.status}
+                        {t(`label:${info.status.toLowerCase()}`)}
                       </div>
                     ) : (
                       <div className="bg-rejected rounded-4 px-16 py-4 body3">
-                        {info.status}
+                        {t(`label:${info.status.toLowerCase()}`)}
                       </div>
                     )}
                   </div>

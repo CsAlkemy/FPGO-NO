@@ -815,11 +815,11 @@ const ClientDetails = () => {
                       <div>
                         {info?.status === "Active" ? (
                           <span className=" ml-5 bg-confirmed rounded-4 px-16 py-4 body3">
-                            Active
+                            {t("label:active")}
                           </span>
                         ) : (
                           <span className="bg-rejected ml-5 rounded-4 px-16 py-4 body3">
-                            Inactive
+                            {t("label:inactive")}
                           </span>
                         )}
                       </div>
