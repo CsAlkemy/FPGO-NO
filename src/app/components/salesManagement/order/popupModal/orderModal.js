@@ -178,7 +178,7 @@ const OrderModal = (props) => {
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
         else if (
-          window.location.pathname === `/reservations-details/${orderId}`
+          window.location.pathname === `/reservations-view/details/${orderId}`
         )
           navigate("/reservations");
         // else window.location.reload();
@@ -199,7 +199,7 @@ const OrderModal = (props) => {
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
         else if (
-          window.location.pathname === `/reservations-details/${orderId}`
+          window.location.pathname === `/reservations-view/details/${orderId}`
         )
           navigate("/reservations");
         // else window.location.reload();
@@ -224,7 +224,8 @@ const OrderModal = (props) => {
             if (window.location.pathname === `/create-order/details/${orderId}`)
               navigate(`/sales/orders-list`);
             else if (
-              window.location.pathname === `/reservations-details/${orderId}`
+              window.location.pathname ===
+              `/reservations-view/details/${orderId}`
             )
               navigate("/reservations");
             // setApiLoading(false);
@@ -283,7 +284,9 @@ const OrderModal = (props) => {
             variant: "success",
           });
         }
-        if (window.location.pathname === `/reservations-details/${orderId}`)
+        if (
+          window.location.pathname === `/reservations-view/details/${orderId}`
+        )
           navigate("/reservations");
         setTimeout(() => {
           setOpen(false);

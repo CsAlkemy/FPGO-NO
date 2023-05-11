@@ -20,6 +20,7 @@ import {
   organizationWiseUsersOverview,
   customerOrdersListOverview,
   refundRequestsOverview,
+  reservationListOverview,
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";

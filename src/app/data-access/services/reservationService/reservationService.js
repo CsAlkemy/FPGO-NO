@@ -1,7 +1,9 @@
 import { ro } from "date-fns/locale";
+import AuthService from "../authService/AuthService";
+import axios from "axios";
+import { EnvVariable } from "../../utils/EnvVariables";
 
 class ReservationService {
-
   prepareCreateReservationPayload = (params) => {
     //console.log(params);
     const products =
@@ -39,21 +41,18 @@ class ReservationService {
             rate: floatRate,
             //discount: order?.discount ? order?.discount : 0,
             tax: order.tax,
-            amount: floatRate
+            amount: floatRate,
           };
         });
 
     const billingAddress =
-      params.street ||
-      params.zip ||
-      params.city ||
-      params.country
+      params.street || params.zip || params.city || params.country
         ? {
-          street: params.street ? params.street : null,
-          zip: params.zip ? params.zip : null,
-          city: params.city ? params.city : null,
-          country: params.country ? params.country : null,
-        }
+            street: params.street ? params.street : null,
+            zip: params.zip ? params.zip : null,
+            city: params.city ? params.city : null,
+            country: params.country ? params.country : null,
+          }
         : null;
     const invoiceReferences =
       params.referenceNumber ||
@@ -63,17 +62,17 @@ class ReservationService {
       params.termsConditions ||
       params.receiptNo
         ? {
-          referenceNo: params.referenceNumber ? params.referenceNumber : null,
-          internalReference: params.internalReference
-            ? params.internalReference
-            : null,
-          customerReference: params.customerReference
-            ? params.customerReference
-            : null,
-          customerNotes: params.customerNotes ? params.customerNotes : null,
-          receiptNo: params.receiptNo ? params.receiptNo : null,
-          tnc: params.termsConditions ? params.termsConditions : null,
-        }
+            referenceNo: params.referenceNumber ? params.referenceNumber : null,
+            internalReference: params.internalReference
+              ? params.internalReference
+              : null,
+            customerReference: params.customerReference
+              ? params.customerReference
+              : null,
+            customerNotes: params.customerNotes ? params.customerNotes : null,
+            receiptNo: params.receiptNo ? params.receiptNo : null,
+            tnc: params.termsConditions ? params.termsConditions : null,
+          }
         : null;
     const internalReferences =
       params.referenceNumber ||
@@ -83,12 +82,12 @@ class ReservationService {
       params.termsConditions ||
       params.receiptNo
         ? {
-          referenceNo: params.referenceNumber ? params.referenceNumber : null,
-          notes: params.customerNotes ? params.customerNotes : null,
-        }
+            referenceNo: params.referenceNumber ? params.referenceNumber : null,
+            notes: params.customerNotes ? params.customerNotes : null,
+          }
         : null;
     const primaryPhoneNumber = params.phone.split("+");
-    const userID = params.uuid ? params.uuid : '';
+    const userID = params.uuid ? params.uuid : "";
     return {
       products: {
         ...products,
@@ -104,7 +103,7 @@ class ReservationService {
       // dueDateForInvoice: this.prepareDate(params.dueDateInvoice),
       sendOrderBy: {
         sms: params.orderBy === "sms",
-        email: params.orderBy === "email"
+        email: params.orderBy === "email",
       },
       //isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
@@ -137,7 +136,7 @@ class ReservationService {
       referenceNo: params.referenceNumber,
       customerReference: params.customerReference,
       customerNotes: params.customerNotes,
-      tnc: params.termsConditions
+      tnc: params.termsConditions,
     };
   };
 
@@ -168,8 +167,9 @@ class ReservationService {
 
   mapReservationList = (data) => {
     let lists;
-    lists = data.map(row => {
-      const preparePhone = row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
+    lists = data.map((row) => {
+      const preparePhone =
+        row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
 
       return {
         uuid: row.reservationUuid,
@@ -185,13 +185,39 @@ class ReservationService {
         reservedAmount: row.reservedAmount,
         remainingAmount: row.remainingCaptureRunway ?? null,
         status: row.status.toLowerCase(),
-        translationKey: row.translationKey
-      }
+        translationKey: row.translationKey,
+      };
     });
 
     return lists;
   };
 
+  getReservationDetailsByUUID = (uuid) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/reservations/details/${uuid}`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  resolve(response.data);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
+    });
+  };
 }
 
 const instance = new ReservationService();

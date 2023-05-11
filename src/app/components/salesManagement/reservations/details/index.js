@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
+import ReservationService from "../../../../data-access/services/reservationService/reservationService";
 import ReservationInformation from "./reservationInformation";
 import ReservationLog from "./reservationLog";
 import { selectUser } from "app/store/userSlice";
@@ -72,7 +73,7 @@ const ReservationDetails = () => {
 
   useEffect(() => {
     if (isLoading) {
-      OrdersService.getOrdersDetailsByUUID(queryParams.uuid)
+      ReservationService.getReservationDetailsByUUID(queryParams.uuid)
         .then((res) => {
           let info = res?.data;
           info.status = "reserved";
@@ -82,7 +83,6 @@ const ReservationDetails = () => {
 
           setInfo(info);
           setIsLoading(false);
-          console.log();
         })
         .catch((error) => {
           if (error) navigate("/reservations");
@@ -332,10 +332,10 @@ const ReservationDetails = () => {
             open={open}
             setOpen={setOpen}
             headerTitle={headerTitle}
-            orderId={info.orderUuid}
+            orderId={info.reservationUuid}
             orderIdText={t("label:reservationId")}
             orderName={info.customerDetails.name}
-            orderAmount={info.orderSummary.grandTotal}
+            orderAmount={info.grandTotal}
             customerPhone={
               info.customerDetails.countryCode + info.customerDetails.msisdn
             }

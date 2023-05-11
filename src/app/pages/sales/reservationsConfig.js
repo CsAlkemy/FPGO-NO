@@ -44,16 +44,13 @@ export const ReservationsConfig = {
       },
     },
   },
-  auth: [
-    `${authRoles.businessAdmin}`,
-    `${authRoles.user}`
-  ],
+  auth: [`${authRoles.businessAdmin}`, `${authRoles.user}`],
   routes: [
     {
       path: "/create-reservations",
-      element: <ReservationCreate />
-    }
-  ]
+      element: <ReservationCreate />,
+    },
+  ],
 };
 
 export const ReservationsConfEx = {
@@ -86,13 +83,13 @@ export const ReservationsConfEx = {
   routes: [
     {
       path: "/reservations",
-      element: <ListOverview />
+      element: <ListOverview />,
     },
     {
-      path: "/reservations-details/:uuid",
-      element: <ReservationDetails />
-    }
-  ]
+      path: "/reservations-view/details/:uuid",
+      element: <ReservationDetails />,
+    },
+  ],
 };
 
 export const ReservationCart = {
@@ -120,16 +117,16 @@ export const ReservationCart = {
   auth: authRoles.allUserInclucingUnAuthenticatedUser,
   routes: [
     {
-      path: "/reservations/:uuid/checkout",
-      element: <ReservationCheckout />
+      path: "/reservations/details/:uuid",
+      element: <ReservationCheckout />,
     },
     {
-      path: "/reservations/:uuid/payment",
-      element: <PaymentConfirmation />
+      path: "/reservations/checkout/:uuid",
+      element: <PaymentConfirmation />,
     },
     {
-      path: "/reservations/:uuid/confirmation",
-      element: <PaymentStatus />
-    }
-  ]
+      path: "/reservations/confirmation/:uuid",
+      element: <PaymentStatus />,
+    },
+  ],
 };
