@@ -524,6 +524,52 @@ export default function OverviewMainTable(props) {
   };
 
   const reserveationListTableTabPanelsData = (event, newValue) => {
+    switch(newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
+        );
+        break;
+      case 2:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "reserved")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "reserved")
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "completed")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "completed")
+        );
+        break;
+      case 4:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "expired")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "expired")
+        );
+        break;
+      case 5:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "cancelled")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "cancelled")
+        );
+        break;
+    }
   };
 
   const handleTabChange = (event, newValue) => {
@@ -727,6 +773,9 @@ export default function OverviewMainTable(props) {
         break;
       case ordersListOverview:
         navigate(`/create-order/details/${info.uuid}`);
+        break;
+      case reservationListOverview:
+        navigate(`/reservations-details/${info.uuid}`);
         break;
     }
   };
