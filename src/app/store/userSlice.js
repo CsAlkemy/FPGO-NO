@@ -33,11 +33,28 @@ export const setUser = createAsyncThunk(
             },
             {
               id: "sales",
-              title: "Orders",
+              title: "Sales",
               translate: "sales",
-              type: "item",
+              type: "collapse",
               icon: "material-outline:receipt_long",
-              url: "/sales/orders-list",
+              children: [
+                {
+                  id: "orders",
+                  title: "Orders",
+                  translate: 'orders',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/sales/orders-list",
+                },
+                {
+                  id: "reservations",
+                  title: "Reservations",
+                  translate: 'reservations',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reservations",
+                },
+              ]
             },
             {
               id: "clients",
@@ -146,11 +163,28 @@ export const setUser = createAsyncThunk(
             },
             {
               id: "sales",
-              title: "Orders",
+              title: "Sales",
               translate: "sales",
-              type: "item",
+              type: "collapse",
               icon: "material-outline:receipt_long",
-              url: "/sales/orders-list",
+              children: [
+                {
+                  id: "orders",
+                  title: "Orders",
+                  translate: 'orders',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/sales/orders-list",
+                },
+                {
+                  id: "reservations",
+                  title: "Reservations",
+                  translate: 'reservations',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reservations",
+                },
+              ]
             },
             {
               id: "customers",
@@ -218,11 +252,28 @@ export const setUser = createAsyncThunk(
             // },
             {
               id: "sales",
-              title: "Orders",
+              title: "Sales",
               translate: "sales",
-              type: "item",
+              type: "collapse",
               icon: "material-outline:receipt_long",
-              url: "/sales/orders-list",
+              children: [
+                {
+                  id: "orders",
+                  title: "Orders",
+                  translate: 'orders',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/sales/orders-list",
+                },
+                {
+                  id: "reservations",
+                  title: "Reservations",
+                  translate: 'reservations',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reservations",
+                },
+              ]
             },
             {
               id: "customers",
