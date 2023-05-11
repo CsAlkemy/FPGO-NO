@@ -200,23 +200,23 @@ const createPrivateCustomer = () => {
                       />
                     )}
                   />
-                  {/*<Controller*/}
-                  {/*  name="pNumber"*/}
-                  {/*  control={control}*/}
-                  {/*  render={({ field }) => (*/}
-                  {/*    <TextField*/}
-                  {/*      {...field}*/}
-                  {/*      label={t("label:pNumber")}*/}
-                  {/*      className="w-full md:w-3/5"*/}
-                  {/*      type="number"*/}
-                  {/*      autoComplete="off"*/}
-                  {/*      error={!!errors.pNumber}*/}
-                  {/*      helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}*/}
-                  {/*      variant="outlined"*/}
-                  {/*      //fullWidth*/}
-                  {/*    />*/}
-                  {/*  )}*/}
-                  {/*/>*/}
+                  <Controller
+                    name="pNumber"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label={t("label:pNumber")}
+                        className="w-full md:w-3/5"
+                        type="number"
+                        autoComplete="off"
+                        error={!!errors.pNumber}
+                        helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
+                        variant="outlined"
+                        //fullWidth
+                      />
+                    )}
+                  />
                 </div>
                 <div className="px-10 md:px-16">
                   <div className="form-pair-three-by-one">
