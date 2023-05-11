@@ -198,9 +198,7 @@ const createCategory = (onSubmit = () => {}) => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={
-                        user.role[0] === FP_ADMIN || !isDirty || !isValid
-                      }
+                      disabled={user.role[0] === FP_ADMIN || !isDirty || !isValid }
                       loadingPosition="center"
                     >
                       {t("label:updateCategory")}

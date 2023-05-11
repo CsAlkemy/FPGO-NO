@@ -67,32 +67,33 @@ function NavbarStyle1Content(props) {
 
         <NavbarToggleButton className="w-40 h-40 p-0" />
       </div>
-      {!settings.layout.config.navbar.folded && (
-        <Button
-          startIcon={<AddIcon />}
-          color="secondary"
-          variant="outlined"
-          className="button-outline-product flex justify-center items-center custom-position-for-nav-button mt-20 mb-10"
-          onClick={() => {
-            navigate(`/quick-order`);
-            dispatch(navbarCloseMobile());
-          }}
-          disabled={user.role[0] === FP_ADMIN}
-        >
-          {t("label:quickOrder")}
-        </Button>
-      )}
-      {!!settings.layout.config.navbar.folded && (
-        <IconButton
-          aria-label="fingerprint"
-          color="secondary"
-          className="rounded-4 mx-10"
-          onClick={() => navigate(`/quick-order`)}
-          disabled={user.role[0] === FP_ADMIN}
-        >
-          <AddIcon />
-        </IconButton>
-      )}
+      {
+        !settings.layout.config.navbar.folded && (
+          <Button
+            startIcon={<AddIcon />}
+            color="secondary"
+            variant="outlined"
+            className="button-outline-product flex justify-center items-center custom-position-for-nav-button mt-20 mb-10"
+            onClick={()=> {
+              navigate(`/quick-order`)
+              dispatch(navbarCloseMobile());
+            }}
+            disabled={user.role[0] === FP_ADMIN}
+          >
+            {t("label:quickOrder")}
+          </Button>
+        )
+      }
+      {
+        !!settings.layout.config.navbar.folded && (
+          <IconButton aria-label="fingerprint" color="secondary" className="rounded-4 mx-10"
+                      onClick={()=> navigate(`/quick-order`)}
+                      disabled={user.role[0] === FP_ADMIN}
+          >
+            <AddIcon />
+          </IconButton>
+        )
+      }
 
       <StyledContent
         className="flex flex-1 flex-col min-h-0"

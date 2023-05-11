@@ -846,11 +846,10 @@ const ClientDetails = () => {
                       loading={loading}
                       loadingPosition="center"
                       disabled={
-                        (!isDirty &&
-                          sameAddress === initialSameAddressRef &&
-                          initialIsPurchasable === customApticInfoData &&
-                          initialCurrency.code === currency.code) ||
-                        !isValid
+                        !isDirty &&
+                        sameAddress === initialSameAddressRef &&
+                        initialIsPurchasable === customApticInfoData &&
+                        initialCurrency.code === currency.code || !isValid
                       }
                     >
                       {t("label:update")}

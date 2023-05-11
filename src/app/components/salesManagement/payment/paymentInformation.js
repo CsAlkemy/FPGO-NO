@@ -1011,8 +1011,8 @@ const paymentInformation = () => {
                     apiLoading ||
                     (customData.paymentMethod === "invoice" &&
                       ((orderDetails.type.toLowerCase() === "regular" &&
-                        orderDetails?.creditCheck &&
-                        !isCreditChecked) ||
+                          orderDetails?.creditCheck &&
+                          !isCreditChecked) ||
                         (orderDetails.type.toLowerCase() === "quick" &&
                           !Object.keys(updatedData).length &&
                           !orderDetails?.customerDetails?.address)))
