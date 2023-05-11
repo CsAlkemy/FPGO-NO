@@ -13,8 +13,8 @@ import {
   ordersListOverview,
   organizationWiseUsersOverview,
   productsListOverview,
-  refundRequestsOverview,
-  userListOverview,
+  refundRequestsOverview, reservationListOverview,
+  userListOverview
 } from "./TablesName";
 import Skeleton from "@mui/material/Skeleton";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -39,6 +39,7 @@ import DiscardConfirmModal from "../../common/confirmDiscard";
 import { useTranslation } from "react-i18next";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
+import ReservationDropdown from "../../salesManagement/reservations/dropdown";
 
 export default function OverViewMainTableBody(props) {
   const { t } = useTranslation();
@@ -50,6 +51,7 @@ export default function OverViewMainTableBody(props) {
   const [openApprove, setOpenApprove] = useState(false);
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
+  const [amountBank, setAmountBank] = useState(null);
 
   const handleTooltipClose = () => {
     setOpenHigh(false);
@@ -65,6 +67,7 @@ export default function OverViewMainTableBody(props) {
 
   const handleModalOpen = (decision) => {
     setOpen(true);
+    setAmountBank(null);
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
@@ -1619,6 +1622,156 @@ export default function OverViewMainTableBody(props) {
               )}
             </TableCell>
           );
+        } else {
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="left"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
+      });
+    case reservationListOverview:
+      return props.rowDataFields.map((rdt) => {
+        if (rdt === "status") {
+          switch (props.row.status) {
+            case "sent":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Sent"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "expired":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Expired"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "cancelled":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Cancelled"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "completed":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Completed"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "reserved":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Reserved"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+          }
+        } else if (rdt === "reservedAmount" || rdt === "amountPaid" || rdt === "amountInBank") {
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              {props.row ? (
+                `${t("label:nok")} ${ThousandSeparator(props.row[rdt])}`
+              ) : (
+                <Skeleton variant="text" />
+              )}
+            </TableCell>
+          );
+        }  else if(rdt === "options") {
+          return user.role[0] === FP_ADMIN ? "" : props.row.status.toLowerCase() === "completed" ? (
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+                <CustomTooltip
+                  disableFocusListener
+                  title={t('label:refundFromReservations')}
+                  TransitionComponent={Zoom}
+                  placement="bottom"
+                  enterDelay={300}
+                >
+                  <Box
+                    component="span"
+                    className="py-8 px-4 hover:border-primary-500"
+                    sx={resendRefundBoxSX}
+                    onClick={() => {
+                      handleModalOpen('refundReservations');
+                      setAmountBank(props.row.amountInBank);
+                    }}
+                  >
+                    <UndoIcon style={{ paddingBottom: "3px" }} />
+                  </Box>
+                </CustomTooltip>
+                <OrderModal
+                  open={open}
+                  setOpen={setOpen}
+                  headerTitle={headerTitle}
+                  orderId={props.row.id}
+                  orderName={props.row.customer}
+                  orderAmount={props.row.reservedAmount}
+                  customerPhone={props.row.phone}
+                  customerEmail={props.row.email}
+                  amountInBank={amountBank}
+                />
+              </TableCell>
+            ) :
+            (
+              <TableCell key={`${props.row.uuid}-${rdt}`} align="center">
+                <ReservationDropdown data={props.row} />
+              </TableCell>
+            );
         } else {
           return (
             <TableCell

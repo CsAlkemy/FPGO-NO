@@ -1,6 +1,6 @@
 import _ from "@lodash";
 import clsx from "clsx";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export const overviewStatuses = [
   {
@@ -88,10 +88,15 @@ export const overviewStatuses = [
     name: "Refund Pending",
     color: "bg-pending text-m-grey-700",
   },
+  {
+    id: 16,
+    name: "Reserved",
+    color: "bg-invoiced text-m-grey-700",
+  },
 ];
 
 function OverviewStatus(props) {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   let classes = "";
   props.name === "Active"
     ? (classes = "inline text-12 py-4 px-16 rounded-sm min-w-3xl")
@@ -123,6 +128,8 @@ function OverviewStatus(props) {
     ? (classes = "inline text-12 py-4 px-6 rounded-sm min-w-3xl")
     : props.name === "Refund Pending"
     ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Reserved"
+    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : (classes = "inline text-12 py-4 px-10 rounded-sm min-w-3xl");
 
   return (
