@@ -1348,7 +1348,7 @@ const OrderInformation = ({ info }) => {
                                 />
                               </div>
                               <div className="mt-32 sm:mt-0">
-                                <div className="form-pair-input gap-x-20">
+                                <div className={`${info?.customerDetails?.type === "Corporate" ? 'form-pair-input': ''} gap-x-20 `}>
                                   <Controller
                                     name="customerName"
                                     control={control}
