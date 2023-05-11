@@ -788,7 +788,7 @@ const PaymentConfirmation = () => {
                     variant="contained"
                     className="font-semibold rounded-4 bg-primary-50 text-primary-800 w-full md:w-auto z-99"
                     onClick={() => {
-                      navigate(`/reservations/${reservationUuid}/checkout`);
+                      navigate(`/reservations/details/${reservationUuid}`);
                     }}
                   >
                     {t("label:backToReservationDetails")}

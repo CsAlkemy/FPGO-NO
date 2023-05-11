@@ -134,7 +134,7 @@ const ReservationInformation = ({ info }) => {
           <div className="create-order-date-container pt-32">
             <div className="flex flex-col gap-5">
               <Controller
-                name="orderDate"
+                name="reservationDate"
                 control={control}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <DesktopDatePicker
@@ -157,7 +157,9 @@ const ReservationInformation = ({ info }) => {
                       },
                     }}
                     value={
-                      info?.orderDate ? prepareOrderDate(info?.orderDate) : ""
+                      info?.reservationDate
+                        ? prepareOrderDate(info?.reservationDate)
+                        : ""
                     }
                     // value="30 Nov, 2022"
                     required
@@ -169,8 +171,8 @@ const ReservationInformation = ({ info }) => {
                         onBlur={onBlur}
                         required
                         type="date"
-                        error={!!errors.orderDate}
-                        helperText={errors?.orderDate?.message}
+                        error={!!errors.reservationDate}
+                        helperText={errors?.reservationDate?.message}
                         sx={{
                           svg: { color: "#69C77E" },
                         }}

@@ -2,11 +2,11 @@ import { lazy } from "react";
 import authRoles from "../../data-access/utils/AuthRoles";
 import ListOverview from "../overviews/reservations/listOverview";
 
-const ReservationCreate = lazy(() => 
+const ReservationCreate = lazy(() =>
   import("../../components/salesManagement/reservations/createReservations")
-); 
+);
 
-const ReservationDetails = lazy(() => 
+const ReservationDetails = lazy(() =>
   import("../../components/salesManagement/reservations/details")
 );
 
@@ -14,11 +14,11 @@ const ReservationCheckout = lazy(() =>
   import("../../components/salesManagement/reservations/payments/checkout")
 );
 
-const PaymentConfirmation = lazy(() => 
+const PaymentConfirmation = lazy(() =>
   import("../../components/salesManagement/reservations/payments/information")
 );
 
-const PaymentStatus = lazy(() => 
+const PaymentStatus = lazy(() =>
   import("../../components/salesManagement/reservations/payments/status")
 );
 
@@ -44,16 +44,13 @@ export const ReservationsConfig = {
       },
     },
   },
-  auth: [
-    `${authRoles.businessAdmin}`, 
-    `${authRoles.user}`
-  ],
+  auth: [`${authRoles.businessAdmin}`, `${authRoles.user}`],
   routes: [
     {
       path: "/create-reservations",
-      element: <ReservationCreate />
-    }
-  ]
+      element: <ReservationCreate />,
+    },
+  ],
 };
 
 export const ReservationsConfEx = {
@@ -86,13 +83,13 @@ export const ReservationsConfEx = {
   routes: [
     {
       path: "/reservations",
-      element: <ListOverview />
+      element: <ListOverview />,
     },
     {
-      path: "/reservations-details/:uuid",
-      element: <ReservationDetails />
-    }
-  ]
+      path: "/reservations-view/details/:uuid",
+      element: <ReservationDetails />,
+    },
+  ],
 };
 
 export const ReservationCart = {
@@ -120,16 +117,16 @@ export const ReservationCart = {
   auth: authRoles.allUserInclucingUnAuthenticatedUser,
   routes: [
     {
-      path: "/reservations/:uuid/checkout",
-      element: <ReservationCheckout />
-    }, 
-    {
-      path: "/reservations/:uuid/payment",
-      element: <PaymentConfirmation />
+      path: "/reservations/details/:uuid",
+      element: <ReservationCheckout />,
     },
     {
-      path: "/reservations/:uuid/confirmation",
-      element: <PaymentStatus />
-    }
-  ]
+      path: "/reservations/checkout/:uuid",
+      element: <PaymentConfirmation />,
+    },
+    {
+      path: "/reservations/confirmation/:uuid",
+      element: <PaymentStatus />,
+    },
+  ],
 };

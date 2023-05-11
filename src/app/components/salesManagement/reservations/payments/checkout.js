@@ -254,7 +254,7 @@ const ReservationCheckout = () => {
                 className="font-semibold rounded-4 bg-primary-500"
                 onClick={() => {
                   navigate(
-                    `/reservations/${reservationDetails.orderUuid}/payment`
+                    `/reservations/checkout/${reservationDetails.orderUuid}`
                   );
                 }}
               >

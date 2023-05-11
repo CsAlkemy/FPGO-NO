@@ -21,7 +21,7 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
-  reservationListOverview
+  reservationListOverview,
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -218,7 +218,12 @@ export default function OverviewHeader(props) {
                 value={props.selectedDate}
                 onChange={handleDateChange}
                 renderInput={(params) => (
-                  <TextField size="small" {...params}  error={false} type="date" />
+                  <TextField
+                    size="small"
+                    {...params}
+                    error={false}
+                    type="date"
+                  />
                 )}
                 disableFuture
                 disabled={props.isLoading}
@@ -279,10 +284,11 @@ export default function OverviewHeader(props) {
                     className="px-16"
                   >
                     <MenuItem onClick={() => navigate(`/customers/private`)}>
-                      <AddIcon className='text-[#68C7E7]' /> {t("label:privateCustomer")}
+                      <AddIcon className="text-[#68C7E7]" />{" "}
+                      {t("label:privateCustomer")}
                     </MenuItem>
                     <MenuItem onClick={() => navigate(`/customers/corporate`)}>
-                      <AddIcon className='text-[#50C9B1]' />
+                      <AddIcon className="text-[#50C9B1]" />
                       {t("label:corporateCustomer")}
                     </MenuItem>
                   </Menu>
