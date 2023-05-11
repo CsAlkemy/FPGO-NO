@@ -41,7 +41,7 @@ const orderReceipt = () => {
           <p></p>
           <Pdf
             targetRef={ref}
-            filename={`kvittering_${info?.organizationDetails?.name}_${info?.orderUuid}.pdf`}
+            filename={`kvittering_${orderDetails?.organizationDetails?.name}_${orderDetails?.orderUuid}.pdf`}
             // x={0.5}
             // y={0.5}
           >

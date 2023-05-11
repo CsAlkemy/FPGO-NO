@@ -206,7 +206,7 @@ const createOrder = () => {
                 <Button
                   color="secondary"
                   variant="outlined"
-                  className="bg-white text-MonochromeGray-700 button2 shadow-1 border-0"
+                  className="bg-white text-MonochromeGray-700 button2 border-0 shadow-1"
                   onClick={() => handleCancelOrder()}
                   startIcon={<Cancel className="text-red-400" />}
                   disabled={user.role[0] === FP_ADMIN}

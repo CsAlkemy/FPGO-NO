@@ -14,7 +14,8 @@ import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import {
   sendInvoiceDefaultValue,
-  sendInvoiceValidation, sendInvoiceValidationCorporate
+  sendInvoiceValidation,
+  sendInvoiceValidationCorporate,
 } from "../utils/helper";
 import { useTranslation } from "react-i18next";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -22,7 +23,7 @@ import { LoadingButton } from "@mui/lab";
 import {
   useGetUsersListQuery,
   useOrderExportToApticQuery,
-  useUpdateQuickOrderCustomerMutation
+  useUpdateQuickOrderCustomerMutation,
 } from "app/store/api/apiSlice";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
@@ -37,8 +38,9 @@ const SendInvoiceModal = (props) => {
   const [recheckSchema, setRecheckSchema] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const [updateQuickOrderCustomer, response] =useUpdateQuickOrderCustomerMutation();
-  const [customerType, setCustomerType] = useState("private")
+  const [updateQuickOrderCustomer, response] =
+    useUpdateQuickOrderCustomerMutation();
+  const [customerType, setCustomerType] = useState("private");
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -49,9 +51,15 @@ const SendInvoiceModal = (props) => {
       name: "sweden",
     },
   ]);
-  let schema = customerType === "private" ? sendInvoiceValidation : sendInvoiceValidationCorporate;
+  let schema =
+    customerType === "private"
+      ? sendInvoiceValidation
+      : sendInvoiceValidationCorporate;
   useEffect(() => {
-    schema = customerType === "private" ? sendInvoiceValidation : sendInvoiceValidationCorporate;
+    schema =
+      customerType === "private"
+        ? sendInvoiceValidation
+        : sendInvoiceValidationCorporate;
     if (recheckSchema) {
       if (customerType === "corporate") {
         clearErrors(["pNumber", "orgID"]);
@@ -63,7 +71,15 @@ const SendInvoiceModal = (props) => {
       }
     }
   }, [customerType]);
-  const { control, formState, handleSubmit, reset, clearErrors, setError, setValue } = useForm({
+  const {
+    control,
+    formState,
+    handleSubmit,
+    reset,
+    clearErrors,
+    setError,
+    setValue,
+  } = useForm({
     mode: "onChange",
     sendInvoiceDefaultValue,
     resolver: yupResolver(schema),
@@ -71,24 +87,33 @@ const SendInvoiceModal = (props) => {
   const { isValid, errors } = formState;
   const onSubmit = (values) => {
     setLoading(true);
-    const  data = OrdersService.prepareUpdateQuickOrderCustomer({ ...values, customerType });
-    updateQuickOrderCustomer({...data, uuid:customerInfo?.uuid}).then((response) => {
-      if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), {
-          variant: "success",
-        })
-        setEditOpen(false);
-      } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
-      }
-      setLoading(false);
+    const data = OrdersService.prepareUpdateQuickOrderCustomer({
+      ...values,
+      customerType,
     });
+    updateQuickOrderCustomer({ ...data, uuid: customerInfo?.uuid }).then(
+      (response) => {
+        if (response?.data?.status_code === 202) {
+          enqueueSnackbar(t(`message:${response?.data?.message}`), {
+            variant: "success",
+          });
+          setEditOpen(false);
+        } else {
+          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+            variant: "error",
+          });
+        }
+        setLoading(false);
+      }
+    );
   };
 
-  useEffect(()=>{
-    sendInvoiceDefaultValue.phone = customerInfo?.phone ? customerInfo?.phone : "";
-    reset({...sendInvoiceDefaultValue})
-  },[editOpen])
+  useEffect(() => {
+    sendInvoiceDefaultValue.phone = customerInfo?.phone
+      ? customerInfo?.phone
+      : "";
+    reset({ ...sendInvoiceDefaultValue });
+  }, [editOpen]);
 
   return (
     <div>
@@ -117,7 +142,9 @@ const SendInvoiceModal = (props) => {
                   {t("label:orderId")}: {customerInfo?.uuid}
                 </div>
               </div>
-              <div className="header6">{t("label:nok")} {customerInfo?.amount}</div>
+              <div className="header6">
+                {t("label:nok")} {customerInfo?.amount}
+              </div>
             </div>
             <hr />
             <form
@@ -133,8 +160,8 @@ const SendInvoiceModal = (props) => {
                         variant="outlined"
                         className={`${
                           customerType === "private"
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
+                            ? "create-order-capsule-button-active min-w-important-16"
+                            : "create-order-capsule-button min-w-important-16"
                         }`}
                         onClick={() => {
                           setCustomerType("private");
@@ -147,8 +174,8 @@ const SendInvoiceModal = (props) => {
                         variant="outlined"
                         className={`${
                           customerType === "corporate"
-                            ? "create-order-capsule-button-active"
-                            : "create-order-capsule-button"
+                            ? "create-order-capsule-button-active min-w-important-16"
+                            : "create-order-capsule-button min-w-important-16"
                         }`}
                         onClick={() => {
                           setCustomerType("corporate");
@@ -225,7 +252,7 @@ const SendInvoiceModal = (props) => {
                       />
                     </div>
                     <div className="">
-                      <div className="form-pair-input gap-x-20">
+                      <div className={`${customerType === "corporate"? 'form-pair-input': ''} gap-x-20 `}>
                         <Controller
                           name="customerName"
                           control={control}
@@ -239,8 +266,8 @@ const SendInvoiceModal = (props) => {
                               helperText={
                                 errors?.customerName?.message
                                   ? t(
-                                    `validation:${errors?.customerName?.message}`
-                                  )
+                                      `validation:${errors?.customerName?.message}`
+                                    )
                                   : ""
                               }
                               required
@@ -264,9 +291,7 @@ const SendInvoiceModal = (props) => {
                                 required
                                 helperText={
                                   errors?.orgID?.message
-                                    ? t(
-                                      `validation:${errors?.orgID?.message}`
-                                    )
+                                    ? t(`validation:${errors?.orgID?.message}`)
                                     : ""
                                 }
                                 variant="outlined"
@@ -276,32 +301,32 @@ const SendInvoiceModal = (props) => {
                             )}
                           />
                         )}
-                        {customerType === "private" && (
-                          <Controller
-                            name="pNumber"
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label={t("label:pNumber")}
-                                type="number"
-                                autoComplete="off"
-                                error={!!errors.pNumber}
-                                helperText={
-                                  errors?.pNumber?.message
-                                    ? t(
-                                      `validation:${errors?.pNumber?.message}`
-                                    )
-                                    : ""
-                                }
-                                // ref={orgOrPNumberRef}
-                                variant="outlined"
-                                fullWidth
-                                value={field.value || ""}
-                              />
-                            )}
-                          />
-                        )}
+                        {/*{customerType === "private" && (*/}
+                        {/*  <Controller*/}
+                        {/*    name="pNumber"*/}
+                        {/*    control={control}*/}
+                        {/*    render={({ field }) => (*/}
+                        {/*      <TextField*/}
+                        {/*        {...field}*/}
+                        {/*        label={t("label:pNumber")}*/}
+                        {/*        type="number"*/}
+                        {/*        autoComplete="off"*/}
+                        {/*        error={!!errors.pNumber}*/}
+                        {/*        helperText={*/}
+                        {/*          errors?.pNumber?.message*/}
+                        {/*            ? t(*/}
+                        {/*                `validation:${errors?.pNumber?.message}`*/}
+                        {/*              )*/}
+                        {/*            : ""*/}
+                        {/*        }*/}
+                        {/*        // ref={orgOrPNumberRef}*/}
+                        {/*        variant="outlined"*/}
+                        {/*        fullWidth*/}
+                        {/*        value={field.value || ""}*/}
+                        {/*      />*/}
+                        {/*    )}*/}
+                        {/*  />*/}
+                        {/*)}*/}
                         {/*<Controller*/}
                         {/*  name="orgIdOrPNumber"*/}
                         {/*  control={control}*/}
@@ -353,8 +378,8 @@ const SendInvoiceModal = (props) => {
                             helperText={
                               errors?.streetAddress?.message
                                 ? t(
-                                  `validation:${errors?.streetAddress?.message}`
-                                )
+                                    `validation:${errors?.streetAddress?.message}`
+                                  )
                                 : ""
                             }
                             variant="outlined"
@@ -414,7 +439,6 @@ const SendInvoiceModal = (props) => {
                         />
                       )}
                     />
-
                     <CountrySelect
                       control={control}
                       name={"country"}

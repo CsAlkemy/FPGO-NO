@@ -1038,14 +1038,8 @@ class OrdersService {
       msisdn,
       email: params?.email ? params?.email : null,
       name: params?.customerName ? params?.customerName : null,
-      personalNumber:
-        params?.pNumber
-          ? `${params?.pNumber}`
-          : null,
-      organizationId:
-        params?.orgID
-          ? `${params?.orgID}`
-          : null,
+      personalNumber: params?.pNumber ? `${params?.pNumber}` : null,
+      organizationId: params?.orgID ? `${params?.orgID}` : null,
       // organizationId : "fu",
       address: {
         street: params?.streetAddress ? params?.streetAddress : null,

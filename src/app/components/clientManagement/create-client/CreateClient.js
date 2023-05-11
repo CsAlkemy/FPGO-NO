@@ -270,11 +270,6 @@ const CreateClient = () => {
         password: values.APTICpassword,
         name: values.name,
         fpReference: values.fpReference,
-        // creditLimit: parseFloat(values.creditLimitCustomer),
-        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
-        // costLimitForOrder: parseFloat(values.costLimitforOrder),
-        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
-        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
         creditLimit:
           customApticInfoData === "purchase"
             ? parseFloat(values.creditLimitCustomer)
@@ -2162,6 +2157,7 @@ const CreateClient = () => {
                                   onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   className="text-right  custom-input-height"
                                   autoComplete="off"
                                   error={!!errors.vatValue}

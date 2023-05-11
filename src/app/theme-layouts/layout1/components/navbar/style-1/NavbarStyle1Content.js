@@ -65,7 +65,7 @@ function NavbarStyle1Content(props) {
             color="secondary"
             variant="outlined"
             className="button-outline-product flex justify-center items-center custom-position-for-nav-button mt-20 mb-10"
-              onClick={()=> {
+            onClick={()=> {
               navigate(`/quick-order`)
               dispatch(navbarCloseMobile());
             }}

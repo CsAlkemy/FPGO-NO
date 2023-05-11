@@ -21,7 +21,6 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
-  reservationListOverview
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -88,9 +87,6 @@ export default function OverviewHeader(props) {
         break;
       case ordersListOverview:
         navigate(`/create-order`);
-        break;
-      case reservationListOverview:
-        navigate(`/create-reservations`);
         break;
     }
     setAnchorEl(event.currentTarget);
@@ -168,8 +164,6 @@ export default function OverviewHeader(props) {
         return t("label:searchByProductNameAndID");
       case categoriesListOverview:
         return t("label:searchByCategoryNameAndID");
-      case reservationListOverview:
-        return t("label:searchByReservationIDNameOrPhoneNo");
       default:
         return t("label:searchByNameEmailPhoneNo");
     }
@@ -218,7 +212,12 @@ export default function OverviewHeader(props) {
                 value={props.selectedDate}
                 onChange={handleDateChange}
                 renderInput={(params) => (
-                  <TextField size="small" {...params}  error={false} type="date" />
+                  <TextField
+                    size="small"
+                    {...params}
+                    error={false}
+                    type="date"
+                  />
                 )}
                 disableFuture
                 disabled={props.isLoading}
@@ -279,10 +278,11 @@ export default function OverviewHeader(props) {
                     className="px-16"
                   >
                     <MenuItem onClick={() => navigate(`/customers/private`)}>
-                      <AddIcon className='text-[#68C7E7]' /> {t("label:privateCustomer")}
+                      <AddIcon className="text-[#68C7E7]" />{" "}
+                      {t("label:privateCustomer")}
                     </MenuItem>
                     <MenuItem onClick={() => navigate(`/customers/corporate`)}>
-                      <AddIcon className='text-[#50C9B1]' />
+                      <AddIcon className="text-[#50C9B1]" />
                       {t("label:corporateCustomer")}
                     </MenuItem>
                   </Menu>

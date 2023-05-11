@@ -547,7 +547,7 @@ const paymentInformation = () => {
                                 />
                               </div>
                               <div className="">
-                                <div className="form-pair-input gap-x-20">
+                                <div className={`${customData.customerType === "corporate" ? 'form-pair-input': ''} gap-x-20 `}>
                                   <Controller
                                     name="customerName"
                                     control={control}
@@ -572,36 +572,42 @@ const paymentInformation = () => {
                                       />
                                     )}
                                   />
-                                  <Controller
-                                    name="orgIdOrPNumber"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={
-                                          customData.customerType === "private"
-                                            ? t("label:pNumber")
-                                            : t("label:organizationId")
-                                        }
-                                        type="number"
-                                        autoComplete="off"
-                                        error={!!errors.orgIdOrPNumber}
-                                        required={
-                                          customData.customerType !== "private"
-                                        }
-                                        helperText={
-                                          errors?.orgIdOrPNumber?.message
-                                            ? t(
-                                                `validation:${errors?.orgIdOrPNumber?.message}`
-                                              )
-                                            : ""
-                                        }
-                                        variant="outlined"
-                                        fullWidth
-                                        value={field.value || ""}
-                                      />
-                                    )}
-                                  />
+                                  {
+                                      customData.customerType === "corporate" && (
+                                          <Controller
+                                              name="orgIdOrPNumber"
+                                              control={control}
+                                              render={({ field }) => (
+                                                  <TextField
+                                                      {...field}
+                                                      label={
+                                                        t("label:organizationId")
+                                                        // customData.customerType === "private"
+                                                        //     ? t("label:pNumber")
+                                                        //     : t("label:organizationId")
+                                                      }
+                                                      type="number"
+                                                      autoComplete="off"
+                                                      error={!!errors.orgIdOrPNumber}
+                                                      required={
+                                                          customData.customerType !== "private"
+                                                      }
+                                                      helperText={
+                                                        errors?.orgIdOrPNumber?.message
+                                                            ? t(
+                                                                `validation:${errors?.orgIdOrPNumber?.message}`
+                                                            )
+                                                            : ""
+                                                      }
+                                                      variant="outlined"
+                                                      fullWidth
+                                                      value={field.value || ""}
+                                                  />
+                                              )}
+                                          />
+                                      )
+                                  }
+
                                 </div>
                               </div>
                             </div>
@@ -1011,8 +1017,8 @@ const paymentInformation = () => {
                     apiLoading ||
                     (customData.paymentMethod === "invoice" &&
                       ((orderDetails.type.toLowerCase() === "regular" &&
-                        orderDetails?.creditCheck &&
-                        !isCreditChecked) ||
+                          orderDetails?.creditCheck &&
+                          !isCreditChecked) ||
                         (orderDetails.type.toLowerCase() === "quick" &&
                           !Object.keys(updatedData).length &&
                           !orderDetails?.customerDetails?.address)))

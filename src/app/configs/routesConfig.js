@@ -28,7 +28,6 @@ import UserManagementConfig from "../pages/userManagement/userManagementConfig";
 import PaymentConfig from "../pages/sales/paymentConfig";
 import RefundRequestsConfig from "../pages/overviews/refund-requests/RefundRequestsConfig";
 import Config404 from "../pages/404/404Config";
-import { ReservationsConfig, ReservationsConfEx, ReservationCart } from "../pages/sales/reservationsConfig";
 
 const routeConfigs = [
   DashboardConfig,
@@ -52,9 +51,6 @@ const routeConfigs = [
   PaymentConfig,
   RefundRequestsConfig,
   Config404,
-  ReservationsConfig,
-  ReservationsConfEx,
-  ReservationCart
 ];
 
 const routes = [

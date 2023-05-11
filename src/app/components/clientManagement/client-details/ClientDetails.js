@@ -815,11 +815,11 @@ const ClientDetails = () => {
                       <div>
                         {info?.status === "Active" ? (
                           <span className=" ml-5 bg-confirmed rounded-4 px-16 py-4 body3">
-                            Active
+                            {t("label:active")}
                           </span>
                         ) : (
                           <span className="bg-rejected ml-5 rounded-4 px-16 py-4 body3">
-                            Inactive
+                            {t("label:inactive")}
                           </span>
                         )}
                       </div>
@@ -846,11 +846,10 @@ const ClientDetails = () => {
                       loading={loading}
                       loadingPosition="center"
                       disabled={
-                        (!isDirty &&
-                          sameAddress === initialSameAddressRef &&
-                          initialIsPurchasable === customApticInfoData &&
-                          initialCurrency.code === currency.code) ||
-                        !isValid
+                        !isDirty &&
+                        sameAddress === initialSameAddressRef &&
+                        initialIsPurchasable === customApticInfoData &&
+                        initialCurrency.code === currency.code || !isValid
                       }
                     >
                       {t("label:update")}
@@ -2734,6 +2733,7 @@ const ClientDetails = () => {
                                           <TextField
                                             {...field}
                                             type="number"
+                                            onWheel={event => { event.target.blur()}}
                                             value={
                                               field.value === 0
                                                 ? 0

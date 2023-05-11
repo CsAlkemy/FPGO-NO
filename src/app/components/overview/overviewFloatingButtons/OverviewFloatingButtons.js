@@ -18,9 +18,9 @@ import {
   fpAdminUsersOverview,
   businessAdminUsersOverview,
   organizationWiseUsersOverview,
-  customerOrdersListOverview, refundRequestsOverview, 
-  reservationListOverview
-} from '../overviewTable/TablesName';
+  customerOrdersListOverview,
+  refundRequestsOverview,
+} from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddIcon from "@mui/icons-material/Add";
@@ -102,9 +102,6 @@ export default function OverviewFloatingButtons(props) {
         break;
       case ordersListOverview:
         navigate(`/create-order`);
-        break;
-      case reservationListOverview:
-        navigate(`/create-reservations`);
         break;
     }
     setAnchorEl(event.currentTarget);
@@ -279,30 +276,32 @@ export default function OverviewFloatingButtons(props) {
             </MenuItem>
           </Menu>
         </div>
-      ) : props.tableRef !== refundRequestsOverview && (
-        <div>
-          <Button
-            color="secondary"
-            variant="contained"
-            aria-haspopup="true"
-            onClick={handleClick}
-            className="rounded-full button2 text-white"
-            disabled={
-              ((props.tableRef === userListOverview ||
-                props.tableRef === fpAdminUsersOverview ||
-                props.tableRef === businessAdminUsersOverview) &&
-                user.role[0] === GENERAL_USER) ||
-              ((props.tableRef === ordersListOverview ||
-                props.tableRef === productsListOverview ||
-                props.tableRef === categoriesListOverview) &&
-                user.role[0] === FP_ADMIN) ||
-              (props.tableRef === clientsListOverview &&
-                user.role[0] !== FP_ADMIN)
-            }
-          >
-            {props.headerButtonLabel}
-          </Button>
-        </div>
+      ) : (
+        props.tableRef !== refundRequestsOverview && (
+          <div>
+            <Button
+              color="secondary"
+              variant="contained"
+              aria-haspopup="true"
+              onClick={handleClick}
+              className="rounded-full button2 text-white"
+              disabled={
+                ((props.tableRef === userListOverview ||
+                  props.tableRef === fpAdminUsersOverview ||
+                  props.tableRef === businessAdminUsersOverview) &&
+                  user.role[0] === GENERAL_USER) ||
+                ((props.tableRef === ordersListOverview ||
+                  props.tableRef === productsListOverview ||
+                  props.tableRef === categoriesListOverview) &&
+                  user.role[0] === FP_ADMIN) ||
+                (props.tableRef === clientsListOverview &&
+                  user.role[0] !== FP_ADMIN)
+              }
+            >
+              {props.headerButtonLabel}
+            </Button>
+          </div>
+        )
       )}
       <IconButton
         color="secondary"

@@ -39,7 +39,7 @@ import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
-import _, { head } from "lodash";
+import _ from "lodash";
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -69,8 +69,6 @@ const OrderModal = (props) => {
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
-  const [completeReservation] = useCompleteReservationMutation();
-  const [capturePayment] = useCapturePaymentMutation();
 
   const newString = flagMessage.split(":");
 
@@ -164,7 +162,7 @@ const OrderModal = (props) => {
         setFlag(false);
         setApiLoading(false);
       });
-    } else if (["Resend Order", "Resend Reservation"].includes(headerTitle)) {
+    } else if (headerTitle === "Resend Order") {
       setApiLoading(true);
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
@@ -177,7 +175,7 @@ const OrderModal = (props) => {
           enqueueSnackbar(t(`message:${res?.error?.data?.message}`), {
             variant: "error",
           });
-        if (window.location.pathname === `/create-order/details/${orderId}`)
+        if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
         else if (
           window.location.pathname === `/reservations-details/${orderId}`
@@ -189,7 +187,7 @@ const OrderModal = (props) => {
         }, 1000);
         setApiLoading(false);
       });
-    } else if (["Cancel Order", "Cancel Reservation"].includes(headerTitle)) {
+    } else if (headerTitle === "Cancel Order") {
       setApiLoading(true);
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
@@ -198,7 +196,7 @@ const OrderModal = (props) => {
           });
           // setApiLoading(false);
         }
-        if (window.location.pathname === `/create-order/details/${orderId}`)
+        if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
         else if (
           window.location.pathname === `/reservations-details/${orderId}`

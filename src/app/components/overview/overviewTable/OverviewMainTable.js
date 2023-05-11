@@ -44,7 +44,6 @@ import {
   refundRequestsOverview,
   subClientAdminOverview,
   userListOverview,
-  reservationListOverview
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from '../../../utils/UtilsService';
@@ -523,55 +522,6 @@ export default function OverviewMainTable(props) {
     }
   };
 
-  const reserveationListTableTabPanelsData = (event, newValue) => {
-    switch(newValue) {
-      case 0:
-        setData(props.tableData);
-        setFilteredData(props.tableData);
-        break;
-      case 1:
-        setData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
-        );
-        setFilteredData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
-        );
-        break;
-      case 2:
-        setData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "reserved")
-        );
-        setFilteredData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "reserved")
-        );
-        break;
-      case 3:
-        setData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "completed")
-        );
-        setFilteredData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "completed")
-        );
-        break;
-      case 4:
-        setData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "expired")
-        );
-        setFilteredData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "expired")
-        );
-        break;
-      case 5:
-        setData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "cancelled")
-        );
-        setFilteredData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "cancelled")
-        );
-        break;
-    }
-  };
-
   const handleTabChange = (event, newValue) => {
     setPage(0);
     switch (props.tableName) {
@@ -626,9 +576,6 @@ export default function OverviewMainTable(props) {
         break;
       case refundRequestsOverview:
         refundRequestsListTableTabPanelsData(event, newValue);
-        break;
-      case reservationListOverview:
-        reserveationListTableTabPanelsData(event, newValue);
         break;
     }
     setValue(newValue);
@@ -774,9 +721,6 @@ export default function OverviewMainTable(props) {
       case ordersListOverview:
         navigate(`/create-order/details/${info.uuid}`);
         break;
-      case reservationListOverview:
-        navigate(`/reservations-details/${info.uuid}`);
-        break;
     }
   };
 
@@ -857,8 +801,7 @@ export default function OverviewMainTable(props) {
                   .filter(
                     (headerRow) =>
                       headerRow.id !== "refundResend" &&
-                      headerRow.id !== "cancel" &&
-                      headerRow.id !== "options"
+                      headerRow.id !== "cancel"
                   )
                   .map((option) => (
                     <MenuItem
@@ -885,8 +828,7 @@ export default function OverviewMainTable(props) {
                       onClick={() => {
                         if (
                           props.tableName !== ordersListOverview &&
-                          props.tableName !== customerOrdersListOverview &&
-                          props.tableName !== reservationListOverview
+                          props.tableName !== customerOrdersListOverview
                         )
                           handleTableRowClick(row);
                       }}
@@ -1007,8 +949,7 @@ export default function OverviewMainTable(props) {
                                   props.tableName !== ordersListOverview &&
                                   props.tableName !==
                                     customerOrdersListOverview &&
-                                  props.tableName !== refundRequestsOverview &&
-                                  props.tableName !== reservationListOverview
+                                  props.tableName !== refundRequestsOverview
                                 )
                                   handleTableRowClick(row);
                               }}
