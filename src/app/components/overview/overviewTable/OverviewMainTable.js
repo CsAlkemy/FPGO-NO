@@ -44,6 +44,7 @@ import {
   refundRequestsOverview,
   subClientAdminOverview,
   userListOverview,
+  reservationListOverview
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from '../../../utils/UtilsService';
@@ -522,6 +523,9 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const reserveationListTableTabPanelsData = (event, newValue) => {
+  };
+
   const handleTabChange = (event, newValue) => {
     setPage(0);
     switch (props.tableName) {
@@ -576,6 +580,9 @@ export default function OverviewMainTable(props) {
         break;
       case refundRequestsOverview:
         refundRequestsListTableTabPanelsData(event, newValue);
+        break;
+      case reservationListOverview:
+        reserveationListTableTabPanelsData(event, newValue);
         break;
     }
     setValue(newValue);
@@ -828,7 +835,8 @@ export default function OverviewMainTable(props) {
                       onClick={() => {
                         if (
                           props.tableName !== ordersListOverview &&
-                          props.tableName !== customerOrdersListOverview
+                          props.tableName !== customerOrdersListOverview &&
+                          props.tableName !== reservationListOverview
                         )
                           handleTableRowClick(row);
                       }}
@@ -949,7 +957,8 @@ export default function OverviewMainTable(props) {
                                   props.tableName !== ordersListOverview &&
                                   props.tableName !==
                                     customerOrdersListOverview &&
-                                  props.tableName !== refundRequestsOverview
+                                  props.tableName !== refundRequestsOverview &&
+                                  props.tableName !== reservationListOverview
                                 )
                                   handleTableRowClick(row);
                               }}
