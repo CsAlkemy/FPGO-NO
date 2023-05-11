@@ -36,7 +36,6 @@ const index = () => {
   const [isDirty, setIsDirty] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
-
   React.useEffect(() => {
     if (isLoading) {
       UserService.getProfileByUUID(userId)

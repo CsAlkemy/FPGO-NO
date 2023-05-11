@@ -387,8 +387,8 @@ const ClientDetails = () => {
                   : info?.settings?.currencies[0].code === "DKK"
                   ? "Danish Krone"
                   : info?.settings?.currencies[0].code === "EUR"
-                    ? "European Euro"
-                    : "Norwegian Krone",
+                  ? "European Euro"
+                  : "Norwegian Krone",
             });
             setInitialCurrency({
               code: info?.settings?.currencies[0].code || "NOK",
@@ -400,8 +400,8 @@ const ClientDetails = () => {
                   : info?.settings?.currencies[0].code === "DKK"
                   ? "Danish Krone"
                   : info?.settings?.currencies[0].code === "EUR"
-                    ? "European Euro"
-                    : "Norwegian Krone",
+                  ? "European Euro"
+                  : "Norwegian Krone",
             });
           }
 
