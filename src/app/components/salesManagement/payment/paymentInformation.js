@@ -547,7 +547,7 @@ const paymentInformation = () => {
                                 />
                               </div>
                               <div className="">
-                                <div className={`${customData.customerType === "corporate" ? 'form-pair-input': ''} gap-x-20 `}>
+                                <div className="form-pair-input gap-x-20">
                                   <Controller
                                     name="customerName"
                                     control={control}
@@ -572,42 +572,36 @@ const paymentInformation = () => {
                                       />
                                     )}
                                   />
-                                  {
-                                      customData.customerType === "corporate" && (
-                                          <Controller
-                                              name="orgIdOrPNumber"
-                                              control={control}
-                                              render={({ field }) => (
-                                                  <TextField
-                                                      {...field}
-                                                      label={
-                                                        t("label:organizationId")
-                                                        // customData.customerType === "private"
-                                                        //     ? t("label:pNumber")
-                                                        //     : t("label:organizationId")
-                                                      }
-                                                      type="number"
-                                                      autoComplete="off"
-                                                      error={!!errors.orgIdOrPNumber}
-                                                      required={
-                                                          customData.customerType !== "private"
-                                                      }
-                                                      helperText={
-                                                        errors?.orgIdOrPNumber?.message
-                                                            ? t(
-                                                                `validation:${errors?.orgIdOrPNumber?.message}`
-                                                            )
-                                                            : ""
-                                                      }
-                                                      variant="outlined"
-                                                      fullWidth
-                                                      value={field.value || ""}
-                                                  />
-                                              )}
-                                          />
-                                      )
-                                  }
-
+                                  <Controller
+                                    name="orgIdOrPNumber"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={
+                                          customData.customerType === "private"
+                                            ? t("label:pNumber")
+                                            : t("label:organizationId")
+                                        }
+                                        type="number"
+                                        autoComplete="off"
+                                        error={!!errors.orgIdOrPNumber}
+                                        required={
+                                          customData.customerType !== "private"
+                                        }
+                                        helperText={
+                                          errors?.orgIdOrPNumber?.message
+                                            ? t(
+                                                `validation:${errors?.orgIdOrPNumber?.message}`
+                                              )
+                                            : ""
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        value={field.value || ""}
+                                      />
+                                    )}
+                                  />
                                 </div>
                               </div>
                             </div>
