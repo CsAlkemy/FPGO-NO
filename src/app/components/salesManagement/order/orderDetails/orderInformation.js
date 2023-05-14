@@ -447,6 +447,7 @@ const OrderInformation = ({ info }) => {
                                   //label="Qty"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.quantity}
                                   helperText={
@@ -531,6 +532,7 @@ const OrderInformation = ({ info }) => {
                                   className="bg-white custom-input-height col-span-1"
                                   // type="text"
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -664,6 +666,7 @@ const OrderInformation = ({ info }) => {
                                 //label="Qty"
                                 className="bg-white custom-input-height"
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.quantity}
                                 helperText={
@@ -752,6 +755,7 @@ const OrderInformation = ({ info }) => {
                                 className="bg-white custom-input-height"
                                 // type="text"
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.tax}
                                 helperText={
@@ -1849,6 +1853,7 @@ const OrderInformation = ({ info }) => {
                                           {...field}
                                           label={t("label:internalReferenceNo")}
                                           type="number"
+                                          onWheel={event => { event.target.blur()}}
                                           autoComplete="off"
                                           error={!!errors.internalReferenceNo}
                                           helperText={

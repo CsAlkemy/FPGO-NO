@@ -706,6 +706,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                                 {...field}
                                                 label={t("label:zipCode")}
                                                 type="number"
+                                                onWheel={event => { event.target.blur()}}
                                                 autoComplete="off"
                                                 disabled={sameAddress}
                                                 error={!!errors.shippingZip}

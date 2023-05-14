@@ -257,6 +257,7 @@ const ReservationInformation = ({ info }) => {
                     {...field}
                     label={t("label:referenceNo")}
                     type="number"
+                    onWheel={event => { event.target.blur()}}
                     autoComplete="off"
                     variant="outlined"
                     fullWidth
@@ -417,6 +418,7 @@ const ReservationInformation = ({ info }) => {
                               {...field}
                               className="bg-white custom-input-height"
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               variant="outlined"
                               fullWidth
@@ -440,6 +442,7 @@ const ReservationInformation = ({ info }) => {
                               className="bg-white custom-input-height"
                               // type="text"
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.tax}
                               helperText={errors?.order?.[index]?.tax?.message}
@@ -566,6 +569,7 @@ const ReservationInformation = ({ info }) => {
                           //label="Discount"
                           className="bg-white custom-input-height"
                           type="number"
+                          onWheel={event => { event.target.blur()}}
                           autoComplete="off"
                           //error={!!errors.reservationAmount}
                           //helperText={errors?.reservationAmount?.message}
@@ -592,6 +596,7 @@ const ReservationInformation = ({ info }) => {
                           className="bg-white custom-input-height"
                           // type="text"
                           type="number"
+                          onWheel={event => { event.target.blur()}}
                           autoComplete="off"
                           error={!!errors?.order?.[index]?.tax}
                           helperText={errors?.order?.[index]?.tax?.message}

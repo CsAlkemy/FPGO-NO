@@ -1127,6 +1127,7 @@ const ReservationCreate = () => {
                       {...field}
                       label={t("label:referenceNo")}
                       type="number"
+                      onWheel={event => { event.target.blur()}}
                       autoComplete="off"
                       error={!!errors.referenceNumber}
                       helperText={
@@ -1449,6 +1450,7 @@ const ReservationCreate = () => {
                                   label="Tax"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -1607,6 +1609,7 @@ const ReservationCreate = () => {
                             //label="Discount"
                             className="bg-white custom-input-height"
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             error={!!errors.reservationAmount}
                             helperText={errors?.reservationAmount?.message}
@@ -1675,6 +1678,7 @@ const ReservationCreate = () => {
                               className="bg-white custom-input-height"
                               // type="text"
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.tax}
                               helperText={errors?.order?.[index]?.tax?.message}
@@ -1962,6 +1966,7 @@ const ReservationCreate = () => {
                               {...field}
                               label={t("label:organizationId")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errorsCustomer.orgID}
                               required
@@ -1988,6 +1993,7 @@ const ReservationCreate = () => {
                               {...field}
                               label={t("label:pNumber")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errorsCustomer.pNumber}
                               helperText={

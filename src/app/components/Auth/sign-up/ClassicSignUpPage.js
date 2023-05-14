@@ -196,6 +196,7 @@ function ClassicSignUpPage() {
                           className="mb-24 col-span-1 md:col-span-2"
                           label={t("label:organizationId")}
                           type="number"
+                          onWheel={event => { event.target.blur()}}
                           error={!!errors.organizationid}
                           helperText={errors?.organizationid?.message ? t(`validation:${errors?.organizationid?.message}`) : ""}
                           variant="outlined"

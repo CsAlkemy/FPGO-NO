@@ -206,6 +206,7 @@ const createCorporateCustomer = () => {
                           label={t("label:organizationId")}
                           className="col-span-1 md:col-span-1"
                           type="number"
+                          onWheel={event => { event.target.blur()}}
                           autoComplete="off"
                           error={!!errors.organizationID}
                           helperText={errors?.organizationID?.message ? t(`validation:${errors?.organizationID?.message}`) : ""}
@@ -515,6 +516,7 @@ const createCorporateCustomer = () => {
                                         {...field}
                                         label={t("label:zipCode")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         autoComplete="off"
                                         disabled={sameAddress}
                                         error={!!errors.shippingZip}

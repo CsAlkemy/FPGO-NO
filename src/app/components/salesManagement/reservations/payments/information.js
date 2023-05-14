@@ -510,6 +510,7 @@ const PaymentConfirmation = () => {
                                             : t("label:organizationId")
                                         }
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         autoComplete="off"
                                         error={!!errors.orgIdOrPNumber}
                                         required={

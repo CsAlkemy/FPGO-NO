@@ -474,6 +474,7 @@ const CreateClient = () => {
                           {...field}
                           label={t("label:organizationId")}
                           type="number"
+                          onWheel={event => { event.target.blur()}}
                           autoComplete="off"
                           error={!!errors.id}
                           helperText={
@@ -1036,6 +1037,7 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:zipCode")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.zip}
                               helperText={
@@ -1260,6 +1262,7 @@ const CreateClient = () => {
                                   {...field}
                                   label={t("label:zipCode")}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   disabled={sameAddress}
                                   error={!!errors.shippingZip}
@@ -1616,6 +1619,7 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:creditLimitForClient")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.creditLimitCustomer}
                               helperText={
@@ -1646,6 +1650,7 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:costLimitForCustomer")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.costLimitforCustomer}
                               helperText={
@@ -1675,6 +1680,7 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:costLimitForOrder")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.costLimitforOrder}
                               helperText={
@@ -1704,6 +1710,7 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:invoiceWithRegress")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.invoicewithRegress}
                               helperText={
@@ -1733,6 +1740,7 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:invoiceWithoutRegress")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.invoicewithoutRegress}
                               helperText={
@@ -2236,6 +2244,7 @@ const CreateClient = () => {
                             {...field}
                             label={t("label:fakturaB2b")}
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             error={!!errors.fakturaB2B}
                             hhelperText={
@@ -2264,6 +2273,7 @@ const CreateClient = () => {
                             {...field}
                             label={t("label:fakturaB2c")}
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             error={!!errors.fakturaB2C}
                             helperText={
