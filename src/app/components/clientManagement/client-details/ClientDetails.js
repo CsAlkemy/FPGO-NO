@@ -910,6 +910,7 @@ const ClientDetails = () => {
                                     {...field}
                                     label={t("label:organizationId")}
                                     type="number"
+                                    onWheel={event => { event.target.blur()}}
                                     autoComplete="off"
                                     error={!!errors.id}
                                     helperText={
@@ -1540,6 +1541,7 @@ const ClientDetails = () => {
                                         {...field}
                                         label={t("label:zipCode")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         autoComplete="off"
                                         value={field.value || ""}
                                         error={!!errors.zip}
@@ -1787,6 +1789,7 @@ const ClientDetails = () => {
                                             {...field}
                                             label={t("label:zipCode")}
                                             type="number"
+                                            onWheel={event => { event.target.blur()}}
                                             autoComplete="off"
                                             value={field.value || ""}
                                             error={!!errors.shippingZip}
@@ -2177,6 +2180,7 @@ const ClientDetails = () => {
                                         {...field}
                                         label={t("label:creditLimitForClient")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         value={field.value || ""}
                                         autoComplete="off"
                                         error={!!errors.creditLimitCustomer}
@@ -2208,6 +2212,7 @@ const ClientDetails = () => {
                                         {...field}
                                         label={t("label:costLimitForCustomer")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         value={field.value || ""}
                                         autoComplete="off"
                                         error={!!errors.costLimitforCustomer}
@@ -2238,6 +2243,7 @@ const ClientDetails = () => {
                                         {...field}
                                         label={t("label:costLimitForOrder")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         autoComplete="off"
                                         value={field.value || ""}
                                         error={!!errors.costLimitforOrder}
@@ -2268,6 +2274,7 @@ const ClientDetails = () => {
                                         {...field}
                                         label={t("label:invoiceWithRegress")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         autoComplete="off"
                                         value={field.value || ""}
                                         error={!!errors.nvoicewithRegress}
@@ -2298,6 +2305,7 @@ const ClientDetails = () => {
                                         {...field}
                                         label={t("label:invoiceWithoutRegress")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         autoComplete="off"
                                         value={field.value || ""}
                                         error={!!errors.invoicewithoutRegress}
@@ -2862,6 +2870,7 @@ const ClientDetails = () => {
                                       {...field}
                                       label={t("label:fakturaB2b")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       value={field.value || ""}
                                       error={!!errors.fakturaB2B}
@@ -2893,6 +2902,7 @@ const ClientDetails = () => {
                                       {...field}
                                       label={t("label:fakturaB2c")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.fakturaB2C}
                                       helperText={

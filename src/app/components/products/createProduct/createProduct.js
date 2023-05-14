@@ -242,6 +242,7 @@ const createProducts = (onSubmit = () => {}) => {
                         className="bg-white"
                         autoComplete="off"
                         error={!!errors.price}
+                        onWheel={event => { event.target.blur()}}
                         type='number'
                         helperText={
                           errors?.price?.message

@@ -161,6 +161,7 @@ export default function CreditCheckCorporateClient() {
                             {...field}
                             label={t("label:organizationId")}
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             error={!!errors.organizationId}
                             helperText={errors?.organizationId?.message ? t(`validation:${errors?.organizationId?.message}`) : ""}
                             variant="outlined"
