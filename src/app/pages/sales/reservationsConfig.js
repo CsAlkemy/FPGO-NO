@@ -121,11 +121,11 @@ export const ReservationCart = {
       element: <ReservationCheckout />,
     },
     {
-      path: "/reservations/checkout/:uuid",
+      path: "/reservations/details/:uuid/checkout",
       element: <PaymentConfirmation />,
     },
     {
-      path: "/reservations/confirmation/:uuid",
+      path: "/reservations/details/:uuid/confirmation",
       element: <PaymentStatus />,
     },
   ],
