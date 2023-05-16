@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
+  Autocomplete,
   Button,
   Checkbox,
   Dialog,
@@ -36,6 +37,21 @@ import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
 import _ from "lodash";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+const mockCycleData = [
+  { title: "Cycle 1", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 2", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 3", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 4", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 5", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 6", date: "01.08.22- 30.08.22" },
+];
 
 const OrderModal = (props) => {
   const { t } = useTranslation();
@@ -48,6 +64,7 @@ const OrderModal = (props) => {
     orderAmount,
     customerPhone,
     customerEmail,
+    orderType,
   } = props;
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
@@ -57,6 +74,7 @@ const OrderModal = (props) => {
   const [isDisableRefundRequest, setIsDisableRefundRequest] =
     React.useState(false);
   const [flagMessage, setFlagMessage] = useState("");
+  const [categoriesList, setCategoriesList] = useState([]);
   const [refundOrder] = useRefundOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
   const [resendOrder] = useResendOrderMutation();
@@ -375,7 +393,8 @@ const OrderModal = (props) => {
                 )}
                 {(headerTitle === "Send Refund" ||
                   headerTitle === "Refund Order") &&
-                  !flag && (
+                  !flag &&
+                  orderType !== "SUBSCRIPTION" && (
                     <div>
                       <div className="caption2">{t("label:refundType")}</div>
                       <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
@@ -434,6 +453,54 @@ const OrderModal = (props) => {
                           />
                         )}
                       />
+                    </div>
+                  )}
+                {headerTitle === "Send Refund" &&
+                  orderType === "SUBSCRIPTION" && (
+                    <div>
+                      <Controller
+                        control={control}
+                        name="subscriptionCycle"
+                        render={({ field: { ref, onChange, ...field } }) => (
+                          <Autocomplete
+                            multiple
+                            options={mockCycleData}
+                            disableCloseOnSelect
+                            getOptionLabel={(option) => option.title}
+                            onChange={(_, data) => onChange(data)}
+                            renderOption={(props, option, { selected }) => (
+                              <li {...props}>
+                                <Checkbox
+                                  icon={icon}
+                                  checkedIcon={checkedIcon}
+                                  style={{ marginRight: 8 }}
+                                  checked={selected}
+                                />
+                                {`${option.title} ( ${option.date} )`}
+                              </li>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                {...field}
+                                inputRef={ref}
+                                required
+                                placeholder={t(
+                                  "label:subscriptionCycle*"
+                                )}
+                              />
+                            )}
+                          />
+                        )}
+                      />
+                      <div className='flex justify-between items-center mt-5 text-MonochromeGray-500 body4 px-4'>
+                        Select up to 8 subscription cycles
+                        <span>{watch("subscriptionCycle")?.length || 0 }/8</span>
+                      </div>
+                      <div className="p-16 flex justify-between items-center subtitle1 mt-32 bg-MonochromeGray-25 rounded-6 text-MonochromeGray-700">
+                        Total Refund Amount
+                        <span>NOK 0</span>
+                      </div>
                     </div>
                   )}
                 {/*{headerTitle === "moreThanThreeRefundAttempts" && (*/}
