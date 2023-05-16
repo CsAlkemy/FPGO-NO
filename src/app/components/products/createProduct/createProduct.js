@@ -7,13 +7,14 @@ import {
   Button,
   Checkbox,
   Drawer,
-  FormControl, FormControlLabel,
+  FormControl,
+  FormControlLabel,
   FormHelperText,
   InputAdornment,
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -44,6 +45,8 @@ const createProducts = (onSubmit = () => {}) => {
   // const [productType, setProductType] = React.useState(1);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [isDifferentAccountNumber, setIsDifferentAccountNumber] =
+    useState(false);
   const [open, setOpen] = React.useState(false);
   const [taxes, setTaxes] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -242,8 +245,10 @@ const createProducts = (onSubmit = () => {}) => {
                         className="bg-white"
                         autoComplete="off"
                         error={!!errors.price}
-                        onWheel={event => { event.target.blur()}}
-                        type='number'
+                        onWheel={(event) => {
+                          event.target.blur();
+                        }}
+                        type="number"
                         helperText={
                           errors?.price?.message
                             ? t(`validation:${errors?.price?.message}`)
@@ -314,18 +319,21 @@ const createProducts = (onSubmit = () => {}) => {
                       <TextField
                         {...field}
                         label={t("label:accountCode")}
+                        value={field.value || ""}
                         className="bg-white"
                         autoComplete="off"
                         error={!!errors.price}
-                        onWheel={event => { event.target.blur()}}
-                        type='number'
+                        onWheel={(event) => {
+                          event.target.blur();
+                        }}
+                        type="number"
                         helperText={
                           errors?.accountCode?.message
                             ? t(`validation:${errors?.accountCode?.message}`)
                             : ""
                         }
                         variant="outlined"
-                        required
+                        disabled={!isDifferentAccountNumber}
                         fullWidth
                       />
                     )}
@@ -333,23 +341,24 @@ const createProducts = (onSubmit = () => {}) => {
                 </div>
                 <div className="grid grid-cols-1 px-20 mb-16 mt-0 w-1/2">
                   <Controller
-                    name="trems"
+                    name="differentAccountNumber"
                     type="checkbox"
                     control={control}
-                    render={({
-                               field: { onChange, value, onBlur, ref },
-                             }) => (
-                      <FormControl error={!!errors.trems} required>
+                    render={({ field: { onChange, value, onBlur, ref } }) => (
+                      <FormControl error={!!errors.differentAccountNumber} required>
                         <FormControlLabel
-                          style={{ display: "table" }}
+                          // style={{ display: "table" }}
                           control={
-                            <div style={{ display: "table-cell" }}>
+                            <div >
                               <Checkbox
                                 checked={value}
                                 onBlur={onBlur}
-                                onChange={(ev) =>
-                                  onChange(ev.target.checked)
-                                }
+                                onChange={(ev) => {
+                                  setIsDifferentAccountNumber(
+                                    !isDifferentAccountNumber
+                                  );
+                                  onChange(ev.target.checked);
+                                }}
                                 inputRef={ref}
                                 required
                                 defaultValue={false}
@@ -357,13 +366,15 @@ const createProducts = (onSubmit = () => {}) => {
                             </div>
                           }
                           label={
-                            <div className="">
-                              {t("label:differentAccountNumberTextWillChange")}
+                            <div className="body3">
+                              {t("label:differentAccountCode")}
                             </div>
                           }
                         />
-                        <FormHelperText className='ml-32'>
-                          {errors?.trems?.message ? t(`validation:${errors?.trems?.message}`) : ""}
+                        <FormHelperText className="ml-32">
+                          {errors?.differentAccountNumber?.message
+                            ? t(`validation:${errors?.differentAccountNumber?.message}`)
+                            : ""}
                         </FormHelperText>
                       </FormControl>
                     )}
@@ -454,7 +465,16 @@ const createProducts = (onSubmit = () => {}) => {
                             {taxes && taxes.length ? (
                               taxes.map((tax, index) =>
                                 tax.status === "Active" ? (
-                                  <MenuItem key={index} value={tax.value}>
+                                  <MenuItem
+                                    key={index}
+                                    value={tax.value}
+                                    onClick={() =>
+                                      setValue(
+                                        "accountCode",
+                                        tax.bookKeepingReference
+                                      )
+                                    }
+                                  >
                                     {tax.value}
                                   </MenuItem>
                                 ) : (
