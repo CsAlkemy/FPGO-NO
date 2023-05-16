@@ -370,6 +370,12 @@ const ClientDetails = () => {
           defaultValue.fakturaB2C = info?.apticInformation?.b2cInvoiceFee
             ? info?.apticInformation?.b2cInvoiceFee
             : "";
+          defaultValue.b2bAccountCode = info?.apticInformation?.b2bAccountCode
+            ? info?.apticInformation?.b2bAccountCode
+            : "";
+          defaultValue.b2cAccountCode = info?.apticInformation?.b2cAccountCode
+            ? info?.apticInformation?.b2cAccountCode
+            : "";
 
           if (
             info?.settings &&
@@ -419,7 +425,7 @@ const ClientDetails = () => {
             for (let i = 0; i < info?.settings?.vatRates.length; i++) {
               setValue(
                 `vat[${i}].vatCode`,
-                info?.settings?.vatCode[`${i}`].name
+                info?.settings?.vatRates[`${i}`].vatCode
               );
               setValue(
                 `vat[${i}].vatName`,
