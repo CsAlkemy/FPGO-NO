@@ -310,6 +310,9 @@ const ClientDetails = () => {
           defaultValue.accountNumber = info?.bankInformation?.accountNumber
             ? info?.bankInformation?.accountNumber
             : "";
+          defaultValue.bankAccountCode = info?.bankInformation?.accountCode
+            ? info?.bankInformation?.accountCode
+            : "";
           defaultValue.IBAN = info?.bankInformation?.iban
             ? info?.bankInformation?.iban
             : "";
@@ -324,6 +327,12 @@ const ClientDetails = () => {
             : "";
           defaultValue.name = info?.apticInformation?.name
             ? info?.apticInformation?.name
+            : "";
+          defaultValue.accountCode = info?.apticInformation?.accountCode
+            ? info?.apticInformation?.accountCode
+            : "";
+          defaultValue.refundReference = info?.apticInformation?.refundReference
+            ? info?.apticInformation?.refundReference
             : "";
           defaultValue.costLimitforCustomer = info?.apticInformation
             ?.costLimitForCustomer
@@ -408,6 +417,10 @@ const ClientDetails = () => {
           reset({ ...defaultValue });
           if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
             for (let i = 0; i < info?.settings?.vatRates.length; i++) {
+              setValue(
+                `vat[${i}].vatCode`,
+                info?.settings?.vatCode[`${i}`].name
+              );
               setValue(
                 `vat[${i}].vatName`,
                 info?.settings?.vatRates[`${i}`].name
@@ -600,7 +613,7 @@ const ClientDetails = () => {
                 info?.settings?.vatRates[index]?.uuid
                   ? info?.settings?.vatRates[index]?.uuid
                   : null,
-              vatCode: parseInt(vat?.vatCode) || null,
+              vatCode: vat?.vatCode || null,
               name: vat.vatName ? vat?.vatName : null,
               value: parseFloat(vat.vatValue),
               isActive: vat?.vatActive ? vat.vatActive : false,
@@ -2846,7 +2859,7 @@ const ClientDetails = () => {
                                         control={control}
                                         render={({ field }) => (
                                           <TextField
-                                            onKeyUp={() => changeVatRateIcon(index)}
+                                            // onKeyUp={() => changeVatRateIcon(index)}
                                             {...field}
                                             type="text"
                                             autoComplete="off"
