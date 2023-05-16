@@ -23,7 +23,8 @@ import {
   validateSchemaOrderRefundModal,
   validateSchemaOrderResendModal,
   validateSchemaCompleteReservationModal,
-  validateSchemaReservationCaptureCardModal,
+  validateSchemaReservationChargeCardModal,
+  validateSchemaReservationCaptureModal,
 } from "../../utils/helper";
 import { useTranslation } from "react-i18next";
 import {
@@ -102,7 +103,9 @@ const OrderModal = (props) => {
         : headerTitle === "Complete Reservation"
         ? validateSchemaCompleteReservationModal
         : headerTitle === "Charge Amount"
-        ? validateSchemaReservationCaptureCardModal
+        ? validateSchemaReservationChargeCardModal
+        : headerTitle === "Capture Payment"
+        ? validateSchemaReservationCaptureModal
         : [
             "Cancel Order",
             "Reject Refund Request",
@@ -135,8 +138,6 @@ const OrderModal = (props) => {
   };
 
   const onSubmit = (values) => {
-    alert();
-    console.log(values);
     const data = {
       ...values,
       uuid: orderId,
@@ -302,7 +303,7 @@ const OrderModal = (props) => {
       setApiLoading(true);
       capturePayment({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
-          console.log(response?.data);
+          //console.log(response?.data);
           setApiLoading(false);
         }
       );
@@ -676,7 +677,9 @@ const OrderModal = (props) => {
                       (["Cancel Reservation", "Complete Reservation"].includes(
                         headerTitle
                       ) &&
-                        !watch("cancellationNote"))
+                        !watch("cancellationNote")) ||
+                      (headerTitle === "Capture Payment" &&
+                        !watch("captureAmount"))
                     }
                   >
                     {headerTitle === "Resend Order"

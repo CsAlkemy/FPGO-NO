@@ -407,6 +407,7 @@ export const OrderModalDefaultValue = {
   cancellationNote: "",
   refundAmount: "",
   chargeAmount: "",
+  captureAmount: "",
 };
 
 export const validateSchemaOrderResendModal = yup.object().shape({
@@ -424,6 +425,9 @@ export const validateSchemaOrderCancelModal = yup.object().shape({
 });
 export const validateSchemaOrderRefundModal = yup.object().shape({
   refundAmount: yup.string().required("youMustEnterTheRefundAmount"),
+});
+export const validateSchemaReservationCaptureModal = yup.object().shape({
+  captureAmount: yup.string().required("youMustEnterTheCaptureAmount"),
 });
 export const validateSchemaMoreThanFiveThousand = yup.object().shape({
   cancellationNote: yup.string().notRequired(),
@@ -550,7 +554,7 @@ export const validateSchemaCompleteReservationModal = yup.object().shape({
     .max(200, "completionNoteRules")
     .required("youMustEnterTheCompletionNote"),
 });
-export const validateSchemaReservationCaptureCardModal = yup.object().shape({
+export const validateSchemaReservationChargeCardModal = yup.object().shape({
   chargeAmount: yup.string().required("youMustEnterTheChargeAmount"),
 });
 
@@ -586,7 +590,8 @@ export const validateSchemaCreateReservation = yup.object().shape({
       ),
       tax: yup.lazy(() =>
         yup.string().when(["productName", "reservationAmount"], {
-          is: (productName, reservationAmount) => productName || reservationAmount,
+          is: (productName, reservationAmount) =>
+            productName || reservationAmount,
           // is:"",
           then: yup.string().required(""),
           // otherwise: yup.string()

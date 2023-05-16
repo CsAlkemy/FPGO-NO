@@ -86,9 +86,10 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                       log.slug === "payment-link-opened" ||
                       log.slug === "partial-refunded" ||
                       log.slug === "refund-sent" ||
-                      log.slug === "invoice-order-exported" ||
+                      log.slug === "amount-captured-from-reservation" ||
                       log.slug === "customer-information-updated" ||
-                      log.slug === "payment-successful" ? (
+                      log.slug === "payment-successful" ||
+                      log.slug === "reservation-completed" ? (
                         <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
                           <CheckIcon className="icon-size-16 text-white" />
                         </TimelineDot>
@@ -109,8 +110,8 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                     <TimelineContent>
                       <div className="ml-5 mt-10 mb-10">
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {/*{log.title}*/}
-                          {t(`label:${log.translationKey}`)}
+                          {log.title}
+                          {/* {t(`label:${log.translationKey}`)} */}
                         </div>
                         {log?.datetime && (
                           <div className="flex gap-5">
@@ -147,16 +148,6 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                             </div>
                           </div>
                         )}
-                        {log?.actionBy && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:actionBy")}:
-                            </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.actionBy}
-                            </div>
-                          </div>
-                        )}
                         {log?.paymentMethod && (
                           <div className="flex gap-5">
                             <div className="text-MonochromeGray-300 body4">
@@ -174,6 +165,16 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                             </div>
                             <div className="body4 text-MonochromeGray-700">
                               {log.note}
+                            </div>
+                          </div>
+                        )}
+                        {log?.actionBy && (
+                          <div className="flex gap-5">
+                            <div className="text-MonochromeGray-300 body4">
+                              {t("label:actionBy")}:
+                            </div>
+                            <div className="body4 text-MonochromeGray-700">
+                              {log.actionBy}
                             </div>
                           </div>
                         )}
