@@ -1761,6 +1761,7 @@ export default function OverViewMainTableBody(props) {
               <OrderModal
                 open={open}
                 setOpen={setOpen}
+                orderType={'SUBSCRIPTION'}
                 headerTitle={headerTitle}
                 orderId={props.row.id}
                 orderName={props.row.name}

@@ -80,7 +80,7 @@ const orderLog = ({ info }) => {
                       </TimelineDot>
                     ) : log.slug === "payment-failed" ||
                       log.slug === "order-converted-to-invoice" ? (
-                      <TimelineDot className=' bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0'>
+                      <TimelineDot className=" bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0">
                         <PriorityHighIcon className="icon-size-16 text-white" />
                       </TimelineDot>
                     ) : (
@@ -88,7 +88,7 @@ const orderLog = ({ info }) => {
                         <PriorityHighIcon className="icon-size-16 text-white" />
                       </TimelineDot>
                     )}
-                      {index + 1 < logs.length && <TimelineConnector />}
+                    {index + 1 < logs.length && <TimelineConnector />}
                   </TimelineSeparator>
                   <TimelineContent>
                     <div className="ml-5 mt-10 mb-10">
@@ -128,6 +128,16 @@ const orderLog = ({ info }) => {
                           </div>
                           <div className="body4 text-MonochromeGray-700">
                             {log.refundAmount}
+                          </div>
+                        </div>
+                      )}
+                      {log?.subscriptionCycle && (
+                        <div className="flex gap-5">
+                          <div className="text-MonochromeGray-300 body4">
+                            {t("label:subscriptionCycle")}:
+                          </div>
+                          <div className="body4 text-MonochromeGray-700">
+                            {log.subscriptionCycle}
                           </div>
                         </div>
                       )}
