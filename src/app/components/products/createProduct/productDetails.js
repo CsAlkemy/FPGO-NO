@@ -7,13 +7,13 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  FormControl,
+  FormControl, FormControlLabel,
   FormHelperText,
   InputAdornment,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
+  TextField
 } from "@mui/material";
 import { selectUser } from "app/store/userSlice";
 import { useSnackbar } from "notistack";
@@ -51,6 +51,7 @@ const createProducts = () => {
   const [defaultCategories, setDefaultCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = React.useState(false);
+  const [isDifferentAccountNumber, setIsDifferentAccountNumber] = React.useState(false);
   const userInfo = UtilsServices.getFPUserData();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -93,6 +94,7 @@ const createProducts = () => {
     });
   };
   // form end
+  console.log("isDifferentAccountNumber",isDifferentAccountNumber);
 
   useEffect(() => {
     if (isLoading) {
@@ -155,6 +157,7 @@ const createProducts = () => {
     defaultValueCreateProduct.manufacturer = info?.manufacturerId
       ? info?.manufacturerId
       : "";
+    defaultValueCreateProduct.accountCode = info?.accountCode || "";
     defaultValueCreateProduct.assignedCategories = info?.categories
       ? info?.categories
       : "";
@@ -431,6 +434,71 @@ const createProducts = () => {
                             disabled={productType === 2 ? true : false}
                             value={field.value || ""}
                           />
+                        )}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 px-10 sm:w-1/2">
+                      <Controller
+                        name="accountCode"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label={t("label:accountCode")}
+                            className="bg-white"
+                            autoComplete="off"
+                            error={!!errors.price}
+                            onWheel={event => { event.target.blur()}}
+                            type='number'
+                            helperText={
+                              errors?.accountCode?.message
+                                ? t(`validation:${errors?.accountCode?.message}`)
+                                : ""
+                            }
+                            variant="outlined"
+                            disabled={!isDifferentAccountNumber}
+                            required
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 px-20 mb-16 mt-0 w-1/2">
+                      <Controller
+                        name="differentAccountNumber"
+                        type="checkbox"
+                        control={control}
+                        render={({
+                                   field: { onChange, value, onBlur, ref },
+                                 }) => (
+                          <FormControl error={!!errors.trems} required>
+                            <FormControlLabel
+                              style={{ display: "table" }}
+                              control={
+                                <div style={{ display: "table-cell" }}>
+                                  <Checkbox
+                                    checked={value}
+                                    onBlur={onBlur}
+                                    onChange={(ev) =>{
+                                      setIsDifferentAccountNumber(!isDifferentAccountNumber)
+                                      onChange(ev.target.checked)
+                                    }
+                                    }
+                                    inputRef={ref}
+                                    defaultValue={false}
+                                  />
+                                </div>
+                              }
+                              label={
+                                <div className="">
+                                  {t("label:differentAccountNumberTextWillChange")}
+                                </div>
+                              }
+                            />
+                            <FormHelperText className='ml-32'>
+                              {errors?.trems?.message ? t(`validation:${errors?.trems?.message}`) : ""}
+                            </FormHelperText>
+                          </FormControl>
                         )}
                       />
                     </div>
