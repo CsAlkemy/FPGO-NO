@@ -21,7 +21,8 @@ import RedoIcon from "@mui/icons-material/Redo";
 import UndoIcon from "@mui/icons-material/Undo";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { CharCont } from "../../../../utils/helperFunctions";
+import { CharCont, ThousandSeparator } from "../../../../utils/helperFunctions";
+//import {ThousandSeparator} from "../../../../utils/helperFunctions";
 
 const ReservationLog = ({ info, logContent, handleModalOpen }) => {
   const { t } = useTranslation();
@@ -40,19 +41,27 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
           <div className="amount-section-inner flex flex-wrap">
             <div className="amount-col amount-reserved-col">
               <div className="subtitle3">{t("Label:amountReserved")}</div>
-              <div className="subtitle1">NOK 26,000</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.paymentDetails.reservedAmount)}
+              </div>
             </div>
             <div className="amount-col amount-paid-col">
               <div className="subtitle3">{t("Label:amountPaid")}</div>
-              <div className="subtitle1">NOK 24,000</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.formattedAmount.amountPaid)}
+              </div>
             </div>
             <div className="amount-col">
               <div className="subtitle3">{t("Label:amountRefunded")}</div>
-              <div className="subtitle1">NOK 3,000</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.formattedAmount.amountRefunded)}
+              </div>
             </div>
             <div className="amount-col">
               <div className="subtitle3">{t("Label:amountInBank")}</div>
-              <div className="subtitle1">NOK 21,000</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.formattedAmount.amountInBank)}
+              </div>
             </div>
           </div>
         </div>

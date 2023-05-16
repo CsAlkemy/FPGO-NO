@@ -25,7 +25,7 @@ import { FP_ADMIN } from "../../../../utils/user-roles/UserRoles";
 const ReservationDetails = () => {
   const { t } = useTranslation();
 
-  const [value, setValue] = React.useState("2");
+  const [value, setValue] = React.useState("1");
   const [isLoading, setIsLoading] = useState(true);
   const [isLogLoading, setIsLogLoading] = useState(true);
   const [info, setInfo] = useState({ status: "" });
@@ -48,7 +48,7 @@ const ReservationDetails = () => {
   const handleModalOpen = (decision) => {
     setOpen(true);
     setAnchorEl(null);
-    setRemainingAmount(null);
+    //setRemainingAmount(null);
     setAmountBank(null);
 
     if (decision === "resendReservations") setHeaderTitle("Resend Reservation");
@@ -71,6 +71,18 @@ const ReservationDetails = () => {
     }
   };
 
+  const formattedPaymentDetails = (payment_details) => {
+    const totalPaid =
+      payment_details.capturedAmount + payment_details.chargedAmount;
+    const amountInBank = totalPaid - payment_details.amountRefunded;
+    return {
+      reservedAmount: payment_details.reservedAmount,
+      amountPaid: totalPaid,
+      amountRefunded: payment_details.amountRefunded,
+      amountInBank: amountInBank,
+    };
+  };
+
   useEffect(() => {
     if (isLoading) {
       ReservationService.getReservationDetailsByUUID(queryParams.uuid)
@@ -81,7 +93,18 @@ const ReservationDetails = () => {
           //info.status = 'paid';
           info.isPaid = true;
 
+          info.paymentDetails.capturedAmount = 1000;
+          info.paymentDetails.chargedAmount = 7000;
+          info.paymentDetails.amountRefunded = 3000;
+
+          info.formattedAmount = formattedPaymentDetails(info.paymentDetails);
+          console.log(info);
+
           setInfo(info);
+          setRemainingAmount(
+            info.paymentDetails.reservedAmount -
+              info.paymentDetails.capturedAmount
+          );
           setIsLoading(false);
         })
         .catch((error) => {
@@ -340,8 +363,8 @@ const ReservationDetails = () => {
               info.customerDetails.countryCode + info.customerDetails.msisdn
             }
             customerEmail={info.customerDetails.email}
-            //amountInBank={amountBank}
-            //remainingAmount={remainingAmount}
+            amountInBank={info.formattedAmount.amountInBank}
+            remainingAmount={remainingAmount}
           />
         </div>
       )}

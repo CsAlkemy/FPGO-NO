@@ -131,9 +131,12 @@ const OrderModal = (props) => {
         ? amountInBank
         : orderAmount;
     setValue("refundAmount", amount);
+    setValue("captureAmount", amount);
   };
 
   const onSubmit = (values) => {
+    alert();
+    console.log(values);
     const data = {
       ...values,
       uuid: orderId,
@@ -345,7 +348,40 @@ const OrderModal = (props) => {
                   </div>
                 )}
 
-              {(amountInBank || remainingAmount) && (
+              {headerTitle === "Complete Reservation" && (
+                <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
+                  <div className="text-MonochromeGray-700">
+                    {t("label:amountInBank")}
+                  </div>
+                  <div className="text-MonochromeGray-700">
+                    {t("label:nok")} {ThousandSeparator(amountInBank)}
+                  </div>
+                </div>
+              )}
+
+              {headerTitle === "Refund from Reservation" && (
+                <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
+                  <div className="text-MonochromeGray-700">
+                    {t("label:refandFromResurvation")}
+                  </div>
+                  <div className="text-MonochromeGray-700">
+                    {t("label:nok")} {ThousandSeparator(remainingAmount)}
+                  </div>
+                </div>
+              )}
+
+              {headerTitle === "Capture Payment" && (
+                <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
+                  <div className="text-MonochromeGray-700">
+                    {t("label:remainingAmount")}
+                  </div>
+                  <div className="text-MonochromeGray-700">
+                    {t("label:nok")} {ThousandSeparator(remainingAmount)}
+                  </div>
+                </div>
+              )}
+
+              {/* {(amountInBank || remainingAmount) && (
                 <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
                   <div className="text-MonochromeGray-700">
                     {amountInBank
@@ -359,7 +395,7 @@ const OrderModal = (props) => {
                       : ThousandSeparator(remainingAmount)}
                   </div>
                 </div>
-              )}
+              )} */}
 
               <form
                 name="modalForm"
@@ -472,7 +508,11 @@ const OrderModal = (props) => {
                 ].includes(headerTitle) &&
                   !flag && (
                     <div>
-                      <div className="caption2">{t("label:refundType")}</div>
+                      <div className="caption2">
+                        {headerTitle === "Capture Payment"
+                          ? t("label:paymentType")
+                          : t("label:refundType")}
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
                         <Button
                           variant="outlined"
@@ -497,6 +537,7 @@ const OrderModal = (props) => {
                           onClick={() => {
                             setRefundType("partial");
                             setValue("refundAmount", "");
+                            setValue("captureAmount", "");
                           }}
                         >
                           {headerTitle === "Capture Payment"
@@ -504,36 +545,68 @@ const OrderModal = (props) => {
                             : t("label:partialRefund")}
                         </Button>
                       </div>
-                      <Controller
-                        name="refundAmount"
-                        className="mt-32"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={
-                              headerTitle === "Capture Payment"
-                                ? t("label:amount")
-                                : t("label:refundAmount")
-                            }
-                            type="number"
-                            autoComplete="off"
-                            variant="outlined"
-                            error={!!errors.refundAmount}
-                            helperText={errors?.refundAmount?.message}
-                            fullWidth
-                            required
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                            disabled={refundType === "full"}
-                          />
-                        )}
-                      />
+                      {headerTitle === "Capture Payment" ? (
+                        <Controller
+                          name="captureAmount"
+                          className="mt-32"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:amount")}
+                              type="number"
+                              autoComplete="off"
+                              variant="outlined"
+                              error={!!errors.captureAmount}
+                              helperText={errors?.captureAmount?.message}
+                              fullWidth
+                              required
+                              InputProps={{
+                                inputProps: { min: 0, max: 10 },
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:nok")}
+                                  </InputAdornment>
+                                ),
+                              }}
+                              onChange={(e) => {
+                                var value = parseInt(e.target.value, 10);
+                                if (value > remainingAmount)
+                                  value = remainingAmount;
+                                setValue("captureAmount", value);
+                              }}
+                              disabled={refundType === "full"}
+                            />
+                          )}
+                        />
+                      ) : (
+                        <Controller
+                          name="refundAmount"
+                          className="mt-32"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:refundAmount")}
+                              type="number"
+                              autoComplete="off"
+                              variant="outlined"
+                              error={!!errors.refundAmount}
+                              helperText={errors?.refundAmount?.message}
+                              fullWidth
+                              required
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:nok")}
+                                  </InputAdornment>
+                                ),
+                              }}
+                              disabled={refundType === "full"}
+                            />
+                          )}
+                        />
+                      )}
                     </div>
                   )}
                 {/*{headerTitle === "moreThanThreeRefundAttempts" && (*/}
@@ -599,7 +672,11 @@ const OrderModal = (props) => {
                         headerTitle
                       ) &&
                         checkEmail === false &&
-                        checkPhone === false)
+                        checkPhone === false) ||
+                      (["Cancel Reservation", "Complete Reservation"].includes(
+                        headerTitle
+                      ) &&
+                        !watch("cancellationNote"))
                     }
                   >
                     {headerTitle === "Resend Order"

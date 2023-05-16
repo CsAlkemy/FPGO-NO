@@ -29,7 +29,7 @@ const baseQueryWithoutToken = fetchBaseQuery({
 });
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
-  userInfo = UtilsServices.getFPUserData()
+  userInfo = UtilsServices.getFPUserData();
   let result =
     args?.url === `/credit/check/checkout/private` ||
     args?.url === `/credit/check/checkout/corporate`
@@ -93,7 +93,7 @@ export const apiSlice = createApi({
     "ApprovedClientsList",
     "ApprovalClientsList",
     "RefundRequestsList",
-    "ReservationList"
+    "ReservationList",
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -415,12 +415,10 @@ export const apiSlice = createApi({
         url: `/reservations/complete/${payload.uuid}`,
         method: "PUT",
         body: {
-          note: payload?.cancellationNote
-            ? payload.cancellationNote
-            : null,
+          note: payload?.cancellationNote ? payload.cancellationNote : null,
         },
       }),
-      invalidatesTags: ["ReservationList"]
+      invalidatesTags: ["ReservationList"],
     }),
     capturePayment: builder.mutation({
       query: (payload) => ({
@@ -428,7 +426,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: {
           isPartial: payload.isPartial,
-          amount: parseFloat(payload.refundAmount),
+          amount: parseFloat(payload.captureAmount),
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -484,5 +482,5 @@ export const {
   useCreateReservationMutation,
   useGetReservationListQuery,
   useCompleteReservationMutation,
-  useCapturePaymentMutation
+  useCapturePaymentMutation,
 } = apiSlice;
