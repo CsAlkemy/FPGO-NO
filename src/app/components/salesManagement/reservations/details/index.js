@@ -102,8 +102,7 @@ const ReservationDetails = () => {
 
           setInfo(info);
           setRemainingAmount(
-            info.paymentDetails.reservedAmount -
-              info.paymentDetails.capturedAmount
+            info.grandTotal - info.paymentDetails.capturedAmount
           );
           setIsLoading(false);
         })

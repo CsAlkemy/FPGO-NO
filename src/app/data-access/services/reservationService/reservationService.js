@@ -170,6 +170,8 @@ class ReservationService {
     lists = data.map((row) => {
       const preparePhone =
         row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
+      const totalPaid = row.capturedAmount + row.chargedAmount;
+      const amountInBank = totalPaid - row.amountRefunded;
 
       return {
         uuid: row.reservationUuid,
@@ -180,9 +182,10 @@ class ReservationService {
         isPaid: row.isPaid,
         clientName: row.clientName ?? null,
         customer: row.customerName,
-        amountPaid: row.amountPaid,
-        amountInBank: row.amountInBank,
+        amountPaid: totalPaid,
+        amountInBank: amountInBank,
         reservedAmount: row.reservedAmount,
+        reservationAmount: row.reservationAmount,
         remainingAmount: row.remainingCaptureRunway ?? null,
         status: row.status.toLowerCase(),
         translationKey: row.translationKey,

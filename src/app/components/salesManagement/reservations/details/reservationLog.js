@@ -42,7 +42,7 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
             <div className="amount-col amount-reserved-col">
               <div className="subtitle3">{t("Label:amountReserved")}</div>
               <div className="subtitle1">
-                NOK {ThousandSeparator(info.paymentDetails.reservedAmount)}
+                NOK {ThousandSeparator(info.grandTotal)}
               </div>
             </div>
             <div className="amount-col amount-paid-col">

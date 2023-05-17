@@ -700,8 +700,8 @@ const ReservationInformation = ({ info }) => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {/* {ThousandSeparator(grandTotal.toFixed(2) / 2)} */}
-                        {info.orderSummary
-                          ? ThousandSeparator(info.orderSummary.grandTotal)
+                        {info.grandTotal
+                          ? ThousandSeparator(info.grandTotal)
                           : 0}
                       </div>
                     </div>
