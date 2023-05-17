@@ -21,6 +21,9 @@
 .reservation-create-form .product-list-grid-container {
   grid-template-columns: 26% 20% 20% 11% 15% 6%;
 }
+.charge-modal .product-list-grid-container {
+  grid-template-columns: 26% 20% 20% 11% 15% 6%;
+}
 .reservation-details-page .product-list-grid-container {
   grid-template-columns: 26% 20% 20% 11% 17%;
 }
@@ -137,6 +140,11 @@
   font-family: LatoRegular;
   font-weight: 400;
   line-height: 28px;
+}
+
+.charge-modal .md\:min-w-lg {
+  min-width: 1060px;
+  max-width: 100%;
 }
 
 @media only screen and (min-width: 960px) {

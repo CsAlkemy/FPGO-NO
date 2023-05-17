@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import {
   Button,
   Checkbox,
@@ -9,6 +10,10 @@ import {
   FormHelperText,
   InputAdornment,
   TextField,
+  IconButton,
+  Autocomplete,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
@@ -72,6 +77,12 @@ const OrderModal = (props) => {
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
   const [completeReservation] = useCompleteReservationMutation();
   const [capturePayment] = useCapturePaymentMutation();
+
+  //const [modalSize, setModalSize] = useState("sm");
+  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  const [disableRowIndexes, setDisableRowIndexes] = useState([]);
+  const [productsList, setProductsList] = useState([]);
+  const [taxes, setTaxes] = React.useState([]);
 
   const newString = flagMessage.split(":");
 
@@ -314,17 +325,36 @@ const OrderModal = (props) => {
       ? "requestForRefundApproval"
       : headerTitle;
   const orderIdTextLabel = orderIdText ? orderIdText : t("label:orderId");
+
+  const modalSize = headerTitle === "Charge Amount" ? "lg" : "sm";
+  const disableCurrentProductRow = (index) => {
+    setDisableRowIndexes([...disableRowIndexes, index]);
+  };
+  const enableCurrentProductRow = (ind) => {
+    setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
+  };
+
+  const pnameOnBlur = (e) => {
+    if (!e.target.value.length) {
+      resetField(`${e.target.name}`);
+    }
+  };
+  let defaultTaxValue;
   return (
     <div>
       <Dialog
         open={open}
-        maxWidth="sm"
+        maxWidth={modalSize}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        className="create-order-dialog"
+        className={
+          headerTitle == "Charge Amount"
+            ? "charge-modal create-order-dialog"
+            : "create-order-dialog"
+        }
       >
-        <div className="p-10 w-full md:min-w-sm rounded-4">
+        <div className={"p-10 w-full rounded-4 md:min-w-" + modalSize}>
           <div className="p-16 subtitle1 m-10 bg-primary-50 rounded-6 text-primary-800">
             {t(`label:${_.camelCase(headerTitleText)}`)}
           </div>
@@ -618,6 +648,246 @@ const OrderModal = (props) => {
                 {/*)}*/}
                 {["Charge Amount"].includes(headerTitle) && (
                   <div>
+                    <div className="product-list">
+                      <div className="my-10 product-list-grid-container product-list-grid-container-height bg-primary-25 subtitle3 gap-10 px-10">
+                        <div className="my-auto text-MonochromeGray-500">
+                          {t("label:itemName")}
+                        </div>
+                        <div className="my-auto text-MonochromeGray-500">
+                          {t("label:productIdOptional")}
+                        </div>
+                        <div className="my-auto text-right text-MonochromeGray-500">
+                          {t("label:reservationAmount")}
+                        </div>
+                        <div className="my-auto text-center text-MonochromeGray-500">
+                          {t("label:tax")}
+                        </div>
+                        <div className="my-auto text-right text-MonochromeGray-500">
+                          {t("label:totalReservation")}
+                        </div>
+                        <div className="my-auto"></div>
+                      </div>
+                      {addOrderIndex.map((index) => (
+                        <div
+                          key={`order:${index}`}
+                          className="mt-20 product-list-grid-container gap-10 px-5"
+                        >
+                          <div className="my-auto">
+                            <Controller
+                              control={control}
+                              required
+                              name={`order[${index}].productName`}
+                              render={({
+                                field: { ref, onChange, ...field },
+                              }) => (
+                                <Autocomplete
+                                  disabled={
+                                    index === 0 ||
+                                    index === Math.min(...addOrderIndex)
+                                      ? false
+                                      : !watch(
+                                          `order[${
+                                            index -
+                                            (addOrderIndex[
+                                              addOrderIndex.indexOf(index)
+                                            ] -
+                                              addOrderIndex[
+                                                addOrderIndex.indexOf(index) - 1
+                                              ])
+                                          }].productName`
+                                        )
+                                  }
+                                  freeSolo
+                                  autoSelect
+                                  options={productsList}
+                                  onBlur={pnameOnBlur}
+                                  // forcePopupIcon={<Search />}
+                                  getOptionLabel={(option) =>
+                                    option?.name
+                                      ? option.name
+                                      : option
+                                      ? option
+                                      : ""
+                                  }
+                                  size="small"
+                                  //className="custom-input-height"
+                                  onChange={(_, data) => {
+                                    triggerProductSelected(index, data);
+
+                                    return onChange(data);
+                                  }}
+                                  renderOption={(
+                                    props,
+                                    option,
+                                    { selected }
+                                  ) => (
+                                    <MenuItem
+                                      {...props}
+                                      key={option.uuid}
+                                    >{`${option.name}`}</MenuItem>
+                                  )}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      {...field}
+                                      className="custom-input-height"
+                                      inputRef={ref}
+                                      // error={!!errors?.order?.[index]?.productName}
+                                      // helperText={errors?.order?.[index]?.productName?.message}
+                                    />
+                                  )}
+                                />
+                              )}
+                            />
+                          </div>
+                          <div className="my-auto ">
+                            <Controller
+                              name={`order[${index}].productID`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  //label="Product ID"
+                                  className="bg-white custom-input-height"
+                                  type="text"
+                                  autoComplete="off"
+                                  error={!!errors.productID}
+                                  helperText={errors?.productID?.message}
+                                  variant="outlined"
+                                  fullWidth
+                                  disabled={disableRowIndexes.includes(index)}
+                                />
+                              )}
+                            />
+                          </div>
+                          <div className="my-auto">
+                            <Controller
+                              name={`order[${index}].reservationAmount`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  //label="Discount"
+                                  className="bg-white custom-input-height"
+                                  type="number"
+                                  autoComplete="off"
+                                  error={!!errors.reservationAmount}
+                                  helperText={
+                                    errors?.reservationAmount?.message
+                                  }
+                                  variant="outlined"
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          </div>
+                          <div className="my-auto">
+                            {!disableRowIndexes.includes(index) ? (
+                              <Controller
+                                name={`order[${index}].tax`}
+                                control={control}
+                                render={({ field }) => (
+                                  <FormControl
+                                    error={!!errors?.order?.[index]?.tax}
+                                    required
+                                    fullWidth
+                                  >
+                                    <Select
+                                      {...field}
+                                      labelId="tax"
+                                      id="tax"
+                                      sx={{ height: 44 }}
+                                      defaultValue={defaultTaxValue}
+                                      className="custom-select-create-order pt-8 mt-1"
+                                      disabled={disableRowIndexes.includes(
+                                        index
+                                      )}
+                                    >
+                                      {taxes && taxes.length ? (
+                                        taxes.map((tax, index) =>
+                                          tax.status === "Active" ? (
+                                            <MenuItem
+                                              key={index}
+                                              value={tax.value}
+                                            >
+                                              {tax.value}
+                                            </MenuItem>
+                                          ) : (
+                                            <MenuItem
+                                              key={index}
+                                              value={tax.value}
+                                              disabled
+                                            >
+                                              {tax.value}
+                                            </MenuItem>
+                                          )
+                                        )
+                                      ) : (
+                                        <MenuItem key={0} value={0}>
+                                          0
+                                        </MenuItem>
+                                      )}
+                                    </Select>
+                                    <FormHelperText>
+                                      {errors?.order?.[index]?.tax?.message}
+                                    </FormHelperText>
+                                  </FormControl>
+                                )}
+                              />
+                            ) : (
+                              <Controller
+                                name={`order[${index}].tax`}
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    //label="Discount"
+                                    className="bg-white custom-input-height"
+                                    // type="text"
+                                    type="number"
+                                    autoComplete="off"
+                                    error={!!errors?.order?.[index]?.tax}
+                                    helperText={
+                                      errors?.order?.[index]?.tax?.message
+                                    }
+                                    variant="outlined"
+                                    required
+                                    disabled={disableRowIndexes.includes(index)}
+                                    fullWidth
+                                  />
+                                )}
+                                PopperProps={{
+                                  sx: {
+                                    "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
+                                      {
+                                        borderRadius: "8px",
+                                        "&.Mui-selected": {
+                                          backgroundColor: "#c9eee7",
+                                          color: "#323434",
+                                        },
+                                      },
+                                  },
+                                }}
+                              />
+                            )}
+                          </div>
+                          <div className="my-auto">
+                            <div className="body3 text-right">
+                              {t("label:nok")}{" "}
+                              {/* {ThousandSeparator(productWiseTotal(index))} */}
+                            </div>
+                          </div>
+                          <div className="my-auto">
+                            <IconButton
+                              aria-label="delete"
+                              //onClick={() => onDelete(index)}
+                            >
+                              <RemoveCircleOutlineIcon className="icon-size-20 text-red-500" />
+                            </IconButton>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                     <Controller
                       name="chargeAmount"
                       className="mt-32"
