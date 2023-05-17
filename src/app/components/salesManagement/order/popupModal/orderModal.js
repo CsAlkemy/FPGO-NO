@@ -137,12 +137,14 @@ const OrderModal = (props) => {
       uuid: orderId,
       checkPhone,
       checkEmail,
+      fullRefundAmount : orderAmount,
+      headerTitle
     };
     if (flag) {
       setApiLoading(true);
       const payload = {
         isPartial: refundType === "partial",
-        amount: values?.refundAmount,
+        amount: ["Send Refund", "Refund Order"].includes(headerTitle) ? orderAmount : values?.refundAmount,
         message: flagMessage,
         uuid: orderId,
       };
@@ -463,8 +465,8 @@ const OrderModal = (props) => {
                   </div>
                 )}
                 {[
-                  "Send Refund",
-                  "Refund Order",
+                  // "Send Refund",
+                  // "Refund Order",
                   "Capture Payment",
                   "Refund from Reservation",
                 ].includes(headerTitle) &&
@@ -535,6 +537,12 @@ const OrderModal = (props) => {
                       />
                     </div>
                   )}
+                {["Send Refund", "Refund Order"].includes(headerTitle) && (
+                  <div className="flex justify-between py-16 px-12" style={{backgroundColor: "#F7F7F7", borderRadius: "4px"}}>
+                    <p className="subtitle2">{t("label:refundableAmount")}</p>
+                    <p className="subtitle2">{t("label:nok")} {orderAmount}</p>
+                  </div>
+                )}
                 {/*{headerTitle === "moreThanThreeRefundAttempts" && (*/}
                 {/*  <div>*/}
                 {/*    You have exceeded your monthly allowance of 3 refunds.*/}
