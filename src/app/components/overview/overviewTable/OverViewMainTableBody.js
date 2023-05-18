@@ -1769,10 +1769,10 @@ export default function OverViewMainTableBody(props) {
           rdt === "amountPaid" ||
           rdt === "amountInBank"
         ) {
-          const rowVal =
-            rdt === "reservedAmount"
-              ? props.row["reservationAmount"]
-              : props.row[rdt];
+          // const rowVal =
+          //   rdt === "reservedAmount"
+          //     ? props.row["reservationAmount"]
+          //     : props.row[rdt];
           return (
             <TableCell
               key={`${props.row.uuid}-${rdt}`}
@@ -1783,7 +1783,7 @@ export default function OverViewMainTableBody(props) {
             >
               {/* {JSON.stringify(props.row)} */}
               {props.row ? (
-                `${t("label:nok")} ${ThousandSeparator(rowVal)}`
+                `${t("label:nok")} ${ThousandSeparator(props.row[rdt])}`
               ) : (
                 <Skeleton variant="text" />
               )}

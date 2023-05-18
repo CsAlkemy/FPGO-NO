@@ -221,6 +221,53 @@ class ReservationService {
         });
     });
   };
+
+  prepareChargeAmountPayload = (params) => {
+    const products =
+      params.order.length &&
+      params.order
+        .filter(
+          (ordr) =>
+            ordr.productName !== undefined &&
+            ordr.reservationAmount !== undefined &&
+            ordr.tax !== undefined &&
+            ordr.productName !== null &&
+            ordr.reservationAmount !== null &&
+            ordr.tax !== null &&
+            ordr.productName !== "" &&
+            ordr.reservationAmount !== "" &&
+            ordr.tax !== ""
+        )
+        .map((order) => {
+          //Decimal comma to dot separator conversion logic
+          const rate = order.reservationAmount;
+          const splitedRate = rate.toString().includes(",")
+            ? rate.split(",")
+            : rate;
+          const dotFormatRate =
+            typeof splitedRate === "object"
+              ? `${splitedRate[0]}.${splitedRate[1]}`
+              : splitedRate;
+          const floatRate = parseFloat(dotFormatRate);
+
+          return {
+            name: order?.productName ? order?.productName : null,
+            productId: order.productID,
+            //quantity: order.quantity,
+            // rate: order.rate,
+            rate: floatRate,
+            //discount: order?.discount ? order?.discount : 0,
+            tax: order.tax,
+            amount: floatRate,
+          };
+        });
+    return {
+      products: {
+        ...products,
+      },
+      orderSummary: params.orderSummary,
+    };
+  };
 }
 
 const instance = new ReservationService();

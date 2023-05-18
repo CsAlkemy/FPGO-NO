@@ -22,7 +22,11 @@
   grid-template-columns: 26% 20% 20% 11% 15% 6%;
 }
 .charge-modal .product-list-grid-container {
-  grid-template-columns: 26% 20% 20% 11% 15% 6%;
+  grid-template-columns: 25% 20% 20% 11% 14% 6%;
+}
+.charge-modal .button-group {
+  border: none;
+  padding-top: 0;
 }
 .reservation-details-page .product-list-grid-container {
   grid-template-columns: 26% 20% 20% 11% 17%;
@@ -145,6 +149,9 @@
 .charge-modal .md\:min-w-lg {
   min-width: 1060px;
   max-width: 100%;
+}
+.charge-modal form[name="modalForm"] {
+  padding-top: 0;
 }
 
 @media only screen and (min-width: 960px) {

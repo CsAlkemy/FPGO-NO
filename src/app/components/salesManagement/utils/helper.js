@@ -408,6 +408,7 @@ export const OrderModalDefaultValue = {
   refundAmount: "",
   chargeAmount: "",
   captureAmount: "",
+  order: [],
 };
 
 export const validateSchemaOrderResendModal = yup.object().shape({
@@ -555,7 +556,40 @@ export const validateSchemaCompleteReservationModal = yup.object().shape({
     .required("youMustEnterTheCompletionNote"),
 });
 export const validateSchemaReservationChargeCardModal = yup.object().shape({
-  chargeAmount: yup.string().required("youMustEnterTheChargeAmount"),
+  //chargeAmount: yup.string().required("youMustEnterTheChargeAmount"),
+  order: yup.array().of(
+    yup.object().shape({
+      // productName: yup.string().required('name'),
+      productName: yup.lazy(() =>
+        yup.string().when(["reservationAmount", "tax"], {
+          is: (reservationAmount, tax) => reservationAmount || tax,
+          // is: "",
+          then: yup.string().required(""),
+          // otherwise: yup.string()
+        })
+      ),
+      reservationAmount: yup.lazy(() =>
+        yup.string().when(["productName", "tax"], {
+          is: (productName, tax) => productName || tax,
+          // is: "",
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9,]+$/),
+          // otherwise: yup.string()
+        })
+      ),
+      tax: yup.lazy(() =>
+        yup.string().when(["productName", "reservationAmount"], {
+          is: (productName, reservationAmount) =>
+            productName || reservationAmount,
+          // is:"",
+          then: yup.string().required(""),
+          // otherwise: yup.string()
+        })
+      ),
+    })
+  ),
 });
 
 /************* For reservation create *********************/

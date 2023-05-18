@@ -296,8 +296,8 @@ const ReservationCreate = () => {
         grandTotal,
       },
     });
-    // console.log(data);
-    // return;
+    console.log(data);
+    return;
     createReservation(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {

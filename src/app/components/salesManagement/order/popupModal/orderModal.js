@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Button,
   Checkbox,
@@ -17,7 +18,12 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
+import UtilsServices from "../../../../data-access/utils/UtilsServices";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
+import ProductService from "../../../../data-access/services/productsService/ProductService";
+import ClientService from "../../../../data-access/services/clientsService/ClientService";
+import ReservationService from "../../../../data-access/services/reservationService/reservationService";
+
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -83,6 +89,12 @@ const OrderModal = (props) => {
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
   const [productsList, setProductsList] = useState([]);
   const [taxes, setTaxes] = React.useState([]);
+  const [itemLoader, setItemLoader] = useState(false);
+  const userInfo = UtilsServices.getFPUserData();
+  let subTotal = 0;
+  let totalTax = 0;
+  let totalDiscount = 0;
+  let grandTotal = 0;
 
   const newString = flagMessage.split(":");
 
@@ -103,6 +115,7 @@ const OrderModal = (props) => {
     handleSubmit,
     reset,
     setValue,
+    resetField,
     watch,
     getValues,
   } = useForm({
@@ -134,6 +147,42 @@ const OrderModal = (props) => {
     OrderModalDefaultValue.phone = customerPhone ? customerPhone : "";
     OrderModalDefaultValue.email = customerEmail ? customerEmail : "";
     reset({ ...OrderModalDefaultValue });
+
+    ProductService.productsList(true)
+      .then((res) => {
+        let data = [];
+        if (res?.status_code === 200 && res.length) {
+          res
+            .filter((r) => r.status === "Active")
+            .map((row) => {
+              return data.push({
+                uuid: row.uuid,
+                name: row.name,
+                id: row.id,
+                price: row.pricePerUnit,
+                tax: row.taxRate,
+              });
+            });
+        }
+        setProductsList(data);
+      })
+      .catch((e) => {
+        setProductsList([]);
+      });
+
+    if (userInfo?.user_data?.organization?.uuid) {
+      ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid, true)
+        .then((res) => {
+          if (res?.status_code === 200) {
+            setTaxes(res?.data);
+          } else {
+            setTaxes([]);
+          }
+        })
+        .catch((e) => {
+          setTaxes([]);
+        });
+    }
   }, []);
 
   const setFullAmount = () => {
@@ -318,6 +367,18 @@ const OrderModal = (props) => {
           setApiLoading(false);
         }
       );
+    } else if (headerTitle === "Charge Amount") {
+      grandTotal = (grandTotal / 2).toFixed(2);
+      const chargeData = ReservationService.prepareChargeAmountPayload({
+        ...values,
+        orderSummary: {
+          subTotal,
+          totalTax,
+          totalDiscount,
+          grandTotal,
+        },
+      });
+      console.log(chargeData);
     }
   };
   const headerTitleText =
@@ -334,12 +395,151 @@ const OrderModal = (props) => {
     setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
   };
 
+  const triggerProductSelected = (index, productData) => {
+    if (productData) {
+      if (productData?.name) {
+        setValue(`order[${index}].productName`, productData.name);
+        setValue(`order[${index}].productID`, productData.id);
+        const preparedPrice = productData.price.toString().includes(".")
+          ? `${productData.price.toString().split(".")[0]},${
+              productData.price.toString().split(".")[1]
+            }`
+          : productData.price;
+        setValue(`order[${index}].reservationAmount`, preparedPrice);
+        setValue(`order[${index}].tax`, productData.tax);
+        disableCurrentProductRow(index);
+
+        const watchResevationAmount = watch(
+          `order[${index}].reservationAmount`
+        );
+        const watchTax = watch(`order[${index}].tax`);
+        const watchName = watch(`order[${index}].productName`);
+        const watchId = watch(`order[${index}].productID`);
+
+        for (let i = 0; i < addOrderIndex.length; i++) {
+          if (
+            watchName &&
+            watchId &&
+            watchResevationAmount &&
+            watchTax &&
+            i !== index &&
+            watchName === watch(`order[${i}].productName`) &&
+            watchId === watch(`order[${i}].productID`) &&
+            watchResevationAmount === watch(`order[${i}].reservationAmount`) &&
+            watchTax === watch(`order[${i}].tax`)
+          ) {
+            onSameRowAction(index);
+            enqueueSnackbar(
+              `Same product found in Row ${i + 1} and ${index + 1}`,
+              { variant: "error" }
+            );
+          }
+        }
+      } else
+        setValue(`order[${index}].productName`, productData ? productData : "");
+    } else {
+      setValue(`order[${index}].productName`, "");
+      setValue(`order[${index}].productID`, "");
+      setValue(`order[${index}].reservationAmount`, "");
+      setValue(`order[${index}].tax`, "");
+      enableCurrentProductRow(index);
+    }
+  };
+  const productWiseTotal = (index) => {
+    const watchReservationAmount =
+      watch(`order[${index}].reservationAmount`) || 0;
+    const watchTax = watch(`order[${index}].tax`);
+    //const watchName = watch(`order[${index}].productName`);
+    //const watchId = watch(`order[${index}].productID`);
+
+    let splitedAmount, dotFormatAmount, floatAmount, amount;
+    if (!!watchReservationAmount) {
+      amount = watchReservationAmount;
+      splitedAmount = amount.toString().includes(",")
+        ? amount.split(",")
+        : amount;
+      dotFormatAmount =
+        typeof splitedAmount === "object"
+          ? `${splitedAmount[0]}.${splitedAmount[1]}`
+          : splitedAmount;
+      floatAmount = parseFloat(dotFormatAmount);
+    }
+
+    const total = floatAmount;
+    const subTotalCalculation = floatAmount / ((100 + watchTax) / 100);
+    const totalTaxCalculation = subTotalCalculation
+      ? (subTotalCalculation * (watchTax / 100)) / 2
+      : 0;
+
+    if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
+    if (subTotalCalculation)
+      subTotal = subTotal + parseFloat(subTotalCalculation);
+    if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
+    if (total) grandTotal = grandTotal + total;
+    if (total > 0) {
+      return ` ${total}`;
+    }
+  };
+
+  const addNewOrder = () => {
+    // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
+    setItemLoader(true);
+    setAddOrderIndex([...addOrderIndex, Math.max(...addOrderIndex) + 1]);
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productName`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].productID`, "");
+    //setValue(`order[${Math.max(...addOrderIndex) + 1}].discount`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].reservationAmount`, "");
+    setValue(`order[${Math.max(...addOrderIndex) + 1}].tax`, "");
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
+  };
+  const onDelete = (index) => {
+    setItemLoader(true);
+    //resetField(``)
+    setValue(`order[${index}].productName`, "");
+    setValue(`order[${index}].productID`, "");
+    setValue(`order[${index}].quantity`, "");
+    setValue(`order[${index}].rate`, "");
+    //setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].reservationAmount`, "");
+    setValue(`order[${index}].tax`, "");
+    enableCurrentProductRow(index);
+    addOrderIndex.length > 1
+      ? setAddOrderIndex(addOrderIndex.filter((i) => i !== index))
+      : setAddOrderIndex([...addOrderIndex]);
+    setTimeout(() => {
+      setItemLoader(false);
+    }, [500]);
+  };
+  const onSameRowAction = (index) => {
+    setValue(`order[${index}].productName`, "");
+    resetField(`order[${index}].productName`);
+    resetField(`order[${index}].productID`);
+    //resetField(`order[${index}].quantity`);
+    //resetField(`order[${index}].rate`);
+    //resetField(`order[${index}].discount`);
+    resetField(`order[${index}].reservationAmount`);
+    resetField(`order[${index}].tax`);
+
+    setValue(`order[${index}].productName`, "");
+    setValue(`order[${index}].productID`, "");
+    //setValue(`order[${index}].quantity`, "");
+    //setValue(`order[${index}].rate`, "");
+    //setValue(`order[${index}].discount`, "");
+    setValue(`order[${index}].reservationAmount`, "");
+    setValue(`order[${index}].tax`, "");
+    enableCurrentProductRow(index);
+  };
+  const watchFirstProductName = watch(`order[0].productName`);
+
   const pnameOnBlur = (e) => {
     if (!e.target.value.length) {
       resetField(`${e.target.name}`);
     }
   };
   let defaultTaxValue;
+
   return (
     <div>
       <Dialog
@@ -362,6 +562,7 @@ const OrderModal = (props) => {
             <div className="modeal-text">
               {headerTitle !== "moreThanThreeRefundAttempts" &&
                 headerTitle !== "moreThanFiveThousand" &&
+                headerTitle !== "Charge Amount" &&
                 !flag && (
                   <div className="flex justify-between items-center my-10 pb-10 border-b-1 border-MonochromeGray-25">
                     <div className="body2">
@@ -657,13 +858,13 @@ const OrderModal = (props) => {
                           {t("label:productIdOptional")}
                         </div>
                         <div className="my-auto text-right text-MonochromeGray-500">
-                          {t("label:reservationAmount")}
+                          {t("label:amount")}
                         </div>
                         <div className="my-auto text-center text-MonochromeGray-500">
                           {t("label:tax")}
                         </div>
                         <div className="my-auto text-right text-MonochromeGray-500">
-                          {t("label:totalReservation")}
+                          {t("label:total")}
                         </div>
                         <div className="my-auto"></div>
                       </div>
@@ -874,45 +1075,36 @@ const OrderModal = (props) => {
                           <div className="my-auto">
                             <div className="body3 text-right">
                               {t("label:nok")}{" "}
-                              {/* {ThousandSeparator(productWiseTotal(index))} */}
+                              {ThousandSeparator(productWiseTotal(index))}
                             </div>
                           </div>
                           <div className="my-auto">
                             <IconButton
                               aria-label="delete"
-                              //onClick={() => onDelete(index)}
+                              onClick={() => onDelete(index)}
                             >
                               <RemoveCircleOutlineIcon className="icon-size-20 text-red-500" />
                             </IconButton>
                           </div>
                         </div>
                       ))}
+                      <Button
+                        className="mt-20 rounded-4 button2 text-MonochromeGray-700 custom-add-button-color"
+                        startIcon={<AddIcon />}
+                        onClick={() => addNewOrder()}
+                        disabled={addOrderIndex.length >= 20 ? true : false}
+                      >
+                        {t(`label:addItem`)}
+                      </Button>
                     </div>
-                    <Controller
-                      name="chargeAmount"
-                      className="mt-32"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label={t("label:amount")}
-                          type="number"
-                          autoComplete="off"
-                          variant="outlined"
-                          error={!!errors.chargeAmount}
-                          helperText={errors?.chargeAmount?.message}
-                          fullWidth
-                          required
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="start">
-                                {t("label:nok")}
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      )}
-                    />
+                    <div className="flex justify-between items-center px-12 py-16 mt-20 rounded-4 bg-MonochromeGray-25">
+                      <div className="text-MonochromeGray-700">
+                        {t("label:grandTotal")}
+                      </div>
+                      <div className="text-MonochromeGray-700">
+                        {t("label:nok")} {ThousandSeparator(grandTotal)}
+                      </div>
+                    </div>
                   </div>
                 )}
                 {flag && (
@@ -920,7 +1112,7 @@ const OrderModal = (props) => {
                     {t(`message:${newString[0]}`)} {newString[1] || ""}
                   </div>
                 )}
-                <div className="flex justify-end items-center gap-32 mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
+                <div className="button-group flex justify-end items-center gap-32 mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
                   <Button
                     onClick={handleClose}
                     variant="text"
@@ -949,7 +1141,9 @@ const OrderModal = (props) => {
                       ) &&
                         !watch("cancellationNote")) ||
                       (headerTitle === "Capture Payment" &&
-                        !watch("captureAmount"))
+                        !watch("captureAmount")) ||
+                      (headerTitle === "Charge Amount" &&
+                        !(grandTotal && isValid))
                     }
                   >
                     {headerTitle === "Resend Order"
