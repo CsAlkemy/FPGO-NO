@@ -1,0 +1,17 @@
+.vat-rates-bg-container {
+    width: auto;
+    height: auto;
+    background: #F7F7F7;
+}
+.vat-reports-rang-picker-container {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 4px;
+}
+.range-picker {
+    margin: 10px;
+}

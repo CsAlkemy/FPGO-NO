@@ -11,7 +11,7 @@ import {
   customersListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
-  organizationWiseUsersOverview,
+  organizationWiseUsersOverview, payoutReportsListOverview,
   productsListOverview,
   refundRequestsOverview, reservationListOverview,
   userListOverview
@@ -1781,6 +1781,26 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
+      });
+    case payoutReportsListOverview:
+      return props.rowDataFields.map((rdt) => {
+        if (rdt === "status") {
+          return props.row.status === "Active" ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              <OverviewStatus name="Active" />
+            </TableCell>
+          ) : (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              <OverviewStatus name="Inactive" />
+            </TableCell>
+          );
+        } else {
+          return (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
               {props.row ? props.row[rdt] : <Skeleton variant="text" />}
             </TableCell>
           );

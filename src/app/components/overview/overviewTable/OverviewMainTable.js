@@ -825,6 +825,13 @@ export default function OverviewMainTable(props) {
       case reservationListOverview:
         navigate(`/reservations-view/details/${info.uuid}`);
         break;
+      case payoutReportsListOverview:
+        navigate(`/reports/payouts/${info.uuid}`, {
+          state: {
+            orgName: info.name,
+          }
+        });
+        break;
     }
   };
 
