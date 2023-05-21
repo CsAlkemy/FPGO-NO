@@ -176,6 +176,7 @@ class ReservationService {
         id: row.reservationUuid,
         date: row.dateCreated,
         phone: preparePhone,
+        msisdn: row?.msisdn || "",
         email: row.email,
         isPaid: row.isPaid,
         clientName: row.clientName ?? null,

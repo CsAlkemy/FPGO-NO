@@ -101,6 +101,7 @@ class OrdersService {
         name: row.name,
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
+        msisdn: row?.msisdn || '',
         email: row?.email ? row?.email : null,
         amount: row.amount,
         stage: row?.status ? row.status.toLowerCase() : null,
