@@ -265,7 +265,7 @@ class ReservationService {
       products: {
         ...products,
       },
-      orderSummary: params.orderSummary,
+      grandTotal: params.grandTotal,
     };
   };
 }

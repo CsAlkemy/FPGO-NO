@@ -422,11 +422,24 @@ export const apiSlice = createApi({
     }),
     capturePayment: builder.mutation({
       query: (payload) => ({
-        url: `/payment/capture/${payload.uuid}`,
+        //url: `/payment/capture/${payload.uuid}`,
+        url: `/reservations/capture/${payload.uuid}`,
         method: "POST",
         body: {
           isPartial: payload.isPartial,
           amount: parseFloat(payload.captureAmount),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    chargeReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/capture/${payload.uuid}`,
+        method: "POST",
+        body: {
+          products: payload.products,
+          grandTotal: parseFloat(payload.grandTotal),
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -483,4 +496,5 @@ export const {
   useGetReservationListQuery,
   useCompleteReservationMutation,
   useCapturePaymentMutation,
+  useChargeReservationMutation,
 } = apiSlice;

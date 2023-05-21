@@ -53,3 +53,9 @@ export const ThousandSeparator = (number) => {
     return number;
   }
 };
+
+export const DayDiffFromToday = (unixTimestamp) => {
+  const timestampNow = Date.now() / 1000;
+  let dayDiff = (timestampNow - unixTimestamp) / 86400;
+  return dayDiff;
+};

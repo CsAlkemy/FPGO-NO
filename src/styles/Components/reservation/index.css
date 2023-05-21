@@ -147,13 +147,17 @@
 }
 
 .charge-modal .md\:min-w-lg {
-  min-width: 1060px;
   max-width: 100%;
 }
 .charge-modal form[name="modalForm"] {
   padding-top: 0;
 }
 
+@media only screen and (min-width: 600px) {
+  .charge-modal .md\:min-w-lg {
+    min-width: 1060px;
+  }
+}
 @media only screen and (min-width: 960px) {
   .customer-info-section {
     max-width: 532px;

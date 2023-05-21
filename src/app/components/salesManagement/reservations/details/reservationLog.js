@@ -21,7 +21,11 @@ import RedoIcon from "@mui/icons-material/Redo";
 import UndoIcon from "@mui/icons-material/Undo";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { CharCont, ThousandSeparator } from "../../../../utils/helperFunctions";
+import {
+  CharCont,
+  ThousandSeparator,
+  DayDiffFromToday,
+} from "../../../../utils/helperFunctions";
 //import {ThousandSeparator} from "../../../../utils/helperFunctions";
 
 const ReservationLog = ({ info, logContent, handleModalOpen }) => {
@@ -244,6 +248,10 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                   className="body2 action-button button2"
                   startIcon={<CreditCardIcon style={{ color: "#50C9B1" }} />}
                   onClick={() => handleModalOpen("chargeFromCard")}
+                  disabled={
+                    !info.paymentDetails.reservedAt ||
+                    DayDiffFromToday(info.paymentDetails.reservedAt) > 60
+                  }
                 >
                   {t("label:chargeFromCard")}
                 </Button>
@@ -252,21 +260,28 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                   className="body2 action-button button2"
                   startIcon={<PaymentsIcon style={{ color: "#68C7E7" }} />}
                   onClick={() => handleModalOpen("capturePayments")}
+                  disabled={
+                    !info.paymentDetails.reservedAt ||
+                    DayDiffFromToday(info.paymentDetails.reservedAt) > 7 ||
+                    info.paymentDetails.capturedAmount >=
+                      info.paymentDetails.reservedAmount
+                  }
                 >
                   {t("label:capturePayment")}
                 </Button>
               </>
             )}
-            {(info.status == "reserved" || info.status == "completed") && (
-              <Button
-                variant="outlined"
-                className="body2 action-button button2"
-                startIcon={<UndoIcon style={{ color: "#0088AE" }} />}
-                onClick={() => handleModalOpen("refundReservation")}
-              >
-                {t("label:refundFromReservation")}
-              </Button>
-            )}
+            {(info.status == "reserved" || info.status == "completed") &&
+              info.paymentDetails.capturedAmount > 0 && (
+                <Button
+                  variant="outlined"
+                  className="body2 action-button button2"
+                  startIcon={<UndoIcon style={{ color: "#0088AE" }} />}
+                  onClick={() => handleModalOpen("refundReservation")}
+                >
+                  {t("label:refundFromReservation")}
+                </Button>
+              )}
           </div>
         </div>
       </div>

@@ -296,8 +296,8 @@ const ReservationCreate = () => {
         grandTotal,
       },
     });
-    console.log(data);
-    return;
+    // console.log(data);
+    // return;
     createReservation(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
@@ -1329,7 +1329,7 @@ const ReservationCreate = () => {
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
-                                  placeholder="Product Name"
+                                  placeholder={t("label:productName")}
                                   {...field}
                                   className="custom-input-height"
                                   inputRef={ref}
