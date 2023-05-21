@@ -416,7 +416,6 @@ const Onboarding = () => {
           autoHideDuration: 3000,
         });
         navigate("/clients/clients-list");
-        setLoading(false);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",
