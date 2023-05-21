@@ -92,7 +92,8 @@ export const apiSlice = createApi({
     "ClientOrganizationsSummaryList",
     "ApprovedClientsList",
     "ApprovalClientsList",
-    "RefundRequestsList"
+    "RefundRequestsList",
+    "SubscriptionsList",
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -397,6 +398,10 @@ export const apiSlice = createApi({
       query: (uuid) => `/orders/export/aptic/${uuid}`,
       providesTags: ["OrdersList"],
     }),
+    getSubscriptionsList: builder.query({
+      query: () => "/subscription/list",
+      providesTags: ["ApprovedClientsList"],
+    }),
   }),
 });
 
@@ -444,4 +449,5 @@ export const {
   useCreateQuickOrderMutation,
   useUpdateQuickOrderCustomerMutation,
   useOrderExportToApticQuery,
+  useGetSubscriptionsListQuery,
 } = apiSlice;

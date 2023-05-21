@@ -9,22 +9,28 @@ class SubscriptionsService {
     let d;
     d = data.map((row) => {
       return {
-        uuid: row.uuid,
-        id: row.id,
-        date: row.date,
-        name: row.name,
-        phone: row?.countryCode && row?.msisdn ? row.countryCode+row.msisdn : "",
-        paymentsMade: row.paymentsMade,
+        uuid: row.subscriptionUuid,
+        id: row.subscriptionId,
+        paymentsMade: `${row?.numberOfOrder || 0}/${row.repeats}`,
+        repeats: row.repeats,
         amount: row.amount,
-        stage: row.status.toLowerCase(),
+        phone: row?.countryCode && row?.msisdn ? row.countryCode+row.msisdn : "",
+        currency: row.currency,
+        date: row.createdAt,
+        name: row.customerName,
+        numberOfOrder: row.numberOfOrder,
+        // stage: row.status.toLowerCase(),
+        stage: row.status && row.status.toLowerCase() || "sent",
         isPaid: row.isPaid,
-        refundResend:
-          row.status.toLowerCase() === "sent"
-            ? "Resend"
-            : row.status.toLowerCase() === "completed" || row.status.toLowerCase() === "cancelled" && row.isPaid
-              ? "Refund"
-              : null,
-        isCancel: row.status.toLowerCase() === "sent",
+        // refundResend:
+        refundResend: "Resend",
+          // row.status.toLowerCase() === "sent"
+          //   ? "Resend"
+          //   : row.status.toLowerCase() === "completed" || row.status.toLowerCase() === "cancelled" && row.isPaid
+          //     ? "Refund"
+          //     : null,
+        // isCancel: row.status.toLowerCase() === "sent",
+        isCancel: row.status && row.status.toLowerCase() === "sent" || false,
         translationKey: row.translationKey,
       };
     });
