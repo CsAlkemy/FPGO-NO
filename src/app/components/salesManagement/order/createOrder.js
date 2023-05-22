@@ -955,6 +955,7 @@ const createOrder = () => {
                                 label="Qty"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 required
                                 value={field.value || ""}
                                 autoComplete="off"
@@ -982,6 +983,7 @@ const createOrder = () => {
                                 // helperText={errors?.order?.[index]?.rate?.message}
                                 variant="outlined"
                                 required
+                                onWheel={event => { event.target.blur()}}
                                 type='number'
                                 value={field.value || ""}
                                 fullWidth
@@ -1000,6 +1002,7 @@ const createOrder = () => {
                                 label="Discount"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 value={field.value || ""}
                                 error={!!errors.discount}
@@ -1077,6 +1080,7 @@ const createOrder = () => {
                                   label="Tax"
                                   className="bg-white custom-input-height"
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -1321,6 +1325,7 @@ const createOrder = () => {
                             {...field}
                             className="bg-white custom-input-height"
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.quantity}
                             // helperText={
@@ -1345,6 +1350,7 @@ const createOrder = () => {
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
                             type='number'
+                            onWheel={event => { event.target.blur()}}
                             variant="outlined"
                             required
                             fullWidth
@@ -1363,6 +1369,7 @@ const createOrder = () => {
                             //label="Discount"
                             className="bg-white custom-input-height"
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             error={!!errors.discount}
                             helperText={errors?.discount?.message}
@@ -1431,6 +1438,7 @@ const createOrder = () => {
                               className="bg-white custom-input-height"
                               // type="text"
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.tax}
                               helperText={errors?.order?.[index]?.tax?.message}
@@ -2135,7 +2143,8 @@ const createOrder = () => {
                                     setValue("customerName", data.name);
                                     data.type === "Corporate"
                                       ? setValue("orgID", data.orgOrPNumber)
-                                      : setValue("pNumber", data.orgOrPNumber);
+                                      : '';
+                                      // : setValue("pNumber", data.orgOrPNumber);
                                     setValue("billingAddress", data.street);
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
@@ -2157,7 +2166,7 @@ const createOrder = () => {
                                     setValue("email", "");
                                     setValue("customerName", "");
                                     setValue("orgID", "");
-                                    setValue("pNumber", "");
+                                    // setValue("pNumber", "");
                                     setValue("billingAddress", "");
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
@@ -2341,7 +2350,7 @@ const createOrder = () => {
                             />
                           </div>
                           <div className="mt-32 sm:mt-0">
-                            <div className="form-pair-input gap-x-20">
+                            <div className={`${customData.customerType === "corporate" ? 'form-pair-input': ''} gap-x-20 `}>
                               <Controller
                                 name="customerName"
                                 control={control}
@@ -2375,6 +2384,7 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:organizationId")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.orgID}
                                       required
@@ -2392,32 +2402,32 @@ const createOrder = () => {
                                   )}
                                 />
                               )}
-                              {customData.customerType === "private" && (
-                                <Controller
-                                  name="pNumber"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <TextField
-                                      {...field}
-                                      label={t("label:pNumber")}
-                                      type="number"
-                                      autoComplete="off"
-                                      error={!!errors.pNumber}
-                                      helperText={
-                                        errors?.pNumber?.message
-                                          ? t(
-                                              `validation:${errors?.pNumber?.message}`
-                                            )
-                                          : ""
-                                      }
-                                      // ref={orgOrPNumberRef}
-                                      variant="outlined"
-                                      fullWidth
-                                      value={field.value || ""}
-                                    />
-                                  )}
-                                />
-                              )}
+                              {/*{customData.customerType === "private" && (*/}
+                              {/*  <Controller*/}
+                              {/*    name="pNumber"*/}
+                              {/*    control={control}*/}
+                              {/*    render={({ field }) => (*/}
+                              {/*      <TextField*/}
+                              {/*        {...field}*/}
+                              {/*        label={t("label:pNumber")}*/}
+                              {/*        type="number"*/}
+                              {/*        autoComplete="off"*/}
+                              {/*        error={!!errors.pNumber}*/}
+                              {/*        helperText={*/}
+                              {/*          errors?.pNumber?.message*/}
+                              {/*            ? t(*/}
+                              {/*                `validation:${errors?.pNumber?.message}`*/}
+                              {/*              )*/}
+                              {/*            : ""*/}
+                              {/*        }*/}
+                              {/*        // ref={orgOrPNumberRef}*/}
+                              {/*        variant="outlined"*/}
+                              {/*        fullWidth*/}
+                              {/*        value={field.value || ""}*/}
+                              {/*      />*/}
+                              {/*    )}*/}
+                              {/*  />*/}
+                              {/*)}*/}
                             </div>
                           </div>
                           <div className="">
@@ -2637,6 +2647,7 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:referenceNo")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.referenceNumber}
                                       helperText={
@@ -2818,6 +2829,7 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:internalReferenceNo")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.internalReferenceNo}
                                       helperText={

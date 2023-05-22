@@ -1,17 +1,24 @@
-import React, {useEffect, useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import PhoneInput from "react-phone-input-2";
-import {FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField,} from "@mui/material";
-import {useSnackbar} from "notistack";
-import {useNavigate} from "react-router-dom";
-import {schemaUserProfile, schemaUserProfileFpAdmin,} from "../utils/helper";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { schemaUserProfile, schemaUserProfileFpAdmin } from "../utils/helper";
 import UserService from "../../../data-access/services/userService/UserService";
-import {useSelector} from "react-redux";
-import {selectUser} from "app/store/userSlice";
-import {BUSINESS_ADMIN, FP_ADMIN,} from "../../../utils/user-roles/UserRoles";
-import {useTranslation} from "react-i18next";
-import {useUpdateUserMutation} from "app/store/api/apiSlice";
+import { useSelector } from "react-redux";
+import { selectUser } from "app/store/userSlice";
+import { BUSINESS_ADMIN, FP_ADMIN } from "../../../utils/user-roles/UserRoles";
+import { useTranslation } from "react-i18next";
+import { useUpdateUserMutation } from "app/store/api/apiSlice";
 import AuthService from "../../../data-access/services/authService";
 
 const defaultValues = {
@@ -90,10 +97,14 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
     };
     updateUser(userData).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate(-1);
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
   }
@@ -146,7 +157,9 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
             } else if (response?.is_data === false) {
               setOrganizationsList([]);
             } else {
-              enqueueSnackbar(t(`message:noOrganizationFound`),{ variant: "warning" });
+              enqueueSnackbar(t(`message:noOrganizationFound`), {
+                variant: "warning",
+              });
             }
           })
           .catch((error) => {});
@@ -427,13 +440,15 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
                     {languageList.map((item, index) => {
                       return (
                         <MenuItem key={index} value={item.value}>
-                            {t(`label:${item?.title.toLowerCase()}`)}
+                          {t(`label:${item?.title.toLowerCase()}`)}
                         </MenuItem>
                       );
                     })}
                   </Select>
                   <FormHelperText>
-                    {errors.preferredLanguage?.message ? t(`validation:${errors.preferredLanguage?.message}`) : ""}
+                    {errors.preferredLanguage?.message
+                      ? t(`validation:${errors.preferredLanguage?.message}`)
+                      : ""}
                   </FormHelperText>
                 </FormControl>
               )}

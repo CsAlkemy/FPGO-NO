@@ -1,6 +1,6 @@
 import _ from "@lodash";
 import clsx from "clsx";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export const overviewStatuses = [
   {
@@ -90,43 +90,48 @@ export const overviewStatuses = [
   },
   {
     id: 16,
+    name: "Reserved",
+    color: "bg-invoiced text-m-grey-700",
+  },
+  {
+    id: 17,
     name: "Unpaid",
     color: "bg-expired text-m-grey-700",
   },
   {
-    id: 17,
+    id: 18,
     name: "Overdue",
     color: "bg-expired text-m-grey-700",
   },
   {
-    id: 18,
+    id: 19,
     name: "Over Payment",
     color: "bg-expired text-m-grey-700",
   },
   {
-    id: 19,
+    id: 20,
     name: "Reminder",
     color: "bg-sent text-m-grey-700",
   },
   {
-    id: 20,
+    id: 21,
     name: "Collection",
     color: "bg-expired text-m-grey-700",
   },
   {
-    id: 21,
+    id: 22,
     name: "Credited",
     color: "bg-paid text-m-grey-700",
   },
   {
-    id: 22,
+    id: 23,
     name: "Converted to Account",
     color: "bg-paid text-m-grey-700",
   },
 ];
 
 function OverviewStatus(props) {
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   let classes = "";
   props.name === "Active"
     ? (classes = "inline text-12 py-4 px-16 rounded-sm min-w-3xl")
@@ -170,6 +175,8 @@ function OverviewStatus(props) {
     ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
     : props.name === "Converted to Account"
     ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Reserved"
+    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : (classes = "inline text-12 py-4 px-10 rounded-sm min-w-3xl");
 
   return (

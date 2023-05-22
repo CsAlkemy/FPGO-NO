@@ -21,6 +21,7 @@ class ClientService {
         phone:
           row.primaryContactDetails.countryCode +
           row.primaryContactDetails.msisdn,
+        msisdn: row.primaryContactDetails?.msisdn || "",
         email: row.primaryContactDetails.email,
       };
     });
@@ -60,6 +61,7 @@ class ClientService {
                       phone:
                         row.primaryContactDetails.countryCode +
                         row.primaryContactDetails.msisdn,
+                      msisdn: row.primaryContactDetails?.msisdn || "",
                       email: row.primaryContactDetails.email,
                     };
                   });
@@ -128,6 +130,7 @@ class ClientService {
         phone:
           row.primaryContactDetails?.countryCode +
           row.primaryContactDetails?.msisdn,
+        msisdn: row.primaryContactDetails?.msisdn || "",
         email: row.primaryContactDetails?.email,
         status: row.status,
         // role: row.userRole,
@@ -169,6 +172,7 @@ class ClientService {
                       phone:
                         row.primaryContactDetails?.countryCode +
                         row.primaryContactDetails?.msisdn,
+                      msisdn: row.primaryContactDetails?.msisdn || "",
                       email: row.primaryContactDetails?.email,
                       status: row.status,
                       // role: row.userRole,

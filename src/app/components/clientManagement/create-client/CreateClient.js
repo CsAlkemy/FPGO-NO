@@ -203,6 +203,7 @@ const CreateClient = () => {
           .map((vat) => {
             return {
               uuid: null,
+              vatCode: parseInt(vat?.vatCode) || null,
               name: vat?.vatName ? vat?.vatName : null,
               value: parseFloat(vat.vatValue),
               isActive: true,
@@ -257,6 +258,7 @@ const CreateClient = () => {
         accountNumber: `${values.accountNumber}`,
         iban: values.IBAN,
         swiftCode: values.SWIFTCode,
+        accountCode: values?.bankAccountCode || null,
       },
       apticInformation: {
         // username: values.APTICuserName,
@@ -290,10 +292,14 @@ const CreateClient = () => {
           customApticInfoData === "purchase"
             ? parseFloat(values.invoicewithoutRegress)
             : null,
+        accountCode: values?.accountCode || null,
+        refundReference: values?.refundReference || null,
         backOfficeUsername: values.APTIEngineCuserName,
         backOfficePassword: values.APTIEnginePassword,
         b2bInvoiceFee: parseFloat(values.fakturaB2B),
         b2cInvoiceFee: parseFloat(values.fakturaB2C),
+        b2bAccountCode: values.b2bAccountCode,
+        b2cAccountCode: values.b2cAccountCode,
         isCustomerOwnerReference: ownerRef,
       },
       settings: {
@@ -474,6 +480,9 @@ const CreateClient = () => {
                           {...field}
                           label={t("label:organizationId")}
                           type="number"
+                          onWheel={(event) => {
+                            event.target.blur();
+                          }}
                           autoComplete="off"
                           error={!!errors.id}
                           helperText={
@@ -1036,6 +1045,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:zipCode")}
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.zip}
                               helperText={
@@ -1260,6 +1272,9 @@ const CreateClient = () => {
                                   {...field}
                                   label={t("label:zipCode")}
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   disabled={sameAddress}
                                   error={!!errors.shippingZip}
@@ -1450,6 +1465,30 @@ const CreateClient = () => {
                         )}
                       />
                     </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 w-full">
+                      <Controller
+                        name="bankAccountCode"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label={t("label:accountCode")}
+                            type="text"
+                            autoComplete="off"
+                            error={!!errors.bankAccountCode}
+                            helperText={
+                              errors?.bankAccountCode?.message
+                                ? t(
+                                    `validation:${errors?.bankAccountCode?.message}`
+                                  )
+                                : ""
+                            }
+                            variant="outlined"
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1606,8 +1645,78 @@ const CreateClient = () => {
                         )}
                       />
                     </div>
+                    {customApticInfoData === "administration" && (
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-20 gap-y-40 w-full">
+                        <Controller
+                          name="accountCode"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:accountCode")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.accountCode}
+                              helperText={
+                                errors?.accountCode?.message
+                                  ? t(
+                                    `validation:${errors?.accountCode?.message}`
+                                  )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="refundReference"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:refundReference")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.refundReference}
+                              helperText={
+                                errors?.refundReference?.message
+                                  ? t(
+                                    `validation:${errors?.refundReference?.message}`
+                                  )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                            />
+                          )}
+                        />
+                      </div>
+                    )}
                     {customApticInfoData === "purchase" && (
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 my-40 w-full md:w-3/4">
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-20 gap-y-32 w-full md:w-3/4">
+                        <Controller
+                          name="accountCode"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:accountCode")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.accountCode}
+                              helperText={
+                                errors?.accountCode?.message
+                                  ? t(
+                                      `validation:${errors?.accountCode?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                            />
+                          )}
+                        />
                         <Controller
                           name="creditLimitCustomer"
                           control={control}
@@ -1616,6 +1725,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:creditLimitForClient")}
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.creditLimitCustomer}
                               helperText={
@@ -1646,6 +1758,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:costLimitForCustomer")}
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.costLimitforCustomer}
                               helperText={
@@ -1675,6 +1790,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:costLimitForOrder")}
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.costLimitforOrder}
                               helperText={
@@ -1704,6 +1822,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:invoiceWithRegress")}
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.invoicewithRegress}
                               helperText={
@@ -1733,6 +1854,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:invoiceWithoutRegress")}
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.invoicewithoutRegress}
                               helperText={
@@ -1752,6 +1876,28 @@ const CreateClient = () => {
                                   </InputAdornment>
                                 ),
                               }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="refundReference"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:refundReference")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.refundReference}
+                              helperText={
+                                errors?.refundReference?.message
+                                  ? t(
+                                      `validation:${errors?.refundReference?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
                             />
                           )}
                         />
@@ -2109,13 +2255,16 @@ const CreateClient = () => {
                   <div className="px-16">
                     <div className="product-list">
                       <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
+                        <div className="my-auto text-MonochromeGray-500 col-span-2">
+                          {t("label:vatCode")}
+                        </div>
                         <div className="my-auto text-MonochromeGray-500 col-span-4">
                           {t("label:name")}
                         </div>
-                        <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
+                        <div className="my-auto text-right text-MonochromeGray-500 col-span-2">
                           {`Value (%)`}
                         </div>
-                        <div className="my-auto text-MonochromeGray-500 col-span-4">
+                        <div className="my-auto text-MonochromeGray-500 col-span-3">
                           {t("label:bookKeepingReference")}
                         </div>
                         <div className="my-auto col-span-1 text-MonochromeGray-500">
@@ -2128,6 +2277,26 @@ const CreateClient = () => {
                           key={index}
                           className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
                         >
+                          <div className="my-auto col-span-2">
+                            <Controller
+                              name={`vat[${index}].vatCode`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  onKeyUp={() => changeVatRateIcon(index)}
+                                  {...field}
+                                  type="text"
+                                  autoComplete="off"
+                                  className="bg-white custom-input-height"
+                                  error={!!errors.vatCode}
+                                  helperText={errors?.vatCode?.message}
+                                  variant="outlined"
+                                  required
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          </div>
                           <div className="my-auto col-span-4">
                             <Controller
                               name={`vat[${index}].vatName`}
@@ -2148,7 +2317,7 @@ const CreateClient = () => {
                               )}
                             />
                           </div>
-                          <div className="my-auto text-right col-span-3">
+                          <div className="my-auto text-right col-span-2">
                             <Controller
                               name={`vat[${index}].vatValue`}
                               control={control}
@@ -2157,7 +2326,9 @@ const CreateClient = () => {
                                   onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   className="text-right  custom-input-height"
                                   autoComplete="off"
                                   error={!!errors.vatValue}
@@ -2170,7 +2341,7 @@ const CreateClient = () => {
                               )}
                             />
                           </div>
-                          <div className="my-auto col-span-4">
+                          <div className="my-auto col-span-3">
                             <Controller
                               name={`vat[${index}].bookKeepingReference`}
                               control={control}
@@ -2227,7 +2398,29 @@ const CreateClient = () => {
                 </div>
                 <div className="p-10">
                   <div className="px-16">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-20 w-full md:w-3/4 my-32">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-20 w-full md:w-1/2 my-32">
+                      <Controller
+                        name="b2bAccountCode"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label={t("label:accountCode")}
+                            type="text"
+                            autoComplete="off"
+                            error={!!errors.b2bAccountCode}
+                            helperText={
+                              errors?.b2bAccountCode?.message
+                                ? t(
+                                    `validation:${errors?.b2bAccountCode?.message}`
+                                  )
+                                : ""
+                            }
+                            variant="outlined"
+                            fullWidth
+                          />
+                        )}
+                      />
                       <Controller
                         name="fakturaB2B"
                         control={control}
@@ -2236,6 +2429,9 @@ const CreateClient = () => {
                             {...field}
                             label={t("label:fakturaB2b")}
                             type="number"
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors.fakturaB2B}
                             hhelperText={
@@ -2257,6 +2453,28 @@ const CreateClient = () => {
                         )}
                       />
                       <Controller
+                        name="b2cAccountCode"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label={t("label:accountCode")}
+                            type="text"
+                            autoComplete="off"
+                            error={!!errors.b2cAccountCode}
+                            helperText={
+                              errors?.b2cAccountCode?.message
+                                ? t(
+                                    `validation:${errors?.b2cAccountCode?.message}`
+                                  )
+                                : ""
+                            }
+                            variant="outlined"
+                            fullWidth
+                          />
+                        )}
+                      />
+                      <Controller
                         name="fakturaB2C"
                         control={control}
                         render={({ field }) => (
@@ -2264,6 +2482,9 @@ const CreateClient = () => {
                             {...field}
                             label={t("label:fakturaB2c")}
                             type="number"
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors.fakturaB2C}
                             helperText={

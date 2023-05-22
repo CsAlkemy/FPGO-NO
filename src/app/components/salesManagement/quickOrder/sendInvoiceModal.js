@@ -252,7 +252,7 @@ const SendInvoiceModal = (props) => {
                       />
                     </div>
                     <div className="">
-                      <div className="form-pair-input gap-x-20">
+                      <div className={`${customerType === "corporate"? 'form-pair-input': ''} gap-x-20 `}>
                         <Controller
                           name="customerName"
                           control={control}
@@ -286,6 +286,7 @@ const SendInvoiceModal = (props) => {
                                 {...field}
                                 label={t("label:organizationId")}
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors.orgID}
                                 required
@@ -301,32 +302,32 @@ const SendInvoiceModal = (props) => {
                             )}
                           />
                         )}
-                        {customerType === "private" && (
-                          <Controller
-                            name="pNumber"
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label={t("label:pNumber")}
-                                type="number"
-                                autoComplete="off"
-                                error={!!errors.pNumber}
-                                helperText={
-                                  errors?.pNumber?.message
-                                    ? t(
-                                        `validation:${errors?.pNumber?.message}`
-                                      )
-                                    : ""
-                                }
-                                // ref={orgOrPNumberRef}
-                                variant="outlined"
-                                fullWidth
-                                value={field.value || ""}
-                              />
-                            )}
-                          />
-                        )}
+                        {/*{customerType === "private" && (*/}
+                        {/*  <Controller*/}
+                        {/*    name="pNumber"*/}
+                        {/*    control={control}*/}
+                        {/*    render={({ field }) => (*/}
+                        {/*      <TextField*/}
+                        {/*        {...field}*/}
+                        {/*        label={t("label:pNumber")}*/}
+                        {/*        type="number"*/}
+                        {/*        autoComplete="off"*/}
+                        {/*        error={!!errors.pNumber}*/}
+                        {/*        helperText={*/}
+                        {/*          errors?.pNumber?.message*/}
+                        {/*            ? t(*/}
+                        {/*                `validation:${errors?.pNumber?.message}`*/}
+                        {/*              )*/}
+                        {/*            : ""*/}
+                        {/*        }*/}
+                        {/*        // ref={orgOrPNumberRef}*/}
+                        {/*        variant="outlined"*/}
+                        {/*        fullWidth*/}
+                        {/*        value={field.value || ""}*/}
+                        {/*      />*/}
+                        {/*    )}*/}
+                        {/*  />*/}
+                        {/*)}*/}
                         {/*<Controller*/}
                         {/*  name="orgIdOrPNumber"*/}
                         {/*  control={control}*/}
