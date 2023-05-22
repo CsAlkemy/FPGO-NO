@@ -22,8 +22,8 @@ export default function PayoutReportsListOverview() {
     t("label:inactive"),
   ];
   const tabs = [0, 1, 2];
-  const headerSubtitle = t("label:allClients");
-  const headerButtonLabel = t("label:createClient");
+  const headerSubtitle = t("label:payoutsAllClients");
+  const headerButtonLabel = "";
   // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const approvedClientList = useSelector(
