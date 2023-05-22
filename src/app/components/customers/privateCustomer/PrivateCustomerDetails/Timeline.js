@@ -49,12 +49,10 @@ const TimelineLog = () => {
 
   useEffect(() => {
     if (defaultTimeline && isFetching) {
-      const prepareSelectedDate = `${
-        new Date().getMonth() + 1
-      }.09.${new Date().getFullYear()} 00:00:00`;
-      const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-      const time = new Date().getTime()/1000;
-      const endTime = Math.floor(time)
+      const timeStamp = Math.floor(
+        new Date(new Date().setFullYear(new Date().getFullYear() - 1)) / 1000
+      );
+      const endTime = Math.floor(new Date().getTime() / 1000);
       CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp, endTime)
         .then((res) => {
           setLogs(res?.data);
