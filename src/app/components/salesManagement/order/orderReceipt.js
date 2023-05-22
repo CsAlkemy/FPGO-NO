@@ -35,8 +35,8 @@ const orderReceipt = () => {
   }, [isLoading]);
 
   return (
-    <div>
-      <div className="flex flex-auto min-w-0 max-w-screen-xl">
+    <div className="my-10 mx-auto">
+      <div className="flex flex-auto mx-auto min-w-0 max-w-screen-xl">
         <div className="flex justify-between w-full max-w-lg">
           <p></p>
           <Pdf
