@@ -9,9 +9,7 @@ class ReportService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            // const URL = `${EnvVariable.BASEURL}/reports/${params.orgId}/payouts/${params.year}`;
-            const URL = `${EnvVariable.BASEURL}/reports/ORG744633524/payouts/${params.year}`;
-            // const URL = `${EnvVariable.BASEURL}/reports/ORG744633524/payouts/2023`;
+            const URL = `${EnvVariable.BASEURL}/reports/${params.orgId}/payouts/${params.year}`;
             return axios
               .get(URL)
               .then((response) => {
@@ -52,9 +50,7 @@ class ReportService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            // const URL = `${EnvVariable.BASEURL}/reports/${params.orgId}/payouts/${params.year}/lists/${params.month}`;
-            // const URL = `${EnvVariable.BASEURL}/reports/ORG744633524/payouts/${params.year}/lists/${params.month}`;
-            const URL = `${EnvVariable.BASEURL}/reports/ORG744633524/payouts/2023/lists/02`;
+            const URL = `${EnvVariable.BASEURL}/reports/${params.orgId}/payouts/${params.year}/lists/${params.month}`;
             return axios
               .get(URL)
               .then((response) => {
@@ -85,6 +81,32 @@ class ReportService {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
                 reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
+    });
+  };
+
+  getDownloadableFile = (params) => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/reports/${params.orgId}/payouts/${params.year}/lists/${params.month}/${params.fileName}.pdf`;
+            return axios
+              .get(URL, {responseType: "blob"})
+              .then((response) => {
+                if (
+                  response?.status === 200
+                ) {
+                  resolve(response.data)
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                reject("somethingWentWrong");
               });
           } else reject("somethingWentWrong");
         })

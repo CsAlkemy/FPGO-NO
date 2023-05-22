@@ -66,7 +66,8 @@ export default function VatReports() {
     { label: "Product number", key: "productNumber" },
     { label: "credittcheck yes/no", key: "creditCheck" },
   ];
-  const downloadCsvRef = useRef(null)
+  const [isDisable, setIsDisable] = useState(true);
+  const downloadCsvRef = useRef(null);
   // const startDate = new Date(1667278800).getTime()
 
   const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
@@ -104,10 +105,28 @@ export default function VatReports() {
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    const fromD = new Date(fromDate * 1000);
+    const toD = new Date(toDate * 1000);
+    const oneMonthMax =
+      new Date(
+        `${
+          fromD.getMonth() + 2
+        }.${fromD.getDate()}.${fromD.getFullYear()} 00:00`
+      ).getTime() / 1000;
+    if (toDate > oneMonthMax) setIsDisable(true);
+    else setIsDisable(false);
+  }, [fromDate, toDate]);
+
   const disableBeforeOfStartDate = (date) => {
     const paramDate = date.getTime() / 1000;
-    const preparedToDate = new Date(fromDate*1000);
-    const oneMonthMax = new Date(`${preparedToDate.getMonth()+2}.${preparedToDate.getDate()}.${preparedToDate.getFullYear()} 00:00`).getTime() / 1000;
+    const preparedToDate = new Date(fromDate * 1000);
+    const oneMonthMax =
+      new Date(
+        `${
+          preparedToDate.getMonth() + 2
+        }.${preparedToDate.getDate()}.${preparedToDate.getFullYear()} 00:00`
+      ).getTime() / 1000;
     return fromDate > paramDate || paramDate > oneMonthMax;
   };
 
@@ -131,8 +150,8 @@ export default function VatReports() {
       searchByName.length
         ? searchByName
         : searchByOrgId.length
-          ? searchByOrgId
-          : []
+        ? searchByOrgId
+        : []
     );
     setCustomerSearchBy(
       searchByName.length ? "name" : searchByOrgId.length ? "orgId" : undefined
@@ -151,27 +170,17 @@ export default function VatReports() {
       setLoading(true);
       ReportService.getVatReportCsvData(params)
         .then((res) => {
-          setCsvData(res)
-          setTimeout(()=> {
-            downloadCsvRef.current.link.click()
+          setCsvData(res);
+          setTimeout(() => {
+            downloadCsvRef.current.link.click();
             setLoading(false);
-          },500)
+          }, 500);
         })
         .catch((e) => {
           setLoading(false);
         });
     }
   };
-
-  const data = [
-    { firstname: "Ahmed", lastname: "Tomi", email: "ah@smthing.co.com" },
-    { firstname: "Raed", lastname: "Labes", email: "rl@smthing.co.com" },
-    { firstname: "Yezzi", lastname: "Min l3b", email: "ymin@cocococo.com" },
-  ];
-
-  const dataFromCsvState = ()=> {
-    return csvData;
-  }
 
   return (
     <div>
@@ -204,7 +213,7 @@ export default function VatReports() {
                         setOrgId(data?.uuid || "");
                         setCustomerSearchBy(undefined);
                         setCustomerSearchBoxLength(0);
-                      }
+                      } else setOrgId("");
                       return onChange(data);
                     }}
                     onInputChange={(event, value) => {
@@ -274,7 +283,11 @@ export default function VatReports() {
               />
             </div>
           )}
-          <div className={`${user.role[0] !== FP_ADMIN ? "pb-24" : "py-32"} grid grid-cols-1 md:grid-cols-2 sm: pb-12 w-full`}>
+          <div
+            className={`${
+              user.role[0] !== FP_ADMIN ? "pb-24" : "py-32"
+            } grid grid-cols-1 md:grid-cols-2 sm: pb-12 w-full`}
+          >
             <Controller
               name="checkIn"
               control={control}
@@ -359,8 +372,8 @@ export default function VatReports() {
               color="secondary"
               className="rounded-4 w-full"
               loading={loading}
-              onClick={()=> handleExportVatReports()}
-              disabled={user.role[0] === FP_ADMIN && !orgId}
+              onClick={() => handleExportVatReports()}
+              disabled={(user.role[0] === FP_ADMIN && !orgId) || isDisable}
             >
               {t("label:downloadReport")}
             </LoadingButton>

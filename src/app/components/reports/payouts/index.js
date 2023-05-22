@@ -298,7 +298,11 @@ export default function Payouts() {
           </div>
         </div>
       )}
-      {!isYearView && <PayoutReports data={monthViewData}/>}
+      {!isYearView && <PayoutReports urlData={{
+        orgId: orgUuid,
+        year: selectedDate.getFullYear(),
+        month: selectedMonth,
+      }} data={monthViewData}/>}
     </div>
   );
 }
