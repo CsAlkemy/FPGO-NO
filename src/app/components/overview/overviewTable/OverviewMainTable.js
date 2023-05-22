@@ -44,7 +44,7 @@ import {
   refundRequestsOverview,
   subClientAdminOverview,
   userListOverview,
-  reservationListOverview,
+  reservationListOverview, payoutReportsListOverview
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from "../../../utils/UtilsService";
