@@ -93,6 +93,41 @@ export const overviewStatuses = [
     name: "Reserved",
     color: "bg-invoiced text-m-grey-700",
   },
+  {
+    id: 17,
+    name: "Unpaid",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 18,
+    name: "Overdue",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 19,
+    name: "Over Payment",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 20,
+    name: "Reminder",
+    color: "bg-sent text-m-grey-700",
+  },
+  {
+    id: 21,
+    name: "Collection",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 22,
+    name: "Credited",
+    color: "bg-paid text-m-grey-700",
+  },
+  {
+    id: 23,
+    name: "Converted to Account",
+    color: "bg-paid text-m-grey-700",
+  },
 ];
 
 function OverviewStatus(props) {
@@ -127,6 +162,18 @@ function OverviewStatus(props) {
     : props.name === "Accepted"
     ? (classes = "inline text-12 py-4 px-6 rounded-sm min-w-3xl")
     : props.name === "Refund Pending"
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Unpaid"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Overdue"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Over Payment"
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Reminder"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Credited"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Converted to Account"
     ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
     : props.name === "Reserved"
     ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")

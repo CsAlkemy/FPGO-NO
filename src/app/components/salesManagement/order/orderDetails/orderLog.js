@@ -35,7 +35,8 @@ const orderLog = ({ info }) => {
               "actionBy":null,
               "note":null,
               "paymentMethod":null,
-              "refundAmount":null
+              "refundAmount":null,
+              "translationKey":"orderExpiredAndWasNotPaid",
             });
           }
           orderData.push(...data);
@@ -74,12 +75,15 @@ const orderLog = ({ info }) => {
                     log.slug === "refund-sent" ||
                     log.slug === "invoice-order-exported" ||
                     log.slug === "customer-information-updated" ||
+                    log.slug === "invoice-credited" ||
+                    log.slug === "invoice-converted-to-account"||
                     log.slug === "payment-successful" ? (
                       <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
                         <CheckIcon className="icon-size-16 text-white" />
                       </TimelineDot>
                     ) : log.slug === "payment-failed" ||
-                      log.slug === "order-converted-to-invoice" ? (
+                        log.slug === "invoice-reminder" ||
+                        log.slug === "order-converted-to-invoice" ? (
                       <TimelineDot className=' bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0'>
                         <PriorityHighIcon className="icon-size-16 text-white" />
                       </TimelineDot>
