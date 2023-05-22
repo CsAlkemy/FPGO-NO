@@ -53,7 +53,9 @@ const TimelineLog = () => {
         new Date().getMonth() + 1
       }.09.${new Date().getFullYear()} 00:00:00`;
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-      CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp)
+      const time = new Date().getTime()/1000;
+      const endTime = Math.floor(time)
+      CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp, endTime)
         .then((res) => {
           setLogs(res?.data);
           setIsFetching(false);

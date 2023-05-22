@@ -62,7 +62,9 @@ const TimelineLog = () => {
       }.09.${new Date().getFullYear()} 00:00:00`;
       // setSelectedDate(date);
       const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-      ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp)
+      const time = new Date().getTime()/1000;
+      const endTime = Math.floor(time)
+      ClientService.getClientTimelineByUUID(queryParams.uuid, timeStamp, endTime)
         .then((res) => {
           setSummary(res?.data?.summary ? res?.data?.summary : []);
           setLogs(res?.data?.timeline ? res?.data?.timeline : []);
