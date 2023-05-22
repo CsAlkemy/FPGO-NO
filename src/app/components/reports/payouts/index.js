@@ -265,7 +265,7 @@ export default function Payouts() {
         )}
       </div>
       {isYearView && (
-        <div className="payouts-bg-container m-16">
+        <div className="payouts-bg-container m-16 max-w-7xl">
           <div className="w-1/4">
             <p className="subtitle3 pl-24 pt-24">{dirData.length} Folders</p>
           </div>
