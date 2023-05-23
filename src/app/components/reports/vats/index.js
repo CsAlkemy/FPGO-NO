@@ -64,7 +64,7 @@ export default function VatReports() {
     { label: "Type payment", key: "paymentType" },
     { label: "Description", key: "description" },
     { label: "Product number", key: "productNumber" },
-    { label: "credittcheck yes/no", key: "creditCheck" },
+    { label: "credittcheck", key: "creditCheck" },
   ];
   const [isDisable, setIsDisable] = useState(true);
   const downloadCsvRef = useRef(null);
