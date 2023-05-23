@@ -205,7 +205,7 @@ export default function VatReports() {
                     options={searchCustomersList}
                     // forcePopupIcon={<Search />}
                     getOptionLabel={(option) => option.searchString}
-                    className=""
+                    className="px-10"
                     fullWidth
                     onChange={(_, data) => {
                       setCustomerSearchBoxLength(0);
@@ -271,11 +271,13 @@ export default function VatReports() {
                         id="searchBox"
                         {...params}
                         {...field}
-                        className="px-10"
+                        // className="px-10"
                         inputRef={ref}
                         onChange={searchCustomerOnFocus}
                         // placeholder="Search by Name or Phone Number"
                         placeholder={t("label:searchByNameOrPhoneNo")}
+                        label={t("label:client")}
+                        required
                       />
                     )}
                   />
