@@ -113,7 +113,7 @@ export default function Payouts() {
           ReportService.getPayoutsListByMonth({
             orgId: orgUuid,
             year: selectedDate.getFullYear(),
-            month: "02"
+            month: selectedMonth
           })
             .then((response) => {
               setIsLoading(false);
