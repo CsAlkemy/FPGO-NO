@@ -96,7 +96,9 @@ export default function Payouts() {
         })
           .then((response) => {
             setIsLoading(false);
-            setDirData(response);
+            setDirData(response.sort((a, b)=> {
+              return a.folder- b.folder;
+            }));
           })
           .catch((e) => {
             enqueueSnackbar(t(`message:${e}`), {
