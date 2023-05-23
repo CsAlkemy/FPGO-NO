@@ -64,7 +64,7 @@ export default function VatReports() {
     { label: "Type payment", key: "paymentType" },
     { label: "Description", key: "description" },
     { label: "Product number", key: "productNumber" },
-    { label: "credittcheck yes/no", key: "creditCheck" },
+    { label: "credittcheck", key: "creditCheck" },
   ];
   const [isDisable, setIsDisable] = useState(true);
   const downloadCsvRef = useRef(null);
@@ -205,7 +205,7 @@ export default function VatReports() {
                     options={searchCustomersList}
                     // forcePopupIcon={<Search />}
                     getOptionLabel={(option) => option.searchString}
-                    className=""
+                    className="px-10"
                     fullWidth
                     onChange={(_, data) => {
                       setCustomerSearchBoxLength(0);
@@ -271,11 +271,13 @@ export default function VatReports() {
                         id="searchBox"
                         {...params}
                         {...field}
-                        className="px-10"
+                        // className="px-10"
                         inputRef={ref}
                         onChange={searchCustomerOnFocus}
                         // placeholder="Search by Name or Phone Number"
                         placeholder={t("label:searchByNameOrPhoneNo")}
+                        label={t("label:client")}
+                        required
                       />
                     )}
                   />
