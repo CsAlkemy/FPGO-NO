@@ -14,7 +14,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Paper from "@mui/material/Paper";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import InputBase from "@mui/material/InputBase";
-import { t } from "i18next";
 import { setSearchText } from "app/store/overview-table/overviewTableDataSearchTextSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "app/store/userSlice";
@@ -22,8 +21,10 @@ import PayoutReports from "./payoutReports";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import ReportService from "../../../data-access/services/reportService/ReportService";
 import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 export default function Payouts() {
+  const { t } = useTranslation();
   const params = useParams();
   const orgUuid = params.uuid;
   const [isLoading, setIsLoading] = useState(true);
@@ -133,18 +134,18 @@ export default function Payouts() {
   }, [isLoading, isYearView]);
 
   const prepareMonthName = (param) => {
-    if (param === "01") return "January";
-    else if (param === "02") return "February";
-    else if (param === "03") return "March";
-    else if (param === "04") return "April";
-    else if (param === "05") return "May";
-    else if (param === "06") return "June";
-    else if (param === "07") return "July";
-    else if (param === "08") return "August";
-    else if (param === "09") return "September";
-    else if (param === "10") return "October";
-    else if (param === "11") return "November";
-    else if (param === "12") return "December";
+    if (param === "01") return "january";
+    else if (param === "02") return "february";
+    else if (param === "03") return "march";
+    else if (param === "04") return "april";
+    else if (param === "05") return "may";
+    else if (param === "06") return "june";
+    else if (param === "07") return "july";
+    else if (param === "08") return "august";
+    else if (param === "09") return "september";
+    else if (param === "10") return "october";
+    else if (param === "11") return "november";
+    else if (param === "12") return "december";
   };
 
   const handleCumbCustomConfig = (param) => {
@@ -287,7 +288,7 @@ export default function Payouts() {
                     />
                     <div>
                       <div className="payouts-months">
-                        {prepareMonthName(data.folder)}
+                        {t(`label:${prepareMonthName(data.folder)}`)}
                       </div>
                       <div className="payouts-count body4">
                         {data.files || 0} {t("label:payouts")}
