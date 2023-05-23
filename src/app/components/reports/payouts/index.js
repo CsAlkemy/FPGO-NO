@@ -290,7 +290,7 @@ export default function Payouts() {
                         {prepareMonthName(data.folder)}
                       </div>
                       <div className="payouts-count body4">
-                        {data.files} Payouts
+                        {data.files || 0} {t("label:payouts")}
                       </div>
                     </div>
                   </div>
