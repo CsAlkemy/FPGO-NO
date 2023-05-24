@@ -210,7 +210,7 @@ export default function Payouts() {
       <div className="payouts-header">
         {/*<Header isDate={true}/>*/}
         <div>
-          <div className="header6">Payouts</div>
+          <div className="header6">{t("label:payouts")}</div>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="small" />}
             aria-label="breadcrumb"
