@@ -539,7 +539,7 @@ const OrderModal = (props) => {
                   )}
                 {["Send Refund", "Refund Order"].includes(headerTitle) && (
                   <div className="flex justify-between py-16 px-12" style={{backgroundColor: "#F7F7F7", borderRadius: "4px"}}>
-                    <p className="subtitle2">{t("label:refundableAmount")}</p>
+                    <p className="subtitle2">{t("label:refundAmount")}</p>
                     <p className="subtitle2">{t("label:nok")} {orderAmount}</p>
                   </div>
                 )}
