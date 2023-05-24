@@ -47,12 +47,13 @@ const confirmDiscard = (props) => {
           });
           setApiLoading(false);
         } else if (response?.error) {
+          const isParam = response?.error?.data?.message.includes("Param");
+          const message = `${response?.error?.data?.message.split("Param")[0]}${response?.error?.data?.message.split("Param")[1]}`
           enqueueSnackbar(
             t(
               `message:${
-                response?.error?.data?.message.includes("Param")
-                  ? response?.error?.data?.message.split("Param")[0] +
-                    response?.error?.data?.message.split("Param")[1]
+                isParam
+                  ? message
                   : response?.error?.data?.message
               }`
             ),
