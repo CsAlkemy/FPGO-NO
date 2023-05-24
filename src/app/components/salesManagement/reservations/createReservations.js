@@ -891,7 +891,7 @@ const ReservationCreate = () => {
                   control={control}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <DesktopDatePicker
-                      label={t("label:orderDate")}
+                      label={t("label:reservationDate")}
                       mask=""
                       inputFormat="dd.MM.yyyy"
                       value={!value ? new Date() : value}

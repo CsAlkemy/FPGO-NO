@@ -435,11 +435,35 @@ export const apiSlice = createApi({
     }),
     chargeReservation: builder.mutation({
       query: (payload) => ({
-        url: `/reservations/capture/${payload.uuid}`,
+        url: `/reservations/charge/${payload.uuid}`,
         method: "POST",
         body: {
           products: payload.products,
           grandTotal: parseFloat(payload.grandTotal),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    refundFromReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/orders/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          isPartial: false,
+          amount: payload.refundableAmount,
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    refundChargedTransection: builder.mutation({
+      query: (payload) => ({
+        url: `/orders/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          isPartial: false,
+          amount: payload.refundableAmount,
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -497,4 +521,6 @@ export const {
   useCompleteReservationMutation,
   useCapturePaymentMutation,
   useChargeReservationMutation,
+  useRefundFromReservationMutation,
+  useRefundChargedTransectionMutation,
 } = apiSlice;
