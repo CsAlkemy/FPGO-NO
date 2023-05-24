@@ -89,7 +89,7 @@ const OrderInformation = ({ info }) => {
       name: "sweden",
     },
   ]);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2, 3, 4, 5, 6, 7,8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
 
   const [taxVariable, setTaxVariable] = React.useState([
     {
@@ -242,6 +242,19 @@ const OrderInformation = ({ info }) => {
       ? info?.customerDetails?.address?.country
       : "norway";
 
+    if (
+      info?.productList &&
+      info?.productList &&
+      info?.productList.length >= 2
+    ) {
+      setAddOrderIndex(
+        addOrderIndex.filter(
+          (item, index) => item <= info?.productList.length - 1
+        )
+      );
+    } else {
+      setAddOrderIndex(addOrderIndex.filter((item, index) => item < 1));
+    }
     reset({ ...CreateOrderDefaultValue });
 
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
