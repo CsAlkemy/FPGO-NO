@@ -8,7 +8,7 @@ import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import { useState } from "react";
-import { Link, TablePagination } from "@mui/material";
+import { CircularProgress, Link, TablePagination } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Zoom from "@mui/material/Zoom";
@@ -17,12 +17,16 @@ import RedoIcon from "@mui/icons-material/Redo";
 import { withStyles } from "@mui/styles";
 import Tooltip from "@mui/material/Tooltip";
 import { useNavigate } from "react-router-dom";
+import ReportService from "../../../data-access/services/reportService/ReportService";
 
 export default function PayoutReports(props) {
   const { t } = useTranslation();
   const data = props.data;
+  const urlData = props.urlData;
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fileName, setFileName] = useState("");
   const navigate = useNavigate();
   const payoutsMonthViewTableHeaderRows = [
     {
@@ -104,58 +108,85 @@ export default function PayoutReports(props) {
     },
   };
 
+  const downloadPayoutFile = (fileName) => {
+    setFileName(fileName);
+    setIsLoading(true);
+    const preparedParam = {
+      orgId: urlData.orgId,
+      year: urlData.year,
+      month: urlData.month,
+      fileName,
+    };
+    ReportService.getDownloadableFile(preparedParam)
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `${fileName}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        setIsLoading(false);
+        link.remove();
+      })
+      .catch((e) => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <>
       {/*<div className="payouts-header">*/}
       {/*  <Header isDate={false} />*/}
       {/*</div>*/}
-      {
-        !!data && (
-          <div>
-            <TableContainer className="px-20" key={1}>
-              <Table stickyHeader className="min-w-xl" aria-label="sticky table">
-                {/*<TablePagination*/}
-                {/*  className="shrink-0"*/}
-                {/*  component="div"*/}
-                {/*  count={data.length}*/}
-                {/*  rowsPerPage={rowsPerPage}*/}
-                {/*  page={page}*/}
-                {/*  backIconButtonProps={{*/}
-                {/*    "aria-label": "Previous Page",*/}
-                {/*  }}*/}
-                {/*  nextIconButtonProps={{*/}
-                {/*    "aria-label": "Next Page",*/}
-                {/*  }}*/}
-                {/*  onPageChange={handleChangePage}*/}
-                {/*  onRowsPerPageChange={handleChangeRowsPerPage}*/}
-                {/*  rowsPerPageOptions={[]}*/}
-                {/*/>*/}
-                <TableHead>
-                  <OverviewTableHeader
-                    sortOrder={sortOrder}
-                    onRequestSort={handleRequestSort}
-                    headerRows={payoutsMonthViewTableHeaderRows}
-                  />
-                </TableHead>
-                {!!data && data.length ? (
-                  <TableBody className="body-3">
-                    {_.orderBy(data, [sortOrder?.id], [sortOrder.direction])
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => (
-                        <TableRow
-                          className="cursor-pointer hover:bg-MonochromeGray-25"
-                          key={`002`}
-                        >
-                          <TableCell key={`001`} align="left">
-                            {row.dateAdded}
-                          </TableCell>
-                          <TableCell key={`001`} align="left">
-                            {row.fileName}
-                          </TableCell>
-                          <TableCell key={`001`} align="right" className="pr-36">
-                            {t(`label:${row.fileFormat}`)}
-                          </TableCell>
-                          <TableCell key={`001`} align="center">
+      {!!data && (
+        <div>
+          <TableContainer className="px-20" key={1}>
+            <Table stickyHeader className="min-w-xl" aria-label="sticky table">
+              {/*<TablePagination*/}
+              {/*  className="shrink-0"*/}
+              {/*  component="div"*/}
+              {/*  count={data.length}*/}
+              {/*  rowsPerPage={rowsPerPage}*/}
+              {/*  page={page}*/}
+              {/*  backIconButtonProps={{*/}
+              {/*    "aria-label": "Previous Page",*/}
+              {/*  }}*/}
+              {/*  nextIconButtonProps={{*/}
+              {/*    "aria-label": "Next Page",*/}
+              {/*  }}*/}
+              {/*  onPageChange={handleChangePage}*/}
+              {/*  onRowsPerPageChange={handleChangeRowsPerPage}*/}
+              {/*  rowsPerPageOptions={[]}*/}
+              {/*/>*/}
+              <TableHead>
+                <OverviewTableHeader
+                  sortOrder={sortOrder}
+                  onRequestSort={handleRequestSort}
+                  headerRows={payoutsMonthViewTableHeaderRows}
+                />
+              </TableHead>
+              {!!data && data.length ? (
+                <TableBody className="body-3">
+                  {_.orderBy(data, [sortOrder?.id], [sortOrder.direction])
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => (
+                      <TableRow
+                        className="cursor-pointer hover:bg-MonochromeGray-25"
+                        key={`002`}
+                      >
+                        <TableCell key={`001`} align="left">
+                          {row.dateAdded}
+                        </TableCell>
+                        <TableCell key={`001`} align="left">
+                          {row.fileName}
+                        </TableCell>
+                        <TableCell key={`001`} align="right" className="pr-36">
+                          {t(`label:${row.fileFormat}`)}
+                        </TableCell>
+                        <TableCell key={`001`} align="center">
+                          {(!isLoading ||
+                            !fileName ||
+                            fileName !== row.fileName) && (
                             <CustomTooltip
                               disableFocusListener
                               title={t("label:downloadReport")}
@@ -163,41 +194,45 @@ export default function PayoutReports(props) {
                               placement="bottom"
                               enterDelay={300}
                             >
-                              <Link
-                                component="a"
-                                target="_blank"
-                                href={row.url}
+                              <Box
+                                component="span"
                                 className="py-8 px-4 downloadButton"
                                 sx={downloadButtonBoxSx}
-                                // onClick={() =>
-                                //   window.location.href=row.url
-                                // }
+                                onClick={() => downloadPayoutFile(row.fileName)}
                               >
                                 <FileDownloadIcon
                                   style={{ paddingBottom: "3px" }}
                                 />
-                              </Link>
+                              </Box>
                             </CustomTooltip>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                ) : (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell colSpan={payoutsMonthViewTableHeaderRows.length} align="center">
-                        <Typography className="subtitle3">
-                          {t("label:dataNotFound")}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </div>
-        )
-      }
+                          )}
+                          {isLoading && fileName === row.fileName && (
+                            <CircularProgress
+                              style={{ padding: "5px", color: "#0088AE" }}
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              ) : (
+                <TableBody>
+                  <TableRow>
+                    <TableCell
+                      colSpan={payoutsMonthViewTableHeaderRows.length}
+                      align="center"
+                    >
+                      <Typography className="subtitle3">
+                        {t("label:dataNotFound")}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </div>
+      )}
     </>
   );
 }

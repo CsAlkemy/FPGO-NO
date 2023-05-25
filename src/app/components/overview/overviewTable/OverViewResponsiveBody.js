@@ -15,7 +15,7 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
-  reservationListOverview,
+  reservationListOverview, payoutReportsListOverview
 } from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
@@ -2738,6 +2738,56 @@ export default function OverViewResponsiveBody(props) {
               }}
             >
               <div className="subtitle3 text-primary-900">{rdt.label}</div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        }
+      });
+    case payoutReportsListOverview:
+      return props.headerRows.map((rdt) => {
+        if (rdt.id === "email") {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700 truncate">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        } else if (rdt.id === "status") {
+          return props.row.status === "Active" ? (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                <OverviewStatus name="Active" />
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                <OverviewStatus name="Inactive" />
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
               <div className="body3 text-MonochromeGray-700">
                 {props.row[rdt.id]}
               </div>
