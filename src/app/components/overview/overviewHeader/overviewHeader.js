@@ -21,7 +21,7 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
-  reservationListOverview, subscriptionsListOverview, payoutReportsListOverview
+  reservationListOverview, subscriptionsListOverview, payoutReportsListOverview, failedPaymentsListOverview
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -93,6 +93,7 @@ export default function OverviewHeader(props) {
         break;
       case failedPaymentsListOverview:
         navigate(`/subscription/create`);
+        break;
       case reservationListOverview:
         navigate(`/create-reservations`);
         break;

@@ -440,7 +440,15 @@ export const apiSlice = createApi({
     }),
     getSubscriptionsList: builder.query({
       query: () => "/subscription/list",
-      providesTags: ["ApprovedClientsList"],
+      providesTags: ["SubscriptionsList"],
+    }),
+    createSubscription: builder.mutation({
+      query: (payload) => ({
+        url: "/subscription/create",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["SubscriptionsList"],
     }),
   }),
 });
@@ -494,4 +502,5 @@ export const {
   useCompleteReservationMutation,
   useCapturePaymentMutation,
   useGetSubscriptionsListQuery,
+  useCreateSubscriptionMutation,
 } = apiSlice;

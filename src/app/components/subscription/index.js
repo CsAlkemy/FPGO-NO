@@ -40,7 +40,7 @@ import ProductService from "../../data-access/services/productsService/ProductSe
 import CustomersService from "../../data-access/services/customersService/CustomersService";
 import ClientService from "../../data-access/services/clientsService/ClientService";
 import UtilsServices from "../../data-access/utils/UtilsServices";
-import { useCreateQuickOrderMutation } from "app/store/api/apiSlice";
+import { useCreateSubscriptionMutation } from "app/store/api/apiSlice";
 import OrdersService from "../../data-access/services/ordersService/OrdersService";
 import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../utils/helperFunctions";
@@ -48,6 +48,7 @@ import { useNavigate } from "react-router-dom";
 import FuseUtils from "@fuse/utils";
 import PhoneInput from "react-phone-input-2";
 import { Close, Edit } from "@mui/icons-material";
+import SubscriptionsService from "../../data-access/services/subscriptionsService/SubscriptionsService";
 
 const CreateSubscription = () => {
   const { t } = useTranslation();
@@ -69,7 +70,7 @@ const CreateSubscription = () => {
   const [newCustomer, setNewCustomer] = useState([]);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
-  const [createQuickOrder, response] = useCreateQuickOrderMutation();
+  const [createSubscription, response] = useCreateSubscriptionMutation();
   const [customerType, setCustomerType] = useState();
   const [isEdit, setIsEdit] = useState(false);
   const [sendOrderBy, setSendOrderBy] = useState("sms");
@@ -242,23 +243,26 @@ const CreateSubscription = () => {
     }
   };
   const onSubmit = (values) => {
+    console.log("VAL : ",values);
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
     totalDiscount = (totalDiscount / 2).toFixed(2);
     grandTotal = (grandTotal / 2).toFixed(2);
-    const data = OrdersService.prepareCreateQuickOrderPayload({
+    const data = SubscriptionsService.prepareCreateSubscriptionPayload({
       ...values,
       orderSummary: {
         subTotal,
         totalTax,
         totalDiscount,
         grandTotal,
+        payablePerCycle : grandTotal,
       },
       customers: val,
       sendOrderBy
     });
-    createQuickOrder(data).then((response) => {
+    console.log("DATA : ",data);
+    createSubscription(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
         enqueueSnackbar(t(`message:${response?.data?.message}`), {
