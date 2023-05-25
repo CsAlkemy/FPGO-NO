@@ -128,6 +128,16 @@ export const overviewStatuses = [
     name: "Converted to Account",
     color: "bg-paid text-m-grey-700",
   },
+  {
+    id: 16,
+    name: "On Going",
+    color: "bg-invoiced text-m-grey-700",
+  },
+  {
+    id: 17,
+    name: "Debt Collection2",
+    color: "bg-expired text-m-grey-700",
+  },
 ];
 
 function OverviewStatus(props) {
