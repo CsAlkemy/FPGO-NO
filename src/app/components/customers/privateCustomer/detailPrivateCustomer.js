@@ -36,6 +36,7 @@ import Orders from "./PrivateCustomerDetails/Orders";
 import Timeline from "./PrivateCustomerDetails/Timeline";
 import { useUpdatePrivateCustomerMutation } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const detailPrivateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -57,11 +58,12 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
   const sameAddRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [dialCode, setDialCode] = React.useState();
   const [tabValue, setTabValue] = React.useState("1");
   const [updatePrivateCustomer] = useUpdatePrivateCustomerMutation();
 
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, watch, trigger } = useForm({
     mode: "onChange",
     PrivateDefaultValue,
     resolver: yupResolver(validateSchemaUpdatePrivateCustomer),
@@ -119,6 +121,8 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
       PrivateDefaultValue.customerName = info?.name ? info.name : "";
       PrivateDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
+      setDialCode(info.countryCode)
+      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
       PrivateDefaultValue.billingAddress = info?.addresses?.billing?.street
         ? info.addresses.billing.street
         : "";
@@ -166,7 +170,8 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
         values,
         sameAddress,
         billingUUID,
-        shippingUUID
+        shippingUUID,
+        dialCode
       );
     updatePrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
@@ -339,7 +344,19 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                   />
                                 )}
                               />
-                              <Controller
+                              <FrontPaymentPhoneInput
+                                control={control}
+                                defaultValue='no'
+                                disable={false}
+                                error={errors.primaryPhoneNumber}
+                                label="phone"
+                                name="primaryPhoneNumber"
+                                required = {true}
+                                trigger = {trigger}
+                                setValue = {setValue}
+                                setDialCode = {setDialCode}
+                              />
+                              {/* <Controller
                                 name="primaryPhoneNumber"
                                 control={control}
                                 render={({ field }) => (
@@ -366,7 +383,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     </FormHelperText>
                                   </FormControl>
                                 )}
-                              />
+                              /> */}
                             </div>
                             <div className="form-pair-input mt-20">
                               <Controller

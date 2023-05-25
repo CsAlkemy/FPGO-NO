@@ -36,11 +36,15 @@ import {
   validateSchemaCreateClientAdministration,
 } from "../utils/helper";
 import { useCreateClientMutation } from "app/store/api/apiSlice";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const CreateClient = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
-  const [dialCode, setDialCode] = useState();
+  const [dialCodePrimary, setDialCodePrimary] = useState();
+  const [dialCodeBilling, setDialCodeBilling] = useState();
+  const [dialCodeShipping, setDialCodeShipping] = useState();
+
   const [hide, setHide] = useState(true);
   const [sameAddress, setSameAddress] = useState(false);
   const [uploadDocuments, setUploadDocuments] = useState([]);
@@ -94,6 +98,7 @@ const CreateClient = () => {
     watch,
     clearErrors,
     setError,
+    trigger,
   } = useForm({
     mode: "onChange",
     defaultValueCreateClient,
@@ -168,33 +173,23 @@ const CreateClient = () => {
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = (values) => {
-    const primaryPhoneNumber = values?.primaryPhoneNumber
-      ? values.primaryPhoneNumber.split("+")
+    const msisdn = values?.primaryPhoneNumber
+      ? values.primaryPhoneNumber.slice(dialCodePrimary.length)
       : null;
-    const billingPhoneNumber = values?.billingPhoneNumber
-      ? values.billingPhoneNumber.split("+")
+    const countryCode = dialCodePrimary
+      ? dialCodePrimary
       : null;
-    const shippingPhoneNumber = values?.shippingPhoneNumber
-      ? values.shippingPhoneNumber.split("+")
+    const bl_msisdn = values.billingPhoneNumber
+      ? values.billingPhoneNumber.slice(dialCodeBilling.length)
       : null;
-
-    const msisdn = primaryPhoneNumber
-      ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+    const bl_countryCode = dialCodeBilling
+      ? dialCodeBilling
       : null;
-    const countryCode = primaryPhoneNumber
-      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+    const sh_msisdn = values.shippingPhoneNumber
+      ? values.shippingPhoneNumber.slice(dialCodeShipping.length)
       : null;
-    const bl_msisdn = billingPhoneNumber
-      ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
-      : null;
-    const bl_countryCode = billingPhoneNumber
-      ? "+" + billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
-      : null;
-    const sh_msisdn = shippingPhoneNumber
-      ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
-      : null;
-    const sh_countryCode = shippingPhoneNumber
-      ? "+" + shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+    const sh_countryCode = dialCodeShipping
+      ? dialCodeShipping
       : null;
 
     const vatRates = values.vat.length
@@ -609,7 +604,19 @@ const CreateClient = () => {
                         />
                       )}
                     />
-                    <Controller
+                     <FrontPaymentPhoneInput
+                        control={control}
+                        defaultValue='no'
+                        disable={false}
+                        error={errors.primaryPhoneNumber}
+                        label="phone"
+                        name="primaryPhoneNumber"
+                        required = {true}
+                        trigger = {trigger}
+                        setValue = {setValue}
+                        setDialCode = {setDialCodePrimary}
+                      />
+                    {/* <Controller
                       name="primaryPhoneNumber"
                       control={control}
                       render={({ field }) => (
@@ -641,7 +648,7 @@ const CreateClient = () => {
                           </FormHelperText>
                         </FormControl>
                       )}
-                    />
+                    /> */}
                     <Controller
                       name="designation"
                       control={control}
@@ -952,7 +959,19 @@ const CreateClient = () => {
                   </div>
                   <div className="px-16">
                     <div className="form-pair-input gap-x-20">
-                      <Controller
+                    <FrontPaymentPhoneInput
+                        control={control}
+                        defaultValue='no'
+                        disable={false}
+                        error={errors.billingPhoneNumber}
+                        label="phone"
+                        name="billingPhoneNumber"
+                        required = {true}
+                        trigger = {trigger}
+                        setValue = {setValue}
+                        setDialCode = {setDialCodeBilling}
+                      />
+                      {/* <Controller
                         name="billingPhoneNumber"
                         control={control}
                         render={({ field }) => (
@@ -984,7 +1003,7 @@ const CreateClient = () => {
                             </FormHelperText>
                           </FormControl>
                         )}
-                      />
+                      /> */}
                       <Controller
                         name="billingEmail"
                         control={control}
@@ -1171,7 +1190,20 @@ const CreateClient = () => {
                     dirtyFields.country && (
                       <div className="px-16">
                         <div className="form-pair-input gap-x-20">
-                          <Controller
+                        <FrontPaymentPhoneInput
+                        control={control}
+                        defaultValue='no'
+                        disable={sameAddress}
+                        error={errors.shippingPhoneNumber}
+                        label="phone"
+                        name="shippingPhoneNumber"
+                        required = {false}
+                        trigger = {trigger}
+                        setValue = {setValue}
+                        setDialCode = {setDialCodeShipping}
+                      />
+                          
+                          {/* <Controller
                             // name={
                             //   sameAddress === true
                             //     ? "billingPhoneNumber"
@@ -1209,7 +1241,7 @@ const CreateClient = () => {
                                 </FormHelperText>
                               </FormControl>
                             )}
-                          />
+                          /> */}
                           <Controller
                             name="shippingEmail"
                             control={control}
