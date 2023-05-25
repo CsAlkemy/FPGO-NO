@@ -64,6 +64,7 @@ import AuthService from "../../../data-access/services/authService";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const createOrder = () => {
   const { t } = useTranslation();
@@ -86,6 +87,7 @@ const createOrder = () => {
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createOrder, response] = useCreateOrderMutation();
+  const [dialCode, setDialCode] = React.useState();
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -246,6 +248,7 @@ const createOrder = () => {
         totalDiscount,
         grandTotal,
       },
+      dialCode
     });
     createOrder(data).then((response) => {
       setLoading(false);
@@ -2291,7 +2294,19 @@ const createOrder = () => {
                         </div>
                         <div className="w-full my-32">
                           <div className="form-pair-input gap-x-20">
-                            <Controller
+                          <FrontPaymentPhoneInput
+                                control={control}
+                                defaultValue='no'
+                                disable={false}
+                                error={errors.primaryPhoneNumber}
+                                label="phone"
+                                name="primaryPhoneNumber"
+                                required = {true}
+                                trigger = {trigger}
+                                setValue = {setValue}
+                                setDialCode = {setDialCode}
+                              />
+                            {/* <Controller
                               name="primaryPhoneNumber"
                               control={control}
                               render={({ field }) => (
@@ -2323,7 +2338,7 @@ const createOrder = () => {
                                   </FormHelperText>
                                 </FormControl>
                               )}
-                            />
+                            /> */}
                             <Controller
                               name="email"
                               control={control}

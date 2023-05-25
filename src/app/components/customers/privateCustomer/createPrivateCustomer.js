@@ -34,6 +34,7 @@ import {
   useGetCustomersListQuery,
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const createPrivateCustomer = () => {
   const { t } = useTranslation();
@@ -42,12 +43,13 @@ const createPrivateCustomer = () => {
   const [expanded, setExpanded] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [dialCode, setDialCode] = React.useState();
   const [createPrivateCustomer] = useCreatePrivateCustomerMutation();
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   // form
-  const { control, formState, handleSubmit, reset, setValue } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, trigger} = useForm({
     mode: "onChange",
     PrivateDefaultValue,
     resolver: yupResolver(validateSchemaPrivate),
@@ -57,7 +59,7 @@ const createPrivateCustomer = () => {
   const onSubmit = (values) => {
     setLoading(true);
     const preparedPayload =
-      CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress);
+      CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress, dialCode);
     createPrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
         enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
@@ -136,7 +138,19 @@ const createPrivateCustomer = () => {
                   )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-32 px-10 md:px-16">
-                  <Controller
+                  <FrontPaymentPhoneInput
+                    control={control}
+                    defaultValue='no'
+                    disable={false}
+                    error={errors.primaryPhoneNumber}
+                    label="phone"
+                    name="primaryPhoneNumber"
+                    required = {true}
+                    trigger = {trigger}
+                    setValue = {setValue}
+                    setDialCode = {setDialCode}
+                  />
+                  {/* <Controller
                     name="primaryPhoneNumber"
                     control={control}
                     render={({ field }) => (
@@ -163,7 +177,7 @@ const createPrivateCustomer = () => {
                         </FormHelperText>
                       </FormControl>
                     )}
-                  />
+                  /> */}
                   <Controller
                     name="customerEmail"
                     control={control}
