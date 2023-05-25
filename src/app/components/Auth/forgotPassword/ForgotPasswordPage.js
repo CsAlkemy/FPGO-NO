@@ -13,6 +13,9 @@ import AuthService from "../../../data-access/services/authService";
 import AuthLayout from "../Layout/layout";
 import AuthMobileHeader from "../Layout/authMobileHeader";
 import { useTranslation } from 'react-i18next';
+import {useEffect} from "react";
+import {changeLanguage} from "app/store/i18nSlice";
+import {useDispatch} from "react-redux";
 
 /**
  * Form Validation Schema
@@ -38,6 +41,7 @@ function ForgotPasswordPage() {
   });
   const { isValid, dirtyFields, errors } = formState;
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const {t} = useTranslation()
 
   // async (values)=>
@@ -58,6 +62,10 @@ function ForgotPasswordPage() {
       });
     reset(defaultValues);
   };
+
+  useEffect(() => {
+    dispatch(changeLanguage("no"));
+  }, []);
 
   const languages = [
     {

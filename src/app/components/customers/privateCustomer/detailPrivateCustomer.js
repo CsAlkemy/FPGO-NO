@@ -36,6 +36,7 @@ import Orders from "./PrivateCustomerDetails/Orders";
 import Timeline from "./PrivateCustomerDetails/Timeline";
 import { useUpdatePrivateCustomerMutation } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const detailPrivateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -57,11 +58,12 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
   const sameAddRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [dialCode, setDialCode] = React.useState();
   const [tabValue, setTabValue] = React.useState("1");
   const [updatePrivateCustomer] = useUpdatePrivateCustomerMutation();
 
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, watch, trigger } = useForm({
     mode: "onChange",
     PrivateDefaultValue,
     resolver: yupResolver(validateSchemaUpdatePrivateCustomer),
@@ -112,13 +114,15 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
       }
 
       PrivateDefaultValue.customerID = info?.uuid ? info?.uuid : "";
-      PrivateDefaultValue.pNumber = info?.personalNumber
-        ? info.personalNumber
-        : "";
+      // PrivateDefaultValue.pNumber = info?.personalNumber
+      //   ? info.personalNumber
+      //   : "";
       PrivateDefaultValue.customerEmail = info?.email ? info.email : "";
       PrivateDefaultValue.customerName = info?.name ? info.name : "";
       PrivateDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
+      setDialCode(info.countryCode)
+      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
       PrivateDefaultValue.billingAddress = info?.addresses?.billing?.street
         ? info.addresses.billing.street
         : "";
@@ -166,7 +170,8 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
         values,
         sameAddress,
         billingUUID,
-        shippingUUID
+        shippingUUID,
+        dialCode
       );
     updatePrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
@@ -339,7 +344,19 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                   />
                                 )}
                               />
-                              <Controller
+                              <FrontPaymentPhoneInput
+                                control={control}
+                                defaultValue='no'
+                                disable={false}
+                                error={errors.primaryPhoneNumber}
+                                label="phone"
+                                name="primaryPhoneNumber"
+                                required = {true}
+                                trigger = {trigger}
+                                setValue = {setValue}
+                                setDialCode = {setDialCode}
+                              />
+                              {/* <Controller
                                 name="primaryPhoneNumber"
                                 control={control}
                                 render={({ field }) => (
@@ -366,7 +383,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     </FormHelperText>
                                   </FormControl>
                                 )}
-                              />
+                              /> */}
                             </div>
                             <div className="form-pair-input mt-20">
                               <Controller
@@ -408,26 +425,26 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                 )}
                               />
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 mt-40">
-                              <Controller
-                                name="pNumber"
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    {...field}
-                                    label={t("label:pNumber")}
-                                    className="bg-white"
-                                    type="number"
-                                    autoComplete="off"
-                                    error={!!errors.pNumber}
-                                    helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
-                                    variant="outlined"
-                                    fullWidth
-                                    value={field.value || ""}
-                                  />
-                                )}
-                              />
-                            </div>
+                            {/*<div className="grid grid-cols-1 sm:grid-cols-3 mt-40">*/}
+                            {/*  <Controller*/}
+                            {/*    name="pNumber"*/}
+                            {/*    control={control}*/}
+                            {/*    render={({ field }) => (*/}
+                            {/*      <TextField*/}
+                            {/*        {...field}*/}
+                            {/*        label={t("label:pNumber")}*/}
+                            {/*        className="bg-white"*/}
+                            {/*        type="number"*/}
+                            {/*        autoComplete="off"*/}
+                            {/*        error={!!errors.pNumber}*/}
+                            {/*        helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}*/}
+                            {/*        variant="outlined"*/}
+                            {/*        fullWidth*/}
+                            {/*        value={field.value || ""}*/}
+                            {/*      />*/}
+                            {/*    )}*/}
+                            {/*  />*/}
+                            {/*</div>*/}
                           </div>
                         </div>
                         <div className="my-20">
@@ -706,6 +723,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                                 {...field}
                                                 label={t("label:zipCode")}
                                                 type="number"
+                                                onWheel={event => { event.target.blur()}}
                                                 autoComplete="off"
                                                 disabled={sameAddress}
                                                 error={!!errors.shippingZip}

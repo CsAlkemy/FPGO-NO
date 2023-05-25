@@ -14,7 +14,10 @@ import {
   ordersListOverview,
   customerOrdersListOverview,
   refundRequestsOverview,
-  clientOrdersListOverview, subscriptionsListOverview, failedPaymentsListOverview
+  clientOrdersListOverview,
+  reservationListOverview,
+  subscriptionsListOverview,
+  payoutReportsListOverview,
 } from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
@@ -37,11 +40,12 @@ import { useSelector } from "react-redux";
 import { selectUser } from "app/store/userSlice";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import { Button } from "@mui/material";
-import { CharCont } from "../../../utils/helperFunctions";
+import { CharCont, ThousandSeparator } from "../../../utils/helperFunctions";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
+import ReservationDropdown from "../../salesManagement/reservations/dropdown";
 
 export default function OverViewResponsiveBody(props) {
   const [openHigh, setOpenHigh] = useState(false);
@@ -53,6 +57,7 @@ export default function OverViewResponsiveBody(props) {
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
   const { t } = useTranslation();
+  const [amountBank, setAmountBank] = useState(null);
 
   const handleTooltipClose = () => {
     setOpenHigh(false);
@@ -68,6 +73,7 @@ export default function OverViewResponsiveBody(props) {
 
   const handleModalOpen = (decision) => {
     setOpen(true);
+    setAmountBank(null);
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
@@ -587,6 +593,126 @@ export default function OverViewResponsiveBody(props) {
                   >
                     <OverviewStatus
                       name="Debt Collection"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "overdue":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Overdue"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "overpayment":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Overpayment"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "reminder":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Reminder"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "collection":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Collection"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "credited":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Credited"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "converted to account":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Converted to Account"
                       translationKey={props.row.translationKey}
                     />
                   </div>
@@ -1430,6 +1556,146 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                 </div>
               );
+            case "unpaid":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Unpaid"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "overdue":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Overdue"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "overpayment":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Overpayment"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "reminder":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Reminder"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "collection":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Collection"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "credited":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Credited"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "converted to account":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Converted to Account"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
           }
           // return props.row.stage === "paid" ? (
           //   <TableCell
@@ -2117,6 +2383,146 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                 </div>
               );
+            case "unpaid":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Unpaid"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "overdue":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Overdue"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "overpayment":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Overpayment"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "reminder":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Reminder"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "collection":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Collection"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "credited":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Credited"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "converted to account":
+              return (
+                <div className="grid grid-cols-2 justify-between items-center">
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div
+                    className="body3 text-MonochromeGray-700"
+                    onClick={() => {
+                      props.rowClickAction(props.row);
+                    }}
+                  >
+                    <OverviewStatus
+                      name="Converted to Account"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
           }
         } else if (rdt.id === "amount") {
           return (
@@ -2160,10 +2566,10 @@ export default function OverViewResponsiveBody(props) {
         //   </TableCell>
         // )
       });
-    case subscriptionsListOverview:
+    case reservationListOverview:
       return props.headerRows.map((rdt) => {
-        if (rdt.id === "stage") {
-          switch (props.row.stage) {
+        if (rdt.id === "status") {
+          switch (props.row.status) {
             case "sent":
               return (
                 <div
@@ -2184,7 +2590,7 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                 </div>
               );
-            case "on going":
+            case "expired":
               return (
                 <div
                   className="grid grid-cols-2 justify-between items-center"
@@ -2198,7 +2604,27 @@ export default function OverViewResponsiveBody(props) {
                   </div>
                   <div className="body3 text-MonochromeGray-700">
                     <OverviewStatus
-                      name="On Going"
+                      name="Expired"
+                      translationKey={props.row.translationKey}
+                    />
+                  </div>
+                </div>
+              );
+            case "reserved":
+              return (
+                <div
+                  className="grid grid-cols-2 justify-between items-center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <div className="subtitle3 text-primary-900">
+                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                    {rdt.label}
+                  </div>
+                  <div className="body3 text-MonochromeGray-700">
+                    <OverviewStatus
+                      name="Reserved"
                       translationKey={props.row.translationKey}
                     />
                   </div>
@@ -2245,7 +2671,11 @@ export default function OverViewResponsiveBody(props) {
                 </div>
               );
           }
-        } else if (rdt.id === "amount") {
+        } else if (
+          rdt.id === "reservedAmount" ||
+          rdt.id === "amountPaid" ||
+          rdt.id === "amountInBank"
+        ) {
           return (
             <div
               className="grid grid-cols-2 justify-between items-center"
@@ -2253,65 +2683,35 @@ export default function OverViewResponsiveBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              <div className="subtitle3 text-primary-900">
-                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
-                {rdt.label}
-              </div>
+              <div className="subtitle3 text-primary-900">{rdt.label}</div>
               <div className="body3 text-MonochromeGray-700">
-                {props.row[rdt.id]}
+                {t("label:nok")} {ThousandSeparator(props.row[rdt.id])}
               </div>
             </div>
           );
-        } else if (rdt.id === "refundResend") {
-          return props.row.refundResend === "Resend" &&
-          user.role[0] !== FP_ADMIN ? (
+        } else if (rdt.id === "options") {
+          return user.role[0] === FP_ADMIN ? (
+            ""
+          ) : props.row.status.toLowerCase() === "completed" ? (
             <>
               <CustomTooltip
                 disableFocusListener
-                title={`${props.row.refundResend} Order`}
+                title={t("label:refundFromReservations")}
                 TransitionComponent={Zoom}
-                placement="bottom"
-                enterDelay={300}
-              >
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  startIcon={<RedoIcon />}
-                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
-                  onClick={() => handleModalOpen("resend")}
-                >
-                  {t("label:resendOrder")}
-                </Button>
-              </CustomTooltip>
-              <OrderModal
-                open={open}
-                setOpen={setOpen}
-                headerTitle={headerTitle}
-                orderId={props.row.id}
-                orderName={props.row.name}
-                orderAmount={props.row.amount}
-                customerPhone={props.row.phone}
-                customerEmail={props.row.email}
-              />
-            </>
-          ) : props.row.refundResend === "Refund" &&
-          user.role[0] !== FP_ADMIN ? (
-            <>
-              <CustomTooltip
-                disableFocusListener
-                title={`${props.row.refundResend} Order`}
-                TransitionComponent={Zoom}
-                placement="bottom"
+                placement="bottom-start"
                 enterDelay={300}
               >
                 <Button
                   variant="outlined"
                   color="secondary"
                   startIcon={<UndoIcon />}
-                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
-                  onClick={() => handleModalOpen("refund")}
+                  className="rounded-4 border-1 hover:bg-white border-MonochromeGray-100 text-MonochromeGray-100 hover:text-primary-500"
+                  onClick={() => {
+                    handleModalOpen("refundReservations");
+                    setAmountBank(props.row.amountInBank);
+                  }}
                 >
-                  {t("label:refundOrder")}
+                  {t("label:refundFromReservation")}
                 </Button>
               </CustomTooltip>
               <OrderModal
@@ -2319,110 +2719,17 @@ export default function OverViewResponsiveBody(props) {
                 setOpen={setOpen}
                 headerTitle={headerTitle}
                 orderId={props.row.id}
-                orderName={props.row.name}
-                orderAmount={props.row.amount}
+                orderName={props.row.customer}
+                orderAmount={props.row.reservedAmount}
                 customerPhone={props.row.phone}
                 customerEmail={props.row.email}
-              />
-            </>
-          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <>
-              <CustomTooltip
-                disableFocusListener
-                title={`${props.row.refundResend} Order`}
-                TransitionComponent={Zoom}
-                placement="bottom"
-                enterDelay={300}
-              >
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  startIcon={<ReceiptLongOutlinedIcon />}
-                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
-                  onClick={() => setEditOpen(true)}
-                >
-                  {t("label:sendInvoice")}
-                </Button>
-              </CustomTooltip>
-              <SendInvoiceModal
-                editOpen={editOpen}
-                setEditOpen={setEditOpen}
-                customerInfo={props.row}
-                // headerTitle={headerTitle}
-                // orderId={props.row.id}
-                // orderName={props.row.name}
-                // orderAmount={props.row.amount}
-                // customerPhone={props.row.phone}
-                // customerEmail={props.row.email}
+                amountInBank={amountBank}
               />
             </>
           ) : (
-            ""
-          );
-        } else if (rdt.id === "cancel") {
-          return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
             <>
-              <CustomTooltip
-                disableFocusListener
-                title="Cancel Order"
-                TransitionComponent={Zoom}
-                placement="bottom-start"
-                enterDelay={300}
-              >
-                <Button
-                  Button
-                  variant="outlined"
-                  color="secondary"
-                  startIcon={<CancelIcon className="text-red-500" />}
-                  className="rounded-4 button2 border-1 border-MonochromeGray-100 text-MonochromeGray-900"
-                  onClick={() => handleModalOpen("cancel")}
-                >
-                  {t("label:cancelOrder")}
-                </Button>
-              </CustomTooltip>
-              <OrderModal
-                open={open}
-                setOpen={setOpen}
-                headerTitle={headerTitle}
-                orderId={props.row.id}
-                orderName={props.row.name}
-                orderAmount={props.row.amount}
-                customerPhone={props.row.phone}
-                customerEmail={props.row.email}
-              />
+              <ReservationDropdown data={props.row} />
             </>
-          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <>
-              <CustomTooltip
-                disableFocusListener
-                title={`${props.row.refundResend} Order`}
-                TransitionComponent={Zoom}
-                placement="bottom"
-                enterDelay={300}
-              >
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  startIcon={<RedoIcon />}
-                  className="rounded-4 button2 border-1 border-MonochromeGray-100"
-                  onClick={() => handleModalOpen("resend")}
-                >
-                  {t("label:resendOrder")}
-                </Button>
-              </CustomTooltip>
-              <OrderModal
-                open={open}
-                setOpen={setOpen}
-                headerTitle={headerTitle}
-                orderId={props.row.id}
-                orderName={props.row.name}
-                orderAmount={props.row.amount}
-                customerPhone={props.row.phone}
-                customerEmail={props.row.email}
-              />
-            </>
-          ) : (
-            ""
           );
         } else {
           return (
@@ -2432,118 +2739,53 @@ export default function OverViewResponsiveBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              <div className="subtitle3 text-primary-900">
-                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
-                {rdt.label}
-              </div>
+              <div className="subtitle3 text-primary-900">{rdt.label}</div>
               <div className="body3 text-MonochromeGray-700">
                 {props.row[rdt.id]}
               </div>
             </div>
           );
         }
-        // return rdt.includes("amount") || rdt.includes("stage") ? (
-        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
-        //   </TableCell>
-        // )
-        // :
-        // (
-        //   <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-        //     {props.row ? props.row[rdt] : <Skeleton variant="text" />}
-        //   </TableCell>
-        // )
       });
-    case failedPaymentsListOverview:
+    case payoutReportsListOverview:
       return props.headerRows.map((rdt) => {
-        if (rdt.id === "status") {
-          switch (props.row.status) {
-            case "paid":
-              return (
-                <div
-                  className="grid grid-cols-2 justify-between items-center"
-                  onClick={() => {
-                    props.rowClickAction(props.row);
-                  }}
-                >
-                  <div className="subtitle3 text-primary-900">
-                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
-                    {rdt.label}
-                  </div>
-                  <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus
-                      name="Paid"
-                      translationKey={props.row.translationKey}
-                    />
-                  </div>
-                </div>
-              );
-            case "invoiced":
-              return (
-                <div
-                  className="grid grid-cols-2 justify-between items-center"
-                  onClick={() => {
-                    props.rowClickAction(props.row);
-                  }}
-                >
-                  <div className="subtitle3 text-primary-900">
-                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
-                    {rdt.label}
-                  </div>
-                  <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus
-                      name="Invoiced"
-                      translationKey={props.row.translationKey}
-                    />
-                  </div>
-                </div>
-              );
-            case "debt collection":
-              return (
-                <div
-                  className="grid grid-cols-2 justify-between items-center"
-                  onClick={() => {
-                    props.rowClickAction(props.row);
-                  }}
-                >
-                  <div className="subtitle3 text-primary-900">
-                    {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
-                    {rdt.label}
-                  </div>
-                  <div className="body3 text-MonochromeGray-700">
-                    <OverviewStatus
-                      name="Debt Collection2"
-                      translationKey={props.row.translationKey}
-                    />
-                  </div>
-                </div>
-              );
-          }
-        } else if (rdt.id === "amount") {
+        if (rdt.id === "email") {
           return (
-            <div
-              className="grid grid-cols-2 justify-between items-center"
-              onClick={() => {
-                props.rowClickAction(props.row);
-              }}
-            >
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700 truncate">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        } else if (rdt.id === "status") {
+          return props.row.status === "Active" ? (
+            <div className="grid grid-cols-2 justify-between items-center">
               <div className="subtitle3 text-primary-900">
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {props.row[rdt.id]}
+                <OverviewStatus name="Active" />
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                <OverviewStatus name="Inactive" />
               </div>
             </div>
           );
         } else {
           return (
-            <div
-              className="grid grid-cols-2 justify-between items-center"
-              onClick={() => {
-                props.rowClickAction(props.row);
-              }}
-            >
+            <div className="grid grid-cols-2 justify-between items-center">
               <div className="subtitle3 text-primary-900">
                 {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
                 {rdt.label}

@@ -47,7 +47,7 @@ const authMobileHeader = (props) => {
           <div>
             <Select
               sx={{ height: 36 }}
-              defaultValue="English"
+              defaultValue="Norwegian"
               displayEmpty
               renderValue={(value) => {
                 return (
@@ -58,7 +58,7 @@ const authMobileHeader = (props) => {
                     <SvgIcon color="primary">
                       <LanguageIcon className="text-MonochromeGray-300" />
                     </SvgIcon>
-                    <div className="my-auto">{value}</div>
+                    <div className="my-auto">{t(`label:${value.toLowerCase()}`)}</div>
                   </Box>
                 );
               }}

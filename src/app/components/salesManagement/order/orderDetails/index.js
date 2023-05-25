@@ -63,7 +63,7 @@ const createOrder = () => {
           // const currentTimeStamp = new Date(new Date().toLocaleString('no-NO', {timeZone: "Europe/Oslo"})).getTime();
           // const isExpired = info.status.toLowerCase() === 'sent' && dueDateTimeStamp < currentTimeStamp;
           // info.status = isExpired ? 'Expired' : info.status;
-          
+
           setInfo(info);
           setIsLoading(false);
         })
@@ -171,17 +171,17 @@ const createOrder = () => {
                       allowScrollButtonsMobile
                     >
                       <Tab
-                        label={ t("label:orderInformation") }
+                        label={t("label:orderInformation")}
                         className="subtitle3"
                         value="1"
                       />
-                      <Tab 
-                        label={ t("label:orderLog") } 
-                        className="subtitle3" 
-                        value="2" 
+                      <Tab
+                        label={t("label:orderLog")}
+                        className="subtitle3"
+                        value="2"
                       />
                       <Tab
-                        label={ t("label:orderReceipt") }
+                        label={t("label:orderReceipt")}
                         className="subtitle3"
                         value="3"
                       />
@@ -206,7 +206,7 @@ const createOrder = () => {
                 <Button
                   color="secondary"
                   variant="outlined"
-                  className="bg-white text-MonochromeGray-700 button2 shadow-1 border-0"
+                  className="bg-white text-MonochromeGray-700 button2 border-0 shadow-1"
                   onClick={() => handleCancelOrder()}
                   startIcon={<Cancel className="text-red-400" />}
                   disabled={user.role[0] === FP_ADMIN}
@@ -248,7 +248,7 @@ const createOrder = () => {
             headerTitle={headerTitle}
             orderId={info.orderUuid}
             orderName={info.customerDetails.name}
-            orderAmount={ info.orderSummary.grandTotal }
+            orderAmount={info.orderSummary.grandTotal}
             customerPhone={
               info.customerDetails.countryCode && info.customerDetails.msisdn
                 ? info.customerDetails.countryCode + info.customerDetails.msisdn

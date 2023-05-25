@@ -183,3 +183,45 @@ export const failedPaymentsListOverviewRowDataFields = [
   "amount",
   "status",
 ];
+
+export const reservationOverviewRowDataFields = [
+  "date",
+  "id",
+  "customer",
+  "phone",
+  "reservedAmount",
+  "amountPaid",
+  "amountInBank",
+  "status",
+  "options"
+];
+
+export const reservationOverviewFPAdminRowDataFields = [
+  "date",
+  "id",
+  "clientName",
+  "customer",
+  "phone",
+  "reservedAmount",
+  "amountPaid",
+  "amountInBank",
+  "status",
+  "options"
+];
+
+export const payoutsListRowDataFields = [
+  "name",
+  // "orgId",
+  // "orgType",
+  "primaryContact",
+  "email",
+  "phone",
+  "status",
+];
+
+export const payoutsMonthViewRowDataFields = [
+  "dateAdded",
+  "fileName",
+  "fileFormat",
+  "isDownload"
+];

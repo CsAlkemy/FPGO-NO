@@ -29,7 +29,6 @@ import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiCheckDoubleLine } from "react-icons/ri";
-import PhoneInput from "react-phone-input-2";
 import { useNavigate, useParams } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import ConfirmModal from "../../common/confirmmationDialog";
@@ -41,12 +40,15 @@ import {
   validateSchemaOnBoardAdministration,
 } from "../utils/helper";
 import { useOnboardClientMutation } from "app/store/api/apiSlice";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const Onboarding = () => {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
-  const [dialCode, setDialCode] = React.useState();
+  const [dialCodePrimary, setDialCodePrimary] = useState();
+  const [dialCodeBilling, setDialCodeBilling] = useState();
+  const [dialCodeShipping, setDialCodeShipping] = useState();
   const [hide, setHide] = React.useState(true);
   const [clientType, setClientType] = React.useState(1); // 1 for client, 2 for sub-client
   const [sameAddress, setSameAddress] = React.useState(false);
@@ -101,6 +103,7 @@ const Onboarding = () => {
     watch,
     clearErrors,
     setError,
+    trigger
   } = useForm({
     mode: "onChange",
     defaultValueOnBoard,
@@ -180,13 +183,15 @@ const Onboarding = () => {
           ? info?.primaryContactDetails?.countryCode +
             info?.primaryContactDetails?.msisdn
           : "";
+      setDialCodePrimary(info?.primaryContactDetails?.countryCode)
+      setValue(
+        "primaryPhoneNumber",
+        info?.primaryContactDetails?.countryCode +
+          info?.primaryContactDetails?.msisdn || ""
+      );    
       reset({ ...defaultValueOnBoard });
     }
   }, [info]);
-
-  const handleOnBlurGetDialCode = (value, data, event) => {
-    setDialCode(data?.dialCode);
-  };
 
   const handleClickShowPassword = () => {
     setHide(!hide);
@@ -217,33 +222,23 @@ const Onboarding = () => {
   const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const onSubmit = (values) => {
-    const primaryPhoneNumber = values?.primaryPhoneNumber
-      ? values.primaryPhoneNumber.split("+")
+    const msisdn = values?.primaryPhoneNumber
+      ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
-    const billingPhoneNumber = values?.billingPhoneNumber
-      ? values.billingPhoneNumber.split("+")
+    const countryCode = dialCodePrimary
+      ? dialCodePrimary
       : null;
-    const shippingPhoneNumber = values?.shippingPhoneNumber
-      ? values.shippingPhoneNumber.split("+")
+    const bl_msisdn = values?.billingPhoneNumber
+      ? values?.billingPhoneNumber.slice(dialCodeBilling?.length)
       : null;
-
-    const msisdn = primaryPhoneNumber
-      ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+    const bl_countryCode = dialCodeBilling
+      ? dialCodeBilling
       : null;
-    const countryCode = primaryPhoneNumber
-      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+    const sh_msisdn = values?.shippingPhoneNumber
+      ? values?.shippingPhoneNumber.slice(dialCodeShipping?.length)
       : null;
-    const bl_msisdn = billingPhoneNumber
-      ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
-      : null;
-    const bl_countryCode = billingPhoneNumber
-      ? "+" + billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
-      : null;
-    const sh_msisdn = shippingPhoneNumber
-      ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
-      : null;
-    const sh_countryCode = shippingPhoneNumber
-      ? "+" + shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
+    const sh_countryCode = dialCodeShipping
+      ? dialCodeShipping
       : null;
 
     const vatRates = values.vat.length
@@ -252,7 +247,8 @@ const Onboarding = () => {
           .map((vat) => {
             return {
               uuid: null,
-              name: vat.vatName ? vat.vatName : null,
+              vatCode: parseInt(vat?.vatCode) || null,
+              name: vat?.vatName ? vat?.vatName : null,
               value: parseFloat(vat.vatValue),
               isActive: true,
               bookKeepingReference: vat?.bookKeepingReference
@@ -308,6 +304,7 @@ const Onboarding = () => {
         accountNumber: `${values.accountNumber}`,
         iban: values.IBAN,
         swiftCode: values.SWIFTCode,
+        accountCode: values?.bankAccountCode || null,
       },
       apticInformation: {
         // username: values.APTICuserName,
@@ -341,15 +338,14 @@ const Onboarding = () => {
           customApticInfoData === "purchase"
             ? parseFloat(values.invoicewithoutRegress)
             : null,
-        // creditLimit: parseFloat(values.creditLimitCustomer),
-        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
-        // costLimitForOrder: parseFloat(values.costLimitforOrder),
-        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
-        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
+        accountCode: values?.accountCode || null,
+        refundReference: values?.refundReference || null,
         backOfficeUsername: values.APTIEngineCuserName,
         backOfficePassword: values.APTIEnginePassword,
         b2bInvoiceFee: parseFloat(values.fakturaB2B),
         b2cInvoiceFee: parseFloat(values.fakturaB2C),
+        b2bAccountCode: values.b2bAccountCode,
+        b2cAccountCode: values.b2cAccountCode,
         isCustomerOwnerReference: ownerRef,
       },
       settings: {
@@ -548,6 +544,9 @@ const Onboarding = () => {
                               {...field}
                               label={t("label:organizationId")}
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.id}
                               helperText={
@@ -721,39 +720,18 @@ const Onboarding = () => {
                             />
                           )}
                         />
-                        <Controller
-                          name="primaryPhoneNumber"
-                          control={control}
-                          render={({ field }) => (
-                            <FormControl
-                              error={!!errors.primaryPhoneNumber}
-                              required
-                              fullWidth
-                            >
-                              <PhoneInput
-                                {...field}
-                                className={
-                                  errors.primaryPhoneNumber
-                                    ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                    : "input-phone-number-field"
-                                }
-                                country="no"
-                                enableSearch
-                                autocompleteSearch
-                                countryCodeEditable={false}
-                                specialLabel={`${t("label:phone")}*`}
-                                onBlur={handleOnBlurGetDialCode}
+                         <FrontPaymentPhoneInput
+                                control={control}
+                                defaultValue='no'
+                                disable={false}
+                                error={errors.primaryPhoneNumber}
+                                label="phone"
+                                name="primaryPhoneNumber"
+                                required = {true}
+                                trigger = {trigger}
+                                setValue = {setValue}
+                                setDialCode = {setDialCodePrimary}
                               />
-                              <FormHelperText>
-                                {errors?.primaryPhoneNumber?.message
-                                  ? t(
-                                      `validation:${errors?.primaryPhoneNumber?.message}`
-                                    )
-                                  : ""}
-                              </FormHelperText>
-                            </FormControl>
-                          )}
-                        />
                         <Controller
                           name="designation"
                           control={control}
@@ -1070,39 +1048,18 @@ const Onboarding = () => {
                       </div>
                       <div className="px-16">
                         <div className="form-pair-input gap-x-20">
-                          <Controller
-                            name="billingPhoneNumber"
-                            control={control}
-                            render={({ field }) => (
-                              <FormControl
-                                error={!!errors.billingPhoneNumber}
-                                required
-                                fullWidth
-                              >
-                                <PhoneInput
-                                  {...field}
-                                  className={
-                                    errors.billingPhoneNumber
-                                      ? "input-phone-number-field border-1 rounded-md border-red-400"
-                                      : "input-phone-number-field"
-                                  }
-                                  country="no"
-                                  enableSearch
-                                  autocompleteSearch
-                                  countryCodeEditable={false}
-                                  specialLabel={`${t("label:phone")}*`}
-                                  onBlur={handleOnBlurGetDialCode}
-                                />
-                                <FormHelperText>
-                                  {errors?.billingPhoneNumber?.message
-                                    ? t(
-                                        `validation:${errors?.billingPhoneNumber?.message}`
-                                      )
-                                    : ""}
-                                </FormHelperText>
-                              </FormControl>
-                            )}
-                          />
+                        <FrontPaymentPhoneInput
+                                control={control}
+                                defaultValue='no'
+                                disable={false}
+                                error={errors.billingPhoneNumber}
+                                label="phone"
+                                name="billingPhoneNumber"
+                                required = {true}
+                                trigger = {trigger}
+                                setValue = {setValue}
+                                setDialCode = {setDialCodeBilling}
+                              />
                           <Controller
                             name="billingEmail"
                             control={control}
@@ -1163,6 +1120,9 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:zipCode")}
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.zip}
                                   helperText={
@@ -1288,44 +1248,17 @@ const Onboarding = () => {
                         dirtyFields.country && (
                           <div className="px-16">
                             <div className="form-pair-input gap-x-20">
-                              <Controller
-                                // name={
-                                //   sameAddress === true
-                                //     ? "billingPhoneNumber"
-                                //     : "shippingPhoneNumber"
-                                // }
-                                name="shippingPhoneNumber"
+                            <FrontPaymentPhoneInput
                                 control={control}
-                                render={({ field }) => (
-                                  <FormControl
-                                    error={!!errors.shippingPhoneNumber}
-                                    // required
-                                    fullWidth
-                                  >
-                                    <PhoneInput
-                                      {...field}
-                                      className={
-                                        errors.shippingPhoneNumber
-                                          ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                          : "input-phone-number-field"
-                                      }
-                                      country="no"
-                                      enableSearch
-                                      disabled={sameAddress}
-                                      autocompleteSearch
-                                      countryCodeEditable={false}
-                                      specialLabel={t("label:phone")}
-                                      onBlur={handleOnBlurGetDialCode}
-                                    />
-                                    <FormHelperText>
-                                      {errors?.shippingPhoneNumber?.message
-                                        ? t(
-                                            `validation:${errors?.shippingPhoneNumber?.message}`
-                                          )
-                                        : ""}
-                                    </FormHelperText>
-                                  </FormControl>
-                                )}
+                                defaultValue='no'
+                                disable={false}
+                                error={errors.shippingPhoneNumber}
+                                label="phone"
+                                name="shippingPhoneNumber"
+                                required = {false}
+                                trigger = {trigger}
+                                setValue = {setValue}
+                                setDialCode = {setDialCodeShipping}
                               />
                               <Controller
                                 name="shippingEmail"
@@ -1389,6 +1322,9 @@ const Onboarding = () => {
                                       {...field}
                                       label={t("label:zipCode")}
                                       type="number"
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       disabled={sameAddress}
                                       error={!!errors.shippingZip}
@@ -1585,6 +1521,30 @@ const Onboarding = () => {
                             )}
                           />
                         </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 w-full">
+                          <Controller
+                            name="bankAccountCode"
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:accountCode")}
+                                type="text"
+                                autoComplete="off"
+                                error={!!errors.bankAccountCode}
+                                helperText={
+                                  errors?.bankAccountCode?.message
+                                    ? t(
+                                      `validation:${errors?.bankAccountCode?.message}`
+                                    )
+                                    : ""
+                                }
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1745,8 +1705,78 @@ const Onboarding = () => {
                             )}
                           />
                         </div>
+                        {customApticInfoData === "administration" && (
+                          <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-20 gap-y-40 w-full">
+                            <Controller
+                              name="accountCode"
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label={t("label:accountCode")}
+                                  type="text"
+                                  autoComplete="off"
+                                  error={!!errors.accountCode}
+                                  helperText={
+                                    errors?.accountCode?.message
+                                      ? t(
+                                        `validation:${errors?.accountCode?.message}`
+                                      )
+                                      : ""
+                                  }
+                                  variant="outlined"
+                                  fullWidth
+                                />
+                              )}
+                            />
+                            <Controller
+                              name="refundReference"
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label={t("label:refundReference")}
+                                  type="text"
+                                  autoComplete="off"
+                                  error={!!errors.refundReference}
+                                  helperText={
+                                    errors?.refundReference?.message
+                                      ? t(
+                                        `validation:${errors?.refundReference?.message}`
+                                      )
+                                      : ""
+                                  }
+                                  variant="outlined"
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          </div>
+                        )}
                         {customApticInfoData === "purchase" && (
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-20 gap-y-40 my-40 w-full md:w-3/4">
+                          <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-20 gap-y-32 w-full md:w-3/4">
+                            <Controller
+                              name="accountCode"
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label={t("label:accountCode")}
+                                  type="text"
+                                  autoComplete="off"
+                                  error={!!errors.accountCode}
+                                  helperText={
+                                    errors?.accountCode?.message
+                                      ? t(
+                                        `validation:${errors?.accountCode?.message}`
+                                      )
+                                      : ""
+                                  }
+                                  variant="outlined"
+                                  fullWidth
+                                />
+                              )}
+                            />
                             <Controller
                               name="creditLimitCustomer"
                               control={control}
@@ -1755,13 +1785,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:creditLimitForClient")}
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.creditLimitCustomer}
                                   helperText={
                                     errors?.creditLimitCustomer?.message
                                       ? t(
-                                          `validation:${errors?.creditLimitCustomer?.message}`
-                                        )
+                                        `validation:${errors?.creditLimitCustomer?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1785,13 +1818,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:costLimitForCustomer")}
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.costLimitforCustomer}
                                   helperText={
                                     errors?.costLimitforCustomer?.message
                                       ? t(
-                                          `validation:${errors?.costLimitforCustomer?.message}`
-                                        )
+                                        `validation:${errors?.costLimitforCustomer?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1814,13 +1850,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:costLimitForOrder")}
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.costLimitforOrder}
                                   helperText={
                                     errors?.costLimitforOrder?.message
                                       ? t(
-                                          `validation:${errors?.costLimitforOrder?.message}`
-                                        )
+                                        `validation:${errors?.costLimitforOrder?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1843,13 +1882,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:invoiceWithRegress")}
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.invoicewithRegress}
                                   helperText={
                                     errors?.invoicewithRegress?.message
                                       ? t(
-                                          `validation:${errors?.invoicewithRegress?.message}`
-                                        )
+                                        `validation:${errors?.invoicewithRegress?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1872,13 +1914,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:invoiceWithoutRegress")}
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.invoicewithoutRegress}
                                   helperText={
                                     errors?.invoicewithoutRegress?.message
                                       ? t(
-                                          `validation:${errors?.invoicewithoutRegress?.message}`
-                                        )
+                                        `validation:${errors?.invoicewithoutRegress?.message}`
+                                      )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1891,6 +1936,28 @@ const Onboarding = () => {
                                       </InputAdornment>
                                     ),
                                   }}
+                                />
+                              )}
+                            />
+                            <Controller
+                              name="refundReference"
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label={t("label:refundReference")}
+                                  type="text"
+                                  autoComplete="off"
+                                  error={!!errors.refundReference}
+                                  helperText={
+                                    errors?.refundReference?.message
+                                      ? t(
+                                        `validation:${errors?.refundReference?.message}`
+                                      )
+                                      : ""
+                                  }
+                                  variant="outlined"
+                                  fullWidth
                                 />
                               )}
                             />
@@ -2119,13 +2186,16 @@ const Onboarding = () => {
                       <div className="px-16">
                         <div className="product-list">
                           <div className="my-10 grid grid-cols-12 product-list-grid-container-height bg-primary-25 mb-10 subtitle3 gap-10 px-10 w-full md:w-3/4">
+                            <div className="my-auto text-MonochromeGray-500 col-span-2">
+                              {t("label:vatCode")}
+                            </div>
                             <div className="my-auto text-MonochromeGray-500 col-span-4">
                               {t("label:name")}
                             </div>
-                            <div className="my-auto text-right text-MonochromeGray-500 col-span-3">
+                            <div className="my-auto text-right text-MonochromeGray-500 col-span-2">
                               {`Value (%)`}
                             </div>
-                            <div className="my-auto text-MonochromeGray-500 col-span-4">
+                            <div className="my-auto text-MonochromeGray-500 col-span-3">
                               {t("label:bookKeepingReference")}
                             </div>
                             <div className="my-auto col-span-1 text-MonochromeGray-500">
@@ -2137,6 +2207,26 @@ const Onboarding = () => {
                               key={index}
                               className="grid grid-cols-12 subtitle3 gap-10 px-14 w-full md:w-3/4 my-20"
                             >
+                              <div className="my-auto col-span-2">
+                                <Controller
+                                  name={`vat[${index}].vatCode`}
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      onKeyUp={() => changeVatRateIcon(index)}
+                                      {...field}
+                                      type="text"
+                                      autoComplete="off"
+                                      className="bg-white custom-input-height"
+                                      error={!!errors.vatCode}
+                                      helperText={errors?.vatCode?.message}
+                                      variant="outlined"
+                                      required
+                                      fullWidth
+                                    />
+                                  )}
+                                />
+                              </div>
                               <div className="my-auto col-span-4">
                                 <Controller
                                   name={`vat[${index}].vatName`}
@@ -2157,7 +2247,7 @@ const Onboarding = () => {
                                   )}
                                 />
                               </div>
-                              <div className="my-auto text-right col-span-3">
+                              <div className="my-auto text-right col-span-2">
                                 <Controller
                                   name={`vat[${index}].vatValue`}
                                   control={control}
@@ -2166,6 +2256,9 @@ const Onboarding = () => {
                                       {...field}
                                       onKeyUp={() => changeVatRateIcon(index)}
                                       type="number"
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       className="text-right  custom-input-height"
                                       autoComplete="off"
                                       error={!!errors.vatValue}
@@ -2180,7 +2273,7 @@ const Onboarding = () => {
                                   )}
                                 />
                               </div>
-                              <div className="my-auto col-span-4">
+                              <div className="my-auto col-span-3">
                                 <Controller
                                   name={`vat[${index}].bookKeepingReference`}
                                   control={control}
@@ -2258,7 +2351,29 @@ const Onboarding = () => {
                     </div>
                     <div className="p-10">
                       <div className="px-16">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-20 w-full md:w-3/4 my-32">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 w-full md:w-1/2 my-32">
+                          <Controller
+                            name="b2bAccountCode"
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:accountCode")}
+                                type="text"
+                                autoComplete="off"
+                                error={!!errors.b2bAccountCode}
+                                helperText={
+                                  errors?.b2bAccountCode?.message
+                                    ? t(
+                                      `validation:${errors?.b2bAccountCode?.message}`
+                                    )
+                                    : ""
+                                }
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                          />
                           <Controller
                             name="fakturaB2B"
                             control={control}
@@ -2267,13 +2382,14 @@ const Onboarding = () => {
                                 {...field}
                                 label={t("label:fakturaB2b")}
                                 type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors.fakturaB2B}
-                                helperText={
+                                hhelperText={
                                   errors?.fakturaB2B?.message
-                                    ? t(
-                                        `validation:${errors?.fakturaB2B?.message}`
-                                      )
+                                    ? t(`validation:${errors?.fakturaB2B?.message}`)
                                     : ""
                                 }
                                 variant="outlined"
@@ -2290,6 +2406,28 @@ const Onboarding = () => {
                             )}
                           />
                           <Controller
+                            name="b2cAccountCode"
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:accountCode")}
+                                type="text"
+                                autoComplete="off"
+                                error={!!errors.b2cAccountCode}
+                                helperText={
+                                  errors?.b2cAccountCode?.message
+                                    ? t(
+                                      `validation:${errors?.b2cAccountCode?.message}`
+                                    )
+                                    : ""
+                                }
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                          />
+                          <Controller
                             name="fakturaB2C"
                             control={control}
                             render={({ field }) => (
@@ -2297,13 +2435,14 @@ const Onboarding = () => {
                                 {...field}
                                 label={t("label:fakturaB2c")}
                                 type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors.fakturaB2C}
                                 helperText={
                                   errors?.fakturaB2C?.message
-                                    ? t(
-                                        `validation:${errors?.fakturaB2C?.message}`
-                                      )
+                                    ? t(`validation:${errors?.fakturaB2C?.message}`)
                                     : ""
                                 }
                                 variant="outlined"
