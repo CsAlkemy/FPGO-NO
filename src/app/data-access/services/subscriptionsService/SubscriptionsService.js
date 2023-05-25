@@ -3,6 +3,7 @@ import axios from "axios";
 import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import UtilsServices from "../../utils/UtilsServices";
 
 class SubscriptionsService {
   mapSubscriptionsList = (data) => {
@@ -91,37 +92,45 @@ class SubscriptionsService {
             amount:
               order.quantity && order.rate
                 ? parseInt(order.quantity) * parseFloat(order.rate) -
-                parseFloat(order?.discount ? order.discount : 0)
+                  parseFloat(order?.discount ? order.discount : 0)
                 : null,
           };
         });
+    const phone = params?.searchCustomer?.phone.split("+");
     return {
       products: {
-        ...products
+        ...products,
       },
       orderSummary: params?.orderSummary || null,
-      billingFrequency: `${params?.billingFrequency}` || "",
-      numberOfRepeats: params?.repeatsNoOfTimes || "",
-      subscriptionStartDate: params?.orderDate || "",
-      subscriptionEndsDate: params?.orderDate || "",
-      dueDateForPaymentLink: params?.dueDatePaymentLink || "",
-      paymentLink: "",
+      billingFrequency: `${params?.billingFrequency}` === "30" ? "month" : `${params?.billingFrequency}` === "7" ? "week" : "day",
+      numberOfRepeats: parseInt(params?.repeatsNoOfTimes) || "",
+      subscriptionStartDate: UtilsServices.prepareDate(params?.orderDate) || "",
+      subscriptionEndsDate:
+        UtilsServices.prepareDate(params?.subscriptionEnds) || "",
+      dueDateForPaymentLink: isNaN(
+        `${new Date(params.dueDatePaymentLink).getTime() / 1000}`
+      )
+        ? `${new Date(parseInt(params.dueDatePaymentLink)) / 1000}`
+        : `${new Date(params.dueDatePaymentLink).getTime() / 1000}`,
       termsAndConditions: params?.termsConditions || "",
       sendOrderBy: {
         sms: params?.sendOrderBy === "sms",
         email: params?.sendOrderBy === "email",
       },
-      customerNotes: params?.customerNotes || "",
       customerDetails: {
-        type: params?.searchCustomer?.type || "",
-        countryCode: "+47",
-        // countryCode: params?.searchCustomer?.type || "",
-        // msisdn: params?.searchCustomer?.type || "",
-        msisdn: "98562385",
+        type: params?.searchCustomer?.type.toLowerCase() || "",
+        countryCode: phone ? "+" + phone[phone.length - 1].slice(0, 2) : null,
+        msisdn: phone ? phone[phone.length - 1].slice(2) : null,
         email: params?.searchCustomer?.email || "",
         name: params?.searchCustomer?.name || "",
-        personalNumber: params?.searchCustomer?.type.toLowerCase() === "private" ? params?.searchCustomer?.orgOrPNumber : null,
-        organizationId: params?.searchCustomer?.type.toLowerCase() === "corporate" ? params?.searchCustomer?.orgOrPNumber : null,
+        personalNumber:
+          params?.searchCustomer?.type.toLowerCase() === "private"
+            ? params?.searchCustomer?.orgOrPNumber
+            : null,
+        organizationId:
+          params?.searchCustomer?.type.toLowerCase() === "corporate"
+            ? params?.searchCustomer?.orgOrPNumber
+            : null,
         address: {
           street: params?.searchCustomer?.street || "",
           zip: params?.searchCustomer?.zip || "",
@@ -129,6 +138,7 @@ class SubscriptionsService {
           country: params?.searchCustomer?.country || "",
         },
       },
+      customerNotes: params?.customerNotes || "",
     };
   };
 

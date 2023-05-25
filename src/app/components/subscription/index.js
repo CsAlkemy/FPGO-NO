@@ -243,7 +243,6 @@ const CreateSubscription = () => {
     }
   };
   const onSubmit = (values) => {
-    console.log("VAL : ",values);
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
@@ -261,7 +260,6 @@ const CreateSubscription = () => {
       customers: val,
       sendOrderBy
     });
-    console.log("DATA : ",data);
     createSubscription(data).then((response) => {
       setLoading(false);
       if (response?.data?.status_code === 201) {
@@ -595,7 +593,6 @@ const CreateSubscription = () => {
                       setCustomerSearchBoxLength(0);
                       if (data) {
                         setVal(data);
-                        console.log("DATA : ", data);
                         //phone,email,name,orgID,st,zp,ct,cnt
                         setValue("phone", data?.phone || "");
                         setValue("email", data?.email || "");
