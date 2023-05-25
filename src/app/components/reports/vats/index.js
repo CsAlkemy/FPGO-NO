@@ -30,9 +30,24 @@ export default function VatReports() {
   const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [isDefault, setIsDefault] = useState(true);
   const currentDate = new Date();
-  const prepareEndDate = `${currentDate.getMonth() + 1}, ${
-    currentDate.getDate()
-  }, ${currentDate.getFullYear()}`;
+  const prepareEndDate = `${
+    currentDate.getDate() < 10
+      ? `0${currentDate.getDate() + 1}`
+      : currentDate.getDate()
+  }${
+    currentDate.getMonth() < 10
+      ? `0${currentDate.getMonth() + 1}`
+      : currentDate.getMonth() + 1
+  }${currentDate.getFullYear()}`;
+  const prepareStartDate = `${
+    currentDate.getDate() - (currentDate.getDate() - 1) < 10
+      ? `0${currentDate.getDate() - (currentDate.getDate() - 1)}`
+      : currentDate.getDate() - (currentDate.getDate() - 1)
+  }${
+    currentDate.getMonth() < 10
+      ? `0${currentDate.getMonth() + 1}`
+      : currentDate.getMonth() + 1
+  }${currentDate.getFullYear()}`;
   const defaultStartDate = `${currentDate.getMonth() + 1}, ${
     currentDate.getDate() - (currentDate.getDate() - 1)
   }, ${currentDate.getFullYear()}`;
@@ -45,8 +60,8 @@ export default function VatReports() {
   const [toDate, setToDate] = useState(
     new Date(defaultEndDate).getTime() / 1000
   );
-  const [preparedStartDate, setPreparedStartDate] = useState(defaultStartDate)
-  const [preparedEndDate, setPreparedEndDate] = useState(prepareEndDate)
+  const [preparedStartDate, setPreparedStartDate] = useState(prepareStartDate);
+  const [preparedEndDate, setPreparedEndDate] = useState(prepareEndDate);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [orgId, setOrgId] = useState("");
@@ -165,7 +180,9 @@ export default function VatReports() {
     const params = {
       orgId:
         // user.role[0] !== FP_ADMIN ? user?.user_data?.organization?.uuid : orgId,
-        user.role[0] !== FP_ADMIN ? user?.user_data?.organization?.uuid : orgDetails.uuid,
+        user.role[0] !== FP_ADMIN
+          ? user?.user_data?.organization?.uuid
+          : orgDetails.uuid,
       startTime: fromDate,
       endTime: toDate,
     };
@@ -213,12 +230,12 @@ export default function VatReports() {
                     onChange={(_, data) => {
                       setCustomerSearchBoxLength(0);
                       if (data) {
-                        setOrgDetails(data)
+                        setOrgDetails(data);
                         setOrgId(data?.uuid || "");
                         setCustomerSearchBy(undefined);
                         setCustomerSearchBoxLength(0);
-                      // } else setOrgId("");
-                      } else setOrgDetails([])
+                        // } else setOrgId("");
+                      } else setOrgDetails([]);
                       return onChange(data);
                     }}
                     onInputChange={(event, value) => {
@@ -306,7 +323,17 @@ export default function VatReports() {
                   value={value || new Date(defaultStartDate)}
                   onChange={(date) => {
                     setFromDate(date.getTime() / 1000);
-                    setPreparedStartDate(`${date.getMonth()+1}.${date.getDate()}.${date.getFullYear()}`)
+                    setPreparedStartDate(
+                      `${
+                        date.getDate() < 10
+                          ? `0${date.getDate()}`
+                          : date.getDate()
+                      }${
+                        date.getMonth() + 1 < 10
+                          ? `0${date.getMonth() + 1}`
+                          : date.getMonth() + 1
+                      }${date.getFullYear()}`
+                    );
                     return onChange(date);
                   }}
                   PopperProps={{
@@ -346,7 +373,17 @@ export default function VatReports() {
                   // onChange={onChange}
                   onChange={(date) => {
                     setToDate(date.getTime() / 1000);
-                    setPreparedEndDate(`${date.getMonth()+1}.${date.getDate()}.${date.getFullYear()}`)
+                    setPreparedEndDate(
+                      `${
+                        date.getDate() < 10
+                          ? `0${date.getDate()}`
+                          : date.getDate()
+                      }${
+                        date.getMonth() + 1 < 10
+                          ? `0${date.getMonth() + 1}`
+                          : date.getMonth() + 1
+                      }${date.getFullYear()}`
+                    );
                     return onChange(date);
                   }}
                   PopperProps={{
@@ -382,7 +419,9 @@ export default function VatReports() {
               className="rounded-4 w-full"
               loading={loading}
               onClick={() => handleExportVatReports()}
-              disabled={(user.role[0] === FP_ADMIN && !orgDetails.uuid) || isDisable}
+              disabled={
+                (user.role[0] === FP_ADMIN && !orgDetails.uuid) || isDisable
+              }
             >
               {t("label:downloadReport")}
             </LoadingButton>
@@ -391,7 +430,11 @@ export default function VatReports() {
             <CSVLink
               data={csvData}
               headers={headers}
-              filename={user.role[0] !== FP_ADMIN ? `${user?.user_data?.organization?.name} - MVA-rapporter_${preparedStartDate}_${preparedEndDate}` : `${orgDetails.name} - MVA-rapporter_${preparedStartDate}_${preparedEndDate}`}
+              filename={
+                user.role[0] !== FP_ADMIN
+                  ? `MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
+                  : `${orgDetails.name} - MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
+              }
               ref={downloadCsvRef}
             />
           </div>
