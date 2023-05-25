@@ -41,6 +41,7 @@ import {
   useUpdateCustomerStatusMutation,
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const detailCorporateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -55,6 +56,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   const [loading, setLoading] = React.useState(false);
   const [expanded, setExpanded] = React.useState(true);
   const [expandedPanel2, setExpandedPanel2] = React.useState(true);
+  const [dialCode, setDialCode] = React.useState();
   const [isLoading, setIsLoading] = useState(true);
   const addAnotherContactRef = useRef(null);
   const [updateCustomerStatus] = useUpdateCustomerStatusMutation();
@@ -84,7 +86,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   };
 
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, watch, trigger } = useForm({
     mode: "onChange",
     CorporateDetailsDefaultValue,
     resolver: yupResolver(validateSchema),
@@ -118,7 +120,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             info?.countryCode && info?.msisdn
               ? info.countryCode + info.msisdn
               : "";
-
+          setDialCode(info.countryCode)
+          setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
           CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
             ?.street
             ? info.addresses.billing.street
@@ -269,6 +272,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         : "";
       CorporateDetailsDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
+      setDialCode(info?.countryCode)
+      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
 
       CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
         ?.street
@@ -418,7 +423,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
       CustomersService.prepareUpdateCorporateCustomerPayload(
         values,
         sameAddress,
-        info
+        info,
+        dialCode
       );
     updateCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
@@ -702,7 +708,19 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                     />
                                   )}
                                 />
-                                <Controller
+                                <FrontPaymentPhoneInput
+                                  control={control}
+                                  defaultValue='no'
+                                  disable={false}
+                                  error={errors.primaryPhoneNumber}
+                                  label="phone"
+                                  name="primaryPhoneNumber"
+                                  required = {true}
+                                  trigger = {trigger}
+                                  setValue = {setValue}
+                                  setDialCode = {setDialCode}
+                                />
+                                {/* <Controller
                                   name="primaryPhoneNumber"
                                   control={control}
                                   render={({ field }) => (
@@ -733,7 +751,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                       </FormHelperText>
                                     </FormControl>
                                   )}
-                                />
+                                /> */}
                               </div>
                             </div>
                           </div>
