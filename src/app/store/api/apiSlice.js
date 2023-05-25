@@ -29,7 +29,7 @@ const baseQueryWithoutToken = fetchBaseQuery({
 });
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
-  userInfo = UtilsServices.getFPUserData()
+  userInfo = UtilsServices.getFPUserData();
   let result =
     args?.url === `/credit/check/checkout/private` ||
     args?.url === `/credit/check/checkout/corporate`
@@ -113,8 +113,14 @@ export const apiSlice = createApi({
         url: `/orders/refund/${payload.uuid}`,
         method: "POST",
         body: {
-          isPartial: payload.isPartial,
-          amount: parseFloat(payload.refundAmount),
+          isPartial: ["Send Refund", "Refund Order"].includes(
+            payload.headerTitle
+          )
+            ? false
+            : payload.isPartial,
+          amount: ["Send Refund", "Refund Order"].includes(payload.headerTitle)
+            ? parseFloat(payload.fullRefundAmount)
+            : parseFloat(payload.refundAmount),
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -398,6 +404,40 @@ export const apiSlice = createApi({
       query: (uuid) => `/orders/export/aptic/${uuid}`,
       providesTags: ["OrdersList"],
     }),
+    createReservation: builder.mutation({
+      query: (payload) => ({
+        url: "/reservations/submit",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
+    getReservationList: builder.query({
+      query: () => "/reservations/list",
+      providesTags: ["ReservationList"],
+    }),
+    completeReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/complete/${payload.uuid}`,
+        method: "PUT",
+        body: {
+          note: payload?.cancellationNote ? payload.cancellationNote : null,
+        },
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
+    capturePayment: builder.mutation({
+      query: (payload) => ({
+        url: `/payment/capture/${payload.uuid}`,
+        method: "POST",
+        body: {
+          isPartial: payload.isPartial,
+          amount: parseFloat(payload.refundAmount),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
     getSubscriptionsList: builder.query({
       query: () => "/subscription/list",
       providesTags: ["ApprovedClientsList"],
@@ -449,5 +489,9 @@ export const {
   useCreateQuickOrderMutation,
   useUpdateQuickOrderCustomerMutation,
   useOrderExportToApticQuery,
+  useCreateReservationMutation,
+  useGetReservationListQuery,
+  useCompleteReservationMutation,
+  useCapturePaymentMutation,
   useGetSubscriptionsListQuery,
 } = apiSlice;

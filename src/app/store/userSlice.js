@@ -33,11 +33,28 @@ export const setUser = createAsyncThunk(
             },
             {
               id: "sales",
-              title: "Orders",
+              title: "Sales",
               translate: "sales",
-              type: "item",
+              type: "collapse",
               icon: "material-outline:receipt_long",
-              url: "/sales/orders-list",
+              children: [
+                {
+                  id: "orders",
+                  title: "Orders",
+                  translate: 'orders',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/sales/orders-list",
+                },
+                {
+                  id: "reservations",
+                  title: "Reservations",
+                  translate: 'reservations',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reservations",
+                },
+              ]
             },
             {
               id: "subscriptions",
@@ -96,6 +113,31 @@ export const setUser = createAsyncThunk(
               type: "item",
               icon: "material-outline:unarchive",
               url: "/refund-requests",
+            },
+            {
+              id: "reports",
+              title: "Reports",
+              translate: 'reports',
+              type: "collapse",
+              icon: "material-outline:assignment_returned",
+              children: [
+                {
+                  id: "payouts",
+                  title: "Payouts",
+                  translate: 'payouts',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reports/payouts-list",
+                },
+                {
+                  id: "vatReport",
+                  title: "VAT Report",
+                  translate: 'vatReport',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reports/vats",
+                },
+              ],
             },
             {
               id: "customers",
@@ -171,11 +213,53 @@ export const setUser = createAsyncThunk(
             },
             {
               id: "sales",
-              title: "Orders",
+              title: "Sales",
               translate: "sales",
-              type: "item",
+              type: "collapse",
               icon: "material-outline:receipt_long",
-              url: "/sales/orders-list",
+              children: [
+                {
+                  id: "orders",
+                  title: "Orders",
+                  translate: 'orders',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/sales/orders-list",
+                },
+                {
+                  id: "reservations",
+                  title: "Reservations",
+                  translate: 'reservations',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reservations",
+                },
+              ]
+            },
+            {
+              id: "reports",
+              title: "Reports",
+              translate: 'reports',
+              type: "collapse",
+              icon: "material-outline:assignment_returned",
+              children: [
+                {
+                  id: "payouts",
+                  title: "Payouts",
+                  translate: 'payouts',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: `/reports/payouts/${user?.user_data?.organization?.uuid}`,
+                },
+                {
+                  id: "vatReport",
+                  title: "VAT Report",
+                  translate: 'vatReport',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reports/vats",
+                },
+              ],
             },
             {
               id: "subscriptions",
@@ -268,11 +352,53 @@ export const setUser = createAsyncThunk(
             // },
             {
               id: "sales",
-              title: "Orders",
+              title: "Sales",
               translate: "sales",
-              type: "item",
+              type: "collapse",
               icon: "material-outline:receipt_long",
-              url: "/sales/orders-list",
+              children: [
+                {
+                  id: "orders",
+                  title: "Orders",
+                  translate: 'orders',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/sales/orders-list",
+                },
+                {
+                  id: "reservations",
+                  title: "Reservations",
+                  translate: 'reservations',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reservations",
+                },
+              ]
+            },
+            {
+              id: "reports",
+              title: "Reports",
+              translate: 'reports',
+              type: "collapse",
+              icon: "material-outline:assignment_returned",
+              children: [
+                {
+                  id: "payouts",
+                  title: "Payouts",
+                  translate: 'payouts',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: `/reports/payouts/${user?.user_data?.organization?.uuid}`,
+                },
+                {
+                  id: "vatReport",
+                  title: "VAT Report",
+                  translate: 'vatReport',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/reports/vats",
+                },
+              ],
             },
             {
               id: "subscriptions",

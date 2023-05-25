@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
 import { useCreateCorporateCustomerMutation } from 'app/store/api/apiSlice';
 import CountrySelect from '../../common/countries';
+import FrontPaymentPhoneInput from '../../common/frontPaymentPhoneInput';
 
 const createCorporateCustomer = () => {
   const { t } = useTranslation()
@@ -43,6 +44,9 @@ const createCorporateCustomer = () => {
   const [loadingfind, setLoadingfind] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [createCorporateCustomer] = useCreateCorporateCustomerMutation();
+  const [dialCodePrimary, setDialCodePrimary ] = React.useState();
+  const [dialCodePrimaryInfo, setDialCodePrimaryInfo] = React.useState();
+
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -60,7 +64,7 @@ const createCorporateCustomer = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   // form
-  const { control, formState, handleSubmit, reset, getValues, watch, setValue } =
+  const { control, formState, handleSubmit, reset, getValues, watch, setValue, trigger } =
     useForm({
       mode: "onChange",
       CreateCorporateDefaultValue,
@@ -77,7 +81,7 @@ const createCorporateCustomer = () => {
   const onSubmit = (values) => {
     setLoading(true)
     const preparedPayload =
-      CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress);
+      CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress, dialCodePrimary, dialCodePrimaryInfo);
     createCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
         enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
@@ -206,6 +210,7 @@ const createCorporateCustomer = () => {
                           label={t("label:organizationId")}
                           className="col-span-1 md:col-span-1"
                           type="number"
+                          onWheel={event => { event.target.blur()}}
                           autoComplete="off"
                           error={!!errors.organizationID}
                           helperText={errors?.organizationID?.message ? t(`validation:${errors?.organizationID?.message}`) : ""}
@@ -281,7 +286,19 @@ const createCorporateCustomer = () => {
                     )}
                   />
                   <div className="mt-10">
-                    <Controller
+                  <FrontPaymentPhoneInput
+                    control={control}
+                    defaultValue='no'
+                    disable={false}
+                    error={errors.primaryPhoneNumber}
+                    label="phone"
+                    name="primaryPhoneNumber"
+                    required = {true}
+                    trigger = {trigger}
+                    setValue = {setValue}
+                    setDialCode = {setDialCodePrimary}
+                  />
+                    {/* <Controller
                       name="primaryPhoneNumber"
                       control={control}
                       render={({ field }) => (
@@ -310,7 +327,7 @@ const createCorporateCustomer = () => {
                           </FormHelperText>
                         </FormControl>
                       )}
-                    />
+                    /> */}
                   </div>
                 </div>
                 <div className="form-pair-three-by-one px-10 md:px-16">
@@ -515,6 +532,7 @@ const createCorporateCustomer = () => {
                                         {...field}
                                         label={t("label:zipCode")}
                                         type="number"
+                                        onWheel={event => { event.target.blur()}}
                                         autoComplete="off"
                                         disabled={sameAddress}
                                         error={!!errors.shippingZip}
@@ -704,6 +722,18 @@ const createCorporateCustomer = () => {
                             />
                           </div>
                           <div className="form-pair-input gap-x-20">
+                            {/* <FrontPaymentPhoneInput
+                              control={control}
+                              defaultValue='no'
+                              disable={false}
+                              error={errors.phone}
+                              label="phone"
+                              name="phone"
+                              required = {false}
+                              trigger = {trigger}
+                              setValue = {setValue}
+                              setDialCode = {setDialCodePrimaryInfo}
+                            /> */}
                             <Controller
                               name="phone"
                               control={control}

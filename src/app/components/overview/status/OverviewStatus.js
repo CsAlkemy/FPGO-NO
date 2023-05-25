@@ -1,6 +1,6 @@
 import _ from "@lodash";
 import clsx from "clsx";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export const overviewStatuses = [
   {
@@ -90,6 +90,46 @@ export const overviewStatuses = [
   },
   {
     id: 16,
+    name: "Reserved",
+    color: "bg-invoiced text-m-grey-700",
+  },
+  {
+    id: 17,
+    name: "Unpaid",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 18,
+    name: "Overdue",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 19,
+    name: "Over Payment",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 20,
+    name: "Reminder",
+    color: "bg-sent text-m-grey-700",
+  },
+  {
+    id: 21,
+    name: "Collection",
+    color: "bg-expired text-m-grey-700",
+  },
+  {
+    id: 22,
+    name: "Credited",
+    color: "bg-paid text-m-grey-700",
+  },
+  {
+    id: 23,
+    name: "Converted to Account",
+    color: "bg-paid text-m-grey-700",
+  },
+  {
+    id: 16,
     name: "On Going",
     color: "bg-invoiced text-m-grey-700",
   },
@@ -101,8 +141,7 @@ export const overviewStatuses = [
 ];
 
 function OverviewStatus(props) {
-  const {t} = useTranslation()
-
+  const { t } = useTranslation();
   let classes = "";
   props.name === "Active"
     ? (classes = "inline text-12 py-4 px-16 rounded-sm min-w-3xl")
@@ -134,6 +173,20 @@ function OverviewStatus(props) {
     ? (classes = "inline text-12 py-4 px-6 rounded-sm min-w-3xl")
     : props.name === "Refund Pending"
     ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Unpaid"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Overdue"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Over Payment"
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Reminder"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Credited"
+    ? (classes = "inline text-12 py-4 px-24 rounded-sm min-w-3xl")
+    : props.name === "Converted to Account"
+    ? (classes = "text-12 py-4 px-12 rounded-sm min-w-max")
+    : props.name === "Reserved"
+    ? (classes = "inline text-12 py-4 px-12 rounded-sm min-w-3xl")
     : (classes = "inline text-12 py-4 px-10 rounded-sm min-w-3xl");
 
   return (
