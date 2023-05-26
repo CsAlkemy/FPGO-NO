@@ -49,7 +49,7 @@ const createPrivateCustomer = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   // form
-  const { control, formState, handleSubmit, reset, setValue, trigger} = useForm({
+  const { control, formState, handleSubmit, reset, setValue, trigger, watch} = useForm({
     mode: "onChange",
     PrivateDefaultValue,
     resolver: yupResolver(validateSchemaPrivate),
@@ -125,7 +125,7 @@ const createPrivateCustomer = () => {
               <div className="col-span-1 md:col-span-4 bg-white">
                 <div className="  subtitle3 header-bg-900-product flex flex-row items-center gap-10">
                   {t("label:primaryInformation")}
-                  {dirtyFields.primaryPhoneNumber &&
+                  {watch("primaryPhoneNumber")?.length>0 &&
                   dirtyFields.customerEmail &&
                   dirtyFields.customerName &&
                   dirtyFields.billingAddress &&

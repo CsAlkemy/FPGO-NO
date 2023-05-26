@@ -189,7 +189,7 @@ const createCorporateCustomer = () => {
                   {dirtyFields.organizationID &&
                   dirtyFields.OrganizationName &&
                   dirtyFields.orgEmail &&
-                  dirtyFields.primaryPhoneNumber &&
+                  watch("primaryPhoneNumber")?.length>0 &&
                   dirtyFields.billingAddress &&
                   dirtyFields.billingZip &&
                   dirtyFields.billingCity &&

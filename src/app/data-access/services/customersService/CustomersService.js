@@ -668,7 +668,7 @@ class CustomersService {
                   orgIdOrPNumber: row.organizationId
                     ? row.organizationId
                     : row.personalNumber,
-                  phone: phone ? "+" + phone[phone.length - 1] : null,
+                  phone: row.msisdn,
                   email: row.email,
                   lastInvoicedOn: row.lastOrderOn,
                   lastOrderAmount: row.lastOrderAmount,
@@ -677,6 +677,7 @@ class CustomersService {
                   city: row?.billingAddress?.city,
                   zip: row?.billingAddress?.zip,
                   country: row?.billingAddress?.country,
+                  countryCode : row?.countryCode,
                 };
               });
               d.status_code = 200;
