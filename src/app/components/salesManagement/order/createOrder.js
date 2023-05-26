@@ -506,12 +506,13 @@ const createOrder = () => {
                     ? row?.orgIdOrPNumber
                     : null,
                   email: row?.email ? row?.email : null,
-                  phone: row?.phone ? row?.phone : null,
+                  phone: row?.phone ? row.countryCode+row?.phone : null,
                   type: row.type,
                   street: row?.street,
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
+                  countryCode: row?.countryCode,
                   searchString:
                     row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
@@ -677,6 +678,7 @@ const createOrder = () => {
       `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     );
   };
+
 
   return (
     <div className="create-product-container">
@@ -2100,7 +2102,7 @@ const createOrder = () => {
                           </div>
 
                           <span>
-                            {(dirtyFields.primaryPhoneNumber &&
+                            {(watch("primaryPhoneNumber")?.length>0 &&
                               dirtyFields.email &&
                               dirtyFields.customerName &&
                               dirtyFields.billingAddress &&
@@ -2141,6 +2143,7 @@ const createOrder = () => {
                                     setRecheckSchema(false);
                                     setCustomerSearchBy(undefined);
                                     setCustomerSearchBoxLength(0);
+                                    setDialCode(data.countryCode);
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
                                     setValue("customerName", data.name);
