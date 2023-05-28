@@ -170,7 +170,7 @@ const CreateClient = () => {
     changeVatRateIcon(index, true);
   };
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { isValid, dirtyFields, errors, touchedFields } = formState;
 
   const onSubmit = (values) => {
     const msisdn = values?.primaryPhoneNumber
@@ -573,7 +573,7 @@ const CreateClient = () => {
                   <div className="flex gap-10 items-center">
                     {t("label:primaryContactDetails")}
                     {dirtyFields.fullName &&
-                    dirtyFields.primaryPhoneNumber &&
+                    watch("primaryPhoneNumber")?.length > 0 &&
                     dirtyFields.email ? (
                       <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                     ) : (
@@ -604,18 +604,18 @@ const CreateClient = () => {
                         />
                       )}
                     />
-                     <FrontPaymentPhoneInput
-                        control={control}
-                        defaultValue='no'
-                        disable={false}
-                        error={errors.primaryPhoneNumber}
-                        label="phone"
-                        name="primaryPhoneNumber"
-                        required = {true}
-                        trigger = {trigger}
-                        setValue = {setValue}
-                        setDialCode = {setDialCodePrimary}
-                      />
+                    <FrontPaymentPhoneInput
+                      control={control}
+                      defaultValue="no"
+                      disable={false}
+                      error={errors.primaryPhoneNumber}
+                      label="phone"
+                      name="primaryPhoneNumber"
+                      required={true}
+                      trigger={trigger}
+                      setValue={setValue}
+                      setDialCode={setDialCodePrimary}
+                    />
                     {/* <Controller
                       name="primaryPhoneNumber"
                       control={control}
@@ -946,7 +946,7 @@ const CreateClient = () => {
                 <div className="p-10 w-full md:w-3/4">
                   <div className="billing-address-head mt-10">
                     {t("label:billingAddress")}
-                    {dirtyFields.billingPhoneNumber &&
+                    {watch("billingPhoneNumber")?.length > 0 &&
                     dirtyFields.billingEmail &&
                     dirtyFields.billingAddress &&
                     dirtyFields.zip &&
@@ -959,51 +959,18 @@ const CreateClient = () => {
                   </div>
                   <div className="px-16">
                     <div className="form-pair-input gap-x-20">
-                    <FrontPaymentPhoneInput
+                      <FrontPaymentPhoneInput
                         control={control}
-                        defaultValue='no'
+                        defaultValue="no"
                         disable={false}
                         error={errors.billingPhoneNumber}
                         label="phone"
                         name="billingPhoneNumber"
-                        required = {true}
-                        trigger = {trigger}
-                        setValue = {setValue}
-                        setDialCode = {setDialCodeBilling}
+                        required={true}
+                        trigger={trigger}
+                        setValue={setValue}
+                        setDialCode={setDialCodeBilling}
                       />
-                      {/* <Controller
-                        name="billingPhoneNumber"
-                        control={control}
-                        render={({ field }) => (
-                          <FormControl
-                            error={!!errors.billingPhoneNumber}
-                            required
-                            fullWidth
-                          >
-                            <PhoneInput
-                              {...field}
-                              className={
-                                errors.billingPhoneNumber
-                                  ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                  : "input-phone-number-field"
-                              }
-                              country="no"
-                              enableSearch
-                              autocompleteSearch
-                              countryCodeEditable={false}
-                              specialLabel={`${t("label:phone")}*`}
-                              onBlur={handleOnBlurGetDialCode}
-                            />
-                            <FormHelperText>
-                              {errors?.billingPhoneNumber?.message
-                                ? t(
-                                    `validation:${errors?.billingPhoneNumber?.message}`
-                                  )
-                                : ""}
-                            </FormHelperText>
-                          </FormControl>
-                        )}
-                      /> */}
                       <Controller
                         name="billingEmail"
                         control={control}
@@ -1170,39 +1137,39 @@ const CreateClient = () => {
                         labelPlacement="start"
                         disabled={
                           !(
-                            dirtyFields.billingPhoneNumber &&
-                            dirtyFields.billingEmail &&
-                            dirtyFields.billingAddress &&
-                            dirtyFields.zip &&
-                            dirtyFields.city &&
-                            dirtyFields.country
+                            watch("billingPhoneNumber")?.length > 0 &&
+                            watch("billingEmail")?.length > 0 &&
+                            watch("billingAddress")?.length > 0 &&
+                            watch("zip")?.length > 0 &&
+                            watch("city")?.length > 0 &&
+                            watch("country")?.length > 0
                           )
                         }
                       />
                     </div>
                   </div>
                   {!sameAddress &&
-                    dirtyFields.billingPhoneNumber &&
-                    dirtyFields.billingEmail &&
-                    dirtyFields.billingAddress &&
-                    dirtyFields.zip &&
-                    dirtyFields.city &&
-                    dirtyFields.country && (
+                    watch("billingPhoneNumber")?.length > 0 &&
+                    watch("billingEmail")?.length > 0 &&
+                    watch("billingAddress")?.length > 0 &&
+                    watch("zip")?.length > 0 &&
+                    watch("city")?.length > 0 &&
+                    watch("country")?.length > 0 && (
                       <div className="px-16">
                         <div className="form-pair-input gap-x-20">
-                        <FrontPaymentPhoneInput
-                        control={control}
-                        defaultValue='no'
-                        disable={sameAddress}
-                        error={errors.shippingPhoneNumber}
-                        label="phone"
-                        name="shippingPhoneNumber"
-                        required = {false}
-                        trigger = {trigger}
-                        setValue = {setValue}
-                        setDialCode = {setDialCodeShipping}
-                      />
-                          
+                          <FrontPaymentPhoneInput
+                            control={control}
+                            defaultValue="no"
+                            disable={sameAddress}
+                            error={errors.shippingPhoneNumber}
+                            label="phone"
+                            name="shippingPhoneNumber"
+                            required={false}
+                            trigger={trigger}
+                            setValue={setValue}
+                            setDialCode={setDialCodeShipping}
+                          />
+
                           {/* <Controller
                             // name={
                             //   sameAddress === true
@@ -1692,8 +1659,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.accountCode?.message
                                   ? t(
-                                    `validation:${errors?.accountCode?.message}`
-                                  )
+                                      `validation:${errors?.accountCode?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1714,8 +1681,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.refundReference?.message
                                   ? t(
-                                    `validation:${errors?.refundReference?.message}`
-                                  )
+                                      `validation:${errors?.refundReference?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
