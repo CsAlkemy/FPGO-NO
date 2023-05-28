@@ -43,6 +43,7 @@ import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal"
 import ReservationDropdown from "../../salesManagement/reservations/dropdown";
 
 export default function OverViewMainTableBody(props) {
+  console.log(props);
   const { t } = useTranslation();
   const [openHigh, setOpenHigh] = useState(false);
   const [openModerate, setOpenModerate] = useState(false);
@@ -1823,6 +1824,10 @@ export default function OverViewMainTableBody(props) {
                 customerPhone={props.row.phone}
                 customerEmail={props.row.email}
                 amountInBank={amountBank}
+                capturedAmount={props.row.capturedAmount}
+                refundableAmount={
+                  props.row.capturedAmount - props.row.amountRefunded
+                }
               />
             </TableCell>
           ) : (

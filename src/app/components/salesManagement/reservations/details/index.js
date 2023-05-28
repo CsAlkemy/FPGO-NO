@@ -40,6 +40,7 @@ const ReservationDetails = () => {
   const [headerTitle, setHeaderTitle] = useState();
   const [amountBank, setAmountBank] = useState(null);
   const [remainingAmount, setRemainingAmount] = useState(null);
+  const [amountRefunded, setAmountRefunded] = useState(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -67,7 +68,10 @@ const ReservationDetails = () => {
     }
     if (decision === "completeReservation") {
       setHeaderTitle("Complete Reservation");
-      setAmountBank(50);
+      //setAmountBank(50);
+    }
+    if (decision === "refundChargeTransection") {
+      setHeaderTitle("Refund Transaction");
     }
   };
 
@@ -95,7 +99,7 @@ const ReservationDetails = () => {
 
           info.paymentDetails.capturedAmount = 1000;
           info.paymentDetails.chargedAmount = 7000;
-          info.paymentDetails.amountRefunded = 3000;
+          info.paymentDetails.amountRefunded = 500;
 
           info.formattedAmount = formattedPaymentDetails(info.paymentDetails);
           console.log(info);
@@ -116,10 +120,14 @@ const ReservationDetails = () => {
 
   useEffect(() => {
     if (!isLoading && isLogLoading) {
-      OrdersService.getOrdersLogByUUID(queryParams.uuid)
+      ReservationService.getReservationLogByUUID(queryParams.uuid)
         .then((res) => {
+          //console.log(res);
           let orderData = [];
-          let data = res?.data;
+          let data = res?.data.log;
+          setAmountRefunded(
+            res?.data.statistics.refundedAmount.fromReservation
+          );
           let checkExpired = data.findIndex(
             (item) => item.slug === "order-expired-and-was-not-paid"
           );
@@ -190,64 +198,66 @@ const ReservationDetails = () => {
                 )}
               </div>
               <Hidden smDown>
-                <div className="button-container-product">
-                  {(info.status.toLowerCase() === "sent" ||
-                    (info.status.toLowerCase() === "reserved" &&
-                      info?.isPaid == false)) && (
-                    <Button
-                      color="secondary"
-                      variant="outlined"
-                      className="button-outline-product text-MonochromeGray-700"
-                      startIcon={<CancelIcon style={{ fill: "#F36562" }} />}
-                      onClick={() => handleModalOpen("cancelReservation")}
-                    >
-                      {t("label:cancelReservation")}
-                    </Button>
-                  )}
-                  {info.status.toLowerCase() === "sent" && (
-                    <LoadingButton
-                      color="secondary"
-                      variant="contained"
-                      className="font-semibold rounded-4 w-full sm:w-auto"
-                      // disabled={!(isValid && customData.paymentMethod.length)}
-                      //disabled="disabled"
-                      startIcon={<RedoIcon />}
-                      loading={isLoading}
-                      loadingPosition="center"
-                      onClick={() => {
-                        handleModalOpen("resendReservations");
-                      }}
-                    >
-                      {t("label:resend")}
-                    </LoadingButton>
-                  )}
-                  {info.status.toLowerCase() === "reserved" &&
-                    info?.isPaid == true && (
+                {user.role[0] !== FP_ADMIN && (
+                  <div className="button-container-product">
+                    {(info.status.toLowerCase() === "sent" ||
+                      (info.status.toLowerCase() === "reserved" &&
+                        info?.isPaid == false)) && (
+                      <Button
+                        color="secondary"
+                        variant="outlined"
+                        className="button-outline-product text-MonochromeGray-700"
+                        startIcon={<CancelIcon style={{ fill: "#F36562" }} />}
+                        onClick={() => handleModalOpen("cancelReservation")}
+                      >
+                        {t("label:cancelReservation")}
+                      </Button>
+                    )}
+                    {info.status.toLowerCase() === "sent" && (
+                      <LoadingButton
+                        color="secondary"
+                        variant="contained"
+                        className="font-semibold rounded-4 w-full sm:w-auto"
+                        // disabled={!(isValid && customData.paymentMethod.length)}
+                        //disabled="disabled"
+                        startIcon={<RedoIcon />}
+                        loading={isLoading}
+                        loadingPosition="center"
+                        onClick={() => {
+                          handleModalOpen("resendReservations");
+                        }}
+                      >
+                        {t("label:resend")}
+                      </LoadingButton>
+                    )}
+                    {info.status.toLowerCase() === "reserved" &&
+                      info?.isPaid == true && (
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          className="font-semibold rounded-4 w-full sm:w-auto"
+                          disabled={user.role[0] === FP_ADMIN}
+                          startIcon={<DoneAllIcon className="" />}
+                          onClick={() => handleModalOpen("completeReservation")}
+                        >
+                          {t("label:complete")}
+                        </Button>
+                      )}
+                    {/* {info.status.toLowerCase() === "paid" && (
                       <Button
                         color="secondary"
                         variant="contained"
                         className="font-semibold rounded-4 w-full sm:w-auto"
+                        type="submit"
                         disabled={user.role[0] === FP_ADMIN}
-                        startIcon={<DoneAllIcon className="" />}
-                        onClick={() => handleModalOpen("completeReservation")}
+                        startIcon={<UTurnLeftIcon className="rotate-90" />}
+                        onClick={() => handleModalOpen("refundReservation")}
                       >
-                        {t("label:complete")}
+                        {t("label:refund")}
                       </Button>
-                    )}
-                  {info.status.toLowerCase() === "paid" && (
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      className="font-semibold rounded-4 w-full sm:w-auto"
-                      type="submit"
-                      disabled={user.role[0] === FP_ADMIN}
-                      startIcon={<UTurnLeftIcon className="rotate-90" />}
-                      onClick={() => handleModalOpen("refundReservation")}
-                    >
-                      {t("label:refund")}
-                    </Button>
-                  )}
-                </div>
+                    )} */}
+                  </div>
+                )}
               </Hidden>
             </div>
           </div>
@@ -281,6 +291,7 @@ const ReservationDetails = () => {
                 <ReservationLog
                   info={info}
                   logContent={logs}
+                  amountRefunded={amountRefunded}
                   handleModalOpen={handleModalOpen}
                 />
               </TabPanel>
@@ -291,64 +302,66 @@ const ReservationDetails = () => {
           </div>
 
           <Hidden smUp>
-            <div className="button-container-product-mobile fixed bottom-0 grid grid-cols-1 justify-center items-center gap-10 w-full mb-10 mt-10 px-20">
-              {(info.status.toLowerCase() === "sent" ||
-                (info.status.toLowerCase() === "reserved" &&
-                  info?.isPaid == false)) && (
-                <Button
-                  color="secondary"
-                  variant="outlined"
-                  className="bg-white text-MonochromeGray-700 button2 shadow-5 border-0"
-                  startIcon={<CancelIcon style={{ fill: "#F36562" }} />}
-                  onClick={() => handleModalOpen("cancelReservation")}
-                >
-                  {t("label:cancel")}
-                </Button>
-              )}
-              {info.status.toLowerCase() === "sent" && (
-                <LoadingButton
-                  color="secondary"
-                  variant="contained"
-                  className="rounded-full bg-primary-500 button2 py-5"
-                  // disabled={!(isValid && customData.paymentMethod.length)}
-                  //disabled="disabled"
-                  startIcon={<RedoIcon />}
-                  loading={isLoading}
-                  loadingPosition="center"
-                  onClick={() => {
-                    handleModalOpen("resendReservations");
-                  }}
-                >
-                  {t("label:resend")}
-                </LoadingButton>
-              )}
-              {info.status.toLowerCase() === "reserved" &&
-                info?.isPaid == true && (
+            {user.role[0] !== FP_ADMIN && (
+              <div className="button-container-product-mobile fixed bottom-0 grid grid-cols-1 justify-center items-center gap-10 w-full mb-10 mt-10 px-20">
+                {(info.status.toLowerCase() === "sent" ||
+                  (info.status.toLowerCase() === "reserved" &&
+                    info?.isPaid == false)) && (
                   <Button
+                    color="secondary"
+                    variant="outlined"
+                    className="bg-white text-MonochromeGray-700 button2 shadow-5 border-0"
+                    startIcon={<CancelIcon style={{ fill: "#F36562" }} />}
+                    onClick={() => handleModalOpen("cancelReservation")}
+                  >
+                    {t("label:cancel")}
+                  </Button>
+                )}
+                {info.status.toLowerCase() === "sent" && (
+                  <LoadingButton
                     color="secondary"
                     variant="contained"
                     className="rounded-full bg-primary-500 button2 py-5"
-                    disabled={user.role[0] === FP_ADMIN}
-                    startIcon={<DoneAllIcon className="" />}
-                    onClick={() => handleModalOpen("completeReservation")}
+                    // disabled={!(isValid && customData.paymentMethod.length)}
+                    //disabled="disabled"
+                    startIcon={<RedoIcon />}
+                    loading={isLoading}
+                    loadingPosition="center"
+                    onClick={() => {
+                      handleModalOpen("resendReservations");
+                    }}
                   >
-                    {t("label:complete")}
-                  </Button>
+                    {t("label:resend")}
+                  </LoadingButton>
                 )}
-              {info.status.toLowerCase() === "paid" && (
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  className="font-semibold rounded-4 w-full sm:w-auto"
-                  type="submit"
-                  disabled={user.role[0] === FP_ADMIN}
-                  startIcon={<UTurnLeftIcon className="rotate-90" />}
-                  onClick={() => handleModalOpen("refundReservation")}
-                >
-                  {t("label:refund")}
-                </Button>
-              )}
-            </div>
+                {info.status.toLowerCase() === "reserved" &&
+                  info?.isPaid == true && (
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      className="rounded-full bg-primary-500 button2 py-5"
+                      disabled={user.role[0] === FP_ADMIN}
+                      startIcon={<DoneAllIcon className="" />}
+                      onClick={() => handleModalOpen("completeReservation")}
+                    >
+                      {t("label:complete")}
+                    </Button>
+                  )}
+                {/* {info.status.toLowerCase() === "paid" && (
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    className="font-semibold rounded-4 w-full sm:w-auto"
+                    type="submit"
+                    disabled={user.role[0] === FP_ADMIN}
+                    startIcon={<UTurnLeftIcon className="rotate-90" />}
+                    onClick={() => handleModalOpen("refundReservation")}
+                  >
+                    {t("label:refund")}
+                  </Button>
+                )} */}
+              </div>
+            )}
           </Hidden>
           <OrderModal
             open={open}
@@ -358,12 +371,16 @@ const ReservationDetails = () => {
             orderIdText={t("label:reservationId")}
             orderName={info.customerDetails.name}
             orderAmount={info.grandTotal}
+            capturedAmount={info.paymentDetails.capturedAmount}
             customerPhone={
               info.customerDetails.countryCode + info.customerDetails.msisdn
             }
             customerEmail={info.customerDetails.email}
             amountInBank={info.formattedAmount.amountInBank}
             remainingAmount={remainingAmount}
+            refundableAmount={
+              info.paymentDetails.capturedAmount - amountRefunded
+            }
           />
         </div>
       )}

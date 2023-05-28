@@ -152,8 +152,22 @@
 .charge-modal form[name="modalForm"] {
   padding-top: 0;
 }
+.refund-modal form {
+  padding-top: 5px;
+}
+.refund-modal form .button-group {
+  margin-top: 0;
+  border: unset;
+}
+.refund-modal .order-amount-text {
+  border: unset;
+}
 
 @media only screen and (min-width: 600px) {
+  .create-order-dialog .reservation-modal-inner {
+    min-width: 48rem;
+    max-width: 100%;
+  }
   .charge-modal .md\:min-w-lg {
     min-width: 1060px;
   }
