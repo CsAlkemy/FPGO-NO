@@ -695,7 +695,7 @@ const ReservationCreate = () => {
                     loading={loading}
                     loadingPosition="center"
                   >
-                    {t("label:sendOrder")}
+                    {t("label:send")}
                   </LoadingButton>
                 </div>
               </Hidden>
