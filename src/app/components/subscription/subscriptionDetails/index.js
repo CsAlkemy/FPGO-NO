@@ -14,6 +14,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate, useParams } from "react-router-dom";
 
 import SubscriptionInformation from "./subscriptionInformation";
+import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
 
 const OrderLog = lazy(() => import("./subscriptionLog"));
 const OrderReceipt = lazy(() => import("./subscriptionReceipt"));
@@ -38,7 +39,7 @@ const subscriptionDetails = () => {
     setOpen(true);
     // setSetHeaderTitle(value === "3" ? "Refund Order" : "Resend Order");
     setSetHeaderTitle(
-      info.status.toLowerCase() === "paid" ? "Refund Order" : "Resend Order"
+      info.subscription.status && info.subscription.status.toLowerCase() === "paid" ? "Refund Order" : "Resend Order"
     );
   };
 
@@ -49,7 +50,7 @@ const subscriptionDetails = () => {
 
   useEffect(() => {
     if (isLoading) {
-      OrdersService.getOrdersDetailsByUUID(queryParams.uuid)
+      SubscriptionsService.getSubscriptionDetailsByUUID(queryParams.uuid)
         .then((res) => {
           let info = res?.data;
           setInfo(info);
@@ -89,14 +90,14 @@ const subscriptionDetails = () => {
                   </div>
                   <span
                     className={`${
-                      info.status.toLowerCase() === "paid"
+                      info.subscription.status && info.subscription.status.toLowerCase() === "paid"
                         ? "bg-confirmed"
-                        : info.status.toLowerCase() === "sent" ||
-                          info.status.toLowerCase() === "refund pending" ||
-                          info.status.toLowerCase() === "partial refunded" ||
-                          info.status.toLowerCase() === "refunded"
+                        : info.subscription.status && info.subscription.status.toLowerCase() === "sent" ||
+                          info.subscription.status && info.subscription.status.toLowerCase() === "refund pending" ||
+                          info.subscription.status && info.subscription.status.toLowerCase() === "partial refunded" ||
+                          info.subscription.status && info.subscription.status.toLowerCase() === "refunded"
                         ? "bg-pending"
-                        : info.status.toLowerCase() === "invoiced"
+                        : info.subscription.status && info.subscription.status.toLowerCase() === "invoiced"
                         ? "bg-invoiced"
                         : "bg-rejected"
                     } rounded-4 px-16 py-4 body3 ml-10`}
@@ -106,7 +107,7 @@ const subscriptionDetails = () => {
                 </div>
                 <Hidden smDown>
                   <div className="button-container-product">
-                    {info.status.toLowerCase() === "sent" && (
+                    {info.subscription.status && info.subscription.status.toLowerCase() === "sent" && (
                       <Button
                         color="secondary"
                         variant="outlined"
@@ -118,8 +119,8 @@ const subscriptionDetails = () => {
                         {t("label:cancelOrder")}
                       </Button>
                     )}
-                    {(info.status.toLowerCase() === "sent" ||
-                      info.status.toLowerCase() === "paid") && (
+                    {(info.subscription.status && info.subscription.status.toLowerCase() === "sent" ||
+                      info.subscription.status && info.subscription.status.toLowerCase() === "paid") && (
                       <Button
                         color="secondary"
                         variant="contained"
@@ -128,7 +129,7 @@ const subscriptionDetails = () => {
                         //disabled = {isValid ? true: false }
                         disabled={user.role[0] === FP_ADMIN}
                         startIcon={
-                          info.status.toLowerCase() === "paid" ? (
+                          info.subscription.status && info.subscription.status.toLowerCase() === "paid" ? (
                             <UTurnLeftIcon className="rotate-90" />
                           ) : (
                             <RedoOutlined />
@@ -136,7 +137,7 @@ const subscriptionDetails = () => {
                         }
                         onClick={() => handleResendRefundOrder()}
                       >
-                        {info.status.toLowerCase() === "paid"
+                        {info.subscription.status && info.subscription.status.toLowerCase() === "paid"
                           ? t("label:refundOrder")
                           : t("label:resendOrder")}
                       </Button>
@@ -179,7 +180,7 @@ const subscriptionDetails = () => {
                     <OrderLog info={info} />
                   </TabPanel>
                   <TabPanel value="2" className="p-0">
-                    <SubscriptionInformation info={info} />
+                    <SubscriptionInformation customerInfo={info.customer || []} info={info.subscription || []} />
                   </TabPanel>
                   <TabPanel value="3" className="py-20 px-0">
                     <OrderReceipt info={info} />
@@ -190,7 +191,7 @@ const subscriptionDetails = () => {
           </div>
           <Hidden smUp>
             <div className="fixed bottom-0 grid grid-cols-1 justify-center items-center gap-10 w-full mb-10 mt-10 px-20">
-              {info.status.toLowerCase() === "sent" && (
+              {info.subscription.status && info.subscription.status.toLowerCase() === "sent" && (
                 <Button
                   color="secondary"
                   variant="outlined"
@@ -202,9 +203,9 @@ const subscriptionDetails = () => {
                   {t("label:cancelOrder")}
                 </Button>
               )}
-              {(info.status.toLowerCase() === "sent" ||
-                info.status.toLowerCase() === "paid" ||
-                info.status.toLowerCase() === "invoiced") && (
+              {(info.subscription.status && info.subscription.status.toLowerCase() === "sent" ||
+                info.subscription.status && info.subscription.status.toLowerCase() === "paid" ||
+                info.subscription.status && info.subscription.status.toLowerCase() === "invoiced") && (
                 <Button
                   color="secondary"
                   variant="contained"
@@ -213,8 +214,8 @@ const subscriptionDetails = () => {
                   //disabled = {isValid ? true: false }
                   disabled={user.role[0] === FP_ADMIN}
                   startIcon={
-                    info.status.toLowerCase() === "paid" ||
-                    info.status.toLowerCase() === "invoiced" ? (
+                    info.subscription.status && info.subscription.status.toLowerCase() === "paid" ||
+                    info.subscription.status && info.subscription.status.toLowerCase() === "invoiced" ? (
                       <UTurnLeftIcon className="rotate-90" />
                     ) : (
                       <RedoOutlined />
@@ -222,8 +223,8 @@ const subscriptionDetails = () => {
                   }
                   onClick={() => handleResendRefundOrder()}
                 >
-                  {info.status.toLowerCase() === "paid" ||
-                  info.status.toLowerCase() === "invoiced"
+                  {info.subscription.status && info.subscription.status.toLowerCase() === "paid" ||
+                  info.subscription.status && info.subscription.status.toLowerCase() === "invoiced"
                     ? t("label:refundOrder")
                     : t("label:resendOrder")}
                 </Button>

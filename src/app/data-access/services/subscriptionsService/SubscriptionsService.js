@@ -142,9 +142,9 @@ class SubscriptionsService {
     };
   };
 
-  subscriptionDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
+  getSubscriptionDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      const URL = `${EnvVariable.BASEURL}/products/details/${uuid}`;
+      const URL = `${EnvVariable.BASEURL}/subscription/details/${uuid}`;
       if (isSkipIsAuthenticated) {
         return axios
           .get(URL)
