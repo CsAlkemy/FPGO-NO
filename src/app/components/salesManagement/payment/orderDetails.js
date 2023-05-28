@@ -124,7 +124,7 @@ const orderDetails = () => {
                       { ThousandSeparator(row.discount) }
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      { ThousandSeparator(row.tax) } % {t("label:vat")}
+                      { row.tax >0 ? ThousandSeparator(row.tax ) : row.tax } % {t("label:vat")}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
                       {t("label:nok")} { ThousandSeparator(row.amount) }
@@ -279,26 +279,26 @@ const orderDetails = () => {
               <Hidden mdDown>
                 <div className="px-32 bg-white">
                   <div className="flex justify-between items-center  my-20 body4 text-MonochromeGray-700">
-                    <div>{t("label:subTotal")}</div>
-                    <div>
-                      {t("label:nok")}
+                    <div className="body3">{t("label:subTotal")}</div>
+                    <div className="body3">
+                      {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.subTotal
                         ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
-                        : ""}
+                        : 0}
                     </div>
                   </div>
                   <div className="flex justify-between items-center  my-20">
-                    <div>{t("label:discount")}</div>
-                    <div>
-                      {t("label:nok")}
+                    <div className="body3">{t("label:discount")}</div>
+                    <div className="body3">
+                      {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.discount
                         ? ThousandSeparator(orderDetails?.orderSummary?.discount)
                         : 0}
                     </div>
                   </div>
                   <div className="flex justify-between items-center  my-20 border-b-1 border-MonochromeGray-300">
-                    <div>{t("label:tax")}</div>
-                    <div>
+                    <div className="body3">{t("label:tax")}</div>
+                    <div className="body3">
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.tax
                         ? ThousandSeparator(orderDetails?.orderSummary?.tax)
@@ -306,8 +306,8 @@ const orderDetails = () => {
                     </div>
                   </div>
                   <div className="flex justify-between items-center  mb-20 body4 font-700">
-                    <div>{t("label:grandTotal")}</div>
-                    <div>
+                    <div className="body3 font-700" >{t("label:grandTotal")}</div>
+                    <div className="body3 font-700">
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.grandTotal
                         ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
