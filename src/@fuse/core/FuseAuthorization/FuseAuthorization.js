@@ -61,7 +61,7 @@ class FuseAuthorization extends Component {
         Redirect to Login Page
         */
     if (!userRole || userRole.length === 0) {
-      if (pathname.includes("/order/details/") || pathname.includes("/order/receipt/")) setTimeout(() => history.push(pathname), 0);
+      if (pathname.includes("/order/details/") || pathname.includes("/order/receipt/") || pathname.includes("/subscription/payment/details")) setTimeout(() => history.push(pathname), 0);
       else setTimeout(() => history.push('/login'), 0);
       loginRedirectUrl = pathname;
     } else {
@@ -73,7 +73,7 @@ class FuseAuthorization extends Component {
       // Commented by J.K. Sutradhor As we have to scope the user to access the payments pages both for authenticated and unauthenticated
       // setTimeout(() => history.push(redirectUrl), 0);
       //Added this if condition to access if pages related to the order/details and if not then to redirectUrl
-      if (pathname.includes("/order/details/") || pathname.includes("/order/receipt/")) setTimeout(() => history.push(pathname), 0);
+      if (pathname.includes("/order/details/") || pathname.includes("/order/receipt/") || pathname.includes("/subscription/payment/details")) setTimeout(() => history.push(pathname), 0);
       else setTimeout(() => history.push(redirectUrl), 0);
       loginRedirectUrl = this.defaultLoginRedirectUrl;
     }
@@ -83,7 +83,7 @@ class FuseAuthorization extends Component {
     // console.info('Fuse Authorization rendered', this.state.accessGranted);
     //This line commented by JK Sutradhor as we need to render the order pages that who have the link.
     // return this.state.accessGranted ? <>{this.props.children}</> : null;
-    return this.state.accessGranted || (window.location.pathname.includes("/order/details/") || window.location.pathname.includes("/order/receipt/")) ? <>{this.props.children}</> : null;
+    return this.state.accessGranted || (window.location.pathname.includes("/order/details/") || window.location.pathname.includes("/order/receipt/") || window.location.pathname.includes("/subscription/payment/details")) ? <>{this.props.children}</> : null;
   }
 }
 
