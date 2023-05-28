@@ -260,9 +260,6 @@ export const validateSchemaOnBoardAdministration = yup.object().shape({
   APTICpassword: yup.string().required("youMustEnterYourApticPassword"),
   fpReference: yup.string().required("youMustEnterYourFpReference"),
   name: yup.string().required("youMustEnterYourName"),
-  creditLimitCustomer: yup
-    .string()
-    .required("youMustEnterYourCreditLimitForCustomer"),
   APTIEngineCuserName: yup.string().required("youMustEnterUsername"),
   APTIEnginePassword: yup.string().required("youMustEnterPassword"),
   fakturaB2B: yup.string().required("youMustEnterFakturaBTwoB"),

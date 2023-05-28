@@ -141,7 +141,7 @@ class ReportService {
                       bookKeepingAccount : row.bookKeepingAccount || "",
                       productAmount : row.productAmount || "",
                       vat : row.vat || "",
-                      vatCode : row.vatCode || "",
+                      vatCode : row?.vatCode === "0" || row?.vatCode ? `=""${row.vatCode}""` : "",
                       paymentType : row.paymentType || "",
                       description : row.description || "",
                       productNumber : row.productNumber || "",

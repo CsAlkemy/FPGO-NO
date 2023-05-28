@@ -48,19 +48,17 @@ const confirmDiscard = (props) => {
           setApiLoading(false);
         } else if (response?.error) {
           const isParam = response?.error?.data?.message.includes("Param");
-          const message = `${response?.error?.data?.message.split("Param")[0]}${response?.error?.data?.message.split("Param")[1]}`
-          enqueueSnackbar(
-            t(
-              `message:${
-                isParam
-                  ? message
-                  : response?.error?.data?.message
-              }`
-            ),
-            {
-              variant: "error",
-            }
-          );
+          // const message = `${response?.error?.data?.message.split("Param")[0]}${response?.error?.data?.message.split("Param")[1]}`
+          const message = isParam
+            ? `${t(
+                `message:${
+                  response?.error?.data?.message.split("Param")[0]
+                }Param`
+              )} ${response?.error?.data?.message.split("Param")[1]}`
+            : t(`message:${response?.error?.data?.message}`);
+          enqueueSnackbar(message, {
+            variant: "error",
+          });
           setApiLoading(false);
         }
         setOpen(false);
