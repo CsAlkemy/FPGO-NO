@@ -982,6 +982,7 @@ const createOrder = () => {
                                 // helperText={errors?.order?.[index]?.rate?.message}
                                 variant="outlined"
                                 required
+                                type='number'
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
@@ -1343,6 +1344,7 @@ const createOrder = () => {
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
+                            type='number'
                             variant="outlined"
                             required
                             fullWidth

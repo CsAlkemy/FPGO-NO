@@ -1105,6 +1105,7 @@ const createProducts = () => {
                                   className="bg-white custom-input-height col-span-1"
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.rate}
+                                  type="number"
                                   variant="outlined"
                                   required
                                   value={field.value || ""}
@@ -1480,6 +1481,7 @@ const createProducts = () => {
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.rate}
                               // helperText={errors?.order?.[index]?.rate?.message}
+                              type="number"
                               variant="outlined"
                               required
                               fullWidth
