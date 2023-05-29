@@ -55,6 +55,7 @@ const createProducts = () => {
   const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
+  const [isAddCustomerButtonDisable, setIsAddCustomerButtonDisable] = useState(false)
   const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] = useState("+47");
   const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
     useState(false);
@@ -525,12 +526,15 @@ const createProducts = () => {
                         setCustomerSearchBy(undefined);
                         setCustomerSearchBoxLength(0);
                         setVal(newValue);
-                        setSearchCustomersList(customersList)
+                        setSearchCustomersList(customersList);
                       }
                     }}
                     onInputChange={(event, value) => {
-                      setNewCustomer(searchCustomerPrefixCountryCode+value);
+                      setNewCustomer(searchCustomerPrefixCountryCode + value);
                       if (value.length === 0) setCustomerSearchBy(undefined);
+                      if (value.length < 8 || value.length > 15) {
+                        setIsAddCustomerButtonDisable(true);
+                      } else setIsAddCustomerButtonDisable(false);
                     }}
                     onClose={() => setCustomerSearchBoxDropdownOpen(false)}
                     value={val}
@@ -539,27 +543,30 @@ const createProducts = () => {
                         <span className="subtitle3 font-600">
                           {t("label:noCustomersFound")}
                         </span>
-                        {
-                          !isNaN(newCustomer) && (
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              size={"medium"}
-                              className="rounded-4 button2 min-w-[104px]"
-                              type="button"
-                              startIcon={<AddIcon fontSize="small" />}
-                              onClick={() => {
-                                setVal([
-                                  ...val,
-                                  { name: "", phone: `${newCustomer}` },
-                                ]);
-                                setCustomerSearchBoxDropdownOpen(false);
-                              }}
-                            >
-                              {t(`label:add`)}
-                            </Button>
-                          )
-                        }
+                        {!isNaN(newCustomer) && !isAddCustomerButtonDisable && (
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            size={"medium"}
+                            className="rounded-4 button2 min-w-[104px]"
+                            type="button"
+                            startIcon={<AddIcon fontSize="small" />}
+                            onClick={() => {
+                              setVal([
+                                ...val,
+                                {
+                                  name: "",
+                                  phone: newCustomer.toString().includes("+")
+                                    ? `${newCustomer}`
+                                    : `+${newCustomer}`,
+                                },
+                              ]);
+                              setCustomerSearchBoxDropdownOpen(false);
+                            }}
+                          >
+                            {t(`label:add`)}
+                          </Button>
+                        )}
                       </div>
                     }
                     renderOption={(props, option, { selected }) => (
@@ -589,12 +596,12 @@ const createProducts = () => {
                               <div>
                                 <div>{`${option.name}`}</div>
                                 <div>
-                                <span
-                                  style={{ color: "#0088AE" }}
-                                >{`${option.phone.slice(
-                                  0,
-                                  customerSearchBoxLength
-                                )}`}</span>
+                                  <span
+                                    style={{ color: "#0088AE" }}
+                                  >{`${option.phone.slice(
+                                    0,
+                                    customerSearchBoxLength
+                                  )}`}</span>
                                   <span>{`${option.phone.slice(
                                     customerSearchBoxLength
                                   )}`}</span>
@@ -629,9 +636,7 @@ const createProducts = () => {
                         InputProps={{
                           ...params.InputProps,
                           startAdornment: (
-                            <div>
-                              {searchCustomerPrefixCountryCode}
-                            </div>
+                            <div>{searchCustomerPrefixCountryCode}</div>
                           ),
                         }}
                       />
@@ -828,7 +833,9 @@ const createProducts = () => {
                       {...field}
                       label={t("label:referenceNo")}
                       type="number"
-                      onWheel={event => { event.target.blur()}}
+                      onWheel={(event) => {
+                        event.target.blur();
+                      }}
                       autoComplete="off"
                       error={!!errors.referenceNumber}
                       helperText={
@@ -1087,7 +1094,9 @@ const createProducts = () => {
                                   label="Qty"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   required
                                   value={field.value || ""}
                                   autoComplete="off"
@@ -1108,7 +1117,9 @@ const createProducts = () => {
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.rate}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   variant="outlined"
                                   required
                                   value={field.value || ""}
@@ -1128,7 +1139,9 @@ const createProducts = () => {
                                   label="Discount"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   value={field.value || ""}
                                   error={!!errors.discount}
@@ -1208,7 +1221,9 @@ const createProducts = () => {
                                     label="Tax"
                                     className="bg-white custom-input-height"
                                     type="number"
-                                    onWheel={event => { event.target.blur()}}
+                                    onWheel={(event) => {
+                                      event.target.blur();
+                                    }}
                                     autoComplete="off"
                                     error={!!errors?.order?.[index]?.tax}
                                     helperText={
@@ -1463,7 +1478,9 @@ const createProducts = () => {
                               {...field}
                               className="bg-white custom-input-height"
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.quantity}
                               // helperText={
@@ -1488,7 +1505,9 @@ const createProducts = () => {
                               error={!!errors?.order?.[index]?.rate}
                               // helperText={errors?.order?.[index]?.rate?.message}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               variant="outlined"
                               required
                               fullWidth
@@ -1507,7 +1526,9 @@ const createProducts = () => {
                               //label="Discount"
                               className="bg-white custom-input-height"
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.discount}
                               helperText={errors?.discount?.message}
@@ -1576,7 +1597,9 @@ const createProducts = () => {
                                 className="bg-white custom-input-height"
                                 // type="text"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.tax}
                                 helperText={
@@ -1774,7 +1797,7 @@ const createProducts = () => {
                   loading={loading}
                   loadingPosition="center"
                 >
-                   {t("label:sendOrder")}
+                  {t("label:sendOrder")}
                 </LoadingButton>
               </div>
             </Hidden>
