@@ -259,6 +259,7 @@ const SendInvoiceModal = (props) => {
                                 {...field}
                                 label={t("label:organizationId")}
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors.orgID}
                                 required
@@ -285,6 +286,7 @@ const SendInvoiceModal = (props) => {
                                 {...field}
                                 label={t("label:pNumber")}
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors.pNumber}
                                 helperText={

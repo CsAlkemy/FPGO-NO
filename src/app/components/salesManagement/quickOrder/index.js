@@ -828,6 +828,7 @@ const createProducts = () => {
                       {...field}
                       label={t("label:referenceNo")}
                       type="number"
+                      onWheel={event => { event.target.blur()}}
                       autoComplete="off"
                       error={!!errors.referenceNumber}
                       helperText={
@@ -1086,6 +1087,7 @@ const createProducts = () => {
                                   label="Qty"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   required
                                   value={field.value || ""}
                                   autoComplete="off"
@@ -1106,6 +1108,7 @@ const createProducts = () => {
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.rate}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   variant="outlined"
                                   required
                                   value={field.value || ""}
@@ -1125,6 +1128,7 @@ const createProducts = () => {
                                   label="Discount"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   value={field.value || ""}
                                   error={!!errors.discount}
@@ -1204,6 +1208,7 @@ const createProducts = () => {
                                     label="Tax"
                                     className="bg-white custom-input-height"
                                     type="number"
+                                    onWheel={event => { event.target.blur()}}
                                     autoComplete="off"
                                     error={!!errors?.order?.[index]?.tax}
                                     helperText={
@@ -1458,6 +1463,7 @@ const createProducts = () => {
                               {...field}
                               className="bg-white custom-input-height"
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.quantity}
                               // helperText={
@@ -1482,6 +1488,7 @@ const createProducts = () => {
                               error={!!errors?.order?.[index]?.rate}
                               // helperText={errors?.order?.[index]?.rate?.message}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               variant="outlined"
                               required
                               fullWidth
@@ -1500,6 +1507,7 @@ const createProducts = () => {
                               //label="Discount"
                               className="bg-white custom-input-height"
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.discount}
                               helperText={errors?.discount?.message}
@@ -1568,6 +1576,7 @@ const createProducts = () => {
                                 className="bg-white custom-input-height"
                                 // type="text"
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.tax}
                                 helperText={

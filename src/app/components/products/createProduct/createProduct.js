@@ -243,6 +243,7 @@ const createProducts = (onSubmit = () => {}) => {
                         autoComplete="off"
                         error={!!errors.price}
                         type='number'
+                        onWheel={event => { event.target.blur()}}
                         helperText={
                           errors?.price?.message
                             ? t(`validation:${errors?.price?.message}`)
@@ -373,7 +374,7 @@ const createProducts = (onSubmit = () => {}) => {
                   <div className="create-user-form-header subtitle3 bg-m-grey-25">
                     {t("label:salesInformation")}
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 px-10 my-32 gap-20">
+                  <div className="grid grid-cols-1 w-full sm:w-2/3  px-10 my-32 gap-20">
                     <Controller
                       name="tax"
                       control={control}
@@ -417,34 +418,35 @@ const createProducts = (onSubmit = () => {}) => {
                         </FormControl>
                       )}
                     />
-                    <Controller
-                      name="cost"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label={t("label:costPerUnit")}
-                          className="bg-white"
-                          type="number"
-                          autoComplete="off"
-                          error={!!errors.cost}
-                          helperText={
-                            errors?.cost?.message
-                              ? t(`validation:${errors?.cost?.message}`)
-                              : ""
-                          }
-                          variant="outlined"
-                          fullWidth
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                {t("label:kr")}
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      )}
-                    />
+                    {/*<Controller*/}
+                    {/*  name="cost"*/}
+                    {/*  control={control}*/}
+                    {/*  render={({ field }) => (*/}
+                    {/*    <TextField*/}
+                    {/*      {...field}*/}
+                    {/*      label={t("label:costPerUnit")}*/}
+                    {/*      className="bg-white"*/}
+                    {/*      type="number"*/}
+                    {/*      onWheel={event => { event.target.blur()}}*/}
+                    {/*      autoComplete="off"*/}
+                    {/*      error={!!errors.cost}*/}
+                    {/*      helperText={*/}
+                    {/*        errors?.cost?.message*/}
+                    {/*          ? t(`validation:${errors?.cost?.message}`)*/}
+                    {/*          : ""*/}
+                    {/*      }*/}
+                    {/*      variant="outlined"*/}
+                    {/*      fullWidth*/}
+                    {/*      InputProps={{*/}
+                    {/*        endAdornment: (*/}
+                    {/*          <InputAdornment position="end">*/}
+                    {/*            {t("label:kr")}*/}
+                    {/*          </InputAdornment>*/}
+                    {/*        ),*/}
+                    {/*      }}*/}
+                    {/*    />*/}
+                    {/*  )}*/}
+                    {/*/>*/}
                   </div>
                 </div>
               </div>
