@@ -8,6 +8,9 @@ import {useEffect} from "react";
 const AuthLayout = ({ children }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const lang = urlParams.get('lang');
+  const resetPassword = window.location.pathname.includes("/reset-password");
   const languages = [
     {
       label: "Norwegian",
@@ -19,7 +22,9 @@ const AuthLayout = ({ children }) => {
     },
   ];
   useEffect(() => {
-    dispatch(changeLanguage("no"));
+    if (!resetPassword) {
+      dispatch(changeLanguage("no"));
+    }
   }, []);
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
@@ -57,7 +62,7 @@ const AuthLayout = ({ children }) => {
               <div>
                 <Select
                   sx={{ height: 36, backgroundColor: "#fff" }}
-                  defaultValue="Norwegian"
+                  defaultValue={lang === "en" ? "English": "Norwegian"}
                   displayEmpty
                   renderValue={(value) => {
                     return (

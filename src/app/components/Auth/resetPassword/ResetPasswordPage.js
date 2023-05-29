@@ -46,6 +46,9 @@ function ResetPasswordPage() {
   const loginToken = new URLSearchParams(location.search).get("loginToken");
   const accessToken = new URLSearchParams(location.search).get("accessToken");
   const dispatch = useDispatch();
+  const urlParams = new URLSearchParams(window.location.search);
+  const lang = urlParams.get('lang');
+  const resetPassword = window.location.pathname.includes("/reset-password");
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
     defaultValues,
@@ -72,7 +75,15 @@ function ResetPasswordPage() {
     // setIsSend(true)
   };
   useEffect(() => {
-    dispatch(changeLanguage("no"));
+    lang === "no"
+        ? dispatch(changeLanguage("no"))
+        : dispatch(changeLanguage("en"));
+  }, [lang]);
+
+  useEffect(() => {
+    if (!resetPassword) {
+      dispatch(changeLanguage("no"));
+    }
   }, []);
 
   const handleClickShowPassword = () => {

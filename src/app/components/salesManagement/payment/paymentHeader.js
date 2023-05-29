@@ -61,7 +61,7 @@ const paymentHeader = () => {
           sx={{ height: 36 }}
           // defaultValue="English"
           defaultValue={
-            !checkout && orderDetails && lang === "no"
+            !checkout && orderDetails || lang === "no"
               ? "Norwegian"
               : !!localStorage.getItem("i18nextLng") &&
                 localStorage.getItem("i18nextLng") === "en"
