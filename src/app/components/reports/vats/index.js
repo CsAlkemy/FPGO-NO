@@ -433,7 +433,7 @@ export default function VatReports() {
               filename={
                 user.role[0] !== FP_ADMIN
                   ? `MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
-                  : `${orgDetails.name} - MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
+                  : `${orgDetails.name}_MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
               }
               ref={downloadCsvRef}
             />
