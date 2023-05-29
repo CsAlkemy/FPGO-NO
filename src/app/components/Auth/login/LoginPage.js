@@ -16,9 +16,10 @@ import TimeCounter from "./utils/timeCounter";
 import Contact from "../Layout/contact";
 import AuthMobileHeader from "../Layout/authMobileHeader";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { BUSINESS_ADMIN, FP_ADMIN } from "../../../utils/user-roles/UserRoles";
 import { selectUser } from "app/store/userSlice";
+import {changeLanguage} from "app/store/i18nSlice";
 
 const LoginPage = () => {
   const [isCode, setIsCode] = React.useState(false);
@@ -34,6 +35,7 @@ const LoginPage = () => {
   const user = useSelector(selectUser);
   const { t } = useTranslation();
   const inputRef = useRef();
+  const dispatch = useDispatch();
 
   const [resendClicked, setResendClicked] = React.useState(false);
 
@@ -61,6 +63,9 @@ const LoginPage = () => {
     password: "",
     remember: true,
   };
+  useEffect(() => {
+    dispatch(changeLanguage("no"));
+  }, []);
 
   // form controler
   const { control, formState, handleSubmit, reset } = useForm({

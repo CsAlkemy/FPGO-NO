@@ -171,6 +171,7 @@ class UserService {
         email: row?.email ? row.email : "-",
         phone:
           row?.countryCode && row?.msisdn ? row.countryCode + row.msisdn : "-",
+        msisdn: row?.msisdn || "",
         designation: row?.designation ? row.designation : "-",
         status: row?.status,
       };
@@ -203,6 +204,7 @@ class UserService {
                         row?.countryCode && row?.msisdn
                           ? row.countryCode + row.msisdn
                           : "-",
+                      msisdn: row?.msisdn || "",
                       designation: row?.designation ? row.designation : "-",
                       status: row?.status,
                     };
@@ -248,6 +250,7 @@ class UserService {
         phone:
           row.primaryContactDetails.countryCode +
           row.primaryContactDetails.msisdn,
+        msisdn: row.primaryContactDetails?.msisdn || "",
         email: row.primaryContactDetails.email,
         userCount: row.userCount,
         status: row.status,
@@ -286,6 +289,7 @@ class UserService {
                       phone:
                         row.primaryContactDetails.countryCode +
                         row.primaryContactDetails.msisdn,
+                      msisdn: row.primaryContactDetails?.msisdn || "",
                       email: row.primaryContactDetails.email,
                       userCount: row.userCount,
                       status: row.status,
@@ -324,6 +328,7 @@ class UserService {
         email: row?.email ? row.email : "-",
         phone:
           row?.countryCode && row?.msisdn ? row.countryCode + row.msisdn : "-",
+        msisdn: row?.msisdn || "",
         designation: row?.designation ? row.designation : "-",
         role: row?.userRole ? row.userRole : "-",
         status: row?.status,
@@ -357,6 +362,7 @@ class UserService {
                         row?.countryCode && row?.msisdn
                           ? row.countryCode + row.msisdn
                           : "-",
+                      msisdn: row?.msisdn || "",
                       designation: row?.designation ? row.designation : "-",
                       role: row?.userRole ? row.userRole : "-",
                       status: row?.status,

@@ -626,6 +626,7 @@ class CustomersService {
           ? row.organizationId
           : row.personalNumber,
         phone: phone ? "+" + phone[phone.length - 1] : null,
+        msisdn: row?.msisdn || "",
         email: row.email,
         lastInvoicedOn: row.lastOrderOn,
         lastOrderAmount: row.lastOrderAmount,

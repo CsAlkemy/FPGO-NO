@@ -71,7 +71,7 @@ const paymentHeader = () => {
                 <SvgIcon color="primary">
                   <LanguageIcon className="text-MonochromeGray-300" />
                 </SvgIcon>
-                <div className="my-auto">{value}</div>
+                <div className="my-auto">{t(`label:${value.toLowerCase()}`)}</div>
               </Box>
             );
           }}

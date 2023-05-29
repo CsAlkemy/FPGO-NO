@@ -12,7 +12,9 @@ import Contact from '../Layout/contact';
 import AuthLayout from "../Layout/layout";
 import AuthMobileHeader from "../Layout/authMobileHeader";
 import { useTranslation } from 'react-i18next';
-
+import {useDispatch} from "react-redux";
+import {useEffect} from "react";
+import {changeLanguage} from "app/store/i18nSlice";
 /**
  * Form Validation Schema
  */
@@ -43,6 +45,7 @@ function ResetPasswordPage() {
   const location = useLocation();
   const loginToken = new URLSearchParams(location.search).get("loginToken");
   const accessToken = new URLSearchParams(location.search).get("accessToken");
+  const dispatch = useDispatch();
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
     defaultValues,
@@ -68,6 +71,9 @@ function ResetPasswordPage() {
     reset(defaultValues);
     // setIsSend(true)
   };
+  useEffect(() => {
+    dispatch(changeLanguage("no"));
+  }, []);
 
   const handleClickShowPassword = () => {
     setHide(!hide);
