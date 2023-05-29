@@ -613,7 +613,7 @@ const createProducts = () => {
                       }}
                       onInputChange={(event, value) => {
                         setNewCustomer(
-                          parseInt(searchCustomerPrefixCountryCode) + value
+                          searchCustomerPrefixCountryCode + value
                         );
                         if (value.length === 0) setCustomerSearchBy(undefined);
                         if (value.length < 8 || value.length > 15) {
