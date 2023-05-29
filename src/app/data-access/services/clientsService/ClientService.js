@@ -402,12 +402,12 @@ class ClientService {
     });
   };
 
-  getClientTimelineByUUID = async (uuid, startTime) => {
+  getClientTimelineByUUID = async (uuid, startTime, endTime = null) => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
+            const URL = endTime ?`${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}/${endTime}` : `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {
