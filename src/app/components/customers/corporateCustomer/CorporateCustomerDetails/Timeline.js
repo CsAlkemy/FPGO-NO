@@ -30,6 +30,7 @@ const TimelineLog = () => {
   const handleDateChange = (date) => {
     setIsFetching(true);
     setDefaultTimeline(false);
+    
     let prepareSelectedDate = `${date.getMonth()+1}.${
       date.getDate() - (date.getDate() - 1)
     }.${date.getFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`
