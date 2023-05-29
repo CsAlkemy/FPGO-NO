@@ -104,6 +104,7 @@ export default function OverviewHeader(props) {
 
   const header = [
     "Ordrenr",
+    "Client ID",
     "Client",
     "InvoiceNumber",
     "Kunde",
