@@ -9,6 +9,8 @@ const authMobileHeader = (props) => {
   const { isShow } = props;
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const lang = urlParams.get('lang');
   const languages = [
     {
       label: "English",
@@ -47,7 +49,7 @@ const authMobileHeader = (props) => {
           <div>
             <Select
               sx={{ height: 36 }}
-              defaultValue="Norwegian"
+              defaultValue={lang === "en" ? "English": "Norwegian"}
               displayEmpty
               renderValue={(value) => {
                 return (

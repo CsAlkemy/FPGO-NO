@@ -29,6 +29,7 @@ const paymentHeader = () => {
   const lang = urlParams.get('lang');
   const checkout = window.location.pathname.includes("/checkout");
   const orderDetails = window.location.pathname.includes("/order/details");
+  const orderReceipt = window.location.pathname.includes("/order/receipt");
 
   useEffect(() => {
     if (!checkout && orderDetails) dispatch(changeLanguage("no"));
@@ -60,7 +61,7 @@ const paymentHeader = () => {
         <Select
           sx={{ height: 36 }}
           defaultValue={
-            !checkout && orderDetails && lang === "no"
+            !checkout && orderDetails && lang === "no" || !checkout && orderReceipt && lang=== "no"
               ? "Norwegian"
               : !!localStorage.getItem("i18nextLng") &&
                 localStorage.getItem("i18nextLng") === "en"
