@@ -64,7 +64,7 @@ import AuthService from "../../../data-access/services/authService";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
-
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 const createOrder = () => {
   const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
@@ -86,6 +86,7 @@ const createOrder = () => {
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createOrder, response] = useCreateOrderMutation();
+  const [dialCode, setDialCode] = React.useState();
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -246,6 +247,7 @@ const createOrder = () => {
         totalDiscount,
         grandTotal,
       },
+      dialCode
     });
     createOrder(data).then((response) => {
       setLoading(false);
@@ -503,12 +505,13 @@ const createOrder = () => {
                     ? row?.orgIdOrPNumber
                     : null,
                   email: row?.email ? row?.email : null,
-                  phone: row?.phone ? row?.phone : null,
+                  phone: row?.phone ? row.countryCode+row?.phone : null,
                   type: row.type,
                   street: row?.street,
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
+                  countryCode: row?.countryCode,
                   searchString:
                     row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
@@ -2097,7 +2100,7 @@ const createOrder = () => {
                           </div>
 
                           <span>
-                            {(dirtyFields.primaryPhoneNumber &&
+                            {(watch("primaryPhoneNumber")?.length>0  &&
                               dirtyFields.email &&
                               dirtyFields.customerName &&
                               dirtyFields.billingAddress &&
@@ -2138,6 +2141,7 @@ const createOrder = () => {
                                     setRecheckSchema(false);
                                     setCustomerSearchBy(undefined);
                                     setCustomerSearchBoxLength(0);
+                                    setDialCode(data.countryCode);
                                     setValue("primaryPhoneNumber", data.phone);
                                     setValue("email", data.email);
                                     setValue("customerName", data.name);
@@ -2290,39 +2294,51 @@ const createOrder = () => {
                         </div>
                         <div className="w-full my-32">
                           <div className="form-pair-input gap-x-20">
-                            <Controller
-                              name="primaryPhoneNumber"
-                              control={control}
-                              render={({ field }) => (
-                                <FormControl
-                                  error={!!errors.primaryPhoneNumber}
-                                  fullWidth
-                                >
-                                  <PhoneInput
-                                    {...field}
-                                    className={
-                                      errors.primaryPhoneNumber
-                                        ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                        : "input-phone-number-field"
-                                    }
-                                    country="no"
-                                    enableSearch
-                                    autocompleteSearch
-                                    countryCodeEditable={false}
-                                    specialLabel={`${t("label:phone")}*`}
-                                    // onBlur={handleOnBlurGetDialCode}
-                                    value={field.value || ""}
-                                  />
-                                  <FormHelperText>
-                                    {errors?.primaryPhoneNumber?.message
-                                      ? t(
-                                          `validation:${errors?.primaryPhoneNumber?.message}`
-                                        )
-                                      : ""}
-                                  </FormHelperText>
-                                </FormControl>
-                              )}
+                            <FrontPaymentPhoneInput
+                                control={control}
+                                defaultValue='no'
+                                disable={false}
+                                error={errors.primaryPhoneNumber}
+                                label="phone"
+                                name="primaryPhoneNumber"
+                                required = {true}
+                                trigger = {trigger}
+                                setValue = {setValue}
+                                setDialCode = {setDialCode}
                             />
+                            {/*<Controller*/}
+                            {/*  name="primaryPhoneNumber"*/}
+                            {/*  control={control}*/}
+                            {/*  render={({ field }) => (*/}
+                            {/*    <FormControl*/}
+                            {/*      error={!!errors.primaryPhoneNumber}*/}
+                            {/*      fullWidth*/}
+                            {/*    >*/}
+                            {/*      <PhoneInput*/}
+                            {/*        {...field}*/}
+                            {/*        className={*/}
+                            {/*          errors.primaryPhoneNumber*/}
+                            {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                            {/*            : "input-phone-number-field"*/}
+                            {/*        }*/}
+                            {/*        country="no"*/}
+                            {/*        enableSearch*/}
+                            {/*        autocompleteSearch*/}
+                            {/*        countryCodeEditable={false}*/}
+                            {/*        specialLabel={`${t("label:phone")}*`}*/}
+                            {/*        // onBlur={handleOnBlurGetDialCode}*/}
+                            {/*        value={field.value || ""}*/}
+                            {/*      />*/}
+                            {/*      <FormHelperText>*/}
+                            {/*        {errors?.primaryPhoneNumber?.message*/}
+                            {/*          ? t(*/}
+                            {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                            {/*            )*/}
+                            {/*          : ""}*/}
+                            {/*      </FormHelperText>*/}
+                            {/*    </FormControl>*/}
+                            {/*  )}*/}
+                            {/*/>*/}
                             <Controller
                               name="email"
                               control={control}
