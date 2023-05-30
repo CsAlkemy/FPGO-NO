@@ -112,8 +112,8 @@ export const apiSlice = createApi({
         url: `/orders/refund/${payload.uuid}`,
         method: "POST",
         body: {
-          isPartial: payload.isPartial,
-          amount: parseFloat(payload.refundAmount),
+          isPartial: ["Send Refund", "Refund Order"].includes(payload.headerTitle) ? false : payload.isPartial,
+          amount: ["Send Refund", "Refund Order"].includes(payload.headerTitle) ? parseFloat(payload.fullRefundAmount) : parseFloat(payload.refundAmount),
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
