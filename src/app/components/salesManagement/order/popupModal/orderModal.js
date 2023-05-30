@@ -112,12 +112,14 @@ const OrderModal = (props) => {
       uuid: orderId,
       checkPhone,
       checkEmail,
+      fullRefundAmount : orderAmount,
+      headerTitle
     };
     if (flag) {
       setApiLoading(true);
       const payload = {
         isPartial: refundType === "partial",
-        amount: values?.refundAmount,
+        amount: ["Send Refund", "Refund Order"].includes(headerTitle) ? orderAmount : values?.refundAmount,
         message: flagMessage,
         uuid: orderId,
       };
@@ -373,70 +375,76 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
-                {(headerTitle === "Send Refund" ||
-                  headerTitle === "Refund Order") &&
-                  !flag && (
-                    <div>
-                      <div className="caption2">{t("label:refundType")}</div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
-                        <Button
-                          variant="outlined"
-                          className={`body2 ${
-                            refundType === "full"
-                              ? "create-order-capsule-button-active"
-                              : "create-order-capsule-button"
-                          }`}
-                          onClick={() => {
-                            setRefundType("full");
-                            setValue("refundAmount", orderAmount);
-                          }}
-                        >
-                          {t("label:fullRefund")}
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          className={`body2 ${
-                            refundType === "partial"
-                              ? "create-order-capsule-button-active"
-                              : "create-order-capsule-button"
-                          }`}
-                          onClick={() => {
-                            setRefundType("partial");
-                            setValue("refundAmount", "");
-                          }}
-                        >
-                          {t("label:partialRefund")}
-                        </Button>
-                      </div>
-                      <Controller
-                        name="refundAmount"
-                        className="mt-32"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label={t("label:refundAmount")}
-                            type="number"
-                            onWheel={event => { event.target.blur()}}
-                            autoComplete="off"
-                            variant="outlined"
-                            error={!!errors.refundAmount}
-                            helperText={errors?.refundAmount?.message}
-                            fullWidth
-                            required
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="start">
-                                  {t("label:nok")}
-                                </InputAdornment>
-                              ),
-                            }}
-                            disabled={refundType === "full"}
-                          />
-                        )}
-                      />
-                    </div>
-                  )}
+                {/*{(headerTitle === "Send Refund" ||*/}
+                {/*  headerTitle === "Refund Order") &&*/}
+                {/*  !flag && (*/}
+                {/*    <div>*/}
+                {/*      <div className="caption2">{t("label:refundType")}</div>*/}
+                {/*      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">*/}
+                {/*        <Button*/}
+                {/*          variant="outlined"*/}
+                {/*          className={`body2 ${*/}
+                {/*            refundType === "full"*/}
+                {/*              ? "create-order-capsule-button-active"*/}
+                {/*              : "create-order-capsule-button"*/}
+                {/*          }`}*/}
+                {/*          onClick={() => {*/}
+                {/*            setRefundType("full");*/}
+                {/*            setValue("refundAmount", orderAmount);*/}
+                {/*          }}*/}
+                {/*        >*/}
+                {/*          {t("label:fullRefund")}*/}
+                {/*        </Button>*/}
+                {/*        <Button*/}
+                {/*          variant="outlined"*/}
+                {/*          className={`body2 ${*/}
+                {/*            refundType === "partial"*/}
+                {/*              ? "create-order-capsule-button-active"*/}
+                {/*              : "create-order-capsule-button"*/}
+                {/*          }`}*/}
+                {/*          onClick={() => {*/}
+                {/*            setRefundType("partial");*/}
+                {/*            setValue("refundAmount", "");*/}
+                {/*          }}*/}
+                {/*        >*/}
+                {/*          {t("label:partialRefund")}*/}
+                {/*        </Button>*/}
+                {/*      </div>*/}
+                {/*      <Controller*/}
+                {/*        name="refundAmount"*/}
+                {/*        className="mt-32"*/}
+                {/*        control={control}*/}
+                {/*        render={({ field }) => (*/}
+                {/*          <TextField*/}
+                {/*            {...field}*/}
+                {/*            label={t("label:refundAmount")}*/}
+                {/*            type="number"*/}
+                {/*            onWheel={event => { event.target.blur()}}*/}
+                {/*            autoComplete="off"*/}
+                {/*            variant="outlined"*/}
+                {/*            error={!!errors.refundAmount}*/}
+                {/*            helperText={errors?.refundAmount?.message}*/}
+                {/*            fullWidth*/}
+                {/*            required*/}
+                {/*            InputProps={{*/}
+                {/*              endAdornment: (*/}
+                {/*                <InputAdornment position="start">*/}
+                {/*                  {t("label:nok")}*/}
+                {/*                </InputAdornment>*/}
+                {/*              ),*/}
+                {/*            }}*/}
+                {/*            disabled={refundType === "full"}*/}
+                {/*          />*/}
+                {/*        )}*/}
+                {/*      />*/}
+                {/*    </div>*/}
+                {/*  )}*/}
+                {["Send Refund", "Refund Order"].includes(headerTitle) && (
+                  <div className="flex justify-between py-16 px-12" style={{backgroundColor: "#F7F7F7", borderRadius: "4px"}}>
+                    <p className="subtitle2">{t("label:refundAmount")}</p>
+                    <p className="subtitle2">{t("label:nok")} {orderAmount}</p>
+                  </div>
+                )}
                 {/*{headerTitle === "moreThanThreeRefundAttempts" && (*/}
                 {/*  <div>*/}
                 {/*    You have exceeded your monthly allowance of 3 refunds.*/}

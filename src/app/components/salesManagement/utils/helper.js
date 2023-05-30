@@ -422,7 +422,7 @@ export const validateSchemaOrderCancelModal = yup.object().shape({
     .required("youMustEnterTheCancellationNote"),
 });
 export const validateSchemaOrderRefundModal = yup.object().shape({
-  refundAmount: yup.string().required("youMustEnterTheRefundAmount"),
+  // refundAmount: yup.string().required("youMustEnterTheRefundAmount"),
 });
 export const validateSchemaMoreThanFiveThousand = yup.object().shape({
   cancellationNote: yup.string().notRequired(),
