@@ -626,6 +626,7 @@ class CustomersService {
           ? row.organizationId
           : row.personalNumber,
         phone: phone ? "+" + phone[phone.length - 1] : null,
+        msisdn: row?.msisdn || "",
         email: row.email,
         lastInvoicedOn: row.lastOrderOn,
         lastOrderAmount: row.lastOrderAmount,
@@ -1345,12 +1346,12 @@ class CustomersService {
     });
   };
 
-  getCustomerTimelineByUUID = async (uuid, startTime) => {
+  getCustomerTimelineByUUID = async (uuid, startTime, endTime = null) => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
+            const URL = endTime ? `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}/${endTime}` : `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {

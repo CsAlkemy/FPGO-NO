@@ -417,6 +417,7 @@ const OrderModal = (props) => {
                             {...field}
                             label={t("label:refundAmount")}
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             variant="outlined"
                             error={!!errors.refundAmount}

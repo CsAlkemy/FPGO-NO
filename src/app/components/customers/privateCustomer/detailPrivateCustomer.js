@@ -418,6 +418,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     label={t("label:pNumber")}
                                     className="bg-white"
                                     type="number"
+                                    onWheel={event => { event.target.blur()}}
                                     autoComplete="off"
                                     error={!!errors.pNumber}
                                     helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}

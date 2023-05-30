@@ -549,6 +549,7 @@ const Onboarding = () => {
                               {...field}
                               label={t("label:organizationId")}
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors.id}
                               helperText={
@@ -1164,6 +1165,7 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:zipCode")}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors.zip}
                                   helperText={
@@ -1390,6 +1392,7 @@ const Onboarding = () => {
                                       {...field}
                                       label={t("label:zipCode")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       disabled={sameAddress}
                                       error={!!errors.shippingZip}
@@ -1756,6 +1759,7 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:creditLimitForClient")}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors.creditLimitCustomer}
                                   helperText={
@@ -1786,6 +1790,7 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:costLimitForCustomer")}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors.costLimitforCustomer}
                                   helperText={
@@ -1815,6 +1820,7 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:costLimitForOrder")}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors.costLimitforOrder}
                                   helperText={
@@ -1844,6 +1850,7 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:invoiceWithRegress")}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors.invoicewithRegress}
                                   helperText={
@@ -1873,6 +1880,7 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:invoiceWithoutRegress")}
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors.invoicewithoutRegress}
                                   helperText={
@@ -2167,6 +2175,7 @@ const Onboarding = () => {
                                       {...field}
                                       onKeyUp={() => changeVatRateIcon(index)}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       className="text-right  custom-input-height"
                                       autoComplete="off"
                                       error={!!errors.vatValue}
@@ -2268,6 +2277,7 @@ const Onboarding = () => {
                                 {...field}
                                 label={t("label:fakturaB2b")}
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors.fakturaB2B}
                                 helperText={
@@ -2298,6 +2308,7 @@ const Onboarding = () => {
                                 {...field}
                                 label={t("label:fakturaB2c")}
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 error={!!errors.fakturaB2C}
                                 helperText={

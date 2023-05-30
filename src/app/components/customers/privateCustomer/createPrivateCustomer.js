@@ -208,6 +208,7 @@ const createPrivateCustomer = () => {
                         label={t("label:pNumber")}
                         className="w-full md:w-3/5"
                         type="number"
+                        onWheel={event => { event.target.blur()}}
                         autoComplete="off"
                         error={!!errors.pNumber}
                         helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
@@ -393,6 +394,7 @@ const createPrivateCustomer = () => {
                                           {...field}
                                           label={t("label:zipCode")}
                                           type="number"
+                                          onWheel={event => { event.target.blur()}}
                                           autoComplete="off"
                                           disabled={sameAddress}
                                           error={!!errors.shippingZip}

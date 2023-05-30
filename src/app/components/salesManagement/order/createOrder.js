@@ -955,6 +955,7 @@ const createOrder = () => {
                                 label="Qty"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 required
                                 value={field.value || ""}
                                 autoComplete="off"
@@ -982,6 +983,8 @@ const createOrder = () => {
                                 // helperText={errors?.order?.[index]?.rate?.message}
                                 variant="outlined"
                                 required
+                                type='number'
+                                onWheel={event => { event.target.blur()}}
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
@@ -999,6 +1002,7 @@ const createOrder = () => {
                                 label="Discount"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
+                                onWheel={event => { event.target.blur()}}
                                 autoComplete="off"
                                 value={field.value || ""}
                                 error={!!errors.discount}
@@ -1076,6 +1080,7 @@ const createOrder = () => {
                                   label="Tax"
                                   className="bg-white custom-input-height"
                                   type="number"
+                                  onWheel={event => { event.target.blur()}}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -1320,6 +1325,7 @@ const createOrder = () => {
                             {...field}
                             className="bg-white custom-input-height"
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.quantity}
                             // helperText={
@@ -1343,6 +1349,8 @@ const createOrder = () => {
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
+                            type='number'
+                            onWheel={event => { event.target.blur()}}
                             variant="outlined"
                             required
                             fullWidth
@@ -1361,6 +1369,7 @@ const createOrder = () => {
                             //label="Discount"
                             className="bg-white custom-input-height"
                             type="number"
+                            onWheel={event => { event.target.blur()}}
                             autoComplete="off"
                             error={!!errors.discount}
                             helperText={errors?.discount?.message}
@@ -1429,6 +1438,7 @@ const createOrder = () => {
                               className="bg-white custom-input-height"
                               // type="text"
                               type="number"
+                              onWheel={event => { event.target.blur()}}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.tax}
                               helperText={errors?.order?.[index]?.tax?.message}
@@ -2373,6 +2383,7 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:organizationId")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.orgID}
                                       required
@@ -2399,6 +2410,7 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:pNumber")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.pNumber}
                                       helperText={
@@ -2636,6 +2648,7 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:referenceNo")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.referenceNumber}
                                       helperText={
@@ -2817,6 +2830,7 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:internalReferenceNo")}
                                       type="number"
+                                      onWheel={event => { event.target.blur()}}
                                       autoComplete="off"
                                       error={!!errors.internalReferenceNo}
                                       helperText={
