@@ -29,6 +29,7 @@ export const defaultValueCreateProduct = {
   price: '',
   unit: '',
   manufacturer: '',
+  accountCode: "",
   assignedCategories: [],
   description: '',
   tax: '',
