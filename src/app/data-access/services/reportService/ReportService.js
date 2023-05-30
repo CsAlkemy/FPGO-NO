@@ -33,8 +33,7 @@ class ReportService {
                 } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404)
-                  resolve([]);
+                if (e?.response?.data?.status_code === 404) resolve([]);
                 reject(e?.response?.data?.message);
               });
           } else reject("somethingWentWrong");
@@ -54,7 +53,7 @@ class ReportService {
             return axios
               .get(URL)
               .then((response) => {
-                console.log("RES : ",response);
+                console.log("RES : ", response);
                 if (
                   response?.data?.status_code === 200 &&
                   response?.data?.is_data
@@ -97,12 +96,10 @@ class ReportService {
           if (status) {
             const URL = `${EnvVariable.BASEURL}/reports/${params.orgId}/payouts/${params.year}/lists/${params.month}/${params.fileName}.pdf`;
             return axios
-              .get(URL, {responseType: "blob"})
+              .get(URL, { responseType: "blob" })
               .then((response) => {
-                if (
-                  response?.status === 200
-                ) {
-                  resolve(response.data)
+                if (response?.status === 200) {
+                  resolve(response.data);
                 } else reject("somethingWentWrong");
               })
               .catch((e) => {
@@ -132,20 +129,23 @@ class ReportService {
                   let d;
                   d = response.data.data.map((row) => {
                     return {
-                      status : row?.status || "",
-                      orderId : row.orderId || "",
-                      orderDate : row.orderDate || "",
-                      dueDate : row.dueDate || "",
-                      customerName : row.customerName || "",
-                      customerId : row.customerId || "",
-                      bookKeepingAccount : row.bookKeepingAccount || "",
-                      productAmount : row.productAmount || "",
-                      vat : row.vat || "",
-                      vatCode : row?.vatCode === "0" || row?.vatCode ? `=""${row.vatCode}""` : "",
-                      paymentType : row.paymentType || "",
-                      description : row.description || "",
-                      productNumber : row.productNumber || "",
-                      creditCheck : row.creditCheck || "",
+                      status: row?.status || "",
+                      orderId: row.orderId || "",
+                      orderDate: row.orderDate || "",
+                      dueDate: row.dueDate || "",
+                      customerName: row.customerName || "",
+                      customerId: row.customerId || "",
+                      bookKeepingAccount: row.bookKeepingAccount || "",
+                      productAmount: row.productAmount || "",
+                      vat: row.vat || "",
+                      vatCode:
+                        row?.vatCode === "0" || row?.vatCode
+                          ? `=""${row.vatCode}""`
+                          : "",
+                      paymentType: row.paymentType || "",
+                      description: row.description || "",
+                      productNumber: row.productNumber || "",
+                      creditCheck: row.creditCheck || "",
                     };
                   });
                   resolve(d);
@@ -157,8 +157,7 @@ class ReportService {
                 } else reject("somethingWentWrong");
               })
               .catch((e) => {
-                if (e?.response?.data?.status_code === 404)
-                  resolve([]);
+                if (e?.response?.data?.status_code === 404) resolve([]);
                 reject(e?.response?.data?.message);
               });
           } else reject("somethingWentWrong");
