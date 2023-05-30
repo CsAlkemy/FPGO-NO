@@ -128,6 +128,9 @@ function ClassicSignUpPage() {
       value: "no",
     },
   ];
+  useEffect(() => {
+    dispatch(changeLanguage("no"));
+  }, []);
 
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
@@ -146,7 +149,7 @@ function ClassicSignUpPage() {
                 <Hidden mdDown>
                   <Select
                     sx={{ height: 36 }}
-                    defaultValue="English"
+                    defaultValue="Norwegian"
                     displayEmpty
                     renderValue={(value) => {
                       return (
@@ -157,7 +160,7 @@ function ClassicSignUpPage() {
                           <SvgIcon color="primary">
                             <LanguageIcon className="text-MonochromeGray-300" />
                           </SvgIcon>
-                          <div className="my-auto">{value}</div>
+                          <div className="my-auto">{t(`label:${value.toLowerCase()}`)}</div>
                         </Box>
                       );
                     }}
@@ -196,6 +199,7 @@ function ClassicSignUpPage() {
                           className="mb-24 col-span-1 md:col-span-2"
                           label={t("label:organizationId")}
                           type="number"
+                          onWheel={event => { event.target.blur()}}
                           error={!!errors.organizationid}
                           helperText={errors?.organizationid?.message ? t(`validation:${errors?.organizationid?.message}`) : ""}
                           variant="outlined"

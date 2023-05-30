@@ -11,10 +11,10 @@ import {
   customersListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
-  organizationWiseUsersOverview,
+  organizationWiseUsersOverview, payoutReportsListOverview,
   productsListOverview,
   refundRequestsOverview,
-  userListOverview,
+  userListOverview
 } from "./TablesName";
 import Skeleton from "@mui/material/Skeleton";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -126,11 +126,11 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" />
+              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" />
+              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
             </TableCell>
           );
         } else {
@@ -146,11 +146,11 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <OverviewStatus name="Active" />
+              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <OverviewStatus name="Inactive" />
+              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
             </TableCell>
           );
         } else {
@@ -174,11 +174,11 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" />
+              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" />
+              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
             </TableCell>
           );
         } else if (rdt === "pricePerUnit") {
@@ -736,11 +736,11 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" />
+              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" />
+              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
             </TableCell>
           );
         } else {
@@ -756,11 +756,11 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" />
+              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" />
+              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
             </TableCell>
           );
         } else {
@@ -776,11 +776,11 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" />
+              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" />
+              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
             </TableCell>
           );
         } else {
@@ -1628,6 +1628,26 @@ export default function OverViewMainTableBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
+      });
+    case payoutReportsListOverview:
+      return props.rowDataFields.map((rdt) => {
+        if (rdt === "status") {
+          return props.row.status === "Active" ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+            </TableCell>
+          ) : (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+            </TableCell>
+          );
+        } else {
+          return (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
               {props.row ? props.row[rdt] : <Skeleton variant="text" />}
             </TableCell>
           );

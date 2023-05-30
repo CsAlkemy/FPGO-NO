@@ -7,7 +7,7 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  FormControl,
+  FormControl, FormControlLabel,
   FormHelperText,
   InputAdornment,
   InputLabel,
@@ -51,6 +51,8 @@ const createProducts = () => {
   const [defaultCategories, setDefaultCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = React.useState(false);
+  const [isDifferentAccountNumber, setIsDifferentAccountNumber] =
+    useState(false);
   const userInfo = UtilsServices.getFPUserData();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -155,6 +157,7 @@ const createProducts = () => {
     defaultValueCreateProduct.manufacturer = info?.manufacturerId
       ? info?.manufacturerId
       : "";
+    defaultValueCreateProduct.accountCode = info?.accountCode || "";
     defaultValueCreateProduct.assignedCategories = info?.categories
       ? info?.categories
       : "";
@@ -163,7 +166,9 @@ const createProducts = () => {
       : "";
     defaultValueCreateProduct.tax =
       info?.taxRate === 0 ? 0 : info?.taxRate ? info?.taxRate : "";
-    defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
+    defaultValueCreateProduct.accountCode =
+      info?.accountCode === 0 ? 0 : info?.accountCode ? info?.accountCode : "";
+    // defaultValueCreateProduct.cost = info?.cost ? info?.cost : "";
     reset({ ...defaultValueCreateProduct });
   }, [isLoading]);
 
@@ -223,11 +228,11 @@ const createProducts = () => {
                     </div>
                     {info.status === "Active" ? (
                       <div className="bg-confirmed rounded-4 px-16 py-4 body3">
-                        {info.status}
+                        {t(`label:${info.status.toLowerCase()}`)}
                       </div>
                     ) : (
                       <div className="bg-rejected rounded-4 px-16 py-4 body3">
-                        {info.status}
+                        {t(`label:${info.status.toLowerCase()}`)}
                       </div>
                     )}
                   </div>
@@ -434,6 +439,80 @@ const createProducts = () => {
                         )}
                       />
                     </div>
+                    <div className="grid grid-cols-1 px-10 sm:w-1/2">
+                      <Controller
+                        name="accountCode"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label={t("label:accountCode")}
+                            value={field.value || ""}
+                            className="bg-white"
+                            autoComplete="off"
+                            error={!!errors.price}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
+                            type="number"
+                            helperText={
+                              errors?.accountCode?.message
+                                ? t(
+                                  `validation:${errors?.accountCode?.message}`
+                                )
+                                : ""
+                            }
+                            variant="outlined"
+                            disabled={!isDifferentAccountNumber}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 px-20 mb-16 mt-0 w-1/2">
+                      <Controller
+                        name="differentAccountNumber"
+                        type="checkbox"
+                        control={control}
+                        render={({
+                                   field: { onChange, value, onBlur, ref },
+                                 }) => (
+                          <FormControl error={!!errors.differentAccountNumber}>
+                            <FormControlLabel
+                              // style={{ display: "table" }}
+                              control={
+                                <div>
+                                  <Checkbox
+                                    checked={value}
+                                    onBlur={onBlur}
+                                    onChange={(ev) => {
+                                      setIsDifferentAccountNumber(
+                                        !isDifferentAccountNumber
+                                      );
+                                      onChange(ev.target.checked);
+                                    }}
+                                    inputRef={ref}
+                                    defaultValue={false}
+                                  />
+                                </div>
+                              }
+                              label={
+                                <div className="body3">
+                                  {t(
+                                    "label:differentAccountCode"
+                                  )}
+                                </div>
+                              }
+                            />
+                            <FormHelperText className="ml-32">
+                              {errors?.differentAccountNumber?.message
+                                ? t(`validation:${errors?.differentAccountNumber?.message}`)
+                                : ""}
+                            </FormHelperText>
+                          </FormControl>
+                        )}
+                      />
+                    </div>
                     <div className="px-10 mt gap-x-20 mb-32">
                       <div className="w-full sm:w-2/3">
                         <Controller
@@ -544,7 +623,7 @@ const createProducts = () => {
                       <div className="create-user-form-header subtitle3 bg-m-grey-25">
                         {t("label:salesInformation")}
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 px-10 my-32 gap-20">
+                      <div className="grid grid-cols-1 w-full sm:w-2/3 px-10 my-32 gap-20">
                         <Controller
                           name="tax"
                           control={control}
@@ -573,7 +652,16 @@ const createProducts = () => {
                                 {taxes && taxes.length ? (
                                   taxes.map((tax, index) =>
                                     tax.status === "Active" ? (
-                                      <MenuItem key={index} value={tax.value}>
+                                      <MenuItem
+                                        key={index}
+                                        value={tax.value}
+                                        onClick={() =>
+                                          setValue(
+                                            "accountCode",
+                                            tax.bookKeepingReference
+                                          )
+                                        }
+                                      >
                                         {tax.value}
                                       </MenuItem>
                                     ) : (
@@ -598,35 +686,36 @@ const createProducts = () => {
                             </FormControl>
                           )}
                         />
-                        <Controller
-                          name="cost"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={t("label:costPerUnit")}
-                              className="bg-white"
-                              type="number"
-                              autoComplete="off"
-                              error={!!errors.cost}
-                              helperText={
-                                errors?.cost?.message
-                                  ? t(`validation:${errors?.cost?.message}`)
-                                  : ""
-                              }
-                              variant="outlined"
-                              fullWidth
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    {t("label:kr")}
-                                  </InputAdornment>
-                                ),
-                              }}
-                              value={field.value || ""}
-                            />
-                          )}
-                        />
+                        {/*<Controller*/}
+                        {/*  name="cost"*/}
+                        {/*  control={control}*/}
+                        {/*  render={({ field }) => (*/}
+                        {/*    <TextField*/}
+                        {/*      {...field}*/}
+                        {/*      label={t("label:costPerUnit")}*/}
+                        {/*      className="bg-white"*/}
+                        {/*      type="number"*/}
+                        {/*      onWheel={event => { event.target.blur()}}*/}
+                        {/*      autoComplete="off"*/}
+                        {/*      error={!!errors.cost}*/}
+                        {/*      helperText={*/}
+                        {/*        errors?.cost?.message*/}
+                        {/*          ? t(`validation:${errors?.cost?.message}`)*/}
+                        {/*          : ""*/}
+                        {/*      }*/}
+                        {/*      variant="outlined"*/}
+                        {/*      fullWidth*/}
+                        {/*      InputProps={{*/}
+                        {/*        endAdornment: (*/}
+                        {/*          <InputAdornment position="end">*/}
+                        {/*            {t("label:kr")}*/}
+                        {/*          </InputAdornment>*/}
+                        {/*        ),*/}
+                        {/*      }}*/}
+                        {/*      value={field.value || ""}*/}
+                        {/*    />*/}
+                        {/*  )}*/}
+                        {/*/>*/}
                       </div>
                     </div>
                   </div>

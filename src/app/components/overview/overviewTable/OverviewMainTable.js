@@ -39,11 +39,11 @@ import {
   customersListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
-  organizationWiseUsersOverview,
+  organizationWiseUsersOverview, payoutReportsListOverview,
   productsListOverview,
   refundRequestsOverview,
   subClientAdminOverview,
-  userListOverview,
+  userListOverview
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from '../../../utils/UtilsService';
@@ -522,6 +522,26 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const payoutListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        break;
+      case 1:
+        setData(props.tableData.filter((row) => row.status.toLowerCase() === "active"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "active")
+        );
+        break;
+      case 2:
+        setData(props.tableData.filter((row) => row.status.toLowerCase() === "inactive"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "inactive")
+        );
+        break;
+    }
+  };
+
   const handleTabChange = (event, newValue) => {
     setPage(0);
     switch (props.tableName) {
@@ -576,6 +596,9 @@ export default function OverviewMainTable(props) {
         break;
       case refundRequestsOverview:
         refundRequestsListTableTabPanelsData(event, newValue);
+        break;
+      case payoutReportsListOverview:
+        payoutListTableTabPanelsData(event, newValue);
         break;
     }
     setValue(newValue);
@@ -720,6 +743,13 @@ export default function OverviewMainTable(props) {
         break;
       case ordersListOverview:
         navigate(`/create-order/details/${info.uuid}`);
+        break;
+      case payoutReportsListOverview:
+        navigate(`/reports/payouts/${info.uuid}`, {
+          state: {
+            orgName: info.name,
+          }
+        });
         break;
     }
   };

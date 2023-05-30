@@ -89,7 +89,9 @@ const OrderInformation = ({ info }) => {
       name: "sweden",
     },
   ]);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  const [addOrderIndex, setAddOrderIndex] = React.useState([
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+  ]);
 
   const [taxVariable, setTaxVariable] = React.useState([
     {
@@ -237,11 +239,24 @@ const OrderInformation = ({ info }) => {
       info.customerDetails?.countryCode && info.customerDetails?.msisdn
         ? info.customerDetails?.countryCode + info.customerDetails?.msisdn
         : "+47";
-    CreateOrderDefaultValue.billingCountry =
-      info?.customerDetails?.address?.country
-        ? info?.customerDetails?.address?.country
-        : "norway";
+    CreateOrderDefaultValue.billingCountry = info?.customerDetails?.address
+      ?.country
+      ? info?.customerDetails?.address?.country
+      : "norway";
 
+    if (
+      info?.productList &&
+      info?.productList &&
+      info?.productList.length >= 2
+    ) {
+      setAddOrderIndex(
+        addOrderIndex.filter(
+          (item, index) => item <= info?.productList.length - 1
+        )
+      );
+    } else {
+      setAddOrderIndex(addOrderIndex.filter((item, index) => item < 1));
+    }
     reset({ ...CreateOrderDefaultValue });
 
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
@@ -447,6 +462,9 @@ const OrderInformation = ({ info }) => {
                                   //label="Qty"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.quantity}
                                   helperText={
@@ -531,6 +549,9 @@ const OrderInformation = ({ info }) => {
                                   className="bg-white custom-input-height col-span-1"
                                   // type="text"
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -664,6 +685,9 @@ const OrderInformation = ({ info }) => {
                                 //label="Qty"
                                 className="bg-white custom-input-height"
                                 type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.quantity}
                                 helperText={
@@ -752,6 +776,9 @@ const OrderInformation = ({ info }) => {
                                 className="bg-white custom-input-height"
                                 // type="text"
                                 type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.tax}
                                 helperText={
@@ -1406,15 +1433,15 @@ const OrderInformation = ({ info }) => {
                                           (info.customerDetails?.type ===
                                           "Private"
                                             ? info.customerDetails
-                                              ?.personalNumber
-                                              ? info.customerDetails
                                                 ?.personalNumber
+                                              ? info.customerDetails
+                                                  ?.personalNumber
                                               : ""
                                             : info.customerDetails
-                                              ?.organizationId
-                                              ? info.customerDetails
                                                 ?.organizationId
-                                              : "")
+                                            ? info.customerDetails
+                                                ?.organizationId
+                                            : "")
                                         }
                                         defaultValue={
                                           info.customerDetails?.type ===
@@ -1466,7 +1493,7 @@ const OrderInformation = ({ info }) => {
                                               (info.customerDetails.address
                                                 ?.street
                                                 ? info.customerDetails.address
-                                                  ?.street
+                                                    ?.street
                                                 : "")
                                             }
                                             defaultValue={
@@ -1510,7 +1537,7 @@ const OrderInformation = ({ info }) => {
                                               field.value ||
                                               (info.customerDetails.address?.zip
                                                 ? info.customerDetails.address
-                                                  ?.zip
+                                                    ?.zip
                                                 : "")
                                             }
                                             defaultValue={
@@ -1553,7 +1580,7 @@ const OrderInformation = ({ info }) => {
                                             field.value ||
                                             (info.customerDetails.address?.city
                                               ? info.customerDetails.address
-                                                ?.city
+                                                  ?.city
                                               : "")
                                           }
                                           defaultValue={
@@ -1565,7 +1592,7 @@ const OrderInformation = ({ info }) => {
                                         />
                                       )}
                                     />
-                                      <CountrySelect
+                                    <CountrySelect
                                       control={control}
                                       name={"billingCountry"}
                                       label={"country"}
@@ -1574,7 +1601,7 @@ const OrderInformation = ({ info }) => {
                                       error={errors.billingCountry}
                                       disable={true}
                                     />
-{/* 
+                                    {/* 
                                     <Controller
                                       name="billingCountry"
                                       control={control}
@@ -1678,6 +1705,9 @@ const OrderInformation = ({ info }) => {
                                           {...field}
                                           label={t("label:referenceNo")}
                                           type="number"
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
                                           autoComplete="off"
                                           error={!!errors.referenceNumber}
                                           helperText={
@@ -1865,6 +1895,9 @@ const OrderInformation = ({ info }) => {
                                           {...field}
                                           label={t("label:internalReferenceNo")}
                                           type="number"
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
                                           autoComplete="off"
                                           error={!!errors.internalReferenceNo}
                                           helperText={
@@ -1883,7 +1916,7 @@ const OrderInformation = ({ info }) => {
                                             (info.internalReferences
                                               ?.referenceNumber
                                               ? info.internalReferences
-                                                ?.referenceNumber
+                                                  ?.referenceNumber
                                               : "")
                                           }
                                           defaultValue={
