@@ -48,7 +48,7 @@ import {
   useUpdateClientMutation,
   useUpdateClientStatusMutation,
 } from "app/store/api/apiSlice";
-
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 const ClientDetails = () => {
   const { t } = useTranslation();
   const [orgTypeList, setOrgTypeList] = useState([]);
@@ -80,7 +80,9 @@ const ClientDetails = () => {
   const [updateClient] = useUpdateClientMutation();
   const [updateClientStatus] = useUpdateClientStatusMutation();
   const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
-
+    const [dialCodePrimary, setDialCodePrimary] = useState();
+    const [dialCodeBilling, setDialCodeBilling] = useState();
+    const [dialCodeShipping, setDialCodeShipping] = useState();
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
     code: "NOK",
@@ -126,6 +128,7 @@ const ClientDetails = () => {
     watch,
     clearErrors,
     setError,
+    trigger,
   } = useForm({
     mode: "onChange",
     defaultValue,
@@ -219,6 +222,9 @@ const ClientDetails = () => {
               ? info.primaryContactDetails?.countryCode +
                 info.primaryContactDetails?.msisdn
               : "";
+            setDialCodePrimary(info.primaryContactDetails?.countryCode)
+            setValue("primaryPhoneNumber",info.primaryContactDetails?.countryCode +
+                info.primaryContactDetails?.msisdn || null)
           defaultValue.designation = info?.primaryContactDetails?.designation
             ? info.primaryContactDetails?.designation
             : "";
@@ -265,6 +271,9 @@ const ClientDetails = () => {
                 ? info.addresses["billing"].countryCode +
                   info.addresses["billing"].msisdn
                 : "";
+              setDialCodeBilling(info.addresses["billing"].countryCode)
+              setValue("billingPhoneNumber",info.addresses["billing"].countryCode +
+                  info.addresses["billing"].msisdn || null)
             defaultValue.billingEmail = info?.addresses["billing"]?.email
               ? info.addresses["billing"].email
               : "";
@@ -288,6 +297,12 @@ const ClientDetails = () => {
                 ? info.addresses["shipping"].countryCode +
                   info.addresses["shipping"].msisdn
                 : "";
+            setDialCodeShipping(info.addresses["shipping"].countryCode);
+            setValue(
+              "shippingPhoneNumber",
+              info.addresses["shipping"].countryCode +
+                info.addresses["shipping"].msisdn || null
+            );
             defaultValue.shippingEmail = info?.addresses["shipping"]?.email
               ? info.addresses["shipping"].email
               : "";
@@ -494,10 +509,6 @@ const ClientDetails = () => {
     }
   }, [info]);
 
-  const handleOnBlurGetDialCode = (value, data, event) => {
-    setDialCode(data?.dialCode);
-  };
-
   const handleClickShowPassword = () => {
     setHide(!hide);
   };
@@ -571,24 +582,18 @@ const ClientDetails = () => {
       ? values.shippingPhoneNumber.split("+")
       : null;
 
-    const msisdn = primaryPhoneNumber
-      ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+    const msisdn = values?.primaryPhoneNumber
+      ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
-    const countryCode = primaryPhoneNumber
-      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+    const countryCode = dialCodePrimary ? dialCodePrimary : null;
+    const bl_msisdn = values?.billingPhoneNumber
+      ? values?.billingPhoneNumber.slice(dialCodeBilling?.length)
       : null;
-    const bl_msisdn = billingPhoneNumber
-      ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
+    const bl_countryCode = dialCodeBilling ? dialCodeBilling : null;
+    const sh_msisdn = values?.shippingPhoneNumber
+      ? values?.shippingPhoneNumber.slice(dialCodeShipping?.length)
       : null;
-    const bl_countryCode = billingPhoneNumber
-      ? "+" + billingPhoneNumber[billingPhoneNumber.length - 1].slice(0, 2)
-      : null;
-    const sh_msisdn = shippingPhoneNumber
-      ? shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(2)
-      : null;
-    const sh_countryCode = shippingPhoneNumber
-      ? "+" + shippingPhoneNumber[shippingPhoneNumber.length - 1].slice(0, 2)
-      : null;
+    const sh_countryCode = dialCodeShipping ? dialCodeShipping : null;
 
     const vatRates = values.vat.length
       ? values.vat
@@ -1067,39 +1072,51 @@ const ClientDetails = () => {
                                   />
                                 )}
                               />
-                              <Controller
-                                name="primaryPhoneNumber"
-                                control={control}
-                                render={({ field }) => (
-                                  <FormControl
-                                    error={!!errors.primaryPhoneNumber}
-                                    required
-                                    fullWidth
-                                  >
-                                    <PhoneInput
-                                      {...field}
-                                      className={
-                                        errors.primaryPhoneNumber
-                                          ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                          : "input-phone-number-field"
-                                      }
-                                      country="no"
-                                      enableSearch
-                                      autocompleteSearch
-                                      countryCodeEditable={false}
-                                      specialLabel={`${t("label:phone")}*`}
-                                      onBlur={handleOnBlurGetDialCode}
-                                    />
-                                    <FormHelperText>
-                                      {errors?.primaryPhoneNumber?.message
-                                        ? t(
-                                            `validation:${errors?.primaryPhoneNumber?.message}`
-                                          )
-                                        : ""}
-                                    </FormHelperText>
-                                  </FormControl>
-                                )}
-                              />
+                                <FrontPaymentPhoneInput
+                                    control={control}
+                                    defaultValue='no'
+                                    disable={false}
+                                    error={errors.primaryPhoneNumber}
+                                    label="phone"
+                                    name="primaryPhoneNumber"
+                                    required = {true}
+                                    trigger = {trigger}
+                                    setValue = {setValue}
+                                    setDialCode = {setDialCodePrimary}
+                                />
+                              {/*<Controller*/}
+                              {/*  name="primaryPhoneNumber"*/}
+                              {/*  control={control}*/}
+                              {/*  render={({ field }) => (*/}
+                              {/*    <FormControl*/}
+                              {/*      error={!!errors.primaryPhoneNumber}*/}
+                              {/*      required*/}
+                              {/*      fullWidth*/}
+                              {/*    >*/}
+                              {/*      <PhoneInput*/}
+                              {/*        {...field}*/}
+                              {/*        className={*/}
+                              {/*          errors.primaryPhoneNumber*/}
+                              {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                              {/*            : "input-phone-number-field"*/}
+                              {/*        }*/}
+                              {/*        country="no"*/}
+                              {/*        enableSearch*/}
+                              {/*        autocompleteSearch*/}
+                              {/*        countryCodeEditable={false}*/}
+                              {/*        specialLabel={`${t("label:phone")}*`}*/}
+                              {/*        onBlur={handleOnBlurGetDialCode}*/}
+                              {/*      />*/}
+                              {/*      <FormHelperText>*/}
+                              {/*        {errors?.primaryPhoneNumber?.message*/}
+                              {/*          ? t(*/}
+                              {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                              {/*            )*/}
+                              {/*          : ""}*/}
+                              {/*      </FormHelperText>*/}
+                              {/*    </FormControl>*/}
+                              {/*  )}*/}
+                              {/*/>*/}
                               <Controller
                                 name="designation"
                                 control={control}
@@ -1441,39 +1458,51 @@ const ClientDetails = () => {
                             </div>
                             <div className="px-16">
                               <div className="form-pair-input gap-x-20">
-                                <Controller
-                                  name="billingPhoneNumber"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <FormControl
-                                      error={!!errors.billingPhoneNumber}
-                                      required
-                                      fullWidth
-                                    >
-                                      <PhoneInput
-                                        {...field}
-                                        className={
-                                          errors.billingPhoneNumber
-                                            ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                            : "input-phone-number-field"
-                                        }
-                                        country="no"
-                                        enableSearch
-                                        autocompleteSearch
-                                        countryCodeEditable={false}
-                                        specialLabel={`${t("label:phone")}*`}
-                                        onBlur={handleOnBlurGetDialCode}
-                                      />
-                                      <FormHelperText>
-                                        {errors?.billingPhoneNumber?.message
-                                          ? t(
-                                              `validation:${errors?.billingPhoneNumber?.message}`
-                                            )
-                                          : ""}
-                                      </FormHelperText>
-                                    </FormControl>
-                                  )}
-                                />
+                                  <FrontPaymentPhoneInput
+                                      control={control}
+                                      defaultValue='no'
+                                      disable={false}
+                                      error={errors.billingPhoneNumber}
+                                      label="phone"
+                                      name="billingPhoneNumber"
+                                      required = {true}
+                                      trigger = {trigger}
+                                      setValue = {setValue}
+                                      setDialCode = {setDialCodeBilling}
+                                  />
+                                {/*<Controller*/}
+                                {/*  name="billingPhoneNumber"*/}
+                                {/*  control={control}*/}
+                                {/*  render={({ field }) => (*/}
+                                {/*    <FormControl*/}
+                                {/*      error={!!errors.billingPhoneNumber}*/}
+                                {/*      required*/}
+                                {/*      fullWidth*/}
+                                {/*    >*/}
+                                {/*      <PhoneInput*/}
+                                {/*        {...field}*/}
+                                {/*        className={*/}
+                                {/*          errors.billingPhoneNumber*/}
+                                {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                                {/*            : "input-phone-number-field"*/}
+                                {/*        }*/}
+                                {/*        country="no"*/}
+                                {/*        enableSearch*/}
+                                {/*        autocompleteSearch*/}
+                                {/*        countryCodeEditable={false}*/}
+                                {/*        specialLabel={`${t("label:phone")}*`}*/}
+                                {/*        onBlur={handleOnBlurGetDialCode}*/}
+                                {/*      />*/}
+                                {/*      <FormHelperText>*/}
+                                {/*        {errors?.billingPhoneNumber?.message*/}
+                                {/*          ? t(*/}
+                                {/*              `validation:${errors?.billingPhoneNumber?.message}`*/}
+                                {/*            )*/}
+                                {/*          : ""}*/}
+                                {/*      </FormHelperText>*/}
+                                {/*    </FormControl>*/}
+                                {/*  )}*/}
+                                {/*/>*/}
                                 <Controller
                                   name="billingEmail"
                                   control={control}
@@ -1694,40 +1723,52 @@ const ClientDetails = () => {
                                 !info.addresses) && (
                                 <div className="px-16">
                                   <div className="form-pair-input gap-x-20">
-                                    <Controller
-                                      name="shippingPhoneNumber"
-                                      control={control}
-                                      render={({ field }) => (
-                                        <FormControl
-                                          error={!!errors.shippingPhoneNumber}
-                                          // required
-                                          fullWidth
-                                        >
-                                          <PhoneInput
-                                            {...field}
-                                            className={
-                                              errors.shippingPhoneNumber
-                                                ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                                : "input-phone-number-field"
-                                            }
-                                            country="no"
-                                            enableSearch
-                                            autocompleteSearch
-                                            countryCodeEditable={false}
-                                            specialLabel={t("label:phone")}
-                                            onBlur={handleOnBlurGetDialCode}
-                                          />
-                                          <FormHelperText>
-                                            {errors?.shippingPhoneNumber
-                                              ?.message
-                                              ? t(
-                                                  `validation:${errors?.shippingPhoneNumber?.message}`
-                                                )
-                                              : ""}
-                                          </FormHelperText>
-                                        </FormControl>
-                                      )}
-                                    />
+                                      <FrontPaymentPhoneInput
+                                          control={control}
+                                          defaultValue='no'
+                                          disable={false}
+                                          error={errors.shippingPhoneNumber}
+                                          label="phone"
+                                          name="shippingPhoneNumber"
+                                          required = {false}
+                                          trigger = {trigger}
+                                          setValue = {setValue}
+                                          setDialCode = {setDialCodeShipping}
+                                      />
+                                    {/*<Controller*/}
+                                    {/*  name="shippingPhoneNumber"*/}
+                                    {/*  control={control}*/}
+                                    {/*  render={({ field }) => (*/}
+                                    {/*    <FormControl*/}
+                                    {/*      error={!!errors.shippingPhoneNumber}*/}
+                                    {/*      // required*/}
+                                    {/*      fullWidth*/}
+                                    {/*    >*/}
+                                    {/*      <PhoneInput*/}
+                                    {/*        {...field}*/}
+                                    {/*        className={*/}
+                                    {/*          errors.shippingPhoneNumber*/}
+                                    {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                                    {/*            : "input-phone-number-field"*/}
+                                    {/*        }*/}
+                                    {/*        country="no"*/}
+                                    {/*        enableSearch*/}
+                                    {/*        autocompleteSearch*/}
+                                    {/*        countryCodeEditable={false}*/}
+                                    {/*        specialLabel={t("label:phone")}*/}
+                                    {/*        onBlur={handleOnBlurGetDialCode}*/}
+                                    {/*      />*/}
+                                    {/*      <FormHelperText>*/}
+                                    {/*        {errors?.shippingPhoneNumber*/}
+                                    {/*          ?.message*/}
+                                    {/*          ? t(*/}
+                                    {/*              `validation:${errors?.shippingPhoneNumber?.message}`*/}
+                                    {/*            )*/}
+                                    {/*          : ""}*/}
+                                    {/*      </FormHelperText>*/}
+                                    {/*    </FormControl>*/}
+                                    {/*  )}*/}
+                                    {/*/>*/}
                                     <Controller
                                       name="shippingEmail"
                                       control={control}
