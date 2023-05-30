@@ -467,16 +467,16 @@ class UserService {
     });
   };
 
-  prepareCreateUserByRolePayload = (params, role) => {
+  prepareCreateUserByRolePayload = (params, role, dialCode) => {
     const phoneNumber = params?.phoneNumber
       ? params.phoneNumber.split("+")
       : null;
-    const msisdn = phoneNumber
-      ? phoneNumber[phoneNumber.length - 1].slice(2)
-      : null;
-    const countryCode = phoneNumber
-      ? "+" + phoneNumber[phoneNumber.length - 1].slice(0, 2)
-      : null;
+    const msisdn = params?.phoneNumber
+        ? params?.phoneNumber.slice(dialCode.length)
+        : null;
+    const countryCode = dialCode
+        ? dialCode
+        : null;
 
     return {
       role,

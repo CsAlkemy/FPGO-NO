@@ -31,7 +31,7 @@ import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
 import { useCreateCorporateCustomerMutation } from 'app/store/api/apiSlice';
 import CountrySelect from '../../common/countries';
-
+import FrontPaymentPhoneInput from '../../common/frontPaymentPhoneInput';
 const createCorporateCustomer = () => {
   const { t } = useTranslation()
   const [sameAddress, setSameAddress] = React.useState(true);
@@ -43,6 +43,9 @@ const createCorporateCustomer = () => {
   const [loadingfind, setLoadingfind] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [createCorporateCustomer] = useCreateCorporateCustomerMutation();
+  const [dialCodePrimary, setDialCodePrimary ] = React.useState();
+  const [dialCodePrimaryInfo, setDialCodePrimaryInfo] = React.useState();
+
   const [countries, setCountries] = React.useState([
     {
       title: "Norway",
@@ -60,7 +63,7 @@ const createCorporateCustomer = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   // form
-  const { control, formState, handleSubmit, reset, getValues, watch, setValue } =
+  const { control, formState, handleSubmit, reset, getValues, watch, setValue,trigger } =
     useForm({
       mode: "onChange",
       CreateCorporateDefaultValue,
@@ -77,7 +80,7 @@ const createCorporateCustomer = () => {
   const onSubmit = (values) => {
     setLoading(true)
     const preparedPayload =
-      CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress);
+      CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress, dialCodePrimary, dialCodePrimaryInfo);
     createCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
         enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
@@ -185,7 +188,7 @@ const createCorporateCustomer = () => {
                   {dirtyFields.organizationID &&
                   dirtyFields.OrganizationName &&
                   dirtyFields.orgEmail &&
-                  dirtyFields.primaryPhoneNumber &&
+                  watch("primaryPhoneNumber")?.length>0&&
                   dirtyFields.billingAddress &&
                   dirtyFields.billingZip &&
                   dirtyFields.billingCity &&
@@ -282,36 +285,48 @@ const createCorporateCustomer = () => {
                     )}
                   />
                   <div className="mt-10">
-                    <Controller
-                      name="primaryPhoneNumber"
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl
-                          error={!!errors.primaryPhoneNumber}
-                          fullWidth
-                        >
-                          <PhoneInput
-                            {...field}
-                            className={
-                              errors.primaryPhoneNumber
-                                ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                : "input-phone-number-field"
-                            }
-                            country="no"
-                            enableSearch
-                            autocompleteSearch
-                            value={field.value || ''}
-                            countryCodeEditable={false}
-                            specialLabel={`${t("label:phone")}*`}
-                            // onBlur={handleOnBlurGetDialCode}
-
-                          />
-                          <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
-                          </FormHelperText>
-                        </FormControl>
-                      )}
+                    <FrontPaymentPhoneInput
+                        control={control}
+                        defaultValue='no'
+                        disable={false}
+                        error={errors.primaryPhoneNumber}
+                        label="phone"
+                        name="primaryPhoneNumber"
+                        required = {true}
+                        trigger = {trigger}
+                        setValue = {setValue}
+                        setDialCode = {setDialCodePrimary}
                     />
+                    {/*<Controller*/}
+                    {/*  name="primaryPhoneNumber"*/}
+                    {/*  control={control}*/}
+                    {/*  render={({ field }) => (*/}
+                    {/*    <FormControl*/}
+                    {/*      error={!!errors.primaryPhoneNumber}*/}
+                    {/*      fullWidth*/}
+                    {/*    >*/}
+                    {/*      <PhoneInput*/}
+                    {/*        {...field}*/}
+                    {/*        className={*/}
+                    {/*          errors.primaryPhoneNumber*/}
+                    {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                    {/*            : "input-phone-number-field"*/}
+                    {/*        }*/}
+                    {/*        country="no"*/}
+                    {/*        enableSearch*/}
+                    {/*        autocompleteSearch*/}
+                    {/*        value={field.value || ''}*/}
+                    {/*        countryCodeEditable={false}*/}
+                    {/*        specialLabel={`${t("label:phone")}*`}*/}
+                    {/*        // onBlur={handleOnBlurGetDialCode}*/}
+
+                    {/*      />*/}
+                    {/*      <FormHelperText>*/}
+                    {/*        {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}*/}
+                    {/*      </FormHelperText>*/}
+                    {/*    </FormControl>*/}
+                    {/*  )}*/}
+                    {/*/>*/}
                   </div>
                 </div>
                 <div className="form-pair-three-by-one px-10 md:px-16">

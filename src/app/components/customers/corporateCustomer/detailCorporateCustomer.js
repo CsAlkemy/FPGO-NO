@@ -41,11 +41,13 @@ import {
   useUpdateCustomerStatusMutation,
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const detailCorporateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
   const queryParams = useParams();
   // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
+  const [dialCode, setDialCode] = React.useState();
   const [info, setInfo] = useState([]);
   const [sameAddress, setSameAddress] = React.useState(false);
   const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
@@ -84,7 +86,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   };
 
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, watch, trigger } = useForm({
     mode: "onChange",
     CorporateDetailsDefaultValue,
     resolver: yupResolver(validateSchema),
@@ -118,6 +120,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             info?.countryCode && info?.msisdn
               ? info.countryCode + info.msisdn
               : "";
+          setDialCode(info?.countryCode)
+          setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
 
           CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
             ?.street
@@ -269,6 +273,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         : "";
       CorporateDetailsDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
+      setDialCode(info?.countryCode)
+      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
 
       CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
         ?.street
@@ -418,7 +424,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
       CustomersService.prepareUpdateCorporateCustomerPayload(
         values,
         sameAddress,
-        info
+        info,
+          dialCode
       );
     updateCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
@@ -702,38 +709,50 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                     />
                                   )}
                                 />
-                                <Controller
-                                  name="primaryPhoneNumber"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <FormControl
-                                      error={!!errors.primaryPhoneNumber}
-                                      fullWidth
-                                    >
-                                      <PhoneInput
-                                        {...field}
-                                        className={
-                                          errors.primaryPhoneNumber
-                                            ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                            : "input-phone-number-field"
-                                        }
-                                        country="no"
-                                        enableSearch
-                                        autocompleteSearch
-                                        countryCodeEditable={false}
-                                        specialLabel={`${t("label:phone")}*`}
-                                        // onBlur={handleOnBlurGetDialCode}
-                                      />
-                                      <FormHelperText>
-                                        {errors?.primaryPhoneNumber?.message
-                                          ? t(
-                                              `validation:${errors?.primaryPhoneNumber?.message}`
-                                            )
-                                          : ""}
-                                      </FormHelperText>
-                                    </FormControl>
-                                  )}
+                                <FrontPaymentPhoneInput
+                                    control={control}
+                                    defaultValue='no'
+                                    disable={false}
+                                    error={errors.primaryPhoneNumber}
+                                    label="phone"
+                                    name="primaryPhoneNumber"
+                                    required = {true}
+                                    trigger = {trigger}
+                                    setValue = {setValue}
+                                    setDialCode = {setDialCode}
                                 />
+                                {/*<Controller*/}
+                                {/*  name="primaryPhoneNumber"*/}
+                                {/*  control={control}*/}
+                                {/*  render={({ field }) => (*/}
+                                {/*    <FormControl*/}
+                                {/*      error={!!errors.primaryPhoneNumber}*/}
+                                {/*      fullWidth*/}
+                                {/*    >*/}
+                                {/*      <PhoneInput*/}
+                                {/*        {...field}*/}
+                                {/*        className={*/}
+                                {/*          errors.primaryPhoneNumber*/}
+                                {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                                {/*            : "input-phone-number-field"*/}
+                                {/*        }*/}
+                                {/*        country="no"*/}
+                                {/*        enableSearch*/}
+                                {/*        autocompleteSearch*/}
+                                {/*        countryCodeEditable={false}*/}
+                                {/*        specialLabel={`${t("label:phone")}*`}*/}
+                                {/*        // onBlur={handleOnBlurGetDialCode}*/}
+                                {/*      />*/}
+                                {/*      <FormHelperText>*/}
+                                {/*        {errors?.primaryPhoneNumber?.message*/}
+                                {/*          ? t(*/}
+                                {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                                {/*            )*/}
+                                {/*          : ""}*/}
+                                {/*      </FormHelperText>*/}
+                                {/*    </FormControl>*/}
+                                {/*  )}*/}
+                                {/*/>*/}
                               </div>
                             </div>
                           </div>

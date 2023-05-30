@@ -702,7 +702,7 @@ const Onboarding = () => {
                       <div className="flex gap-10 items-center">
                         {t("label:primaryContactDetails")}
                         {dirtyFields.fullName &&
-                        dirtyFields.primaryPhoneNumber &&
+                        watch("primaryPhoneNumber")?.length>0  &&
                         dirtyFields.email ? (
                           <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                         ) : (
@@ -1067,7 +1067,7 @@ const Onboarding = () => {
                   <div className="billing-information">
                     <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                       {t("label:billingAndShippingInfo")}
-                      {dirtyFields.billingPhoneNumber &&
+                      {watch("billingPhoneNumber")?.length>0 &&
                       dirtyFields.billingEmail &&
                       dirtyFields.billingAddress &&
                       dirtyFields.zip &&
@@ -1081,7 +1081,7 @@ const Onboarding = () => {
                     <div className="p-10 w-full md:w-3/4">
                       <div className="billing-address-head mt-10">
                         {t("label:billingAddress")}
-                        {dirtyFields.billingPhoneNumber &&
+                        {watch("billingPhoneNumber")?.length>0  &&
                         dirtyFields.billingEmail &&
                         dirtyFields.billingAddress &&
                         dirtyFields.zip &&
@@ -1279,7 +1279,7 @@ const Onboarding = () => {
                       <div className="flex justify-between items-center billing-address-head">
                         <div className="billing-address-head">
                           {t("label:shippingAddress")}
-                          {(dirtyFields.shippingPhoneNumber &&
+                          {(watch("shippingPhoneNumber")?.length>0   &&
                             dirtyFields.shippingEmail &&
                             dirtyFields.shippingAddress &&
                             dirtyFields.shippingZip &&
@@ -1305,24 +1305,24 @@ const Onboarding = () => {
                             labelPlacement="start"
                             disabled={
                               !(
-                                dirtyFields.billingPhoneNumber &&
-                                dirtyFields.billingEmail &&
-                                dirtyFields.billingAddress &&
-                                dirtyFields.zip &&
-                                dirtyFields.city &&
-                                dirtyFields.country
+                                  watch("billingPhoneNumber")?.length>0 &&
+                                  watch("billingEmail")?.length>0 &&
+                                  watch("billingAddress")?.length>0 &&
+                                  watch("zip")?.length>0 &&
+                                  watch("city")?.length>0 &&
+                                  watch("country")?.length>0
                               )
                             }
                           />
                         </div>
                       </div>
                       {!sameAddress &&
-                        dirtyFields.billingPhoneNumber &&
-                        dirtyFields.billingEmail &&
-                        dirtyFields.billingAddress &&
-                        dirtyFields.zip &&
-                        dirtyFields.city &&
-                        dirtyFields.country && (
+                          (watch("billingPhoneNumber")?.length>0 &&
+                              watch("billingEmail")?.length>0 &&
+                              watch("billingAddress")?.length>0 &&
+                              watch("zip")?.length>0 &&
+                              watch("city")?.length>0 &&
+                              watch("country")?.length>0) && (
                           <div className="px-16">
                             <div className="form-pair-input gap-x-20">
                               <FrontPaymentPhoneInput
