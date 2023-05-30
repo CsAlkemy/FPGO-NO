@@ -37,6 +37,7 @@ import { useCreateUserMutation } from "app/store/api/apiSlice";
 import UtilsServices from "../../data-access/utils/UtilsServices";
 import AuthService from "../../data-access/services/authService";
 import _ from "lodash";
+import FrontPaymentPhoneInput from "../common/frontPaymentPhoneInput";
 
 export default function CreateUsers() {
   const { t } = useTranslation();
@@ -67,18 +68,13 @@ export default function CreateUsers() {
       ? validateSchemaCreateBusinessAdmin
       : validateSchemaGeneralAdmin;
 
-  const handleOnBlurGetDialCode = (value, data, event) => {
-    setDialCode(data?.dialCode);
-  };
-
-  const { control, formState, handleSubmit, reset, getValues, watch } = useForm(
+  const { control, formState, handleSubmit, reset, getValues, watch, trigger, setValue } = useForm(
     {
       mode: "onChange",
       defaultValues,
       resolver: yupResolver(schema),
     }
   );
-
   const { isValid, dirtyFields, errors } = formState;
 
   useEffect(() => {
@@ -129,7 +125,8 @@ export default function CreateUsers() {
     setLoading(true);
     const preparedPayload = UserService.prepareCreateUserByRolePayload(
       values,
-      type
+      type,
+        dialCode
     );
     createUser(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
@@ -304,45 +301,57 @@ export default function CreateUsers() {
                           />
                         )}
                       />
-                      <Controller
-                        name="phoneNumber"
-                        control={control}
-                        render={({ field }) => (
-                          <FormControl
-                            error={!!errors.phoneNumber}
-                            required
-                            fullWidth
-                          >
-                            <PhoneInput
-                              {...field}
-                              className = {
-                                !!errors.phoneNumber
-                                  ? "input-phone-number-field border-1 rounded-md border-[#f44336]"
-                                  : "input-phone-number-field"
-                              }
-                              country="no"
-                              enableSearch
-                              autocompleteSearch
-                              countryCodeEditable={false}
-                              specialLabel={`${t("label:phone")}*`}
-                              onBlur={handleOnBlurGetDialCode}
-                            />
-                            <FormHelperText>
-                              {errors?.phoneNumber?.message
-                                ? t(
-                                    `validation:${errors?.phoneNumber?.message}`
-                                  )
-                                : ""}
-                              {/*{watch("phoneNumber").length === 2 && (*/}
-                              {/*  <span className="text-red-500">*/}
-                              {/*    {" "}*/}
-                              {/*    {t("validation:youMustEnterYourPhoneNumber")}*/}
-                              {/*  </span>*/}
-                              {/*)}*/}
-                            </FormHelperText>
-                          </FormControl>
-                        )}
-                      />
+                        <FrontPaymentPhoneInput
+                            control={control}
+                            defaultValue='no'
+                            disable={false}
+                            error={errors.phoneNumber}
+                            label="phone"
+                            name="phoneNumber"
+                            required = {true}
+                            trigger = {trigger}
+                            setValue = {setValue}
+                            setDialCode = {setDialCode}
+                        />
+                      {/*<Controller*/}
+                      {/*  name="phoneNumber"*/}
+                      {/*  control={control}*/}
+                      {/*  render={({ field }) => (*/}
+                      {/*    <FormControl*/}
+                      {/*      error={!!errors.phoneNumber}*/}
+                      {/*      required*/}
+                      {/*      fullWidth*/}
+                      {/*    >*/}
+                      {/*      <PhoneInput*/}
+                      {/*        {...field}*/}
+                      {/*        className = {*/}
+                      {/*          !!errors.phoneNumber*/}
+                      {/*            ? "input-phone-number-field border-1 rounded-md border-[#f44336]"*/}
+                      {/*            : "input-phone-number-field"*/}
+                      {/*        }*/}
+                      {/*        country="no"*/}
+                      {/*        enableSearch*/}
+                      {/*        autocompleteSearch*/}
+                      {/*        countryCodeEditable={false}*/}
+                      {/*        specialLabel={`${t("label:phone")}*`}*/}
+                      {/*        onBlur={handleOnBlurGetDialCode}*/}
+                      {/*      />*/}
+                      {/*      <FormHelperText>*/}
+                      {/*        {errors?.phoneNumber?.message*/}
+                      {/*          ? t(*/}
+                      {/*              `validation:${errors?.phoneNumber?.message}`*/}
+                      {/*            )*/}
+                      {/*          : ""}*/}
+                      {/*        /!*{watch("phoneNumber").length === 2 && (*!/*/}
+                      {/*        /!*  <span className="text-red-500">*!/*/}
+                      {/*        /!*    {" "}*!/*/}
+                      {/*        /!*    {t("validation:youMustEnterYourPhoneNumber")}*!/*/}
+                      {/*        /!*  </span>*!/*/}
+                      {/*        /!*)}*!/*/}
+                      {/*      </FormHelperText>*/}
+                      {/*    </FormControl>*/}
+                      {/*  )}*/}
+                      {/*/>*/}
                       {(type === BUSINESS_ADMIN || type === GENERAL_USER) && (
                         <Controller
                           name="organization"

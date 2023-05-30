@@ -236,7 +236,6 @@ class OrdersService {
             notes: params.customerNotes ? params.customerNotes : null,
           }
         : null;
-    const primaryPhoneNumber = params.primaryPhoneNumber.split("+");
     return {
       products: {
         ...products,
@@ -258,12 +257,12 @@ class OrdersService {
       isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
         type: params.customerType,
-        countryCode: primaryPhoneNumber
-          ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
-          : null,
-        msisdn: primaryPhoneNumber
-          ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
-          : null,
+        countryCode: params.dialCode
+            ? params.dialCode
+            : null,
+        msisdn: params.primaryPhoneNumber
+            ? params.primaryPhoneNumber.slice(params?.dialCode?.length)
+            : null,
         email: params.email,
         name: params.customerName,
         personalNumber:
