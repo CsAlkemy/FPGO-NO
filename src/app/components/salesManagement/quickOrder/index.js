@@ -56,6 +56,7 @@ const createProducts = () => {
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
   const [isAddCustomerButtonDisable, setIsAddCustomerButtonDisable] = useState(false)
+  const [ manualCustomerMsisdn, setManualCustomerMsisdn] = useState(null)
   const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] = useState("+47");
   const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
     useState(false);
@@ -280,7 +281,8 @@ const createProducts = () => {
 
   const valHtml = val.map((option, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
-    const label = option.name || option.phone;
+    // const label = option.name || option.phone;
+    const label = option?.name ? option?.name : `${option?.phone.split("^")[0]}${option?.phone.split("^")[1]}`;
     const isExistingCustomer = option?.name || null;
     return isExistingCustomer ? (
       <Chip
@@ -530,7 +532,8 @@ const createProducts = () => {
                       }
                     }}
                     onInputChange={(event, value) => {
-                      setNewCustomer(searchCustomerPrefixCountryCode + value);
+                      setNewCustomer(searchCustomerPrefixCountryCode+"^"+value);
+                      setManualCustomerMsisdn(value)
                       if (value.length === 0) setCustomerSearchBy(undefined);
                       if (value.length < 8 || value.length > 15) {
                         setIsAddCustomerButtonDisable(true);
@@ -543,7 +546,8 @@ const createProducts = () => {
                         <span className="subtitle3 font-600">
                           {t("label:noCustomersFound")}
                         </span>
-                        {!isNaN(newCustomer) && !isAddCustomerButtonDisable && (
+                        {!isNaN(manualCustomerMsisdn) &&
+                            !isAddCustomerButtonDisable && (
                           <Button
                             variant="contained"
                             color="secondary"
