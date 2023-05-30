@@ -218,7 +218,7 @@ export default function Payouts() {
             {/*{breadcrumbs}*/}
             {breadCumb.map((cumb) => {
               return (
-                <span onClick={() => handleCumbCustomConfig(cumb.navigate)}>
+                <span onClick={() => handleCumbCustomConfig(cumb.navigate)} className="cursor-pointer">
                   <p
                     className={`${
                       cumb.val === "name" ||
@@ -270,13 +270,13 @@ export default function Payouts() {
       {isYearView && (
         <div className="payouts-bg-container m-16 max-w-7xl">
           <div className="w-1/4">
-            <p className="subtitle3 pl-24 pt-24">{dirData.length} Folders</p>
+            <p className="subtitle3 pl-24 pt-24">{dirData.length} {t("label:folders")}</p>
           </div>
           <div className="payouts-parent-container grid grid-cols-2 lg:grid-cols-8 md:grid-cols-8 justify-items-center">
             {dirData.map((data) => {
               return (
                 <div
-                  className="payouts-container"
+                  className="payouts-container cursor-pointer"
                   onClick={() => {
                     handleDirectoryClick(data)
                   }}
