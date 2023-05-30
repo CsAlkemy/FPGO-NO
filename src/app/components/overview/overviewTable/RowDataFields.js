@@ -161,3 +161,20 @@ export const refundRequestsOverviewRowDataFields = [
   "approveAction",
   "cancel",
 ];
+
+export const payoutsListRowDataFields = [
+  "name",
+  // "orgId",
+  // "orgType",
+  "primaryContact",
+  "email",
+  "phone",
+  "status",
+];
+
+export const payoutsMonthViewRowDataFields = [
+  "dateAdded",
+  "fileName",
+  "fileFormat",
+  "isDownload"
+];

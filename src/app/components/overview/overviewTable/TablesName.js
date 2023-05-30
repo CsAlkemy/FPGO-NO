@@ -14,3 +14,4 @@ export const fpAdminUsersOverview = 'fp-admin-users-overview'
 export const businessAdminUsersOverview = 'business-admin-users-overview'
 export const organizationWiseUsersOverview = 'organization-wise-users-overview'
 export const refundRequestsOverview = 'refund-requests-overview';
+export const payoutReportsListOverview = 'payout-reports-list-overview-fp-admin';
