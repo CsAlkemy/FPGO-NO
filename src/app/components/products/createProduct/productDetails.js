@@ -7,7 +7,7 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  FormControl,
+  FormControl, FormControlLabel,
   FormHelperText,
   InputAdornment,
   InputLabel,
