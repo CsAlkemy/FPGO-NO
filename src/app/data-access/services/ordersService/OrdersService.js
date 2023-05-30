@@ -742,6 +742,7 @@ class OrdersService {
                     const phone = preparePhone ? preparePhone.split("+") : null;
                     return {
                       Ordrenr: row?.orderNumber ? row?.orderNumber : "-",
+                      "Client ID": row?.clientId || "-",
                       Client: row?.clientName ? row?.clientName : "-",
                       InvoiceNumber: row?.invoiceNumber
                         ? row?.invoiceNumber
