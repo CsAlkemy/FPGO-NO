@@ -159,6 +159,7 @@ class ProductService {
       price: floatPrice,
       manufacturerId: params?.manufacturer ? params?.manufacturer : null,
       categoryUuids,
+      accountCode: params.accountCode,
       taxRate: params.tax,
       cost: params.cost ? params.cost : null,
     };
@@ -278,6 +279,7 @@ class ProductService {
       price: floatPrice,
       manufacturerId: type === 1 ? params.manufacturer : "Test",
       categoryUuids,
+      accountCode: params.accountCode,
       taxRate: params.tax,
       cost: params.cost ? params.cost : null,
     };
