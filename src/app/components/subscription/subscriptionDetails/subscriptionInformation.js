@@ -21,7 +21,10 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DiscardConfirmModal from "../../common/confirmDiscard";
-import { createSubscriptionDefaultValue, quickOrderValidation } from "../utils/helper";
+import {
+  createSubscriptionDefaultValue,
+  quickOrderValidation,
+} from "../utils/helper";
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
 import AddIcon from "@mui/icons-material/Add";
@@ -39,7 +42,7 @@ import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 
-const SubscriptionInformation = () => {
+const SubscriptionInformation = ({ info, customerInfo }) => {
   const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
   const { enqueueSnackbar } = useSnackbar();
@@ -49,7 +52,9 @@ const SubscriptionInformation = () => {
   const [productsList, setProductsList] = useState([]);
   const [customersList, setCustomersList] = useState([]);
   const [searchCustomersList, setSearchCustomersList] = useState([]);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  const [addOrderIndex, setAddOrderIndex] = React.useState([
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+  ]);
   const [itemLoader, setItemLoader] = useState(false);
   const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
     useState(false);
@@ -66,15 +71,15 @@ const SubscriptionInformation = () => {
   const [billingFrequency, setBillingFrequency] = React.useState([
     {
       title: "Monthly",
-      value: 30,
+      value: "month",
     },
     {
       title: "weekly",
-      value: 7,
+      value: "week",
     },
     {
       title: "daily",
-      value: 1,
+      value: "day",
     },
   ]);
 
@@ -97,6 +102,19 @@ const SubscriptionInformation = () => {
     resolver: yupResolver(quickOrderValidation),
   });
   const { isValid, dirtyFields, errors, touchedFields } = formState;
+
+  useEffect(() => {
+    // createSubscriptionDefaultValue.billingFrequency = info.frequency || ""
+    createSubscriptionDefaultValue.repeatsNoOfTimes = info.repeats || "";
+    if (info?.products && info?.products && info?.products.length >= 2) {
+      setAddOrderIndex(
+        addOrderIndex.filter((item, index) => item <= info?.products.length - 1)
+      );
+    } else {
+      setAddOrderIndex(addOrderIndex.filter((item, index) => item < 1));
+    }
+    reset({ ...createSubscriptionDefaultValue });
+  }, []);
 
   const pnameOnBlur = (e) => {
     if (!e.target.value.length) {
@@ -167,63 +185,7 @@ const SubscriptionInformation = () => {
     }
   };
 
-  const watchOrderDate = watch(`orderDate`)
-    ? watch(`orderDate`)
-    : setValue("orderDate", new Date());
-
-  useEffect(() => {
-    if (
-      watchOrderDate &&
-      watchOrderDate.getMonth() === new Date().getMonth() &&
-      watchOrderDate.getDate() >= new Date().getDate()
-    ) {
-      setValue(
-        "dueDatePaymentLink",
-        new Date().setDate(watchOrderDate.getDate() + 2)
-      );
-    } else if (
-      watchOrderDate &&
-      watchOrderDate.getMonth() > new Date().getMonth()
-    ) {
-      let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
-      dueDate = dueDate.setDate(watchOrderDate.getDate() + 2);
-      setValue("dueDatePaymentLink", new Date(dueDate));
-    } else if (
-      watchOrderDate &&
-      (watchOrderDate.getMonth() < new Date().getMonth() ||
-        (watchOrderDate.getMonth() === new Date().getMonth() &&
-          watchOrderDate.getDate() < new Date().getDate()))
-    ) {
-      setValue(
-        "dueDatePaymentLink",
-        new Date().setDate(new Date().getDate() + 2)
-      );
-    }
-  }, [watch(`orderDate`)]);
-
-  const setDueDateMinDate = () => {
-    if (
-      watchOrderDate &&
-      watchOrderDate.getMonth() === new Date().getMonth() &&
-      watchOrderDate.getDate() >= new Date().getDate()
-    ) {
-      return new Date().setDate(watchOrderDate.getDate() + 1);
-    } else if (
-      watchOrderDate &&
-      watchOrderDate.getMonth() > new Date().getMonth()
-    ) {
-      let dueDate = new Date(new Date().setMonth(watchOrderDate.getMonth()));
-      dueDate = dueDate.setDate(watchOrderDate.getDate() + 1);
-      return new Date(dueDate);
-    } else if (
-      watchOrderDate &&
-      (watchOrderDate.getMonth() < new Date().getMonth() ||
-        (watchOrderDate.getMonth() === new Date().getMonth() &&
-          watchOrderDate.getDate() < new Date().getDate()))
-    ) {
-      return new Date().setDate(new Date().getDate() + 1);
-    }
-  };
+  // console.log("Info : ",info);
 
   return (
     <div className="create-product-container">
@@ -241,18 +203,25 @@ const SubscriptionInformation = () => {
                     <div className="p-20 rounded-8 border-MonochromeGray-50 border-2 mb-20 w-full md:w-2/4">
                       <div className="flex justify-between items-center">
                         <div className="subtitle1 text-MonochromeGray-700">
-                          ELECTRIC CONTROL SYSTEM AUTOMATION AS
+                          {customerInfo?.customerName || ""}
                         </div>
                       </div>
                       <div className="">
                         <div className="text-MonochromeGray-700 body2 mt-16">
-                          +4756464545
+                          {customerInfo?.countryCode && customerInfo?.msisdn
+                            ? customerInfo?.countryCode + customerInfo?.msisdn
+                            : ""}
                         </div>
                         <div className="text-MonochromeGray-700 body2">
-                          ELECTRICCONTROL@yopmail.com
+                          {customerInfo?.customerEmail || ""}
                         </div>
                         <div className="text-MonochromeGray-700 body2">
-                          Industrivegen 2 , 4344
+                          {customerInfo?.street
+                            ? `${customerInfo?.street}, `
+                            : ""}{" "}
+                          {customerInfo?.city || ""}{" "}
+                          {customerInfo?.zip ? `${customerInfo?.zip}, ` : ""}{" "}
+                          {customerInfo?.country || ""}
                         </div>
                       </div>
                     </div>
@@ -324,11 +293,6 @@ const SubscriptionInformation = () => {
                       }
                       required
                       onChange={onChange}
-                      minDate={
-                        watchOrderDate
-                          ? setDueDateMinDate()
-                          : new Date().setDate(new Date().getDate() - 30)
-                      }
                       disablePast={true}
                       PopperProps={{
                         sx: {
@@ -379,9 +343,9 @@ const SubscriptionInformation = () => {
                         labelId="billingFrequency"
                         id="select"
                         label={t("label:billingFrequency")}
-                        defaultValue={30}
+                        defaultValue={info?.frequency || "month"}
                         disabled
-                        value={field.value || 30}
+                        value={field.value}
                         required
                       >
                         {billingFrequency.length ? (
@@ -424,6 +388,7 @@ const SubscriptionInformation = () => {
                           ? t(`validation:${errors?.repeatsNoOfTimes?.message}`)
                           : ""
                       }
+                      defaultValue={info?.repeats || ""}
                       variant="outlined"
                       fullWidth
                     />
@@ -490,7 +455,11 @@ const SubscriptionInformation = () => {
                 <div className="flex gap-20 w-full md:w-3/4 my-32">
                   <Button
                     variant="outlined"
-                    className="create-order-capsule-button-active"
+                    className={`${
+                      info?.sendOrderViaSms
+                        ? "create-order-capsule-button-active"
+                        : "create-order-capsule-button"
+                    }`}
                     disabled
                   >
                     {t("label:sms")}
@@ -498,7 +467,11 @@ const SubscriptionInformation = () => {
                   <Button
                     variant="outlined"
                     disabled
-                    className="create-order-capsule-button"
+                    className={`${
+                      info?.sendOrderViaEmail
+                        ? "create-order-capsule-button-active"
+                        : "create-order-capsule-button"
+                    }`}
                   >
                     {t("label:email")}
                   </Button>
@@ -544,146 +517,26 @@ const SubscriptionInformation = () => {
                           key={`order:${index}`}
                         >
                           <Controller
-                            control={control}
-                            required
                             name={`order[${index}].productName`}
-                            render={({
-                              field: { ref, onChange, ...field },
-                            }) => (
-                              <Autocomplete
-                                disabled={
-                                  index === 0 ||
-                                  index === Math.min(...addOrderIndex)
-                                    ? false
-                                    : !watch(
-                                        `order[${
-                                          index -
-                                          (addOrderIndex[
-                                            addOrderIndex.indexOf(index)
-                                          ] -
-                                            addOrderIndex[
-                                              addOrderIndex.indexOf(index) - 1
-                                            ])
-                                        }].productName`
-                                      )
-                                }
-                                freeSolo
-                                autoSelect
-                                onBlur={pnameOnBlur}
-                                options={productsList}
-                                // forcePopupIcon={<Search />}
-                                getOptionLabel={(option) =>
-                                  option?.name
-                                    ? option.name
-                                    : option
-                                    ? option
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                //label="Product ID"
+                                className="bg-white custom-input-height mt-10"
+                                type="text"
+                                autoComplete="off"
+                                error={!!errors.productName}
+                                helperText={errors?.productName?.message}
+                                variant="outlined"
+                                fullWidth
+                                disabled
+                                defaultValue={
+                                  info.products &&
+                                  info.products?.[index]?.productName
+                                    ? info.products[index].productName
                                     : ""
                                 }
-                                size="small"
-                                onChange={(_, data) => {
-                                  if (data) {
-                                    if (data?.name) {
-                                      setValue(
-                                        `order[${index}].productName`,
-                                        data.name
-                                      );
-                                      setValue(
-                                        `order[${index}].productID`,
-                                        data.id
-                                      );
-                                      setValue(
-                                        `order[${index}].rate`,
-                                        data.price
-                                      );
-                                      setValue(`order[${index}].tax`, data.tax);
-                                      disableCurrentProductRow(index);
-
-                                      const watchRate = watch(
-                                        `order[${index}].rate`
-                                      );
-                                      const watchTax = watch(
-                                        `order[${index}].tax`
-                                      );
-                                      const watchName = watch(
-                                        `order[${index}].productName`
-                                      );
-                                      const watchId = watch(
-                                        `order[${index}].productID`
-                                      );
-
-                                      for (
-                                        let i = 0;
-                                        i < addOrderIndex.length;
-                                        i++
-                                      ) {
-                                        if (
-                                          watchName &&
-                                          watchId &&
-                                          watchRate &&
-                                          watchTax &&
-                                          i !== index &&
-                                          watchName ===
-                                            watch(`order[${i}].productName`) &&
-                                          watchId ===
-                                            watch(`order[${i}].productID`) &&
-                                          watchRate ===
-                                            watch(`order[${i}].rate`) &&
-                                          watchTax === watch(`order[${i}].tax`)
-                                        ) {
-                                          let quantityNum = isNaN(
-                                            parseInt(
-                                              watch(`order[${i}].quantity`)
-                                            )
-                                          )
-                                            ? 1
-                                            : parseInt(
-                                                watch(`order[${i}].quantity`)
-                                              );
-                                          setValue(
-                                            `order[${i}].quantity`,
-                                            quantityNum + 1
-                                          );
-                                          // onDelete(index);
-                                          onSameRowAction(index);
-                                          enqueueSnackbar(
-                                            `Same product found in Row ${
-                                              i + 1
-                                            } and ${
-                                              index + 1
-                                            }, merged together!`,
-                                            { variant: "success" }
-                                          );
-                                        }
-                                      }
-                                    } else
-                                      setValue(
-                                        `order[${index}].productName`,
-                                        data ? data : ""
-                                      );
-                                  } else {
-                                    setValue(`order[${index}].productName`, "");
-                                    setValue(`order[${index}].productID`, "");
-                                    setValue(`order[${index}].rate`, "");
-                                    setValue(`order[${index}].tax`, "");
-                                    enableCurrentProductRow(index);
-                                  }
-                                  return onChange(data);
-                                }}
-                                renderOption={(props, option, { selected }) => (
-                                  <MenuItem
-                                    {...props}
-                                    key={option.uuid}
-                                  >{`${option.name}`}</MenuItem>
-                                )}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    placeholder="Product Name"
-                                    {...field}
-                                    className="custom-input-height"
-                                    inputRef={ref}
-                                  />
-                                )}
                               />
                             )}
                           />
@@ -701,8 +554,13 @@ const SubscriptionInformation = () => {
                                 helperText={errors?.productID?.message}
                                 variant="outlined"
                                 fullWidth
-                                value={field.value || ""}
                                 disabled={disableRowIndexes.includes(index)}
+                                defaultValue={
+                                  info?.products &&
+                                  info?.products?.[index]?.productId
+                                    ? info?.products[index].productId
+                                    : ""
+                                }
                               />
                             )}
                           />
@@ -721,6 +579,12 @@ const SubscriptionInformation = () => {
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.quantity}
                                   variant="outlined"
+                                  defaultValue={
+                                    info?.products &&
+                                    info?.products?.[index]?.quantity
+                                      ? info?.products[index].quantity
+                                      : ""
+                                  }
                                   fullWidth
                                 />
                               )}
@@ -740,6 +604,12 @@ const SubscriptionInformation = () => {
                                   value={field.value || ""}
                                   fullWidth
                                   disabled={disableRowIndexes.includes(index)}
+                                  defaultValue={
+                                    info?.products &&
+                                    info?.products?.[index]?.rate
+                                      ? info?.products[index].rate
+                                      : ""
+                                  }
                                 />
                               )}
                             />
@@ -760,106 +630,60 @@ const SubscriptionInformation = () => {
                                   helperText={errors?.discount?.message}
                                   variant="outlined"
                                   fullWidth
+                                  defaultValue={
+                                    info?.products &&
+                                    info?.products?.[index]?.discount
+                                      ? info?.products[index].discount
+                                      : ""
+                                  }
                                 />
                               )}
                             />
-                            {!disableRowIndexes.includes(index) ? (
-                              <Controller
-                                name={`order[${index}].tax`}
-                                control={control}
-                                render={({ field }) => (
-                                  <FormControl
-                                    error={!!errors?.order?.[index]?.tax}
-                                    required
-                                    fullWidth
-                                  >
-                                    <InputLabel id="demo-simple-select-outlined-label-type">
-                                      Tax
-                                    </InputLabel>
-                                    <Select
-                                      {...field}
-                                      labelId="demo-simple-select-outlined-label-type"
-                                      id="demo-simple-select-outlined"
-                                      label="Tax"
-                                      //value={field.value || ""}
-                                      defaultValue={defaultTaxValue}
-                                      className="col-span-1"
-                                      disabled={disableRowIndexes.includes(
-                                        index
-                                      )}
-                                      inputlabelprops={{
-                                        shrink:
-                                          !!field.value || touchedFields.tax,
-                                      }}
-                                    >
-                                      {taxes && taxes.length ? (
-                                        taxes.map((tax, index) =>
-                                          tax.status === "Active" ? (
-                                            <MenuItem
-                                              key={index}
-                                              value={tax.value}
-                                            >
-                                              {tax.value}
-                                            </MenuItem>
-                                          ) : (
-                                            <MenuItem
-                                              key={index}
-                                              value={tax.value}
-                                              disabled
-                                            >
-                                              {tax.value}
-                                            </MenuItem>
-                                          )
-                                        )
-                                      ) : (
-                                        <MenuItem key={0} value={0}>
-                                          0
-                                        </MenuItem>
-                                      )}
-                                    </Select>
-                                    <FormHelperText>
-                                      {errors?.order?.[index]?.tax?.message}
-                                    </FormHelperText>
-                                  </FormControl>
-                                )}
-                              />
-                            ) : (
-                              <Controller
-                                name={`order[${index}].tax`}
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    {...field}
-                                    label="Tax"
-                                    className="bg-white custom-input-height"
-                                    type="number"
-                                    autoComplete="off"
-                                    error={!!errors?.order?.[index]?.tax}
-                                    helperText={
-                                      errors?.order?.[index]?.tax?.message
-                                    }
-                                    variant="outlined"
-                                    required
-                                    placeholder="Tax"
-                                    disabled={disableRowIndexes.includes(index)}
-                                    fullWidth
-                                  />
-                                )}
-                              />
-                            )}
+                            <Controller
+                              name={`order[${index}].tax`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  //label="Discount"
+                                  className="bg-white custom-input-height col-span-1"
+                                  // type="text"
+                                  type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
+                                  autoComplete="off"
+                                  error={!!errors?.order?.[index]?.tax}
+                                  helperText={
+                                    errors?.order?.[index]?.tax?.message
+                                  }
+                                  variant="outlined"
+                                  required
+                                  fullWidth
+                                  disabled
+                                  defaultValue={
+                                    info.products &&
+                                    info.products?.[index]?.tax === 0
+                                      ? 0
+                                      : info.products[index]?.tax
+                                  }
+                                />
+                              )}
+                            />
                           </div>
                           <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
                             <div>{t("label:total")}</div>
                             <div>
-                              {t("label:nok")} {productWiseTotal(index)}
+                              {t("label:nok")}{" "}
+                              {info?.products?.[index]?.amount ? ThousandSeparator(info?.products?.[index]?.amount) : 0}
                             </div>
                           </div>
                         </div>
                       ))}
-                      <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
-                        {t("label:grandTotal")} : {t("label:nok")}{" "}
-                        {ThousandSeparator(grandTotal.toFixed(2) / 2)}
-                      </div>
+                      {/*<div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">*/}
+                      {/*  {t("label:grandTotal")} : {t("label:nok")}{" "}*/}
+                      {/*  {ThousandSeparator(grandTotal.toFixed(2) / 2)}*/}
+                      {/*</div>*/}
                     </AccordionDetails>
                   </Accordion>
                 </div>
@@ -897,137 +721,26 @@ const SubscriptionInformation = () => {
                     >
                       <div className="my-auto">
                         <Controller
-                          control={control}
-                          required
                           name={`order[${index}].productName`}
-                          render={({ field: { ref, onChange, ...field } }) => (
-                            <Autocomplete
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              //label="Product ID"
+                              className="bg-white custom-input-height"
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.productName}
+                              helperText={errors?.productName?.message}
+                              variant="outlined"
+                              fullWidth
                               disabled
-                              freeSolo
-                              autoSelect
-                              options={productsList}
-                              onBlur={pnameOnBlur}
-                              // forcePopupIcon={<Search />}
-                              getOptionLabel={(option) =>
-                                option?.name
-                                  ? option.name
-                                  : option
-                                  ? option
+                              defaultValue={
+                                info.products &&
+                                info.products?.[index]?.productName
+                                  ? info.products[index].productName
                                   : ""
                               }
-                              size="small"
-                              //className="custom-input-height"
-                              onChange={(_, data) => {
-                                if (data) {
-                                  if (data?.name) {
-                                    setValue(
-                                      `order[${index}].productName`,
-                                      data.name
-                                    );
-                                    setValue(
-                                      `order[${index}].productID`,
-                                      data.id
-                                    );
-                                    const preparedPrice = data.price
-                                      .toString()
-                                      .includes(".")
-                                      ? `${
-                                          data.price.toString().split(".")[0]
-                                        },${
-                                          data.price.toString().split(".")[1]
-                                        }`
-                                      : data.price;
-                                    setValue(
-                                      `order[${index}].rate`,
-                                      preparedPrice
-                                    );
-                                    setValue(`order[${index}].tax`, data.tax);
-                                    disableCurrentProductRow(index);
-
-                                    const watchRate = watch(
-                                      `order[${index}].rate`
-                                    );
-                                    const watchTax = watch(
-                                      `order[${index}].tax`
-                                    );
-                                    const watchName = watch(
-                                      `order[${index}].productName`
-                                    );
-                                    const watchId = watch(
-                                      `order[${index}].productID`
-                                    );
-
-                                    for (
-                                      let i = 0;
-                                      i < addOrderIndex.length;
-                                      i++
-                                    ) {
-                                      if (
-                                        watchName &&
-                                        watchId &&
-                                        watchRate &&
-                                        watchTax &&
-                                        i !== index &&
-                                        watchName ===
-                                          watch(`order[${i}].productName`) &&
-                                        watchId ===
-                                          watch(`order[${i}].productID`) &&
-                                        watchRate ===
-                                          watch(`order[${i}].rate`) &&
-                                        watchTax === watch(`order[${i}].tax`)
-                                      ) {
-                                        let quantityNum = isNaN(
-                                          parseInt(
-                                            watch(`order[${i}].quantity`)
-                                          )
-                                        )
-                                          ? 1
-                                          : parseInt(
-                                              watch(`order[${i}].quantity`)
-                                            );
-                                        setValue(
-                                          `order[${i}].quantity`,
-                                          quantityNum + 1
-                                        );
-                                        onSameRowAction(index);
-                                        enqueueSnackbar(
-                                          `Same product found in Row ${
-                                            i + 1
-                                          } and ${index + 1}, merged together!`,
-                                          { variant: "success" }
-                                        );
-                                      }
-                                    }
-                                  } else
-                                    setValue(
-                                      `order[${index}].productName`,
-                                      data ? data : ""
-                                    );
-                                } else {
-                                  setValue(`order[${index}].productName`, "");
-                                  setValue(`order[${index}].productID`, "");
-                                  setValue(`order[${index}].rate`, "");
-                                  setValue(`order[${index}].tax`, "");
-                                  enableCurrentProductRow(index);
-                                }
-                                return onChange(data);
-                              }}
-                              renderOption={(props, option, { selected }) => (
-                                <MenuItem
-                                  {...props}
-                                  key={option.uuid}
-                                >{`${option.name}`}</MenuItem>
-                              )}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  {...field}
-                                  className="custom-input-height"
-                                  inputRef={ref}
-                                  // error={!!errors?.order?.[index]?.productName}
-                                  // helperText={errors?.order?.[index]?.productName?.message}
-                                />
-                              )}
                             />
                           )}
                         />
@@ -1047,6 +760,12 @@ const SubscriptionInformation = () => {
                               helperText={errors?.productID?.message}
                               variant="outlined"
                               fullWidth
+                              defaultValue={
+                                info.products &&
+                                info.products?.[index]?.productId
+                                  ? info.products[index].productId
+                                  : ""
+                              }
                               disabled
                             />
                           )}
@@ -1068,6 +787,12 @@ const SubscriptionInformation = () => {
                               //   errors?.order?.[index]?.quantity?.message
                               // }
                               variant="outlined"
+                              defaultValue={
+                                info.products &&
+                                info.products?.[index]?.quantity
+                                  ? info.products[index].quantity
+                                  : ""
+                              }
                               fullWidth
                             />
                           )}
@@ -1088,6 +813,11 @@ const SubscriptionInformation = () => {
                               variant="outlined"
                               required
                               fullWidth
+                              defaultValue={
+                                info.products && info.products?.[index]?.rate
+                                  ? info.products[index].rate
+                                  : ""
+                              }
                               disabled
                             />
                           )}
@@ -1109,102 +839,51 @@ const SubscriptionInformation = () => {
                               helperText={errors?.discount?.message}
                               variant="outlined"
                               fullWidth
+                              defaultValue={
+                                info.products &&
+                                info.products?.[index]?.discount
+                                  ? info.products[index].discount
+                                  : ""
+                              }
                             />
                           )}
                         />
                       </div>
                       <div className="my-auto">
-                        {!disableRowIndexes.includes(index) ? (
-                          <Controller
-                            name={`order[${index}].tax`}
-                            control={control}
-                            render={({ field }) => (
-                              <FormControl
-                                error={!!errors?.order?.[index]?.tax}
-                                required
-                                fullWidth
-                              >
-                                <Select
-                                  {...field}
-                                  labelId="tax"
-                                  id="tax"
-                                  sx={{ height: 44 }}
-                                  defaultValue={defaultTaxValue}
-                                  className="custom-select-create-order pt-8 mt-1"
-                                  disabled
-                                >
-                                  {taxes && taxes.length ? (
-                                    taxes.map((tax, index) =>
-                                      tax.status === "Active" ? (
-                                        <MenuItem key={index} value={tax.value}>
-                                          {tax.value}
-                                        </MenuItem>
-                                      ) : (
-                                        <MenuItem
-                                          key={index}
-                                          value={tax.value}
-                                          disabled
-                                        >
-                                          {tax.value}
-                                        </MenuItem>
-                                      )
-                                    )
-                                  ) : (
-                                    <MenuItem key={0} value={0}>
-                                      0
-                                    </MenuItem>
-                                  )}
-                                </Select>
-                                <FormHelperText>
-                                  {errors?.order?.[index]?.tax?.message}
-                                </FormHelperText>
-                              </FormControl>
-                            )}
-                          />
-                        ) : (
-                          <Controller
-                            name={`order[${index}].tax`}
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                //label="Discount"
-                                className="bg-white custom-input-height"
-                                // type="text"
-                                type="number"
-                                autoComplete="off"
-                                error={!!errors?.order?.[index]?.tax}
-                                helperText={
-                                  errors?.order?.[index]?.tax?.message
-                                }
-                                variant="outlined"
-                                required
-                                disabled
-                                fullWidth
-                              />
-                            )}
-                            PopperProps={{
-                              sx: {
-                                "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
-                                  {
-                                    borderRadius: "8px",
-                                    "&.Mui-selected": {
-                                      backgroundColor: "#c9eee7",
-                                      color: "#323434",
-                                    },
-                                  },
-                              },
-                            }}
-                          />
-                        )}
+                        <Controller
+                          name={`order[${index}].tax`}
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              //label="Discount"
+                              className="bg-white custom-input-height"
+                              // type="text"
+                              type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
+                              autoComplete="off"
+                              error={!!errors?.order?.[index]?.tax}
+                              helperText={errors?.order?.[index]?.tax?.message}
+                              variant="outlined"
+                              required
+                              fullWidth
+                              disabled
+                              defaultValue={
+                                info.products &&
+                                info.products?.[index]?.tax === 0
+                                  ? 0
+                                  : info.products[index]?.tax
+                              }
+                            />
+                          )}
+                        />
                       </div>
                       <div className="my-auto">
-                        <div
-                          className="body3 text-right"
-                          // onClick={() => setEditOpen(true)}
-                        >
+                        <div className="body3 text-right">
                           {t("label:nok")}{" "}
-                          {ThousandSeparator(productWiseTotal(index))}
+                          {info?.products?.[index]?.amount ? ThousandSeparator(info?.products?.[index]?.amount) : 0}
                         </div>
                       </div>
                     </div>
@@ -1228,6 +907,7 @@ const SubscriptionInformation = () => {
                           type="text"
                           autoComplete="off"
                           disabled
+                          value={info?.customerNote || ""}
                           error={!!errors.customerNotes}
                           helperText={
                             errors?.customerNotes?.message
@@ -1242,7 +922,7 @@ const SubscriptionInformation = () => {
                       )}
                     />
                     <CharCount
-                      current={watch("customerNotes")?.length || 0}
+                      current={info?.customerNote.length || 0}
                       total={200}
                     />
                   </div>
@@ -1259,8 +939,8 @@ const SubscriptionInformation = () => {
                           disabled
                           label={t("label:tnc")}
                           type="text"
-                          autoComplete="off"
                           error={!!errors.termsConditions}
+                          value={info?.termsAndConditions || ""}
                           helperText={
                             errors?.termsConditions?.message
                               ? t(
@@ -1274,7 +954,7 @@ const SubscriptionInformation = () => {
                       )}
                     />
                     <CharCount
-                      current={watch("termsConditions")?.length || 0}
+                      current={info?.termsAndConditions.length || 0}
                       total={200}
                     />
                   </div>
@@ -1289,7 +969,9 @@ const SubscriptionInformation = () => {
                         </div>
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
-                          {ThousandSeparator(subTotal.toFixed(2) / 2)}
+                          {info?.subTotal
+                            ? ThousandSeparator(info?.subTotal)
+                            : 0}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-10">
@@ -1297,8 +979,9 @@ const SubscriptionInformation = () => {
                           {t("label:tax")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")}{" "}
-                          {ThousandSeparator(totalTax.toFixed(2) / 2)}
+                          {t("label:nok")} {info?.tax
+                          ? ThousandSeparator(info?.tax)
+                          : 0}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-10">
@@ -1306,8 +989,9 @@ const SubscriptionInformation = () => {
                           {t("label:discount")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")}{" "}
-                          {ThousandSeparator(totalDiscount.toFixed(2) / 2)}
+                          {t("label:nok")} {info?.discount
+                          ? ThousandSeparator(info?.discount)
+                          : 0}
                         </div>
                       </div>
                     </div>
@@ -1320,8 +1004,7 @@ const SubscriptionInformation = () => {
                           {t("label:payablePerCycle")}
                         </div>
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:nok")}{" "}
-                          {ThousandSeparator(grandTotal.toFixed(2) / 2)}
+                          {t("label:nok")} {info?.payablePerCycle ? ThousandSeparator(info?.payablePerCycle) : 0}
                         </div>
                       </div>
 
@@ -1330,7 +1013,11 @@ const SubscriptionInformation = () => {
                           {t("label:frequency")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          Monthly
+                          {info?.frequency === "month"
+                            ? t("label:monthly")
+                            : info?.frequency === "week"
+                            ? t("label:weekly")
+                            : t("label:daily")}
                         </div>
                       </div>
 
@@ -1339,7 +1026,7 @@ const SubscriptionInformation = () => {
                           {t("label:repeats")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          12 Times
+                          {info?.repeats || 0} {t("label:times")}
                         </div>
                       </div>
                     </div>

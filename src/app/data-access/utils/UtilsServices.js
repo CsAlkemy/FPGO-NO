@@ -62,6 +62,12 @@ class UtilsServices {
 
     return `${day} ${monthName}, ${year}`;
   };
+
+  prepareDotSeparatedDateDDMMYYYYFromMMDDYYYY = (param) => {
+    const splitedArray = param.split(".");
+    const changedDate = `${splitedArray[1]}.${splitedArray[0]}.${splitedArray[2]}`;
+    return changedDate;
+  };
 }
 
 const instance = new UtilsServices();

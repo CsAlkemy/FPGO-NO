@@ -33,21 +33,21 @@ const PaymentConfig = {
   routes: [
     {
       // path: '/payment/order-details',
-      path: '/order/details/:uuid',
+      path: '/subscription/payment/details/:uuid',
       element: <PaymentDetails />,
     },
     {
         // path: '/payment/checkout',
-        path: '/order/details/:uuid/checkout',
+        path: '/subscription/payment/details/:uuid/checkout',
         element: <CustomerInfo />,
     },
     {
         // path: 'payment/checkout/status',
-        path: '/order/details/:uuid/confirmation',
+        path: '/subscription/payment/details/:uuid/confirmation',
         element: <PaymentStatus />,
     },
     {
-      path: '/order/receipt/:uuid',
+      path: '/subscription/receipt/:uuid',
       element: <OrderReceipt />,
     },
   ],

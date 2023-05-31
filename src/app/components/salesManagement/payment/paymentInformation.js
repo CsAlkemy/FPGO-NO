@@ -34,6 +34,7 @@ import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import CountrySelect from "../../common/countries";
+import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -179,76 +180,150 @@ const paymentInformation = () => {
   };
 
   useEffect(() => {
-    OrdersService.getOrdersDetailsByUUIDPayment(orderUuid)
-      .then((response) => {
-        if (response?.status_code === 200 && response?.is_data) {
-          if (response?.data?.status !== "SENT") return navigate("404");
-          setOrderDetails(response.data);
-          PaymentDefaultValue.phone =
-            response?.data?.customerDetails?.countryCode &&
-            response?.data?.customerDetails?.msisdn
-              ? response?.data?.customerDetails?.countryCode +
+    if (
+      window.location.pathname.includes("/subscription/payment/details/SUB")
+    ) {
+      SubscriptionsService.getSubscriptionDetailsByUUIDPayment(orderUuid)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            // if (response?.data?.status !== "SENT") return navigate("404");
+            setOrderDetails(response.data);
+            console.log("Res : ",response);
+            PaymentDefaultValue.phone =
+              response?.data?.customerDetails?.countryCode &&
+              response?.data?.customerDetails?.msisdn
+                ? response?.data?.customerDetails?.countryCode +
                 response?.data?.customerDetails?.msisdn
+                : "";
+            PaymentDefaultValue.email = response?.data?.customerDetails?.email
+              ? response?.data?.customerDetails?.email
               : "";
-          PaymentDefaultValue.email = response?.data?.customerDetails?.email
-            ? response?.data?.customerDetails?.email
-            : "";
-          PaymentDefaultValue.customerName = response?.data?.customerDetails
-            ?.name
-            ? response?.data?.customerDetails?.name
-            : "";
-          PaymentDefaultValue.orgIdOrPNumber = response?.data?.customerDetails
-            ?.personalNumber
-            ? response?.data?.customerDetails?.personalNumber
-            : response?.data?.customerDetails?.organizationId
-            ? response?.data?.customerDetails?.organizationId
-            : "";
-          PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
-            ?.personalNumber
-            ? response?.data?.customerDetails?.personalNumber
-            : response?.data?.customerDetails?.organizationId
-            ? response?.data?.customerDetails?.organizationId
-            : "";
+            PaymentDefaultValue.customerName = response?.data?.customerDetails
+              ?.name
+              ? response?.data?.customerDetails?.name
+              : "";
+            PaymentDefaultValue.orgIdOrPNumber = response?.data?.customerDetails
+              ?.personalNumber
+              ? response?.data?.customerDetails?.personalNumber
+              : response?.data?.customerDetails?.organizationId
+                ? response?.data?.customerDetails?.organizationId
+                : "";
+            // PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
+            //   ?.personalNumber
+            //   ? response?.data?.customerDetails?.personalNumber
+            //   : response?.data?.customerDetails?.organizationId
+            //     ? response?.data?.customerDetails?.organizationId
+            //     : "";
+            //
+            PaymentDefaultValue.billingAddress =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.street
+                ? response?.data?.customerDetails?.address?.street
+                : "";
+            PaymentDefaultValue.billingZip =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.zip
+                ? response?.data?.customerDetails?.address?.zip
+                : "";
+            PaymentDefaultValue.billingCity =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.city
+                ? response?.data?.customerDetails?.address?.city
+                : "";
+            PaymentDefaultValue.billingCountry =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.country
+                ? response?.data?.customerDetails?.address?.country
+                : "";
+            setCustomData({
+              ...customData,
+              customerType:
+                response?.data?.customerDetails?.type === "Private"
+                  ? "private"
+                  : "corporate",
+              isCeditCheck: false,
+            });
+            reset({ ...PaymentDefaultValue });
+          }
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          // enqueueSnackbar(e, { variant: "error" });
+          return navigate("404");
+        });
+    }else {
+      OrdersService.getOrdersDetailsByUUIDPayment(orderUuid)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            if (response?.data?.status !== "SENT") return navigate("404");
+            setOrderDetails(response.data);
+            PaymentDefaultValue.phone =
+              response?.data?.customerDetails?.countryCode &&
+              response?.data?.customerDetails?.msisdn
+                ? response?.data?.customerDetails?.countryCode +
+                response?.data?.customerDetails?.msisdn
+                : "";
+            PaymentDefaultValue.email = response?.data?.customerDetails?.email
+              ? response?.data?.customerDetails?.email
+              : "";
+            PaymentDefaultValue.customerName = response?.data?.customerDetails
+              ?.name
+              ? response?.data?.customerDetails?.name
+              : "";
+            PaymentDefaultValue.orgIdOrPNumber = response?.data?.customerDetails
+              ?.personalNumber
+              ? response?.data?.customerDetails?.personalNumber
+              : response?.data?.customerDetails?.organizationId
+                ? response?.data?.customerDetails?.organizationId
+                : "";
+            PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
+              ?.personalNumber
+              ? response?.data?.customerDetails?.personalNumber
+              : response?.data?.customerDetails?.organizationId
+                ? response?.data?.customerDetails?.organizationId
+                : "";
 
-          PaymentDefaultValue.billingAddress =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.street
-              ? response?.data?.customerDetails?.address?.street
-              : "";
-          PaymentDefaultValue.billingZip =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.zip
-              ? response?.data?.customerDetails?.address?.zip
-              : "";
-          PaymentDefaultValue.billingCity =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.city
-              ? response?.data?.customerDetails?.address?.city
-              : "";
-          PaymentDefaultValue.billingCountry =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.country
-              ? response?.data?.customerDetails?.address?.country
-              : "";
-          setCustomData({
-            ...customData,
-            customerType:
-              response?.data?.customerDetails?.type === "Private"
-                ? "private"
-                : "corporate",
-            isCeditCheck: response?.data?.creditCheck
-              ? response?.data?.creditCheck
-              : false,
-          });
-          reset({ ...PaymentDefaultValue });
-        }
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        // enqueueSnackbar(e, { variant: "error" });
-        return navigate("404");
-      });
+            PaymentDefaultValue.billingAddress =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.street
+                ? response?.data?.customerDetails?.address?.street
+                : "";
+            PaymentDefaultValue.billingZip =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.zip
+                ? response?.data?.customerDetails?.address?.zip
+                : "";
+            PaymentDefaultValue.billingCity =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.city
+                ? response?.data?.customerDetails?.address?.city
+                : "";
+            PaymentDefaultValue.billingCountry =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.country
+                ? response?.data?.customerDetails?.address?.country
+                : "";
+            setCustomData({
+              ...customData,
+              customerType:
+                response?.data?.customerDetails?.type === "Private"
+                  ? "private"
+                  : "corporate",
+              isCeditCheck: response?.data?.creditCheck
+                ? response?.data?.creditCheck
+                : false,
+            });
+            reset({ ...PaymentDefaultValue });
+          }
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          // enqueueSnackbar(e, { variant: "error" });
+          return navigate("404");
+        });
+    }
   }, [isLoading]);
 
   const handleCreditCheck = () => {
@@ -704,7 +779,7 @@ const paymentInformation = () => {
                                 required={true}
                                 error={errors.billingCountry}
                               />
-                              {/* 
+                              {/*
                               <Controller
                                 name="billingCountry"
                                 control={control}

@@ -142,9 +142,9 @@ class SubscriptionsService {
     };
   };
 
-  subscriptionDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
+  getSubscriptionDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
-      const URL = `${EnvVariable.BASEURL}/products/details/${uuid}`;
+      const URL = `${EnvVariable.BASEURL}/subscription/details/${uuid}`;
       if (isSkipIsAuthenticated) {
         return axios
           .get(URL)
@@ -215,6 +215,34 @@ class SubscriptionsService {
       taxRate: params.tax,
       cost: params.cost ? params.cost : null,
     };
+  };
+
+  getSubscriptionDetailsByUUIDPayment = (uuid) => {
+    return new Promise((resolve, reject) => {
+      const URL = `${EnvVariable.BASEURL}/subscription/checkout/details/${uuid}`;
+      const config = {
+        headers: {
+          Authorization: `Bearer QXNrZUFtYXJNb25WYWxvTmVpO01vbkFtYXJLZW1vbktlbW9uS29yZQ==`,
+        },
+      };
+
+      return (
+        axios
+          .get(URL, config)
+          // .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              resolve(response.data);
+            } else reject("somethingWentWrong");
+          })
+          .catch((e) => {
+            reject(e?.response?.data?.message);
+          })
+      );
+    });
   };
 }
 
