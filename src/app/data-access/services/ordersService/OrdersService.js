@@ -101,7 +101,7 @@ class OrdersService {
         name: row.name,
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
-        msisdn: row?.msisdn || '',
+        msisdn: row?.msisdn || "",
         email: row?.email ? row?.email : null,
         amount: row.amount,
         stage: row?.status ? row.status.toLowerCase() : null,
@@ -257,9 +257,7 @@ class OrdersService {
       isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
         type: params.customerType,
-        countryCode: params.dialCode
-          ? params.dialCode
-          : null,
+        countryCode: params.dialCode ? params.dialCode : null,
         msisdn: params.primaryPhoneNumber
           ? params.primaryPhoneNumber.slice(params?.dialCode?.length)
           : null,
@@ -742,6 +740,7 @@ class OrdersService {
                     const phone = preparePhone ? preparePhone.split("+") : null;
                     return {
                       Ordrenr: row?.orderNumber ? row?.orderNumber : "-",
+                      "Client ID": row?.clientId || "-",
                       Client: row?.clientName ? row?.clientName : "-",
                       InvoiceNumber: row?.invoiceNumber
                         ? row?.invoiceNumber

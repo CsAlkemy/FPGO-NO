@@ -430,10 +430,11 @@ export default function VatReports() {
             <CSVLink
               data={csvData}
               headers={headers}
+              separator={";"}
               filename={
                 user.role[0] !== FP_ADMIN
                   ? `MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
-                  : `${orgDetails.name} - MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
+                  : `${orgDetails.name}_MVA-rapporter_${preparedStartDate}_${preparedEndDate}`
               }
               ref={downloadCsvRef}
             />
