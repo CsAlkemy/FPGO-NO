@@ -188,7 +188,6 @@ const paymentInformation = () => {
           if (response?.status_code === 200 && response?.is_data) {
             // if (response?.data?.status !== "SENT") return navigate("404");
             setOrderDetails(response.data);
-            console.log("Res : ",response);
             PaymentDefaultValue.phone =
               response?.data?.customerDetails?.countryCode &&
               response?.data?.customerDetails?.msisdn

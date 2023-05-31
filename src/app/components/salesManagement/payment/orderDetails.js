@@ -60,7 +60,6 @@ const orderDetails = () => {
       SubscriptionsService.getSubscriptionDetailsByUUIDPayment(param.uuid)
         .then((response) => {
           if (response?.status_code === 200 && response?.is_data) {
-            console.log("response : ", response);
             // if (response?.data?.status !== "SENT") return navigate("404");
             setOrderDetails(response.data);
           }
