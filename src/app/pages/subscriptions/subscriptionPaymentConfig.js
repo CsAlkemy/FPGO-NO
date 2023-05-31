@@ -1,8 +1,8 @@
 import { lazy } from 'react';
 import authRoles from '../../data-access/utils/AuthRoles';
-const CustomerInfo = lazy(() => import('../../components/salesManagement/payment/paymentInformation'));
-import PaymentDetails from "../../components/salesManagement/payment/orderDetails";
-const PaymentStatus = lazy(() => import('../../components/salesManagement/payment/paymentStatus'));
+const CustomerInfo = lazy(() => import('../../components/subscription/payment/paymentInformation'));
+import PaymentDetails from "../../components/subscription/payment/orderDetails";
+const PaymentStatus = lazy(() => import('../../components/subscription/payment/paymentStatus'));
 const OrderReceipt = lazy(() => import('../../components/salesManagement/order/orderReceipt'));
 
 const PaymentConfig = {

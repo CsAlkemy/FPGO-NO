@@ -464,6 +464,8 @@ class OrdersService {
     const primaryPhoneNumber = params.phone.split("+");
 
     const data = {
+      orderId: params?.orderUuid || "",
+      currency: params?.currency || "",
       customerDetails: {
         // isExisting: !params.isNewCustomer,
         // uuid: !params.isNewCustomer ? params?.customerUuid : null,
@@ -501,6 +503,71 @@ class OrdersService {
         .then((response) => {
           // if (response?.data?.status_code === 202) {
           if (response?.data?.status_code === 202) {
+            resolve(response.data);
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          // reject(e?.response?.data?.message)
+          reject(e?.response?.data?.message);
+        });
+    });
+  };
+
+  subscriptionPayNow = async (params) => {
+    const billingAddress =
+      params.billingAddress ||
+      params.billingZip ||
+      params.billingCity ||
+      params.billingCountry
+        ? {
+            street: params.billingAddress ? params.billingAddress : null,
+            zip: params.billingZip ? params.billingZip : null,
+            city: params.billingCity ? params.billingCity : null,
+            country: params.billingCountry ? params.billingCountry : null,
+          }
+        : null;
+    const primaryPhoneNumber = params.phone.split("+");
+
+    const data = {
+      orderId: params?.orderUuid || "",
+      currency: params?.currency || "",
+      customerDetails: {
+        // isExisting: !params.isNewCustomer,
+        // uuid: !params.isNewCustomer ? params?.customerUuid : null,
+        type: params.customerType,
+        countryCode: primaryPhoneNumber
+          ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+          : null,
+        msisdn: primaryPhoneNumber
+          ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+          : null,
+        email: params.email,
+        name: params.customerName,
+        personalNumber:
+          params.customerType === "private" ? params.orgIdOrPNumber : null,
+        organizationId:
+          params.customerType === "corporate" ? params.orgIdOrPNumber : null,
+        address: { ...billingAddress },
+      },
+      // billingAddress,
+      submitPayment: {
+        via: params.paymentMethod,
+        currency: "NOK",
+      },
+    };
+
+    const config = {
+      headers: {
+        Authorization: `Bearer QXNrZUFtYXJNb25WYWxvTmVpO01vbkFtYXJLZW1vbktlbW9uS29yZQ==`,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      const URL = `${EnvVariable.BASEURL}/subscription/checkout`;
+      return axios
+        .post(URL, data, config)
+        .then((response) => {
+          // if (response?.data?.status_code === 202) {
+          if (response?.data?.status_code === 201) {
             resolve(response.data);
           } else reject("somethingWentWrong");
         })

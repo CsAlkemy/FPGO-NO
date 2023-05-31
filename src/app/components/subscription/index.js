@@ -94,15 +94,15 @@ const CreateSubscription = () => {
   const [billingFrequency, setBillingFrequency] = React.useState([
     {
       title: "Monthly",
-      value: 30,
+      value: "monthly",
     },
     {
       title: "Weekly",
-      value: 7,
+      value: "weekly",
     },
     {
       title: "Daily",
-      value: 1,
+      value: "daily",
     },
   ]);
 

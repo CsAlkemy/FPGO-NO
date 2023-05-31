@@ -33,6 +33,8 @@ import PaymentHeader from "./paymentHeader";
 import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import CountrySelect from "../../common/countries";
+import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -47,6 +49,7 @@ const paymentInformation = () => {
   const [paymentScreenCreditCheck] = usePaymentScreenCreditCheckMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
   const [isCreditChecked, setIsCreditChecked] = React.useState(false);
+  const [recheckSchema, setRecheckSchema] = React.useState(false);
   const [customData, setCustomData] = React.useState({
     paymentMethod: "vipps",
     isCeditCheck: false,
@@ -57,17 +60,6 @@ const paymentInformation = () => {
   const [isUpdateData, setIsUpdateData] = useState(false);
 
   const navigate = useNavigate();
-
-  const [countries, setCountries] = React.useState([
-    {
-      title: "Norway",
-      name: "norway",
-    },
-    {
-      title: "Sweden",
-      name: "sweden",
-    },
-  ]);
 
   const [paymentMethodList, setPaymentMethodList] = React.useState([
     {
@@ -91,20 +83,44 @@ const paymentInformation = () => {
       logo: "assets/images/payment/frontPayment.png",
     },
   ]);
-
-  const { control, formState, handleSubmit, getValues, reset, watch } = useForm(
-    {
-      mode: "onChange",
-      PaymentDefaultValue,
-      resolver: yupResolver(
-        customData.isCeditCheck
-          ? validateSchemaCreditCheckForCheckout
-          : customData.customerType === "private"
-          ? validateSchemaPaymentCheckout
-          : validateSchemaPaymentCheckoutCorporate
-      ),
+  let schema =
+    customData?.customerType === "private"
+      ? validateSchemaPaymentCheckout
+      : validateSchemaPaymentCheckoutCorporate;
+  useEffect(() => {
+    schema =
+      customData?.customerType === "private"
+        ? validateSchemaPaymentCheckout
+        : validateSchemaPaymentCheckoutCorporate;
+    if (recheckSchema) {
+      if (customData?.customerType === "corporate") {
+        clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
+        setValue("orgIdOrPNumber", "", { shouldValidate: true });
+        setError("orgIdOrPNumber", { type: "focus" }, { shouldFocus: true });
+      } else {
+        setValue("orgIdOrPNumber", "", { shouldValidate: true });
+        clearErrors(["orgIdOrPNumber", "orgIdOrPNumber"]);
+      }
     }
-  );
+  }, [customData?.customerType]);
+
+  const {
+    control,
+    formState,
+    handleSubmit,
+    getValues,
+    reset,
+    watch,
+    setValue,
+    clearErrors,
+    setError,
+  } = useForm({
+    mode: "onChange",
+    PaymentDefaultValue,
+    resolver: yupResolver(
+      customData.isCeditCheck ? validateSchemaCreditCheckForCheckout : schema
+    ),
+  });
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
 
@@ -112,27 +128,31 @@ const paymentInformation = () => {
     setOpen(true);
     const data = isUpdateData
       ? {
-          ...updatedData,
-          ...customData,
-          orderUuid,
-          customerUuid: orderDetails?.customerDetails?.uuid
-            ? orderDetails?.customerDetails?.uuid
-            : null,
-        }
+        ...updatedData,
+        ...customData,
+        orderUuid: orderDetails?.orderNo || "",
+        currency: orderDetails?.currency || "",
+        customerUuid: orderDetails?.customerDetails?.uuid
+          ? orderDetails?.customerDetails?.uuid
+          : null,
+      }
       : {
-          ...values,
-          ...customData,
-          orderUuid,
-          customerUuid: orderDetails?.customerDetails?.uuid
-            ? orderDetails?.customerDetails?.uuid
-            : null,
-        };
-    OrdersService.updateOrder(data)
+        ...values,
+        ...customData,
+        orderUuid: orderDetails?.orderNo || "",
+        currency: orderDetails?.currency || "",
+        customerUuid: orderDetails?.customerDetails?.uuid
+          ? orderDetails?.customerDetails?.uuid
+          : null,
+      };
+    console.log("DATA : ", data);
+    OrdersService.subscriptionPayNow(data)
       .then((response) => {
+        console.log("Update Order RES : ",response);
         if (
-          response?.status_code === 202 &&
+          response?.status_code === 201 &&
           response?.is_data &&
-          response?.data?.paymentUrl
+          response?.data?.url
         ) {
           setOpen(false);
           // navigate("/payment/checkout/status");
@@ -144,96 +164,170 @@ const paymentInformation = () => {
               sentBy: orderDetails?.sendOrderBy?.sms ? "sms" : "email",
               phoneOrEmail: orderDetails?.sendOrderBy?.sms
                 ? orderDetails?.customerDetails?.countryCode +
-                  orderDetails?.customerDetails?.msisdn
+                orderDetails?.customerDetails?.msisdn
                 : orderDetails?.customerDetails?.email,
             })
           );
-          window.location.href = `${response?.data?.paymentUrl}`;
+          window.location.href = `${response?.data?.url}`;
         } else if (response?.status_code === 202 && !response?.is_data) {
-          navigate(`/order/details/${orderUuid}/confirmation`);
+          navigate(`'/subscription/payment/details/${orderUuid}/confirmation`);
         }
       })
       .catch((e) => {
         enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setOpen(false);
       });
-    // setTimeout(()=>{
-    //     setOpen(false);
-    //     navigate('/payment/checkout/status')
-    // },2000)
+    setTimeout(() => {
+      setOpen(false);
+      navigate("/payment/checkout/status");
+    }, 2000);
   };
 
   useEffect(() => {
-    OrdersService.getOrdersDetailsByUUIDPayment(orderUuid)
-      .then((response) => {
-        if (response?.status_code === 200 && response?.is_data) {
-          if (response?.data?.status !== "SENT") return navigate("404");
-          setOrderDetails(response.data);
-          PaymentDefaultValue.phone =
-            response?.data?.customerDetails?.countryCode &&
-            response?.data?.customerDetails?.msisdn
-              ? response?.data?.customerDetails?.countryCode +
+    if (
+      window.location.pathname.includes("/subscription/payment/details/SUB")
+    ) {
+      SubscriptionsService.getSubscriptionDetailsByUUIDPayment(orderUuid)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            // if (response?.data?.status !== "SENT") return navigate("404");
+            setOrderDetails(response.data);
+            console.log("Res : ", response);
+            PaymentDefaultValue.phone =
+              response?.data?.customerDetails?.countryCode &&
+              response?.data?.customerDetails?.msisdn
+                ? response?.data?.customerDetails?.countryCode +
                 response?.data?.customerDetails?.msisdn
+                : "";
+            PaymentDefaultValue.email = response?.data?.customerDetails?.email
+              ? response?.data?.customerDetails?.email
               : "";
-          PaymentDefaultValue.email = response?.data?.customerDetails?.email
-            ? response?.data?.customerDetails?.email
-            : "";
-          PaymentDefaultValue.customerName = response?.data?.customerDetails
-            ?.name
-            ? response?.data?.customerDetails?.name
-            : "";
-          PaymentDefaultValue.orgIdOrPNumber = response?.data?.customerDetails
-            ?.personalNumber
-            ? response?.data?.customerDetails?.personalNumber
-            : response?.data?.customerDetails?.organizationId
-            ? response?.data?.customerDetails?.organizationId
-            : "";
-          PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
-            ?.personalNumber
-            ? response?.data?.customerDetails?.personalNumber
-            : response?.data?.customerDetails?.organizationId
-            ? response?.data?.customerDetails?.organizationId
-            : "";
+            PaymentDefaultValue.customerName = response?.data?.customerDetails
+              ?.name
+              ? response?.data?.customerDetails?.name
+              : "";
+            PaymentDefaultValue.orgIdOrPNumber = response?.data?.customerDetails
+              ?.personalNumber
+              ? response?.data?.customerDetails?.personalNumber
+              : response?.data?.customerDetails?.organizationId
+                ? response?.data?.customerDetails?.organizationId
+                : "";
+            // PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
+            //   ?.personalNumber
+            //   ? response?.data?.customerDetails?.personalNumber
+            //   : response?.data?.customerDetails?.organizationId
+            //     ? response?.data?.customerDetails?.organizationId
+            //     : "";
+            //
+            PaymentDefaultValue.billingAddress =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.street
+                ? response?.data?.customerDetails?.address?.street
+                : "";
+            PaymentDefaultValue.billingZip =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.zip
+                ? response?.data?.customerDetails?.address?.zip
+                : "";
+            PaymentDefaultValue.billingCity =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.city
+                ? response?.data?.customerDetails?.address?.city
+                : "";
+            PaymentDefaultValue.billingCountry =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.country
+                ? response?.data?.customerDetails?.address?.country
+                : "";
+            setCustomData({
+              ...customData,
+              customerType:
+                response?.data?.customerDetails?.type === "Private"
+                  ? "private"
+                  : "corporate",
+              isCeditCheck: false,
+            });
+            reset({ ...PaymentDefaultValue });
+          }
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          // enqueueSnackbar(e, { variant: "error" });
+          return navigate("404");
+        });
+    } else {
+      OrdersService.getOrdersDetailsByUUIDPayment(orderUuid)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            if (response?.data?.status !== "SENT") return navigate("404");
+            setOrderDetails(response.data);
+            PaymentDefaultValue.phone =
+              response?.data?.customerDetails?.countryCode &&
+              response?.data?.customerDetails?.msisdn
+                ? response?.data?.customerDetails?.countryCode +
+                response?.data?.customerDetails?.msisdn
+                : "";
+            PaymentDefaultValue.email = response?.data?.customerDetails?.email
+              ? response?.data?.customerDetails?.email
+              : "";
+            PaymentDefaultValue.customerName = response?.data?.customerDetails
+              ?.name
+              ? response?.data?.customerDetails?.name
+              : "";
+            PaymentDefaultValue.orgIdOrPNumber = response?.data?.customerDetails
+              ?.personalNumber
+              ? response?.data?.customerDetails?.personalNumber
+              : response?.data?.customerDetails?.organizationId
+                ? response?.data?.customerDetails?.organizationId
+                : "";
+            PaymentDefaultValue.orgIdCreditCheck = response?.data
+              ?.customerDetails?.personalNumber
+              ? response?.data?.customerDetails?.personalNumber
+              : response?.data?.customerDetails?.organizationId
+                ? response?.data?.customerDetails?.organizationId
+                : "";
 
-          PaymentDefaultValue.billingAddress =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.street
-              ? response?.data?.customerDetails?.address?.street
-              : "";
-          PaymentDefaultValue.billingZip =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.zip
-              ? response?.data?.customerDetails?.address?.zip
-              : "";
-          PaymentDefaultValue.billingCity =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.city
-              ? response?.data?.customerDetails?.address?.city
-              : "";
-          PaymentDefaultValue.billingCountry =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.country
-              ? response?.data?.customerDetails?.address?.country
-              : "";
-          setCustomData({
-            ...customData,
-            customerType:
-              response?.data?.customerDetails?.type === "Private"
-                ? "private"
-                : "corporate",
-            isCeditCheck: response?.data?.creditCheck
-              ? response?.data?.creditCheck
-              : false,
-          });
-          reset({ ...PaymentDefaultValue });
-        }
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        // enqueueSnackbar(e, { variant: "error" });
-        return navigate("404");
-      });
+            PaymentDefaultValue.billingAddress =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.street
+                ? response?.data?.customerDetails?.address?.street
+                : "";
+            PaymentDefaultValue.billingZip =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.zip
+                ? response?.data?.customerDetails?.address?.zip
+                : "";
+            PaymentDefaultValue.billingCity =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.city
+                ? response?.data?.customerDetails?.address?.city
+                : "";
+            PaymentDefaultValue.billingCountry =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.country
+                ? response?.data?.customerDetails?.address?.country
+                : "";
+            setCustomData({
+              ...customData,
+              customerType:
+                response?.data?.customerDetails?.type === "Private"
+                  ? "private"
+                  : "corporate",
+              isCeditCheck: response?.data?.creditCheck
+                ? response?.data?.creditCheck
+                : false,
+            });
+            reset({ ...PaymentDefaultValue });
+          }
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          // enqueueSnackbar(e, { variant: "error" });
+          return navigate("404");
+        });
+    }
   }, [isLoading]);
 
   const handleCreditCheck = () => {
@@ -267,6 +361,7 @@ const paymentInformation = () => {
         setIsApproved(false);
         setCreditCheckMessage("Credit check was declined");
         setApiLoading(false);
+        setIsCreditChecked(false);
       }
     });
     setCustomData({
@@ -319,8 +414,8 @@ const paymentInformation = () => {
                         {updatedData?.customerName
                           ? updatedData.customerName
                           : orderDetails?.customerDetails?.name
-                          ? orderDetails?.customerDetails?.name
-                          : "-"}
+                            ? orderDetails?.customerDetails?.name
+                            : "-"}
                       </div>
                       <div>
                         <IconButton
@@ -339,51 +434,51 @@ const paymentInformation = () => {
                         {updatedData?.orgIdOrPNumber
                           ? updatedData.orgIdOrPNumber
                           : orderDetails?.customerDetails?.personalNumber
-                          ? orderDetails?.customerDetails?.personalNumber
-                          : "-"}
+                            ? orderDetails?.customerDetails?.personalNumber
+                            : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2 mt-16">
                         {updatedData?.phone
                           ? updatedData.phone
                           : orderDetails?.customerDetails?.countryCode &&
+                          orderDetails?.customerDetails?.msisdn
+                            ? orderDetails?.customerDetails?.countryCode +
                             orderDetails?.customerDetails?.msisdn
-                          ? orderDetails?.customerDetails?.countryCode +
-                            orderDetails?.customerDetails?.msisdn
-                          : "-"}
+                            : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
                         {updatedData?.email
                           ? updatedData.email
                           : orderDetails?.customerDetails?.email
-                          ? orderDetails?.customerDetails?.email
-                          : "-"}
+                            ? orderDetails?.customerDetails?.email
+                            : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
                         {updatedData?.billingAddress
                           ? updatedData.billingAddress + ", "
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.street
-                          ? orderDetails?.customerDetails?.address?.street +
+                          orderDetails?.customerDetails?.address?.street
+                            ? orderDetails?.customerDetails?.address?.street +
                             ", "
-                          : "-, "}
+                            : "-, "}
                         {updatedData?.billingCity
                           ? updatedData.billingCity + ", "
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.city
-                          ? orderDetails?.customerDetails?.address?.city + " "
-                          : "-"}
+                          orderDetails?.customerDetails?.address?.city
+                            ? orderDetails?.customerDetails?.address?.city + " "
+                            : "-"}
                         {updatedData?.billingZip
                           ? updatedData.billingZip + ", "
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.zip
-                          ? orderDetails?.customerDetails?.address?.zip + ", "
-                          : "-, "}
+                          orderDetails?.customerDetails?.address?.zip
+                            ? orderDetails?.customerDetails?.address?.zip + ", "
+                            : "-, "}
                         {updatedData?.billingCountry
                           ? updatedData.billingCountry
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.country
-                          ? orderDetails?.customerDetails?.address?.country
-                          : "-"}
+                          orderDetails?.customerDetails?.address?.country
+                            ? orderDetails?.customerDetails?.address?.country
+                            : "-"}
                       </div>
                     </div>
                   </div>
@@ -402,19 +497,15 @@ const paymentInformation = () => {
                       >
                         {t("label:customerDetails")}
                       </DialogTitle>
-                      <DialogContent className="p-10 md:p-40">
+                      <DialogContent className="p-5 md:p-40">
                         <div id="customer-information-payment">
                           <div className="bg-white px-5">
                             <div className="search-customer-order-create-type my-32">
-                              <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20">
+                              <div className="flex gap-20 w-full md:w-3/4 mb-32 mt-20 justify-between sm:justify-start">
                                 <Button
                                   variant="outlined"
                                   className={`body2 ${
-                                    customData?.customerType === "private" ||
-                                    (orderDetails &&
-                                      orderDetails?.customerDetails?.type ===
-                                        "Private" &&
-                                      !customData?.isNewCustomer)
+                                    customData?.customerType === "private"
                                       ? "create-order-capsule-button-active"
                                       : "create-order-capsule-button"
                                   }`}
@@ -423,24 +514,26 @@ const paymentInformation = () => {
                                       ...customData,
                                       customerType: "private",
                                     });
+                                    setRecheckSchema(true);
                                   }}
                                   disabled={
-                                    orderDetails &&
+                                    orderDetails.type === "REGULAR" &&
                                     orderDetails?.customerDetails?.type ===
-                                      "Corporate" &&
-                                    !customData?.isNewCustomer
+                                    "Corporate"
                                   }
+                                  // disabled={
+                                  //   orderDetails &&
+                                  //   orderDetails?.customerDetails?.type ===
+                                  //     "Corporate" &&
+                                  //   !customData?.isNewCustomer
+                                  // }
                                 >
                                   {t("label:private")}
                                 </Button>
                                 <Button
                                   variant="outlined"
                                   className={`body2 ${
-                                    customData?.customerType === "corporate" ||
-                                    (orderDetails &&
-                                      orderDetails?.customerDetails?.type ===
-                                        "Corporate" &&
-                                      !customData?.isNewCustomer)
+                                    customData?.customerType === "corporate"
                                       ? "create-order-capsule-button-active"
                                       : "create-order-capsule-button"
                                   }`}
@@ -449,20 +542,26 @@ const paymentInformation = () => {
                                       ...customData,
                                       customerType: "corporate",
                                     });
+                                    setRecheckSchema(true);
                                   }}
                                   disabled={
-                                    orderDetails &&
+                                    orderDetails.type === "REGULAR" &&
                                     orderDetails?.customerDetails?.type ===
-                                      "Private" &&
-                                    !customData?.isNewCustomer
+                                    "Private"
                                   }
+                                  // disabled={
+                                  //   orderDetails &&
+                                  //   orderDetails?.customerDetails?.type ===
+                                  //     "Private" &&
+                                  //   !customData?.isNewCustomer
+                                  // }
                                 >
                                   {t("label:corporate")}
                                 </Button>
                               </div>
                             </div>
                             <div className="w-full my-32">
-                              <div className="form-pair-input gap-x-20">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-32 mt-10 my0i mb-0 md:mb-32 gap-x-20">
                                 <Controller
                                   name="phone"
                                   control={control}
@@ -488,8 +587,8 @@ const paymentInformation = () => {
                                       <FormHelperText>
                                         {errors?.phone?.message
                                           ? t(
-                                              `validation:${errors?.phone?.message}`
-                                            )
+                                            `validation:${errors?.phone?.message}`
+                                          )
                                           : ""}
                                       </FormHelperText>
                                     </FormControl>
@@ -509,8 +608,8 @@ const paymentInformation = () => {
                                       helperText={
                                         errors?.email?.message
                                           ? t(
-                                              `validation:${errors?.email?.message}`
-                                            )
+                                            `validation:${errors?.email?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -527,7 +626,13 @@ const paymentInformation = () => {
                                 />
                               </div>
                               <div className="">
-                                <div className="form-pair-input gap-x-20">
+                                <div
+                                  className={`${
+                                    customData.customerType === "corporate"
+                                      ? "form-pair-input"
+                                      : ""
+                                  } gap-x-20 `}
+                                >
                                   <Controller
                                     name="customerName"
                                     control={control}
@@ -541,8 +646,8 @@ const paymentInformation = () => {
                                         helperText={
                                           errors?.customerName?.message
                                             ? t(
-                                                `validation:${errors?.customerName?.message}`
-                                              )
+                                              `validation:${errors?.customerName?.message}`
+                                            )
                                             : ""
                                         }
                                         required
@@ -552,36 +657,43 @@ const paymentInformation = () => {
                                       />
                                     )}
                                   />
-                                  <Controller
-                                    name="orgIdOrPNumber"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={
-                                          customData.customerType === "private"
-                                            ? t("label:pNumber")
-                                            : t("label:organizationId")
-                                        }
-                                        type="number"
-                                        autoComplete="off"
-                                        error={!!errors.orgIdOrPNumber}
-                                        required={
-                                          customData.customerType !== "private"
-                                        }
-                                        helperText={
-                                          errors?.orgIdOrPNumber?.message
-                                            ? t(
+                                  {customData.customerType === "corporate" && (
+                                    <Controller
+                                      name="orgIdOrPNumber"
+                                      control={control}
+                                      render={({ field }) => (
+                                        <TextField
+                                          {...field}
+                                          label={
+                                            t("label:organizationId")
+                                            // customData.customerType === "private"
+                                            //     ? t("label:pNumber")
+                                            //     : t("label:organizationId")
+                                          }
+                                          type="number"
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
+                                          autoComplete="off"
+                                          error={!!errors.orgIdOrPNumber}
+                                          required={
+                                            customData.customerType !==
+                                            "private"
+                                          }
+                                          helperText={
+                                            errors?.orgIdOrPNumber?.message
+                                              ? t(
                                                 `validation:${errors?.orgIdOrPNumber?.message}`
                                               )
-                                            : ""
-                                        }
-                                        variant="outlined"
-                                        fullWidth
-                                        value={field.value || ""}
-                                      />
-                                    )}
-                                  />
+                                              : ""
+                                          }
+                                          variant="outlined"
+                                          fullWidth
+                                          value={field.value || ""}
+                                        />
+                                      )}
+                                    />
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -604,8 +716,8 @@ const paymentInformation = () => {
                                       helperText={
                                         errors?.billingAddress?.message
                                           ? t(
-                                              `validation:${errors?.billingAddress?.message}`
-                                            )
+                                            `validation:${errors?.billingAddress?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -631,8 +743,8 @@ const paymentInformation = () => {
                                       helperText={
                                         errors?.billingZip?.message
                                           ? t(
-                                              `validation:${errors?.billingZip?.message}`
-                                            )
+                                            `validation:${errors?.billingZip?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -658,8 +770,8 @@ const paymentInformation = () => {
                                     helperText={
                                       errors?.billingCity?.message
                                         ? t(
-                                            `validation:${errors?.billingCity?.message}`
-                                          )
+                                          `validation:${errors?.billingCity?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -669,7 +781,15 @@ const paymentInformation = () => {
                                   />
                                 )}
                               />
-
+                              <CountrySelect
+                                control={control}
+                                name={"billingCountry"}
+                                label={"country"}
+                                // placeholder={"country"}
+                                required={true}
+                                error={errors.billingCountry}
+                              />
+                              {/*
                               <Controller
                                 name="billingCountry"
                                 control={control}
@@ -714,31 +834,29 @@ const paymentInformation = () => {
                                     </FormHelperText>
                                   </FormControl>
                                 )}
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex justify-end mt-40">
-                          <div className="flex gap-10 items-center">
-                            <Button
-                              variant="contained"
-                              className="font-semibold rounded-4 bg-primary-50 text-primary-800 w-full md:w-auto z-99 px-32"
-                              onClick={() => setEditOpen(false)}
-                            >
-                              {t("label:cancel")}
-                            </Button>
-                            <Button
-                              variant="contained"
-                              type="submit"
-                              className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40"
-                              // onClick={() => setEditOpen(false)}
-                              onClick={() => handleUpdate()}
-                              disabled={!isValid}
-                            >
-                              {t("label:update")}
-                            </Button>
-                          </div>
+                        <div className="flex mt-40 justify-between sm:justify-end  gap-10 items-center">
+                          <Button
+                            variant="contained"
+                            className="font-semibold rounded-4 bg-primary-50 text-primary-800 w-full md:w-auto z-99 px-32"
+                            onClick={() => setEditOpen(false)}
+                          >
+                            {t("label:cancel")}
+                          </Button>
+                          <Button
+                            variant="contained"
+                            type="submit"
+                            className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40"
+                            // onClick={() => setEditOpen(false)}
+                            onClick={() => handleUpdate()}
+                            disabled={!isValid}
+                          >
+                            {t("label:update")}
+                          </Button>
                         </div>
                       </DialogContent>
                     </div>
@@ -848,8 +966,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.subTotal
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.subTotal
-                                )
+                                orderDetails?.orderSummary?.subTotal
+                              )
                               : ""}
                           </div>
                         </div>
@@ -861,8 +979,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.tax
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.tax
-                                )
+                                orderDetails?.orderSummary?.tax
+                              )
                               : 0}
                           </div>
                         </div>
@@ -874,8 +992,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.discount
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.discount
-                                )
+                                orderDetails?.orderSummary?.discount
+                              )
                               : 0}
                           </div>
                         </div>
@@ -889,8 +1007,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.grandTotal
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.grandTotal
-                                )
+                                orderDetails?.orderSummary?.grandTotal
+                              )
                               : ""}
                           </div>
                         </div>
@@ -913,9 +1031,22 @@ const paymentInformation = () => {
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.subTotal
                             ? ThousandSeparator(
-                                orderDetails?.orderSummary?.subTotal
-                              )
+                              orderDetails?.orderSummary?.subTotal
+                            )
                             : ""}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center  my-20">
+                        <div className="subtitle3 text-MonochromeGray-700">
+                          {t("label:discount")}
+                        </div>
+                        <div className="body3 text-MonochromeGray-700">
+                          {t("label:nok")}{" "}
+                          {orderDetails?.orderSummary?.discount
+                            ? ThousandSeparator(
+                              orderDetails?.orderSummary?.discount
+                            )
+                            : 0}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-20">
@@ -929,32 +1060,38 @@ const paymentInformation = () => {
                             : 0}
                         </div>
                       </div>
-                      <div className="flex justify-between items-center  my-20">
-                        <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:discount")}
-                        </div>
-                        <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")}{" "}
-                          {orderDetails?.orderSummary?.discount
-                            ? ThousandSeparator(
-                                orderDetails?.orderSummary?.discount
-                              )
-                            : 0}
-                        </div>
-                      </div>
                     </div>
                     <div className="px-14">
                       <div className="flex justify-between items-center bg-MonochromeGray-25 py-20 px-16 my-20">
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:grandTotal")}
+                          {t("label:payablePerCycle")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
-                          {orderDetails?.orderSummary?.grandTotal
-                            ? ThousandSeparator(
-                                orderDetails?.orderSummary?.grandTotal
-                              )
+                          {orderDetails?.payablePerCycle
+                            ? ThousandSeparator(orderDetails?.payablePerCycle)
                             : ""}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="px-32 bg-white">
+                      <div className="flex justify-between items-center  my-20">
+                        <div className="subtitle3 text-MonochromeGray-700">
+                          {t("label:frequency")}
+                        </div>
+                        <div className="body3 text-MonochromeGray-700">
+                          {t(`${orderDetails?.frequency}`)}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center  my-20">
+                        <div className="subtitle3 text-MonochromeGray-700">
+                          {t("label:repeats")}
+                        </div>
+                        <div className="body3 text-MonochromeGray-700">
+                          {orderDetails?.orderSummary?.tax
+                            ? ThousandSeparator(orderDetails?.orderSummary?.tax)
+                            : 0}{" "}
+                          {t("label:times")}
                         </div>
                       </div>
                     </div>
@@ -982,7 +1119,14 @@ const paymentInformation = () => {
                     })
                   }
                   disabled={
-                    customData.paymentMethod === "invoice" && !isCreditChecked
+                    apiLoading ||
+                    (customData.paymentMethod === "invoice" &&
+                      ((orderDetails.type.toLowerCase() === "regular" &&
+                          orderDetails?.creditCheck &&
+                          !isCreditChecked) ||
+                        (orderDetails.type.toLowerCase() === "quick" &&
+                          !Object.keys(updatedData).length &&
+                          !orderDetails?.customerDetails?.address)))
                   }
                 >
                   {t("label:payNow")}
@@ -1014,7 +1158,14 @@ const paymentInformation = () => {
                   })
                 }
                 disabled={
-                  customData.paymentMethod === "invoice" && !isCreditChecked
+                  apiLoading ||
+                  (customData.paymentMethod === "invoice" &&
+                    ((orderDetails.type.toLowerCase() === "regular" &&
+                        orderDetails?.creditCheck &&
+                        !isCreditChecked) ||
+                      (orderDetails.type.toLowerCase() === "quick" &&
+                        !Object.keys(updatedData).length &&
+                        !orderDetails?.customerDetails?.address)))
                 }
               >
                 {t("label:payNow")}

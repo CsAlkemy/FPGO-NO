@@ -9,6 +9,7 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
 
 const orderDetails = () => {
   const { t } = useTranslation();
@@ -36,32 +37,64 @@ const orderDetails = () => {
   };
 
   window.addEventListener("scroll", toggleVisible);
-
+  console.log("Param : ",param);
   useEffect(() => {
-    OrdersService.getPaymentLinkOpenStatus(param.uuid)
-      .then((response) => {
-        // if (response?.status_code === 202) {
-        //   console.log(response?.data);
-        // }
-        // setIsLoading(false);
-      })
-      .catch((e) => {});
+    if (
+      !window.location.pathname.includes("/subscription/payment/details/SUB")
+    ) {
+      OrdersService.getPaymentLinkOpenStatus(param.uuid)
+        .then((response) => {
+          // if (response?.status_code === 202) {
+          //   console.log(response?.data);
+          // }
+          // setIsLoading(false);
+        })
+        .catch((e) => {});
+    } else {
+      OrdersService.getPaymentLinkOpenStatus(param.uuid)
+        .then((response) => {
+          // if (response?.status_code === 202) {
+          //   console.log(response?.data);
+          // }
+          // setIsLoading(false);
+        })
+        .catch((e) => {});
+    }
   }, [isLoading]);
 
   useEffect(() => {
-    OrdersService.getOrdersDetailsByUUIDPayment(param.uuid)
-      .then((response) => {
-        if (response?.status_code === 200 && response?.is_data) {
-          if (response?.data?.status !== "SENT") return navigate("404");
-          setOrderDetails(response.data);
-        }
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        // enqueueSnackbar(e, { variant: "error" });
-        return navigate("404");
-      });
+    if (
+      window.location.pathname.includes("/subscription/payment/details/SUB")
+    ) {
+      SubscriptionsService.getSubscriptionDetailsByUUIDPayment(param.uuid)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            console.log("response : ", response);
+            // if (response?.data?.status !== "SENT") return navigate("404");
+            setOrderDetails(response.data);
+          }
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          // enqueueSnackbar(e, { variant: "error" });
+          return navigate("404");
+        });
+    } else {
+      OrdersService.getOrdersDetailsByUUIDPayment(param.uuid)
+        .then((response) => {
+          if (response?.status_code === 200 && response?.is_data) {
+            if (response?.data?.status !== "SENT") return navigate("404");
+            setOrderDetails(response.data);
+          }
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          // enqueueSnackbar(e, { variant: "error" });
+          return navigate("404");
+        });
+    }
   }, [isLoading]);
 
   return (
@@ -118,16 +151,17 @@ const orderDetails = () => {
                       {row.quantity}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {t("label:nok")} { ThousandSeparator(row.rate) }
+                      {t("label:nok")} {ThousandSeparator(row.rate)}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      { ThousandSeparator(row.discount) }
+                      {ThousandSeparator(row.discount)}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      { ThousandSeparator(row.tax) } % {t("label:vat")}
+                      {row.tax > 0 ? ThousandSeparator(row.tax) : row.tax} %{" "}
+                      {t("label:vat")}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      {t("label:nok")} { ThousandSeparator(row.amount) }
+                      {t("label:nok")} {ThousandSeparator(row.amount)}
                     </div>
                   </div>
                 ))}
@@ -147,7 +181,7 @@ const orderDetails = () => {
                     <div className="flex justify-between items-center subtitle2 text-MonochromeGray-700 pb-10 border-b-1 border-MonochromeGray-50">
                       <div>{index + 1}</div>
                       <div>
-                        {t("label:nok")} { ThousandSeparator(row.amount) }
+                        {t("label:nok")} {ThousandSeparator(row.amount)}
                       </div>
                     </div>
                     <div className="flex flex-col gap-10 mt-20">
@@ -183,7 +217,7 @@ const orderDetails = () => {
                           {t("label:rate")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} { ThousandSeparator(row.rate) }
+                          {t("label:nok")} {ThousandSeparator(row.rate)}
                         </div>
                       </div>
 
@@ -192,7 +226,7 @@ const orderDetails = () => {
                           {t("label:discount")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} { ThousandSeparator(row.discount) }
+                          {t("label:nok")} {ThousandSeparator(row.discount)}
                         </div>
                       </div>
 
@@ -201,7 +235,7 @@ const orderDetails = () => {
                           Tax
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          { ThousandSeparator(row.tax) } % {t("label:vat")}
+                          {ThousandSeparator(row.tax)} % {t("label:vat")}
                         </div>
                       </div>
                     </div>
@@ -279,26 +313,30 @@ const orderDetails = () => {
               <Hidden mdDown>
                 <div className="px-32 bg-white">
                   <div className="flex justify-between items-center  my-20 body4 text-MonochromeGray-700">
-                    <div>{t("label:subTotal")}</div>
-                    <div>
-                      {t("label:nok")}
+                    <div className="body3">{t("label:subTotal")}</div>
+                    <div className="body3">
+                      {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.subTotal
-                        ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
-                        : ""}
+                        ? ThousandSeparator(
+                          orderDetails?.orderSummary?.subTotal
+                        )
+                        : 0}
                     </div>
                   </div>
                   <div className="flex justify-between items-center  my-20">
-                    <div>{t("label:discount")}</div>
-                    <div>
-                      {t("label:nok")}
+                    <div className="body3">{t("label:discount")}</div>
+                    <div className="body3">
+                      {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.discount
-                        ? ThousandSeparator(orderDetails?.orderSummary?.discount)
+                        ? ThousandSeparator(
+                          orderDetails?.orderSummary?.discount
+                        )
                         : 0}
                     </div>
                   </div>
                   <div className="flex justify-between items-center  my-20 border-b-1 border-MonochromeGray-300">
-                    <div>{t("label:tax")}</div>
-                    <div>
+                    <div className="body3">{t("label:tax")}</div>
+                    <div className="body3">
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.tax
                         ? ThousandSeparator(orderDetails?.orderSummary?.tax)
@@ -306,11 +344,15 @@ const orderDetails = () => {
                     </div>
                   </div>
                   <div className="flex justify-between items-center  mb-20 body4 font-700">
-                    <div>{t("label:grandTotal")}</div>
-                    <div>
+                    <div className="body3 font-700">
+                      {t("label:grandTotal")}
+                    </div>
+                    <div className="body3 font-700">
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.grandTotal
-                        ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
+                        ? ThousandSeparator(
+                          orderDetails?.orderSummary?.grandTotal
+                        )
                         : ""}
                     </div>
                   </div>
@@ -329,7 +371,9 @@ const orderDetails = () => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.subTotal
-                          ? ThousandSeparator(orderDetails?.orderSummary?.subTotal)
+                          ? ThousandSeparator(
+                            orderDetails?.orderSummary?.subTotal
+                          )
                           : ""}
                       </div>
                     </div>
@@ -351,7 +395,9 @@ const orderDetails = () => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.discount
-                          ? ThousandSeparator(orderDetails?.orderSummary?.discount)
+                          ? ThousandSeparator(
+                            orderDetails?.orderSummary?.discount
+                          )
                           : 0}
                       </div>
                     </div>
@@ -364,7 +410,9 @@ const orderDetails = () => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.grandTotal
-                          ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
+                          ? ThousandSeparator(
+                            orderDetails?.orderSummary?.grandTotal
+                          )
                           : ""}
                       </div>
                     </div>
@@ -381,9 +429,17 @@ const orderDetails = () => {
                 className="font-semibold rounded-4 bg-primary-500"
                 onClick={() => {
                   // navigate('/payment/checkout')
-                  navigate(
-                    `/order/details/${orderDetails?.orderUuid}/checkout`
-                  );
+                  if (
+                    window.location.pathname.includes("/subscription/payment/details/SUB")
+                  ) {
+                    navigate(
+                      `/subscription/payment/details/${param.uuid}/checkout`
+                    );
+                  }else {
+                    navigate(
+                      `/order/details/${orderDetails?.orderUuid}/checkout`
+                    );
+                  }
                 }}
               >
                 {t("label:toCustomerDetails")}

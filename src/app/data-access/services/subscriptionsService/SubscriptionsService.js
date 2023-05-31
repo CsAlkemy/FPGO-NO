@@ -102,7 +102,7 @@ class SubscriptionsService {
         ...products,
       },
       orderSummary: params?.orderSummary || null,
-      billingFrequency: `${params?.billingFrequency}` === "30" ? "month" : `${params?.billingFrequency}` === "7" ? "week" : "day",
+      billingFrequency: `${params?.billingFrequency}`,
       numberOfRepeats: parseInt(params?.repeatsNoOfTimes) || "",
       subscriptionStartDate: UtilsServices.prepareDate(params?.orderDate) || "",
       subscriptionEndsDate:

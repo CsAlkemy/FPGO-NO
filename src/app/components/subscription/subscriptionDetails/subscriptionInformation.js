@@ -185,7 +185,7 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
     }
   };
 
-  // console.log("Info : ",info);
+  console.log("Info : ",info);
 
   return (
     <div className="create-product-container">
@@ -922,7 +922,7 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                       )}
                     />
                     <CharCount
-                      current={info?.customerNote.length || 0}
+                      current={info?.customerNote?.length || 0}
                       total={200}
                     />
                   </div>
@@ -954,7 +954,7 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                       )}
                     />
                     <CharCount
-                      current={info?.termsAndConditions.length || 0}
+                      current={info?.termsAndConditions?.length || 0}
                       total={200}
                     />
                   </div>
