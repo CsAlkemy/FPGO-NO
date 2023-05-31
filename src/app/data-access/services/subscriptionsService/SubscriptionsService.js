@@ -22,17 +22,18 @@ class SubscriptionsService {
         name: row.customerName,
         numberOfOrder: row.numberOfOrder,
         // stage: row.status.toLowerCase(),
-        stage: (row.status && row.status.toLowerCase()) || "sent",
+        stage: (row?.status && row?.status.toLowerCase()) || "sent",
         isPaid: row.isPaid,
         // refundResend:
-        refundResend: "Resend",
-        // row.status.toLowerCase() === "sent"
-        //   ? "Resend"
-        //   : row.status.toLowerCase() === "completed" || row.status.toLowerCase() === "cancelled" && row.isPaid
-        //     ? "Refund"
-        //     : null,
-        // isCancel: row.status.toLowerCase() === "sent",
-        isCancel: (row.status && row.status.toLowerCase() === "sent") || false,
+        refundResend:
+          row?.status && row?.status.toLowerCase() === "sent"
+            ? "Resend"
+            : row?.status && row?.status.toLowerCase() === "completed" ||
+              (row?.status && row?.status.toLowerCase() === "cancelled" && row?.isPaid)
+            ? "Refund"
+            : null,
+        isCancel: row?.status && row?.status.toLowerCase() === "sent",
+        // isCancel: (row.status && row.status.toLowerCase() === "sent") || false,
         translationKey: row.translationKey,
       };
     });

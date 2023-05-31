@@ -2209,7 +2209,7 @@ export default function OverViewMainTableBody(props) {
                   />
                 </TableCell>
               );
-            case "on going":
+            case "ongoing":
               return (
                 <TableCell
                   key={`${props.row.uuid}-${rdt}`}
