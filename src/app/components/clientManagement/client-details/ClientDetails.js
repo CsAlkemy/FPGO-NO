@@ -510,6 +510,10 @@ const ClientDetails = () => {
       reset({ ...defaultValue });
       if (info?.settings?.vatRates && info?.settings?.vatRates.length) {
         for (let i = 0; i < info?.settings?.vatRates.length; i++) {
+          setValue(
+            `vat[${i}].vatCode`,
+            info?.settings?.vatRates[`${i}`].vatCode
+          );
           setValue(`vat[${i}].vatName`, info?.settings?.vatRates[`${i}`].name);
           setValue(
             `vat[${i}].vatValue`,
