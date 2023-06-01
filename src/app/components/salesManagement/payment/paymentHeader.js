@@ -30,20 +30,25 @@ const paymentHeader = () => {
   const checkout = window.location.pathname.includes("/checkout");
   const orderDetails = window.location.pathname.includes("/order/details");
   const orderReceipt = window.location.pathname.includes("/order/receipt");
-
+  const checkOutOrder = window.location.pathname.includes("checkout");
+  const [defaultLang, setDefaultLang ] = React.useState( lang ==='en' ? "English" : "Norwegian")
   useEffect(() => {
-    if (!checkout && orderDetails) dispatch(changeLanguage("no"));
-    else if (
-      !!localStorage.getItem("i18nextLng") &&
-      localStorage.getItem("i18nextLng") === "en"
-    )
+    if (lang === "en") {
       dispatch(changeLanguage("en"));
-    else dispatch(changeLanguage("no"));
-  }, []);
-  useEffect(() => {
-    lang === "no"
-      ? dispatch(changeLanguage("no"))
-      : dispatch(changeLanguage("en"));
+      setDefaultLang("English")
+    }
+    else if (orderDetails || orderReceipt || checkOutOrder) {
+      dispatch(changeLanguage("no"));
+      setDefaultLang("Norwegian")
+    }
+    else if (!!localStorage.getItem("i18nextLng") && localStorage.getItem("i18nextLng")) {
+      dispatch(changeLanguage("en"))
+      setDefaultLang("English")
+    }
+    else {
+      dispatch(changeLanguage("no"));
+      setDefaultLang("Norwegian")
+    }
   }, [lang]);
 
   const handleLanguageChange = (lng) => {
@@ -60,14 +65,7 @@ const paymentHeader = () => {
       <div>
         <Select
           sx={{ height: 36 }}
-          defaultValue={
-            !checkout && orderDetails && lang === "no" || !checkout && orderReceipt && lang=== "no"
-              ? "Norwegian"
-              : !!localStorage.getItem("i18nextLng") &&
-                localStorage.getItem("i18nextLng") === "en"
-              ? "English"
-              : "Norwegian"
-          }
+          defaultValue={defaultLang}
           displayEmpty
           renderValue={(value) => {
             return (
