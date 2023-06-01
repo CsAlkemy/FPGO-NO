@@ -4,20 +4,28 @@ import Box from "@mui/material/Box";
 import {changeLanguage} from "app/store/i18nSlice";
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
-
+import {useEffect} from "react";
 const AuthLayout = ({ children }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const lang = urlParams.get('lang');
+  const resetPassword = window.location.pathname.includes("/reset-password");
   const languages = [
-    {
-      label: "English",
-      value: "en",
-    },
     {
       label: "Norwegian",
       value: "no",
     },
+    {
+      label: "English",
+      value: "en",
+    },
   ];
+  useEffect(() => {
+    if (!resetPassword) {
+      dispatch(changeLanguage("no"));
+    }
+  }, []);
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
   };
@@ -54,7 +62,7 @@ const AuthLayout = ({ children }) => {
               <div>
                 <Select
                   sx={{ height: 36, backgroundColor: "#fff" }}
-                  defaultValue="English"
+                  defaultValue={lang === "en" ? "English": "Norwegian"}
                   displayEmpty
                   renderValue={(value) => {
                     return (
@@ -65,7 +73,7 @@ const AuthLayout = ({ children }) => {
                         <SvgIcon color="primary">
                           <LanguageIcon className="text-MonochromeGray-300" />
                         </SvgIcon>
-                        <div className="my-auto">{value}</div>
+                        <div className="my-auto">{t(`label:${value?.toLowerCase()}`)}</div>
                       </Box>
                     );
                   }}

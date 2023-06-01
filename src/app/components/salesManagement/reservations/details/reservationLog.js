@@ -169,7 +169,7 @@ const ReservationLog = ({
                               :{/* {t("label:refundAmount")}: */}
                             </div>
                             <div className="body4 text-MonochromeGray-700">
-                              {log.refundAmount}
+                              NOK {log.refundAmount}
                             </div>
                           </div>
                         )}

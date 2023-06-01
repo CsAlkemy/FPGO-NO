@@ -1,10 +1,17 @@
 import React from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
-import {useNavigate} from "react-router-dom";
-import {useTranslation} from "react-i18next";
-import {useSnackbar} from "notistack";
-import {useRefundRequestDecisionMutation} from "app/store/api/apiSlice";
-import {LoadingButton} from "@mui/lab";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useSnackbar } from "notistack";
+import { useRefundRequestDecisionMutation } from "app/store/api/apiSlice";
+import { LoadingButton } from "@mui/lab";
 import _ from "lodash";
 
 const confirmDiscard = (props) => {
@@ -14,15 +21,7 @@ const confirmDiscard = (props) => {
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
 
-  const {
-    title,
-    open,
-    setOpen,
-    subTitle,
-    route,
-    modalRef,
-    values,
-  } = props;
+  const { title, open, setOpen, subTitle, route, modalRef, values } = props;
   const handleClose = () => {
     setTimeout(() => {
       !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
@@ -48,7 +47,15 @@ const confirmDiscard = (props) => {
           });
           setApiLoading(false);
         } else if (response?.error) {
-          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          const isParam = response?.error?.data?.message.includes("Param");
+          const message = isParam
+            ? `${t(
+                `message:${
+                  response?.error?.data?.message.split("Param")[0]
+                }Param`
+              )} ${response?.error?.data?.message.split("Param")[1]}`
+            : t(`message:${response?.error?.data?.message}`);
+          enqueueSnackbar(message, {
             variant: "error",
           });
           setApiLoading(false);
@@ -65,7 +72,7 @@ const confirmDiscard = (props) => {
     <div>
       <Dialog
         open={open}
-        onClose={()=>setOpen(false)}
+        onClose={() => setOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         className="rounded-8"
@@ -84,7 +91,7 @@ const confirmDiscard = (props) => {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={()=>setOpen(false)}
+              onClick={() => setOpen(false)}
               variant="text"
               className="text-main font-semibold mr-16"
             >

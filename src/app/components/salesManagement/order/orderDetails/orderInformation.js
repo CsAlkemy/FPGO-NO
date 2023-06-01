@@ -89,7 +89,9 @@ const OrderInformation = ({ info }) => {
       name: "sweden",
     },
   ]);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  const [addOrderIndex, setAddOrderIndex] = React.useState([
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+  ]);
 
   const [taxVariable, setTaxVariable] = React.useState([
     {
@@ -242,6 +244,19 @@ const OrderInformation = ({ info }) => {
       ? info?.customerDetails?.address?.country
       : "norway";
 
+    if (
+      info?.productList &&
+      info?.productList &&
+      info?.productList.length >= 2
+    ) {
+      setAddOrderIndex(
+        addOrderIndex.filter(
+          (item, index) => item <= info?.productList.length - 1
+        )
+      );
+    } else {
+      setAddOrderIndex(addOrderIndex.filter((item, index) => item < 1));
+    }
     reset({ ...CreateOrderDefaultValue });
 
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
@@ -447,6 +462,9 @@ const OrderInformation = ({ info }) => {
                                   //label="Qty"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.quantity}
                                   helperText={
@@ -531,6 +549,9 @@ const OrderInformation = ({ info }) => {
                                   className="bg-white custom-input-height col-span-1"
                                   // type="text"
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -664,6 +685,9 @@ const OrderInformation = ({ info }) => {
                                 //label="Qty"
                                 className="bg-white custom-input-height"
                                 type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.quantity}
                                 helperText={
@@ -752,6 +776,9 @@ const OrderInformation = ({ info }) => {
                                 className="bg-white custom-input-height"
                                 // type="text"
                                 type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.tax}
                                 helperText={
@@ -1677,6 +1704,11 @@ const OrderInformation = ({ info }) => {
                                         <TextField
                                           {...field}
                                           label={t("label:referenceNo")}
+                                          type="number"
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
+                                          autoComplete="off"
                                           error={!!errors.referenceNumber}
                                           helperText={
                                             errors?.referenceNumber?.message
@@ -1850,6 +1882,9 @@ const OrderInformation = ({ info }) => {
                                           {...field}
                                           label={t("label:internalReferenceNo")}
                                           type="number"
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
                                           autoComplete="off"
                                           error={!!errors.internalReferenceNo}
                                           helperText={

@@ -9,6 +9,7 @@ import {
   FormHelperText,
   Hidden,
   IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -42,6 +43,9 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import FuseUtils from "@fuse/utils";
 import { Cancel } from "@mui/icons-material";
+import EventIcon from "@mui/icons-material/Event";
+import { countryList } from "../../../utils/countries";
+import Box from "@mui/material/Box";
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -55,7 +59,12 @@ const createProducts = () => {
   const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
-  const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] = useState("+47");
+  const [isAddCustomerButtonDisable, setIsAddCustomerButtonDisable] = useState(false)
+  const [ manualCustomerMsisdn, setManualCustomerMsisdn] = useState(null)
+  const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] =
+    useState("+47");
+  const [searchCustomerPrefixCountry, setSearchCustomerPrefixCountry] =
+    useState("NO");
   const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
     useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
@@ -171,7 +180,7 @@ const createProducts = () => {
                   country: row?.country,
                   searchString:
                   // row?.name + " ( " + row?.phone + " )" + row.uuid,
-                    row?.phone.toString().slice(3) + row.uuid,
+                    row?.phone + row.uuid,
                 });
               });
           }
@@ -249,7 +258,9 @@ const createProducts = () => {
     setCustomerSearchBoxDropdownOpen(false);
     const searchByPhone =
       customersList.filter((customer) =>
-        customer.searchString.startsWith(e.target.value)
+        customer.searchString.startsWith(
+          searchCustomerPrefixCountryCode + e.target.value
+        )
       ) || [];
     // const searchByName =
     //   customersList.filter(
@@ -268,18 +279,21 @@ const createProducts = () => {
     //   searchByName.length ? "name" : searchByPhone.length ? "phone" : undefined
     // );
     setSearchCustomersList(
-      searchByPhone.length
-      ? searchByPhone
-      : customersList
+      searchByPhone.length ? searchByPhone : customersList
     );
     setCustomerSearchBy(searchByPhone.length ? "phone" : undefined);
-    setCustomerSearchBoxLength(e.target.value.length ? 3+e.target.value.length : e.target.value.length);
+    setCustomerSearchBoxLength(
+      e.target.value.length
+        ? searchCustomerPrefixCountryCode.length + e.target.value.length
+        : e.target.value.length
+    );
     setCustomerSearchBoxDropdownOpen(true);
   };
 
   const valHtml = val.map((option, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
-    const label = option.name || option.phone;
+    // const label = option.name || option.phone;
+    const label = option?.name ? option?.name : `${option?.phone.split("^")[0]}${option?.phone.split("^")[1]}`;
     const isExistingCustomer = option?.name || null;
     return isExistingCustomer ? (
       <Chip
@@ -506,190 +520,258 @@ const createProducts = () => {
               </div>
             </div>
             <div className="p-10 md:p-20">
-              <Controller
-                control={control}
-                name="searchCustomer"
-                render={({ field: { ref, onChange, ...field } }) => (
-                  <Autocomplete
-                    open={customerSearchBoxDropdownOpen}
-                    multiple
-                    disablePortal
-                    // freeSolo
-                    // filterSelectedOptions
-                    options={searchCustomersList}
-                    getOptionLabel={(option) => option.searchString}
-                    renderTags={() => {}}
-                    fullWidth
-                    onChange={(e, newValue, reason) => {
-                      if (reason !== "removeOption") {
-                        setCustomerSearchBy(undefined);
-                        setCustomerSearchBoxLength(0);
-                        setVal(newValue);
-                        setSearchCustomersList(customersList)
+              <div className="flex justify-center items-center">
+                <Controller
+                  control={control}
+                  name="countrySwitcher"
+                  render={({ field: { onChange, value, onBlur, ref } }) => (
+                    <Autocomplete
+                      id="country-select-demo"
+                      sx={{ width: 300 }}
+                      // className={`sm:w-1/2`}
+                      options={countryList}
+                      autoHighlight
+                      onChange={(event, newValue) => {
+                        onChange(newValue?.phone);
+                        setSearchCustomerPrefixCountryCode(
+                          `+${newValue?.phone}`
+                        );
+                        setSearchCustomerPrefixCountry(newValue?.code);
+                      }}
+                      disableClearable={true}
+                      getOptionLabel={(option) =>
+                        `+${option.phone} ` + option.label
                       }
-                    }}
-                    onInputChange={(event, value) => {
-                      setNewCustomer(searchCustomerPrefixCountryCode+value);
-                      if (value.length === 0) setCustomerSearchBy(undefined);
-                    }}
-                    onClose={() => setCustomerSearchBoxDropdownOpen(false)}
-                    value={val}
-                    noOptionsText={
-                      <div className="flex items-center justify-between my-2">
-                        <span className="subtitle3 font-600">
-                          {t("label:noCustomersFound")}
-                        </span>
-                        {
-                          !isNaN(newCustomer) && (
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              size={"medium"}
-                              className="rounded-4 button2 min-w-[104px]"
-                              type="button"
-                              startIcon={<AddIcon fontSize="small" />}
-                              onClick={() => {
-                                setVal([
-                                  ...val,
-                                  { name: "", phone: `${newCustomer}` },
-                                ]);
-                                setCustomerSearchBoxDropdownOpen(false);
-                              }}
-                            >
-                              {t(`label:add`)}
-                            </Button>
-                          )
+                      defaultValue={{
+                        code: "NO",
+                        label: "Norway",
+                        phone: "47",
+                      }}
+                      renderOption={(props, option) => (
+                        <Box
+                          component="li"
+                          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                          {...props}
+                        >
+                          <img
+                            loading="lazy"
+                            width="20"
+                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                            alt=""
+                          />
+                          +{option.phone} {option.label}
+                        </Box>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          variant="outlined"
+                          className="mt-10 w-full"
+                          type="text"
+                          onBlur={onBlur}
+                          inputRef={ref}
+                          InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <img
+                                  loading="lazy"
+                                  width="28"
+                                  src={`https://flagcdn.com/w20/${searchCustomerPrefixCountry.toLowerCase()}.png`}
+                                  srcSet={`https://flagcdn.com/w40/${searchCustomerPrefixCountry.toLowerCase()}.png 2x`}
+                                  alt=""
+                                />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      )}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="searchCustomer"
+                  render={({ field: { ref, onChange, ...field } }) => (
+                    <Autocomplete
+                      open={customerSearchBoxDropdownOpen}
+                      multiple
+                      disablePortal
+                      // freeSolo
+                      // filterSelectedOptions
+                      options={searchCustomersList}
+                      getOptionLabel={(option) => option.searchString}
+                      renderTags={() => {}}
+                      fullWidth
+                      onChange={(e, newValue, reason) => {
+                        if (reason !== "removeOption") {
+                          setCustomerSearchBy(undefined);
+                          setCustomerSearchBoxLength(0);
+                          setVal(newValue);
+                          setSearchCustomersList(customersList);
                         }
-                      </div>
-                    }
-                    renderOption={(props, option, { selected }) => (
-                      <MenuItem {...props}>
-                        {/*{`${option.name}`}*/}
-                        {customerSearchBy ? (
-                          <div>
-                            {/*{customerSearchBy === "name" &&*/}
-                            {/*option?.name &&*/}
-                            {/*customerSearchBoxLength > 0 ? (*/}
-                            {/*  <div>*/}
-                            {/*    <span*/}
-                            {/*      style={{ color: "#0088AE" }}*/}
-                            {/*    >{`${option.name.slice(*/}
-                            {/*      0,*/}
-                            {/*      customerSearchBoxLength*/}
-                            {/*    )}`}</span>*/}
-                            {/*    <span>{`${option.name.slice(*/}
-                            {/*      customerSearchBoxLength*/}
-                            {/*    )}`}</span>*/}
-                            {/*  </div>*/}
-                            {/*) : (*/}
-                            {/*  <div>{`${option.name}`}</div>*/}
-                            {/*)}*/}
-                            {customerSearchBy === "phone" &&
-                            customerSearchBoxLength > 0 ? (
-                              <div>
-                                <div>{`${option.name}`}</div>
-                                <div>
-                                <span
-                                  style={{ color: "#0088AE" }}
-                                >{`${option.phone.slice(
-                                  0,
-                                  customerSearchBoxLength
-                                )}`}</span>
-                                  <span>{`${option.phone.slice(
-                                    customerSearchBoxLength
-                                  )}`}</span>
-                                </div>
-                              </div>
-                            ) : (
-                              <div>
-                                <div>{`${option.name}`}</div>
-                                <div>{`${option.phone}`}</div>
-                              </div>
+                      }}
+                      onInputChange={(event, value) => {
+                        setNewCustomer(
+                          searchCustomerPrefixCountryCode+"^"+value
+                        );
+                        setManualCustomerMsisdn(value)
+                        if (value.length === 0) setCustomerSearchBy(undefined);
+                        if (value.length < 8 || value.length > 15) {
+                          setIsAddCustomerButtonDisable(true);
+                        } else setIsAddCustomerButtonDisable(false);
+                      }}
+                      onClose={() => setCustomerSearchBoxDropdownOpen(false)}
+                      value={val}
+                      noOptionsText={
+                        <div className="flex items-center justify-between my-2">
+                          <span className="subtitle3 font-600">
+                            {t("label:noCustomersFound")}
+                          </span>
+                          {/* {!isNaN(newCustomer) && */}
+                          {!isNaN(manualCustomerMsisdn) &&
+                            !isAddCustomerButtonDisable && (
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                size={"medium"}
+                                className="rounded-4 button2 min-w-[104px]"
+                                type="button"
+                                startIcon={<AddIcon fontSize="small" />}
+                                onClick={() => {
+                                  setVal([
+                                    ...val,
+                                    {
+                                      name: "",
+                                      phone: newCustomer
+                                        .toString()
+                                        .includes("+")
+                                        ? `${newCustomer}`
+                                        : `+${newCustomer}`,
+                                    },
+                                  ]);
+                                  setCustomerSearchBoxDropdownOpen(false);
+                                }}
+                              >
+                                {t(`label:add`)}
+                              </Button>
                             )}
-                          </div>
-                        ) : (
-                          <div>
-                            <div>{`${option.name}`}</div>
-                            <div>{`${option.phone}`}</div>
-                          </div>
-                        )}
-                      </MenuItem>
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        onChange={searchCustomerOnFocus}
-                        onClick={() =>
-                          setCustomerSearchBoxDropdownOpen(
-                            !customerSearchBoxDropdownOpen
-                          )
-                        }
-                        className="mt-10 w-full sm:w-2/4"
-                        placeholder={t("label:searchCustomersByPhoneNo")}
-                        InputProps={{
-                          ...params.InputProps,
-                          startAdornment: (
+                        </div>
+                      }
+                      renderOption={(props, option, { selected }) => (
+                        <MenuItem {...props}>
+                          {/*{`${option.name}`}*/}
+                          {customerSearchBy ? (
                             <div>
-                              {searchCustomerPrefixCountryCode}
+                              {customerSearchBy === "phone" &&
+                              customerSearchBoxLength > 0 ? (
+                                <div>
+                                  <div>{`${option.name}`}</div>
+                                  <div>
+                                    <span
+                                      style={{ color: "#0088AE" }}
+                                    >{`${option.phone.slice(
+                                      0,
+                                      customerSearchBoxLength
+                                    )}`}</span>
+                                    <span>{`${option.phone.slice(
+                                      customerSearchBoxLength
+                                    )}`}</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div>
+                                  <div>{`${option.name}`}</div>
+                                  <div>{`${option.phone}`}</div>
+                                </div>
+                              )}
                             </div>
-                          ),
-                        }}
-                      />
-                    )}
-                  />
-                  // <Autocomplete
-                  //   disablePortal
-                  //   options={customerData}
-                  //   getOptionLabel={(option) => option.label}
-                  //   className=""
-                  //   fullWidth
-                  //   noOptionsText={
-                  //     <div className="flex items-center justify-between my-2">
-                  //       <span className="subtitle3 font-600">
-                  //         No customers found
-                  //       </span>
-                  //       <Button
-                  //         variant="contained"
-                  //         color="secondary"
-                  //         size={"medium"}
-                  //         className="rounded-4 button2 min-w-[104px]"
-                  //         type="button"
-                  //         startIcon={<AddIcon fontSize="small" />}
-                  //         onClick={() => console.log("add")}
-                  //       >
-                  //         {t(`label:add`)}
-                  //       </Button>
-                  //     </div>
-                  //   }
-                  //   onChange={(_, data) => onChange}
-                  //   renderOption={(props, option, { selected }) => (
-                  //     <MenuItem {...props}>
-                  //       <div>
-                  //         <div>{option.value}</div>
-                  //         <div>{option.label}</div>
-                  //       </div>
-                  //     </MenuItem>
-                  //   )}
-                  //   renderInput={(params) => (
-                  //     <TextField
-                  //       id="searchBox"
-                  //       className="mt-10 w-full sm:w-2/4"
-                  //       {...params}
-                  //       {...field}
-                  //       inputRef={ref}
-                  //       // onChange={}
-                  //       placeholder={t("label:searchByNameOrPhoneNo")}
-                  //       error={!!errors.searchCustomer}
-                  //       helperText={
-                  //         errors?.searchCustomer?.message
-                  //           ? t(`validation:${errors?.searchCustomer?.message}`)
-                  //           : ""
-                  //       }
-                  //     />
-                  //   )}
-                  // />
-                )}
-              />
+                          ) : (
+                            <div>
+                              <div>{`${option.name}`}</div>
+                              <div>{`${option.phone}`}</div>
+                            </div>
+                          )}
+                        </MenuItem>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          onChange={searchCustomerOnFocus}
+                          onClick={() =>
+                            setCustomerSearchBoxDropdownOpen(
+                              !customerSearchBoxDropdownOpen
+                            )
+                          }
+                          className="mt-10 w-full sm:w-2/4"
+                          placeholder={t("label:searchCustomersByPhoneNo")}
+                          // InputProps={{
+                          //   ...params.InputProps,
+                          //   startAdornment: (
+                          //     <div>
+                          //       {searchCustomerPrefixCountryCode}
+                          //     </div>
+                          //   ),
+                          // }}
+                        />
+                      )}
+                    />
+                    // <Autocomplete
+                    //   disablePortal
+                    //   options={customerData}
+                    //   getOptionLabel={(option) => option.label}
+                    //   className=""
+                    //   fullWidth
+                    //   noOptionsText={
+                    //     <div className="flex items-center justify-between my-2">
+                    //       <span className="subtitle3 font-600">
+                    //         No customers found
+                    //       </span>
+                    //       <Button
+                    //         variant="contained"
+                    //         color="secondary"
+                    //         size={"medium"}
+                    //         className="rounded-4 button2 min-w-[104px]"
+                    //         type="button"
+                    //         startIcon={<AddIcon fontSize="small" />}
+                    //         onClick={() => console.log("add")}
+                    //       >
+                    //         {t(`label:add`)}
+                    //       </Button>
+                    //     </div>
+                    //   }
+                    //   onChange={(_, data) => onChange}
+                    //   renderOption={(props, option, { selected }) => (
+                    //     <MenuItem {...props}>
+                    //       <div>
+                    //         <div>{option.value}</div>
+                    //         <div>{option.label}</div>
+                    //       </div>
+                    //     </MenuItem>
+                    //   )}
+                    //   renderInput={(params) => (
+                    //     <TextField
+                    //       id="searchBox"
+                    //       className="mt-10 w-full sm:w-2/4"
+                    //       {...params}
+                    //       {...field}
+                    //       inputRef={ref}
+                    //       // onChange={}
+                    //       placeholder={t("label:searchByNameOrPhoneNo")}
+                    //       error={!!errors.searchCustomer}
+                    //       helperText={
+                    //         errors?.searchCustomer?.message
+                    //           ? t(`validation:${errors?.searchCustomer?.message}`)
+                    //           : ""
+                    //       }
+                    //     />
+                    //   )}
+                    // />
+                  )}
+                />
+              </div>
               <div className="flex gap-5 m-5 items-center">
                 <InfoIcon className="text-primary-500 h-[15px] w-[15px]" />
                 <span className="body4 text-m-grey-500">
@@ -828,6 +910,9 @@ const createProducts = () => {
                       {...field}
                       label={t("label:referenceNo")}
                       type="number"
+                      onWheel={(event) => {
+                        event.target.blur();
+                      }}
                       autoComplete="off"
                       error={!!errors.referenceNumber}
                       helperText={
@@ -1086,6 +1171,9 @@ const createProducts = () => {
                                   label="Qty"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   required
                                   value={field.value || ""}
                                   autoComplete="off"
@@ -1105,6 +1193,10 @@ const createProducts = () => {
                                   className="bg-white custom-input-height col-span-1"
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.rate}
+                                  type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   variant="outlined"
                                   required
                                   value={field.value || ""}
@@ -1124,6 +1216,9 @@ const createProducts = () => {
                                   label="Discount"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   value={field.value || ""}
                                   error={!!errors.discount}
@@ -1203,6 +1298,9 @@ const createProducts = () => {
                                     label="Tax"
                                     className="bg-white custom-input-height"
                                     type="number"
+                                    onWheel={(event) => {
+                                      event.target.blur();
+                                    }}
                                     autoComplete="off"
                                     error={!!errors?.order?.[index]?.tax}
                                     helperText={
@@ -1457,6 +1555,9 @@ const createProducts = () => {
                               {...field}
                               className="bg-white custom-input-height"
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.quantity}
                               // helperText={
@@ -1480,6 +1581,10 @@ const createProducts = () => {
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.rate}
                               // helperText={errors?.order?.[index]?.rate?.message}
+                              type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               variant="outlined"
                               required
                               fullWidth
@@ -1498,6 +1603,9 @@ const createProducts = () => {
                               //label="Discount"
                               className="bg-white custom-input-height"
                               type="number"
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.discount}
                               helperText={errors?.discount?.message}
@@ -1566,6 +1674,9 @@ const createProducts = () => {
                                 className="bg-white custom-input-height"
                                 // type="text"
                                 type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.tax}
                                 helperText={
@@ -1763,7 +1874,7 @@ const createProducts = () => {
                   loading={loading}
                   loadingPosition="center"
                 >
-                   {t("label:sendOrder")}
+                  {t("label:sendOrder")}
                 </LoadingButton>
               </div>
             </Hidden>
