@@ -91,12 +91,15 @@ const ReservationLog = ({
           >
             {logs &&
               logs.map((log, index) => {
+                log.isRefundable =
+                  "isRefundable" in log ? log.isRefundable : true;
                 return (
                   <TimelineItem key={index}>
                     {/* {log.slug} */}
                     <TimelineSeparator>
                       {log.slug === "order-created" ||
                       log.slug === "order-sent" ||
+                      log.slug === "payment-link-sent-to-customer" ||
                       log.slug === "order-resent" ||
                       log.slug === "payment-link-opened" ||
                       log.slug === "partial-refunded" ||
@@ -126,7 +129,8 @@ const ReservationLog = ({
                     <TimelineContent>
                       <div className="ml-5 mt-10 mb-10">
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {log.title}
+                          {/* {log.title} */}
+                          {t(`label:${_.camelCase(log.slug)}`)}
                           {/* {t(`label:${log.translationKey}`)} */}
                         </div>
                         {log?.datetime && (
@@ -139,32 +143,37 @@ const ReservationLog = ({
                             </div>
                           </div>
                         )}
-                        {log?.sentTo && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:sentTo")}:
+                        {log?.sentTo &&
+                          (log.slug === "payment-link-sent-to-customer" ||
+                            log.slug === "order-resent") && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:sentTo")}:
+                              </div>
+                              <div className="body4 text-MonochromeGray-700">
+                                <Hidden smUp>
+                                  <Tooltip title={log.sentTo}>
+                                    <div>{CharCont(log.sentTo, 20)}</div>
+                                  </Tooltip>
+                                </Hidden>
+                                <Hidden smDown>{log.sentTo}</Hidden>
+                              </div>
                             </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              <Hidden smUp>
-                                <Tooltip title={log.sentTo}>
-                                  <div>{CharCont(log.sentTo, 20)}</div>
-                                </Tooltip>
-                              </Hidden>
-                              <Hidden smDown>{log.sentTo}</Hidden>
-                            </div>
-                          </div>
-                        )}
+                          )}
                         {log?.refundAmount && (
                           <div className="flex gap-5">
                             <div className="text-MonochromeGray-300 body4">
-                              {t("label:refundAmount")}:
+                              {log.slug === "refund-sent"
+                                ? t("label:refundAmount")
+                                : t("label:amount")}
+                              :{/* {t("label:refundAmount")}: */}
                             </div>
                             <div className="body4 text-MonochromeGray-700">
                               {log.refundAmount}
                             </div>
                           </div>
                         )}
-                        {log?.paymentMethod &&
+                        {/* {log?.paymentMethod &&
                           log.slug != "amount-captured-from-reservation" && (
                             <div className="flex gap-5">
                               <div className="text-MonochromeGray-300 body4">
@@ -174,7 +183,7 @@ const ReservationLog = ({
                                 {log.paymentMethod}
                               </div>
                             </div>
-                          )}
+                          )} */}
                         {log?.note && (
                           <div className="flex gap-5">
                             <div className="text-MonochromeGray-300 body4">
@@ -185,16 +194,19 @@ const ReservationLog = ({
                             </div>
                           </div>
                         )}
-                        {log?.actionBy && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:actionBy")}:
+                        {log?.actionBy &&
+                          ["order-cancelled", "order-completed"].includes(
+                            log.slug
+                          ) && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:actionBy")}:
+                              </div>
+                              <div className="body4 text-MonochromeGray-700">
+                                {log.actionBy}
+                              </div>
                             </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.actionBy}
-                            </div>
-                          </div>
-                        )}
+                          )}
                         {log.slug === "amount-charged-from-card" && (
                           <Button
                             variant="outlined"
@@ -202,8 +214,12 @@ const ReservationLog = ({
                             startIcon={
                               <UndoIcon style={{ color: "#0088AE" }} />
                             }
+                            disabled={!log.isRefundable}
                             onClick={() =>
-                              handleModalOpen("refundChargeTransection")
+                              handleModalOpen(
+                                "refundChargeTransection",
+                                log.refundAmount
+                              )
                             }
                           >
                             {t("label:refundTransection")}

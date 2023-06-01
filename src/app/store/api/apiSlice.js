@@ -463,7 +463,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: {
           source: "charged",
-          amount: 50,
+          amount: payload.refundableAmount,
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>

@@ -79,6 +79,7 @@ const OrderModal = (props) => {
     remainingAmount = null,
     capturedAmount = 0,
     refundableAmount = 0,
+    refundableChargeAmount = 0,
   } = props;
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
@@ -395,7 +396,7 @@ const OrderModal = (props) => {
     } else if (headerTitle === "Refund Transaction") {
       setApiLoading(true);
       refundChargedTransection({
-        refundableAmount: refundableAmount,
+        refundableAmount: refundableChargeAmount,
         uuid: orderId,
       }).then((response) => {
         reservationRequestCompletedAction(response);
@@ -435,6 +436,7 @@ const OrderModal = (props) => {
 
     setTimeout(() => {
       setOpen(false);
+      window.location.reload();
     }, 1000);
     setApiLoading(false);
   };
@@ -636,7 +638,7 @@ const OrderModal = (props) => {
                       {headerTitle === "Refund from Reservation"
                         ? ThousandSeparator(capturedAmount)
                         : headerTitle === "Refund Transaction"
-                        ? ThousandSeparator(1001)
+                        ? ThousandSeparator(refundableChargeAmount)
                         : orderAmount
                         ? ThousandSeparator(orderAmount)
                         : "-"}
@@ -665,7 +667,9 @@ const OrderModal = (props) => {
                   </div>
                   <div className="text-MonochromeGray-700">
                     {t("label:nok") + " "}
-                    {ThousandSeparator(refundableAmount)}
+                    {headerTitle === "Refund Transaction"
+                      ? ThousandSeparator(refundableChargeAmount)
+                      : ThousandSeparator(refundableAmount)}
                   </div>
                 </div>
               )}
