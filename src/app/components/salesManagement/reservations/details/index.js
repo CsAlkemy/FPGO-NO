@@ -78,11 +78,14 @@ const ReservationDetails = () => {
   const formattedPaymentDetails = (payment_details) => {
     const totalPaid =
       payment_details.capturedAmount + payment_details.chargedAmount;
-    const amountInBank = totalPaid - payment_details.amountRefunded;
+    const totalRefunded =
+      payment_details.amountRefunded.fromCaptured +
+      payment_details.amountRefunded.fromCharge;
+    const amountInBank = totalPaid - totalRefunded;
     return {
       reservedAmount: payment_details.reservedAmount,
       amountPaid: totalPaid,
-      amountRefunded: payment_details.amountRefunded,
+      amountRefunded: totalRefunded,
       amountInBank: amountInBank,
     };
   };
@@ -92,14 +95,15 @@ const ReservationDetails = () => {
       ReservationService.getReservationDetailsByUUID(queryParams.uuid)
         .then((res) => {
           let info = res?.data;
-          info.status = "reserved";
+          //console.log(info);
           //info.status = 'completed';
           //info.status = 'paid';
-          info.isPaid = true;
+          //info.status = "reserved";
+          //info.isPaid = true;
 
-          info.paymentDetails.capturedAmount = 1000;
-          info.paymentDetails.chargedAmount = 7000;
-          info.paymentDetails.amountRefunded = 500;
+          // info.paymentDetails.capturedAmount = 1000;
+          // info.paymentDetails.chargedAmount = 7000;
+          // info.paymentDetails.amountRefunded = 500;
 
           info.formattedAmount = formattedPaymentDetails(info.paymentDetails);
           console.log(info);
@@ -125,9 +129,7 @@ const ReservationDetails = () => {
           //console.log(res);
           let orderData = [];
           let data = res?.data.log;
-          setAmountRefunded(
-            res?.data.statistics.refundedAmount.fromReservation
-          );
+          setAmountRefunded(res?.data.statistics.amountRefunded.fromCaptured);
           let checkExpired = data.findIndex(
             (item) => item.slug === "order-expired-and-was-not-paid"
           );

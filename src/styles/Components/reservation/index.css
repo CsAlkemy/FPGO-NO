@@ -162,6 +162,13 @@
 .refund-modal .order-amount-text {
   border: unset;
 }
+.refund-trans-btn {
+  width: auto;
+  height: 36px;
+  background: #e6f3f7;
+  border: none;
+  color: #007c9e;
+}
 
 @media only screen and (min-width: 600px) {
   .create-order-dialog .reservation-modal-inner {

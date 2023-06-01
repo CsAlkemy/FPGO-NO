@@ -102,6 +102,7 @@ const ReservationLog = ({
                       log.slug === "partial-refunded" ||
                       log.slug === "refund-sent" ||
                       log.slug === "amount-captured-from-reservation" ||
+                      log.slug === "amount-charged-from-card" ||
                       log.slug === "customer-information-updated" ||
                       log.slug === "payment-successful" ||
                       log.slug === "reservation-completed" ? (
@@ -163,16 +164,17 @@ const ReservationLog = ({
                             </div>
                           </div>
                         )}
-                        {log?.paymentMethod && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:paymentMethod")}:
+                        {log?.paymentMethod &&
+                          log.slug != "amount-captured-from-reservation" && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:paymentMethod")}:
+                              </div>
+                              <div className="body4 text-MonochromeGray-700">
+                                {log.paymentMethod}
+                              </div>
                             </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.paymentMethod}
-                            </div>
-                          </div>
-                        )}
+                          )}
                         {log?.note && (
                           <div className="flex gap-5">
                             <div className="text-MonochromeGray-300 body4">
@@ -192,6 +194,20 @@ const ReservationLog = ({
                               {log.actionBy}
                             </div>
                           </div>
+                        )}
+                        {log.slug === "amount-charged-from-card" && (
+                          <Button
+                            variant="outlined"
+                            className="body2 action-button button2 refund-trans-btn"
+                            startIcon={
+                              <UndoIcon style={{ color: "#0088AE" }} />
+                            }
+                            onClick={() =>
+                              handleModalOpen("refundChargeTransection")
+                            }
+                          >
+                            {t("label:refundTransection")}
+                          </Button>
                         )}
                       </div>
                     </TimelineContent>
@@ -252,7 +268,7 @@ const ReservationLog = ({
           {user.role[0] !== FP_ADMIN && (
             <div className="px-12 bg-white pb-20">
               {/* {info.status} */}
-              {info.status == "reserved" && (
+              {info.status.toLowerCase() == "reserved" && (
                 <>
                   <Button
                     //color="secondary"
@@ -283,7 +299,8 @@ const ReservationLog = ({
                   </Button>
                 </>
               )}
-              {(info.status == "reserved" || info.status == "completed") &&
+              {(info.status.toLowerCase() == "reserved" ||
+                info.status.toLowerCase() == "completed") &&
                 info.paymentDetails.capturedAmount > 0 && (
                   <Button
                     variant="outlined"
@@ -297,14 +314,6 @@ const ReservationLog = ({
                     {t("label:refundFromReservation")}
                   </Button>
                 )}
-              <Button
-                variant="outlined"
-                className="body2 action-button button2"
-                startIcon={<UndoIcon style={{ color: "#0088AE" }} />}
-                onClick={() => handleModalOpen("refundChargeTransection")}
-              >
-                {t("label:refundTransection")}
-              </Button>
             </div>
           )}
         </div>

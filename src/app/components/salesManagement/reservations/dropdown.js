@@ -32,6 +32,9 @@ const ReservationDropdown = (props) => {
   const [amountBank, setAmountBank] = useState(null);
   const [remainingAmount, setRemainingAmount] = useState(null);
 
+  let refundableAmount = data.capturedAmount - data.amountRefunded;
+
+  //console.log(refundableAmount);
   console.log(data);
   data.isPaid = true;
   //data.status = "sent";
@@ -152,7 +155,10 @@ const ReservationDropdown = (props) => {
               </ListItemIcon>
               <ListItemText>{t("label:capturePayments")}</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => handleModalOpen("refundReservation")}>
+            <MenuItem
+              disabled={refundableAmount <= 0}
+              onClick={() => handleModalOpen("refundReservation")}
+            >
               <ListItemIcon>
                 <UndoIcon fontSize="small" />
               </ListItemIcon>
@@ -177,7 +183,7 @@ const ReservationDropdown = (props) => {
             capturedAmount={data.capturedAmount}
             amountInBank={data.amountInBank}
             remainingAmount={data.reservationAmount - data.capturedAmount}
-            refundableAmount={data.capturedAmount - data.amountRefunded}
+            refundableAmount={refundableAmount}
           />
         </>
       );
@@ -193,13 +199,25 @@ const ReservationDropdown = (props) => {
               "aria-labelledby": buttonId,
             }}
           >
-            <MenuItem onClick={() => handleModalOpen("chargeFromCard")}>
+            <MenuItem
+              disabled={
+                !data.reservedAt || DayDiffFromToday(data.reservedAt) > 60
+              }
+              onClick={() => handleModalOpen("chargeFromCard")}
+            >
               <ListItemIcon>
                 <CreditCardIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>{t("label:chargeFromCard")}</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => handleModalOpen("capturePayments")}>
+            <MenuItem
+              disabled={
+                !data.reservedAt ||
+                DayDiffFromToday(data.reservedAt) > 7 ||
+                data.capturedAmount >= data.reservedAmount
+              }
+              onClick={() => handleModalOpen("capturePayments")}
+            >
               <ListItemIcon>
                 <PaymentsIcon fontSize="small" />
               </ListItemIcon>

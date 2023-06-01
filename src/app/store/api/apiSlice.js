@@ -447,10 +447,10 @@ export const apiSlice = createApi({
     }),
     refundFromReservation: builder.mutation({
       query: (payload) => ({
-        url: `/orders/refund/${payload.uuid}`,
+        url: `/reservations/refund/${payload.uuid}`,
         method: "POST",
         body: {
-          isPartial: false,
+          source: "captured",
           amount: payload.refundableAmount,
         },
       }),
@@ -459,11 +459,11 @@ export const apiSlice = createApi({
     }),
     refundChargedTransection: builder.mutation({
       query: (payload) => ({
-        url: `/orders/refund/${payload.uuid}`,
+        url: `/reservations/refund/${payload.uuid}`,
         method: "POST",
         body: {
-          isPartial: false,
-          amount: payload.refundableAmount,
+          source: "charged",
+          amount: 50,
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>

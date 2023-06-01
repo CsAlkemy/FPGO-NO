@@ -48,6 +48,12 @@ const ReservationCheckout = () => {
       });
   }, [isLoading]);
 
+  useEffect(() => {
+    OrderService.getPaymentLinkOpenStatus(param.uuid)
+      .then((response) => {})
+      .catch((e) => {});
+  }, [isLoading]);
+
   return (
     <div className="flex flex-col flex-auto min-w-0 max-w-screen-xl my-32">
       <div className="flex-auto mx-auto  w-full md:w-4/5 lg:w-3/4 xl:w-7/12">

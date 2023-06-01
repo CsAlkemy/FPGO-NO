@@ -171,7 +171,9 @@ class ReservationService {
       const preparePhone =
         row.countryCode && row.msisdn ? row.countryCode + row.msisdn : null;
       const totalPaid = row.capturedAmount + row.chargedAmount;
-      const amountInBank = totalPaid - row.amountRefunded;
+      const totalRefunded =
+        row.amountRefunded.fromCaptured + row.amountRefunded.fromCharge;
+      const amountInBank = totalPaid - totalRefunded;
 
       return {
         uuid: row.reservationUuid,
@@ -191,7 +193,7 @@ class ReservationService {
         translationKey: row.translationKey,
         reservedAt: row.reservedAt,
         capturedAmount: row.capturedAmount,
-        amountRefunded: row.amountRefunded,
+        amountRefunded: row.amountRefunded.fromCaptured,
       };
     });
 

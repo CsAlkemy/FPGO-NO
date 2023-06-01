@@ -360,26 +360,14 @@ const OrderModal = (props) => {
     } else if (["Complete Reservation"].includes(headerTitle)) {
       setApiLoading(true);
       completeReservation(data).then((res) => {
-        if (res?.data?.status_code === 202) {
-          enqueueSnackbar(t(`message:${res?.data?.message}`), {
-            variant: "success",
-          });
-        }
-        if (
-          window.location.pathname === `/reservations-view/details/${orderId}`
-        )
-          navigate("/reservations");
-        setTimeout(() => {
-          setOpen(false);
-        }, 1000);
-        setApiLoading(false);
+        reservationRequestCompletedAction(res);
       });
     } else if (headerTitle === "Capture Payment") {
       setApiLoading(true);
       capturePayment({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
           //console.log(response?.data);
-          setApiLoading(false);
+          reservationRequestCompletedAction(response);
         }
       );
     } else if (headerTitle === "Charge Amount") {
@@ -394,8 +382,7 @@ const OrderModal = (props) => {
         ...chargeData,
         uuid: orderId,
       }).then((response) => {
-        //console.log(response?.data);
-        setApiLoading(false);
+        reservationRequestCompletedAction(response);
       });
     } else if (headerTitle === "Refund from Reservation") {
       setApiLoading(true);
@@ -403,7 +390,7 @@ const OrderModal = (props) => {
         refundableAmount: refundableAmount,
         uuid: orderId,
       }).then((response) => {
-        setApiLoading(false);
+        reservationRequestCompletedAction(response);
       });
     } else if (headerTitle === "Refund Transaction") {
       setApiLoading(true);
@@ -411,7 +398,7 @@ const OrderModal = (props) => {
         refundableAmount: refundableAmount,
         uuid: orderId,
       }).then((response) => {
-        setApiLoading(false);
+        reservationRequestCompletedAction(response);
       });
     }
   };
@@ -427,6 +414,29 @@ const OrderModal = (props) => {
   };
   const enableCurrentProductRow = (ind) => {
     setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
+  };
+
+  const reservationRequestCompletedAction = (res) => {
+    if (res?.data?.status_code === 202) {
+      enqueueSnackbar(t(`message:${res?.data?.message}`), {
+        variant: "success",
+      });
+      // setApiLoading(false);
+    } else
+      enqueueSnackbar(t(`message:${res?.error?.data?.message}`), {
+        variant: "error",
+      });
+
+    //window.location.reload();
+    // if (window.location.pathname === `/reservations-view/details/${orderId}`)
+    //   navigate(`/reservations-view/details/${orderId}`);
+    // else if (window.location.pathname === `/reservations`)
+    //   navigate("/reservations");
+
+    setTimeout(() => {
+      setOpen(false);
+    }, 1000);
+    setApiLoading(false);
   };
 
   const triggerProductSelected = (index, productData) => {
