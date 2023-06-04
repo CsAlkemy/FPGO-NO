@@ -14,8 +14,6 @@ import ClientService from "../../../data-access/services/clientsService/ClientSe
 import AddIcon from "@mui/icons-material/Add";
 import ReportService from "../../../data-access/services/reportService/ReportService";
 import { CSVLink } from "react-csv";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import Tooltip from "@mui/material/Tooltip";
 import ErrorIcon from "@mui/icons-material/Error";
 
 export default function VatReports() {
