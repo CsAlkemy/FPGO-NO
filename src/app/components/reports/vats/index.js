@@ -14,6 +14,7 @@ import ClientService from "../../../data-access/services/clientsService/ClientSe
 import AddIcon from "@mui/icons-material/Add";
 import ReportService from "../../../data-access/services/reportService/ReportService";
 import { CSVLink } from "react-csv";
+import ErrorIcon from "@mui/icons-material/Error";
 
 export default function VatReports() {
   const params = useParams();
@@ -411,6 +412,12 @@ export default function VatReports() {
                 />
               )}
             />
+          </div>
+          <div className="flex px-10 w-full justify-start items-center mb-10">
+            <div className="flex gap-5 body4 cursor-pointer">
+              <ErrorIcon className="icon-size-14 mt-4" />
+              {t("label:vatReportFilterGuideline")}
+            </div>
           </div>
           <div className="w-full px-10">
             <LoadingButton

@@ -608,7 +608,7 @@ const OrderModal = (props) => {
                   </div>
                 )}
                 {flag && (
-                  <div>
+                  <div className="mt-10">
                     {t(`message:${newString[0]}`)} {newString[1] || ""}
                   </div>
                 )}
