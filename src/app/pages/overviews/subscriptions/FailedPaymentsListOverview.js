@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { useTranslation } from 'react-i18next';
-import { useGetCustomersListQuery, useGetOrdersListQuery } from 'app/store/api/apiSlice';
+import { useGetFailedSubscriptionsListQuery, useGetOrdersListQuery } from 'app/store/api/apiSlice';
 import Hidden from '@mui/material/Hidden';
 import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
 
@@ -25,7 +25,7 @@ export default function FailedPaymentsListOverview() {
   const dispatch = useDispatch();
   const subscriptionsList = useSelector((state) => state.overviewMainTableData);
   const { enqueueSnackbar } = useSnackbar();
-  // const {data, isFetching, isLoading, isSuccess, isError, error, refetch} = useGetCustomersListQuery();
+  const {data, isFetching, isLoading, isSuccess, isError, error, refetch} = useGetFailedSubscriptionsListQuery();
   const failedPaymentsListHeaderRows = [
     {
       id: 'date',
@@ -78,61 +78,61 @@ export default function FailedPaymentsListOverview() {
     }
   ];
 
-  // useEffect(()=> {
-  //   refetch()
-  // },[])
+  useEffect(()=> {
+    refetch()
+  },[])
 
-  // const preparedData = data?.is_data ?  SubscriptionsService.mapSubscriptionsList(data.data) : []
-  const preparedData = SubscriptionsService.mapFailedPaymentsList([
-    {
-      uuid : "UUID0001",
-      date : "12.08.2022",
-      orderId : "3852300",
-      name : "Gudmund Tharaldson",
-      countryCode : "+47",
-      msisdn : "486 57 844",
-      subscriptionId : "7107210",
-      amount : "500",
-      status : "INVOICED",
-      translationKey : "invoiced"
-    },
-    {
-      uuid : "UUID0002",
-      date : "12.08.2022",
-      orderId : "3725688",
-      name : "Gudmund Tharaldson",
-      countryCode : "+47",
-      msisdn : "486 57 844",
-      subscriptionId : "5623311",
-      amount : "578",
-      status : "Paid",
-      translationKey : "paid"
-    },
-    {
-      uuid : "UUID0003",
-      date : "12.08.2022",
-      orderId : "4896116",
-      name : "Norske ConocoPhillips AS",
-      countryCode : "+47",
-      msisdn : "486 57 844",
-      subscriptionId : "7607076",
-      amount : "200",
-      status : "INVOICED",
-      translationKey : "invoiced"
-    },
-    {
-      uuid : "UUID0004",
-      date : "12.08.2022",
-      orderId : "4233735",
-      name : "Trond Hoyland",
-      countryCode : "+47",
-      msisdn : "486 57 844",
-      subscriptionId : "8797379",
-      amount : "2000",
-      status : "Debt Collection",
-      translationKey : "debtCollection"
-    },
-  ])
+  const preparedData = data?.is_data ?  SubscriptionsService.mapFailedPaymentsList(data.data) : []
+  // const preparedData = SubscriptionsService.mapFailedPaymentsList([
+  //   {
+  //     uuid : "UUID0001",
+  //     date : "12.08.2022",
+  //     orderId : "3852300",
+  //     name : "Gudmund Tharaldson",
+  //     countryCode : "+47",
+  //     msisdn : "486 57 844",
+  //     subscriptionId : "7107210",
+  //     amount : "500",
+  //     status : "INVOICED",
+  //     translationKey : "invoiced"
+  //   },
+  //   {
+  //     uuid : "UUID0002",
+  //     date : "12.08.2022",
+  //     orderId : "3725688",
+  //     name : "Gudmund Tharaldson",
+  //     countryCode : "+47",
+  //     msisdn : "486 57 844",
+  //     subscriptionId : "5623311",
+  //     amount : "578",
+  //     status : "Paid",
+  //     translationKey : "paid"
+  //   },
+  //   {
+  //     uuid : "UUID0003",
+  //     date : "12.08.2022",
+  //     orderId : "4896116",
+  //     name : "Norske ConocoPhillips AS",
+  //     countryCode : "+47",
+  //     msisdn : "486 57 844",
+  //     subscriptionId : "7607076",
+  //     amount : "200",
+  //     status : "INVOICED",
+  //     translationKey : "invoiced"
+  //   },
+  //   {
+  //     uuid : "UUID0004",
+  //     date : "12.08.2022",
+  //     orderId : "4233735",
+  //     name : "Trond Hoyland",
+  //     countryCode : "+47",
+  //     msisdn : "486 57 844",
+  //     subscriptionId : "8797379",
+  //     amount : "2000",
+  //     status : "Debt Collection",
+  //     translationKey : "debtCollection"
+  //   },
+  // ])
 
   return (
     <>
@@ -142,13 +142,11 @@ export default function FailedPaymentsListOverview() {
           headerButtonLabel={headerButtonLabel}
           tableName={failedPaymentsListOverview}
           headerRows={failedPaymentsListHeaderRows}
-          // tableData={data?.is_data ? preparedData : []}
-          tableData={preparedData}
+          tableData={data?.is_data ? preparedData : []}
           rowDataFields={failedPaymentsListOverviewRowDataFields}
           tabPanelsLabel={tabPanelsLabel}
           tabs={tabs}
-          // isLoading={isFetching}
-          isLoading={false}
+          isLoading={isFetching}
           isMobileScreen={true}
         />
       </Hidden>
@@ -162,8 +160,7 @@ export default function FailedPaymentsListOverview() {
           rowDataFields={failedPaymentsListOverviewRowDataFields}
           tabPanelsLabel={tabPanelsLabel}
           tabs={tabs}
-          // isLoading={isFetching}
-          isLoading={false}
+          isLoading={isFetching}
           isMobileScreen={false}
         />
       </Hidden>
