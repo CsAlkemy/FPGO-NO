@@ -12,7 +12,6 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
-  Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -26,7 +25,6 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import DiscardConfirmModal from "../../common/confirmDiscard";
@@ -52,7 +50,6 @@ const CreateClient = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [recheckSchema, setRecheckSchema] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [plan, setPlan] = useState(1);
   const [loading, setLoading] = React.useState(false);
   const [ownerRef, setOwnerRef] = React.useState(true);
   const [createClient] = useCreateClientMutation();
@@ -64,7 +61,6 @@ const CreateClient = () => {
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
-  const plansPrice = ["200", "350", "500"];
 
   let schema =
     customApticInfoData === "purchase"
@@ -97,16 +93,16 @@ const CreateClient = () => {
     watch,
     clearErrors,
     setError,
-      trigger,
+    trigger,
   } = useForm({
     mode: "onChange",
     defaultValueCreateClient,
     resolver: yupResolver(schema),
   });
 
-  const watchContactEndDate = watch(`contactEndDate`)
-    ? watch(`contactEndDate`)
-    : setValue("contactEndDate", new Date());
+  // const watchContactStartDate = watch(`contactStartDate`)
+  //   ? watch(`contactStartDate`)
+  //   : setValue("contactStartDate", new Date());
 
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
@@ -209,6 +205,7 @@ const CreateClient = () => {
         type: values?.organizationType ? values?.organizationType : null,
         brandId: null,
         groupId: null,
+        partnerName: values?.partnerName ? values.partnerName : null,
       },
       primaryContactDetails: {
         name: values.fullName,
@@ -220,8 +217,9 @@ const CreateClient = () => {
       contractDetails: {
         // startDate: new Date(),
         // endDate: values.contactEndDate,
-        startDate: ClientService.prepareDate(new Date()),
-        endDate: ClientService.prepareDate(values.contactEndDate),
+        startDate: ClientService.prepareDate(values.contactStartDate),
+        endDate: ClientService.prepareDate(new Date()),
+        planPrice: parseFloat(values.planPrice),
         commissionRate: parseFloat(values.commision),
         smsCost: parseFloat(values.smsCost),
         emailCost: parseFloat(values.emailCost),
@@ -328,16 +326,6 @@ const CreateClient = () => {
         city: values.shippingCity,
         country: values.shippingCountry,
       };
-    }
-    if (plan === 1) {
-      createClientData.contractDetails.planTag = "Plan 1";
-      createClientData.contractDetails.planPrice = parseFloat(plansPrice[0]);
-    } else if (plan === 2) {
-      createClientData.contractDetails.planTag = "Plan 2";
-      createClientData.contractDetails.planPrice = parseFloat(plansPrice[1]);
-    } else {
-      createClientData.contractDetails.planTag = "Plan 3";
-      createClientData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
     setLoading(true);
     createClient(createClientData).then((response) => {
@@ -456,6 +444,7 @@ const CreateClient = () => {
                   {t("label:clientDetails")}
                   {dirtyFields.id &&
                   dirtyFields.clientName &&
+                  dirtyFields.partnerName &&
                   dirtyFields.organizationType ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
@@ -473,7 +462,9 @@ const CreateClient = () => {
                           {...field}
                           label={t("label:organizationId")}
                           type="number"
-                          onWheel={event => { event.target.blur()}}
+                          onWheel={(event) => {
+                            event.target.blur();
+                          }}
                           autoComplete="off"
                           error={!!errors.id}
                           helperText={
@@ -561,6 +552,26 @@ const CreateClient = () => {
                         </FormControl>
                       )}
                     />
+                    <Controller
+                      name="partnerName"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label={t("label:partnerName")}
+                          type="text"
+                          autoComplete="off"
+                          error={!!errors.partnerName}
+                          helperText={
+                            errors?.partnerName?.message
+                              ? t(`validation:${errors?.partnerName?.message}`)
+                              : ""
+                          }
+                          variant="outlined"
+                          fullWidth
+                        />
+                      )}
+                    />
                   </div>
                 </div>
               </div>
@@ -601,16 +612,16 @@ const CreateClient = () => {
                       )}
                     />
                     <FrontPaymentPhoneInput
-                        control={control}
-                        defaultValue="no"
-                        disable={false}
-                        error={errors.primaryPhoneNumber}
-                        label="phone"
-                        name="primaryPhoneNumber"
-                        required={true}
-                        trigger={trigger}
-                        setValue={setValue}
-                        setDialCode={setDialCodePrimary}
+                      control={control}
+                      defaultValue="no"
+                      disable={false}
+                      error={errors.primaryPhoneNumber}
+                      label="phone"
+                      name="primaryPhoneNumber"
+                      required={true}
+                      trigger={trigger}
+                      setValue={setValue}
+                      setDialCode={setDialCodePrimary}
                     />
                     {/*<Controller*/}
                     {/*  name="primaryPhoneNumber"*/}
@@ -692,7 +703,8 @@ const CreateClient = () => {
               <div className="contract-details">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:contractDetails")}
-                  {dirtyFields.contactEndDate &&
+                  {dirtyFields.contactStartDate &&
+                  dirtyFields.planPrice &&
                   dirtyFields.commision &&
                   dirtyFields.smsCost &&
                   dirtyFields.emailCost &&
@@ -704,51 +716,13 @@ const CreateClient = () => {
                   )}
                 </div>
                 <div className="px-16">
-                  <div className="create-user-roles caption2">
-                    {t("label:choosePlan")}
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
-                    <button
-                      type="button"
-                      className={
-                        plan === 1
-                          ? "create-user-role-button-active"
-                          : "create-user-role-button"
-                      }
-                      onClick={() => setPlan(1)}
-                    >
-                      {t("label:plan1")}
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        plan === 2
-                          ? "create-user-role-button-active"
-                          : "create-user-role-button"
-                      }
-                      onClick={() => setPlan(2)}
-                    >
-                      {t("label:plan2")}
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        plan === 3
-                          ? "create-user-role-button-active"
-                          : "create-user-role-button"
-                      }
-                      onClick={() => setPlan(3)}
-                    >
-                      {t("label:plan3")}
-                    </button>
-                  </div>
                   <div className="contract-details-container w-full sm:w-11/12">
                     <Controller
-                      name="contactEndDate"
+                      name="contactStartDate"
                       control={control}
                       render={({ field: { onChange, value, onBlur } }) => (
                         <DesktopDatePicker
-                          label={t("label:contractEndDate")}
+                          label={t("label:contractStartDate")}
                           mask=""
                           inputFormat="dd.MM.yyyy"
                           value={value}
@@ -770,16 +744,45 @@ const CreateClient = () => {
                               {...params}
                               onBlur={onBlur}
                               type="date"
-                              error={!!errors.contactEndDate}
+                              error={!!errors.contactStartDate}
                               helperText={
-                                errors?.contactEndDate?.message
+                                errors?.contactStartDate?.message
                                   ? t(
-                                      `validation:${errors?.contactEndDate?.message}`
+                                      `validation:${errors?.contactStartDate?.message}`
                                     )
                                   : ""
                               }
                             />
                           )}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="planPrice"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label={t("label:monthlyPlanFee")}
+                          type="text"
+                          required
+                          autoComplete="off"
+                          error={!!errors.planPrice}
+                          helperText={
+                            errors?.planPrice?.message
+                              ? t(`validation:${errors?.planPrice?.message}`)
+                              : ""
+                          }
+                          variant="outlined"
+                          value={field.value === 0 ? 0 : field.value || ""}
+                          fullWidth
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="start">
+                                {t("label:kr")}
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       )}
                     />
@@ -956,16 +959,16 @@ const CreateClient = () => {
                   <div className="px-16">
                     <div className="form-pair-input gap-x-20">
                       <FrontPaymentPhoneInput
-                          control={control}
-                          defaultValue="no"
-                          disable={false}
-                          error={errors.billingPhoneNumber}
-                          label="phone"
-                          name="billingPhoneNumber"
-                          required = {true}
-                          trigger = {trigger}
-                          setValue = {setValue}
-                          setDialCode = {setDialCodeBilling}
+                        control={control}
+                        defaultValue="no"
+                        disable={false}
+                        error={errors.billingPhoneNumber}
+                        label="phone"
+                        name="billingPhoneNumber"
+                        required={true}
+                        trigger={trigger}
+                        setValue={setValue}
+                        setDialCode={setDialCodeBilling}
                       />
                       {/*<Controller*/}
                       {/*  name="billingPhoneNumber"*/}
@@ -1060,7 +1063,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:zipCode")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.zip}
                               helperText={
@@ -1164,37 +1169,37 @@ const CreateClient = () => {
                         labelPlacement="start"
                         disabled={
                           !(
-                              watch("billingPhoneNumber")?.length > 0 &&
-                              watch("billingEmail")?.length > 0 &&
-                              watch("billingAddress")?.length > 0 &&
-                              watch("zip")?.length > 0 &&
-                              watch("city")?.length > 0 &&
-                              watch("country")?.length > 0
+                            watch("billingPhoneNumber")?.length > 0 &&
+                            watch("billingEmail")?.length > 0 &&
+                            watch("billingAddress")?.length > 0 &&
+                            watch("zip")?.length > 0 &&
+                            watch("city")?.length > 0 &&
+                            watch("country")?.length > 0
                           )
                         }
                       />
                     </div>
                   </div>
                   {!sameAddress &&
-                      watch("billingPhoneNumber")?.length > 0 &&
-                      watch("billingEmail")?.length > 0 &&
-                      watch("billingAddress")?.length > 0 &&
-                      watch("zip")?.length > 0 &&
-                      watch("city")?.length > 0 &&
-                      watch("country")?.length > 0 && (
+                    watch("billingPhoneNumber")?.length > 0 &&
+                    watch("billingEmail")?.length > 0 &&
+                    watch("billingAddress")?.length > 0 &&
+                    watch("zip")?.length > 0 &&
+                    watch("city")?.length > 0 &&
+                    watch("country")?.length > 0 && (
                       <div className="px-16">
                         <div className="form-pair-input gap-x-20">
                           <FrontPaymentPhoneInput
-                              control={control}
-                              defaultValue="no"
-                              disable={sameAddress}
-                              error={errors.shippingPhoneNumber}
-                              label="phone"
-                              name="shippingPhoneNumber"
-                              required = {false}
-                              trigger = {trigger}
-                              setValue = {setValue}
-                              setDialCode = {setDialCodeShipping}
+                            control={control}
+                            defaultValue="no"
+                            disable={sameAddress}
+                            error={errors.shippingPhoneNumber}
+                            label="phone"
+                            name="shippingPhoneNumber"
+                            required={false}
+                            trigger={trigger}
+                            setValue={setValue}
+                            setDialCode={setDialCodeShipping}
                           />
                           {/*<Controller*/}
                           {/*  // name={*/}
@@ -1297,7 +1302,9 @@ const CreateClient = () => {
                                   {...field}
                                   label={t("label:zipCode")}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   disabled={sameAddress}
                                   error={!!errors.shippingZip}
@@ -1502,8 +1509,8 @@ const CreateClient = () => {
                             helperText={
                               errors?.bankAccountCode?.message
                                 ? t(
-                                  `validation:${errors?.bankAccountCode?.message}`
-                                )
+                                    `validation:${errors?.bankAccountCode?.message}`
+                                  )
                                 : ""
                             }
                             variant="outlined"
@@ -1683,8 +1690,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.accountCode?.message
                                   ? t(
-                                    `validation:${errors?.accountCode?.message}`
-                                  )
+                                      `validation:${errors?.accountCode?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1705,8 +1712,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.refundReference?.message
                                   ? t(
-                                    `validation:${errors?.refundReference?.message}`
-                                  )
+                                      `validation:${errors?.refundReference?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1731,8 +1738,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.accountCode?.message
                                   ? t(
-                                    `validation:${errors?.accountCode?.message}`
-                                  )
+                                      `validation:${errors?.accountCode?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -1748,7 +1755,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:creditLimitForClient")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.creditLimitCustomer}
                               helperText={
@@ -1779,7 +1788,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:costLimitForCustomer")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.costLimitforCustomer}
                               helperText={
@@ -1809,7 +1820,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:costLimitForOrder")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.costLimitforOrder}
                               helperText={
@@ -1839,7 +1852,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:invoiceWithRegress")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.invoicewithRegress}
                               helperText={
@@ -1869,7 +1884,9 @@ const CreateClient = () => {
                               {...field}
                               label={t("label:invoiceWithoutRegress")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.invoicewithoutRegress}
                               helperText={
@@ -1905,8 +1922,8 @@ const CreateClient = () => {
                               helperText={
                                 errors?.refundReference?.message
                                   ? t(
-                                    `validation:${errors?.refundReference?.message}`
-                                  )
+                                      `validation:${errors?.refundReference?.message}`
+                                    )
                                   : ""
                               }
                               variant="outlined"
@@ -2339,7 +2356,9 @@ const CreateClient = () => {
                                   onKeyUp={() => changeVatRateIcon(index)}
                                   {...field}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   className="text-right  custom-input-height"
                                   autoComplete="off"
                                   error={!!errors.vatValue}
@@ -2423,8 +2442,8 @@ const CreateClient = () => {
                             helperText={
                               errors?.b2bAccountCode?.message
                                 ? t(
-                                  `validation:${errors?.b2bAccountCode?.message}`
-                                )
+                                    `validation:${errors?.b2bAccountCode?.message}`
+                                  )
                                 : ""
                             }
                             variant="outlined"
@@ -2440,7 +2459,9 @@ const CreateClient = () => {
                             {...field}
                             label={t("label:fakturaB2b")}
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors.fakturaB2B}
                             hhelperText={
@@ -2474,8 +2495,8 @@ const CreateClient = () => {
                             helperText={
                               errors?.b2cAccountCode?.message
                                 ? t(
-                                  `validation:${errors?.b2cAccountCode?.message}`
-                                )
+                                    `validation:${errors?.b2cAccountCode?.message}`
+                                  )
                                 : ""
                             }
                             variant="outlined"
@@ -2491,7 +2512,9 @@ const CreateClient = () => {
                             {...field}
                             label={t("label:fakturaB2c")}
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors.fakturaB2C}
                             helperText={
