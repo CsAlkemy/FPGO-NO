@@ -20,7 +20,8 @@ import {
   organizationWiseUsersOverview,
   customerOrdersListOverview,
   refundRequestsOverview,
-  clientOrdersListOverview, payoutReportsListOverview
+  clientOrdersListOverview,
+  payoutReportsListOverview,
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -127,6 +128,21 @@ export default function OverviewHeader(props) {
         .catch((e) => {
           enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });
+    } else if (
+      [clientsListOverview, approvalListOverviewFPAdmin].includes(
+        props.tableRef
+      )
+    ) {
+      ClientService.exportClientLists()
+        .then((response) => {
+          let wb = utils.book_new(),
+            ws = utils.json_to_sheet(response);
+          utils.book_append_sheet(wb, ws, "client list");
+          writeFile(wb, `Client_Lists.xlsx`);
+        })
+        .catch((e) => {
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        });
     }
   };
 
@@ -196,13 +212,14 @@ export default function OverviewHeader(props) {
       </Hidden>
       <Hidden smDown>
         <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-0 sm:px-20">
-          {props.tableRef !== clientOrdersListOverview && props.tableRef !== payoutReportsListOverview && (
-            <Typography className="flex header6 col-span-2 my-14 md:my-0">
-              {props.tableRef === customerOrdersListOverview
-                ? ""
-                : props.headerSubtitle}
-            </Typography>
-          )}
+          {props.tableRef !== clientOrdersListOverview &&
+            props.tableRef !== payoutReportsListOverview && (
+              <Typography className="flex header6 col-span-2 my-14 md:my-0">
+                {props.tableRef === customerOrdersListOverview
+                  ? ""
+                  : props.headerSubtitle}
+              </Typography>
+            )}
           {props.tableRef === payoutReportsListOverview && (
             <div className="flex flex-col col-span-2 my-14 md:my-0">
               <Typography className="header6">
@@ -210,7 +227,7 @@ export default function OverviewHeader(props) {
                   ? ""
                   : props.headerSubtitle}
               </Typography>
-              <Typography className="subtitle3" style={{color: "#838585"}}>
+              <Typography className="subtitle3" style={{ color: "#838585" }}>
                 {t("label:selectAClientToViewPayouts")}
               </Typography>
             </div>
@@ -224,7 +241,12 @@ export default function OverviewHeader(props) {
                 value={props.selectedDate}
                 onChange={handleDateChange}
                 renderInput={(params) => (
-                  <TextField size="small" {...params}  error={false} type="date" />
+                  <TextField
+                    size="small"
+                    {...params}
+                    error={false}
+                    type="date"
+                  />
                 )}
                 disableFuture
                 disabled={props.isLoading}
@@ -245,7 +267,11 @@ export default function OverviewHeader(props) {
               />
             </Paper>
             <div className="flex gap-10">
-              {props.tableRef === ordersListOverview && (
+              {[
+                ordersListOverview,
+                clientsListOverview,
+                approvalListOverviewFPAdmin,
+              ].includes(props.tableRef) && (
                 <div className="button2">
                   <Button
                     color="secondary"
@@ -285,16 +311,18 @@ export default function OverviewHeader(props) {
                     className="px-16"
                   >
                     <MenuItem onClick={() => navigate(`/customers/private`)}>
-                      <AddIcon className='text-[#68C7E7]' /> {t("label:privateCustomer")}
+                      <AddIcon className="text-[#68C7E7]" />{" "}
+                      {t("label:privateCustomer")}
                     </MenuItem>
                     <MenuItem onClick={() => navigate(`/customers/corporate`)}>
-                      <AddIcon className='text-[#50C9B1]' />
+                      <AddIcon className="text-[#50C9B1]" />
                       {t("label:corporateCustomer")}
                     </MenuItem>
                   </Menu>
                 </div>
               ) : props.tableRef === customerOrdersListOverview ||
-                props.tableRef === clientOrdersListOverview || props.tableRef === payoutReportsListOverview ? (
+                props.tableRef === clientOrdersListOverview ||
+                props.tableRef === payoutReportsListOverview ? (
                 ""
               ) : props.tableRef === creditChecksListOverview ? (
                 <div>

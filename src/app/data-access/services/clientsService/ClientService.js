@@ -407,7 +407,9 @@ class ClientService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = endTime ?`${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}/${endTime}` : `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
+            const URL = endTime
+              ? `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}/${endTime}`
+              : `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {
@@ -481,6 +483,62 @@ class ClientService {
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
+    });
+  };
+
+  exportClientLists = async () => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/clients/export/`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  let d;
+                  d = response.data.data.map((row) => {
+                    return {
+                      clientId: row?.clientId ? row.clientId : "-",
+                      clientName: row?.clientName ? row.clientName : "-",
+                      partnerName: row?.partnerName ? row.partnerName : "-",
+                      planPrice: row?.planPrice ? row.planPrice : "-",
+                      smsCost: row?.smsCost ? row.smsCost : "-",
+                      commissionRate: row?.commisionRate
+                        ? row.commisionRate
+                        : "-",
+                      b2bInvoiceFee: row?.b2bInvoiceFee
+                        ? row.b2bInvoiceFee
+                        : "-",
+                      b2cInvoiceFee: row?.b2cInvoiceFee
+                        ? row.b2cInvoiceFee
+                        : "-",
+                      clientType: row?.clientType ? row.clientType : "-",
+                      contractStartDate: row?.contractStartDate
+                        ? row.contractStartDate
+                        : "-",
+                      clientStatus: row?.clientStatus ? row.clientStatus : "-",
+                    };
+                  });
+                  resolve(d);
+                } else if (
+                  response.data.status_code === 200 &&
+                  !response.data.is_data
+                ) {
+                  resolve([]);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
                 reject(e?.response?.data?.message);
               });
           } else reject("somethingWentWrong");

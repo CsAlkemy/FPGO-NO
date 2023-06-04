@@ -18,8 +18,9 @@ import {
   fpAdminUsersOverview,
   businessAdminUsersOverview,
   organizationWiseUsersOverview,
-  customerOrdersListOverview, refundRequestsOverview,
-} from '../overviewTable/TablesName';
+  customerOrdersListOverview,
+  refundRequestsOverview,
+} from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddIcon from "@mui/icons-material/Add";
@@ -38,6 +39,7 @@ import { t } from "i18next";
 import Select from "@mui/material/Select";
 import { writeFile, utils } from "xlsx";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import ClientService from "../../../data-access/services/clientsService/ClientService";
 
 export default function OverviewFloatingButtons(props) {
   const dispatch = useDispatch();
@@ -137,6 +139,21 @@ export default function OverviewFloatingButtons(props) {
         ws = utils.json_to_sheet(exportTableData);
       utils.book_append_sheet(wb, ws, "order list");
       writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
+    } else if (
+      [clientsListOverview, approvalListOverviewFPAdmin].includes(
+        props.tableRef
+      )
+    ) {
+      ClientService.exportClientLists()
+        .then((response) => {
+          let wb = utils.book_new(),
+            ws = utils.json_to_sheet(response);
+          utils.book_append_sheet(wb, ws, "client list");
+          writeFile(wb, `Client_Lists.xlsx`);
+        })
+        .catch((e) => {
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        });
     }
   };
 
@@ -186,7 +203,11 @@ export default function OverviewFloatingButtons(props) {
       {/*  <MenuItem value={'Private'}>Private</MenuItem>*/}
       {/*  <MenuItem value={'Corporate'}>Corporate</MenuItem>*/}
       {/*</Select>*/}
-      {props.tableRef === ordersListOverview && (
+      {[
+        ordersListOverview,
+        clientsListOverview,
+        approvalListOverviewFPAdmin,
+      ].includes(props.tableRef) && (
         <div className="button2">
           <Button
             color="secondary"
@@ -275,30 +296,32 @@ export default function OverviewFloatingButtons(props) {
             </MenuItem>
           </Menu>
         </div>
-      ) : props.tableRef !== refundRequestsOverview && (
-        <div>
-          <Button
-            color="secondary"
-            variant="contained"
-            aria-haspopup="true"
-            onClick={handleClick}
-            className="rounded-full button2 text-white"
-            disabled={
-              ((props.tableRef === userListOverview ||
-                props.tableRef === fpAdminUsersOverview ||
-                props.tableRef === businessAdminUsersOverview) &&
-                user.role[0] === GENERAL_USER) ||
-              ((props.tableRef === ordersListOverview ||
-                props.tableRef === productsListOverview ||
-                props.tableRef === categoriesListOverview) &&
-                user.role[0] === FP_ADMIN) ||
-              (props.tableRef === clientsListOverview &&
-                user.role[0] !== FP_ADMIN)
-            }
-          >
-            {props.headerButtonLabel}
-          </Button>
-        </div>
+      ) : (
+        props.tableRef !== refundRequestsOverview && (
+          <div>
+            <Button
+              color="secondary"
+              variant="contained"
+              aria-haspopup="true"
+              onClick={handleClick}
+              className="rounded-full button2 text-white"
+              disabled={
+                ((props.tableRef === userListOverview ||
+                  props.tableRef === fpAdminUsersOverview ||
+                  props.tableRef === businessAdminUsersOverview) &&
+                  user.role[0] === GENERAL_USER) ||
+                ((props.tableRef === ordersListOverview ||
+                  props.tableRef === productsListOverview ||
+                  props.tableRef === categoriesListOverview) &&
+                  user.role[0] === FP_ADMIN) ||
+                (props.tableRef === clientsListOverview &&
+                  user.role[0] !== FP_ADMIN)
+              }
+            >
+              {props.headerButtonLabel}
+            </Button>
+          </div>
+        )
       )}
       <IconButton
         color="secondary"

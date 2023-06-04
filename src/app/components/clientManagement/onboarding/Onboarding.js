@@ -58,17 +58,14 @@ const Onboarding = () => {
   const [ownerRef, setOwnerRef] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const params = useParams();
-  const [plan, setPlan] = React.useState(1);
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
     code: "NOK",
   });
-  const [customApticInfoData, setCustomApticInfoData] =
-    useState("purchase");
+  const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
-  const plansPrice = ["200", "350", "500"];
   const [orgTypeList, setOrgTypeList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [onboardClient] = useOnboardClientMutation();
@@ -103,7 +100,7 @@ const Onboarding = () => {
     watch,
     clearErrors,
     setError,
-      trigger,
+    trigger,
   } = useForm({
     mode: "onChange",
     defaultValueOnBoard,
@@ -168,6 +165,9 @@ const Onboarding = () => {
       defaultValueOnBoard.organizationType = info?.organizationDetails?.type
         ? info?.organizationDetails?.type
         : "";
+      defaultValueOnBoard.partnerName = info?.organizationDetails?.partnerName
+        ? info.ganizationDetails.partnerName
+        : "";
       defaultValueOnBoard.email = info?.primaryContactDetails?.email
         ? info?.primaryContactDetails?.email
         : "";
@@ -192,7 +192,7 @@ const Onboarding = () => {
       reset({ ...defaultValueOnBoard });
     }
   }, [info]);
-  
+
   const handleClickShowPassword = () => {
     setHide(!hide);
   };
@@ -233,23 +233,17 @@ const Onboarding = () => {
       : null;
 
     const msisdn = values?.primaryPhoneNumber
-        ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
-        : null;
-    const countryCode = dialCodePrimary
-        ? dialCodePrimary
-        : null;
+      ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
+      : null;
+    const countryCode = dialCodePrimary ? dialCodePrimary : null;
     const bl_msisdn = values?.billingPhoneNumber
-        ? values?.billingPhoneNumber.slice(dialCodeBilling?.length)
-        : null;
-    const bl_countryCode = dialCodeBilling
-        ? dialCodeBilling
-        : null;
+      ? values?.billingPhoneNumber.slice(dialCodeBilling?.length)
+      : null;
+    const bl_countryCode = dialCodeBilling ? dialCodeBilling : null;
     const sh_msisdn = values?.shippingPhoneNumber
-        ? values?.shippingPhoneNumber.slice(dialCodeShipping?.length)
-        : null;
-    const sh_countryCode = dialCodeShipping
-        ? dialCodeShipping
-        : null;
+      ? values?.shippingPhoneNumber.slice(dialCodeShipping?.length)
+      : null;
+    const sh_countryCode = dialCodeShipping ? dialCodeShipping : null;
 
     const vatRates = values.vat.length
       ? values.vat
@@ -276,6 +270,7 @@ const Onboarding = () => {
         type: values?.organizationType ? values?.organizationType : null,
         brandId: null,
         groupId: null,
+        partnerName: values?.partnerName ? values.partnerName : null,
       },
       primaryContactDetails: {
         uuid: info.primaryContactDetails.uuid,
@@ -288,8 +283,9 @@ const Onboarding = () => {
       contractDetails: {
         // startDate: new Date(),
         // endDate: values.contactEndDate,
-        startDate: ClientService.prepareDate(new Date()),
-        endDate: ClientService.prepareDate(values.contactEndDate),
+        startDate: ClientService.prepareDate(values.contactStartDate),
+        endDate: ClientService.prepareDate(new Date()),
+        planPrice: parseFloat(values.planPrice),
         commissionRate: parseFloat(values.commision),
         smsCost: parseFloat(values.smsCost),
         emailCost: parseFloat(values.emailCost),
@@ -406,16 +402,6 @@ const Onboarding = () => {
         city: values.shippingCity,
         country: values.shippingCountry,
       };
-    }
-    if (plan === 1) {
-      onBoardingData.contractDetails.planTag = "Plan 1";
-      onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[0]);
-    } else if (plan === 2) {
-      onBoardingData.contractDetails.planTag = "Plan 2";
-      onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[1]);
-    } else {
-      onBoardingData.contractDetails.planTag = "Plan 3";
-      onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
     setLoading(true);
 
@@ -542,6 +528,7 @@ const Onboarding = () => {
                       {t("label:clientDetails")}
                       {dirtyFields.organizationID &&
                       dirtyFields.clientName &&
+                      dirtyFields.partnerName &&
                       dirtyFields.organizationType ? (
                         <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                       ) : (
@@ -559,7 +546,9 @@ const Onboarding = () => {
                               {...field}
                               label={t("label:organizationId")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors.id}
                               helperText={
@@ -694,6 +683,28 @@ const Onboarding = () => {
                             )}
                           />
                         )}
+                        <Controller
+                          name="partnerName"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:partnerName")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.partnerName}
+                              helperText={
+                                errors?.partnerName?.message
+                                  ? t(
+                                      `validation:${errors?.partnerName?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                            />
+                          )}
+                        />
                       </div>
                     </div>
                   </div>
@@ -702,7 +713,7 @@ const Onboarding = () => {
                       <div className="flex gap-10 items-center">
                         {t("label:primaryContactDetails")}
                         {dirtyFields.fullName &&
-                        watch("primaryPhoneNumber")?.length>0  &&
+                        watch("primaryPhoneNumber")?.length > 0 &&
                         dirtyFields.email ? (
                           <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                         ) : (
@@ -734,16 +745,16 @@ const Onboarding = () => {
                           )}
                         />
                         <FrontPaymentPhoneInput
-                            control={control}
-                            defaultValue='no'
-                            disable={false}
-                            error={errors.primaryPhoneNumber}
-                            label="phone"
-                            name="primaryPhoneNumber"
-                            required = {true}
-                            trigger = {trigger}
-                            setValue = {setValue}
-                            setDialCode = {setDialCodePrimary}
+                          control={control}
+                          defaultValue="no"
+                          disable={false}
+                          error={errors.primaryPhoneNumber}
+                          label="phone"
+                          name="primaryPhoneNumber"
+                          required={true}
+                          trigger={trigger}
+                          setValue={setValue}
+                          setDialCode={setDialCodePrimary}
                         />
                         {/*<Controller*/}
                         {/*  name="primaryPhoneNumber"*/}
@@ -827,7 +838,8 @@ const Onboarding = () => {
                   <div className="contract-details">
                     <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                       {t("label:contractDetails")}
-                      {dirtyFields.contactEndDate &&
+                      {dirtyFields.contactStartDate &&
+                      dirtyFields.planPrice &&
                       dirtyFields.commision &&
                       dirtyFields.smsCost &&
                       dirtyFields.emailCost &&
@@ -839,51 +851,13 @@ const Onboarding = () => {
                       )}
                     </div>
                     <div className="px-16">
-                      <div className="create-user-roles caption2">
-                        {t("label:choosePlan")}
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
-                        <button
-                          type="button"
-                          className={
-                            plan === 1
-                              ? "create-user-role-button-active"
-                              : "create-user-role-button"
-                          }
-                          onClick={() => setPlan(1)}
-                        >
-                          {t("label:plan1")}
-                        </button>
-                        <button
-                          type="button"
-                          className={
-                            plan === 2
-                              ? "create-user-role-button-active"
-                              : "create-user-role-button"
-                          }
-                          onClick={() => setPlan(2)}
-                        >
-                          {t("label:plan2")}
-                        </button>
-                        <button
-                          type="button"
-                          className={
-                            plan === 3
-                              ? "create-user-role-button-active"
-                              : "create-user-role-button"
-                          }
-                          onClick={() => setPlan(3)}
-                        >
-                          {t("label:plan3")}
-                        </button>
-                      </div>
                       <div className="contract-details-container w-full sm:w-11/12">
                         <Controller
-                          name="contactEndDate"
+                          name="contactStartDate"
                           control={control}
                           render={({ field: { onChange, value, onBlur } }) => (
                             <DesktopDatePicker
-                              label={t("label:contractEndDate")}
+                              label={t("label:contractStartDate")}
                               mask=""
                               inputFormat="dd.MM.yyyy"
                               value={value}
@@ -905,16 +879,46 @@ const Onboarding = () => {
                                   {...params}
                                   onBlur={onBlur}
                                   type="date"
-                                  error={!!errors.contactEndDate}
+                                  error={!!errors.contactStartDate}
                                   helperText={
-                                    errors?.contactEndDate?.message
+                                    errors?.contactStartDate?.message
                                       ? t(
-                                          `validation:${errors?.contactEndDate?.message}`
+                                          `validation:${errors?.contactStartDate?.message}`
                                         )
                                       : ""
                                   }
                                 />
                               )}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="planPrice"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:monthlyPlanFee")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.planPrice}
+                              helperText={
+                                errors?.planPrice?.message
+                                  ? t(
+                                      `validation:${errors?.planPrice?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              required
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:kr")}
+                                  </InputAdornment>
+                                ),
+                              }}
                             />
                           )}
                         />
@@ -1067,7 +1071,7 @@ const Onboarding = () => {
                   <div className="billing-information">
                     <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                       {t("label:billingAndShippingInfo")}
-                      {watch("billingPhoneNumber")?.length>0 &&
+                      {watch("billingPhoneNumber")?.length > 0 &&
                       dirtyFields.billingEmail &&
                       dirtyFields.billingAddress &&
                       dirtyFields.zip &&
@@ -1081,7 +1085,7 @@ const Onboarding = () => {
                     <div className="p-10 w-full md:w-3/4">
                       <div className="billing-address-head mt-10">
                         {t("label:billingAddress")}
-                        {watch("billingPhoneNumber")?.length>0  &&
+                        {watch("billingPhoneNumber")?.length > 0 &&
                         dirtyFields.billingEmail &&
                         dirtyFields.billingAddress &&
                         dirtyFields.zip &&
@@ -1095,16 +1099,16 @@ const Onboarding = () => {
                       <div className="px-16">
                         <div className="form-pair-input gap-x-20">
                           <FrontPaymentPhoneInput
-                              control={control}
-                              defaultValue='no'
-                              disable={false}
-                              error={errors.billingPhoneNumber}
-                              label="phone"
-                              name="billingPhoneNumber"
-                              required = {true}
-                              trigger = {trigger}
-                              setValue = {setValue}
-                              setDialCode = {setDialCodeBilling}
+                            control={control}
+                            defaultValue="no"
+                            disable={false}
+                            error={errors.billingPhoneNumber}
+                            label="phone"
+                            name="billingPhoneNumber"
+                            required={true}
+                            trigger={trigger}
+                            setValue={setValue}
+                            setDialCode={setDialCodeBilling}
                           />
                           {/*<Controller*/}
                           {/*  name="billingPhoneNumber"*/}
@@ -1199,7 +1203,9 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:zipCode")}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.zip}
                                   helperText={
@@ -1279,7 +1285,7 @@ const Onboarding = () => {
                       <div className="flex justify-between items-center billing-address-head">
                         <div className="billing-address-head">
                           {t("label:shippingAddress")}
-                          {(watch("shippingPhoneNumber")?.length>0   &&
+                          {(watch("shippingPhoneNumber")?.length > 0 &&
                             dirtyFields.shippingEmail &&
                             dirtyFields.shippingAddress &&
                             dirtyFields.shippingZip &&
@@ -1305,37 +1311,37 @@ const Onboarding = () => {
                             labelPlacement="start"
                             disabled={
                               !(
-                                  watch("billingPhoneNumber")?.length>0 &&
-                                  watch("billingEmail")?.length>0 &&
-                                  watch("billingAddress")?.length>0 &&
-                                  watch("zip")?.length>0 &&
-                                  watch("city")?.length>0 &&
-                                  watch("country")?.length>0
+                                watch("billingPhoneNumber")?.length > 0 &&
+                                watch("billingEmail")?.length > 0 &&
+                                watch("billingAddress")?.length > 0 &&
+                                watch("zip")?.length > 0 &&
+                                watch("city")?.length > 0 &&
+                                watch("country")?.length > 0
                               )
                             }
                           />
                         </div>
                       </div>
                       {!sameAddress &&
-                          (watch("billingPhoneNumber")?.length>0 &&
-                              watch("billingEmail")?.length>0 &&
-                              watch("billingAddress")?.length>0 &&
-                              watch("zip")?.length>0 &&
-                              watch("city")?.length>0 &&
-                              watch("country")?.length>0) && (
+                        watch("billingPhoneNumber")?.length > 0 &&
+                        watch("billingEmail")?.length > 0 &&
+                        watch("billingAddress")?.length > 0 &&
+                        watch("zip")?.length > 0 &&
+                        watch("city")?.length > 0 &&
+                        watch("country")?.length > 0 && (
                           <div className="px-16">
                             <div className="form-pair-input gap-x-20">
                               <FrontPaymentPhoneInput
-                                  control={control}
-                                  defaultValue='no'
-                                  disable={false}
-                                  error={errors.shippingPhoneNumber}
-                                  label="phone"
-                                  name="shippingPhoneNumber"
-                                  required = {false}
-                                  trigger = {trigger}
-                                  setValue = {setValue}
-                                  setDialCode = {setDialCodeShipping}
+                                control={control}
+                                defaultValue="no"
+                                disable={false}
+                                error={errors.shippingPhoneNumber}
+                                label="phone"
+                                name="shippingPhoneNumber"
+                                required={false}
+                                trigger={trigger}
+                                setValue={setValue}
+                                setDialCode={setDialCodeShipping}
                               />
                               {/*<Controller*/}
                               {/*  // name={*/}
@@ -1438,7 +1444,9 @@ const Onboarding = () => {
                                       {...field}
                                       label={t("label:zipCode")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       disabled={sameAddress}
                                       error={!!errors.shippingZip}
@@ -1649,8 +1657,8 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.bankAccountCode?.message
                                     ? t(
-                                      `validation:${errors?.bankAccountCode?.message}`
-                                    )
+                                        `validation:${errors?.bankAccountCode?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"
@@ -1834,8 +1842,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.accountCode?.message
                                       ? t(
-                                        `validation:${errors?.accountCode?.message}`
-                                      )
+                                          `validation:${errors?.accountCode?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1856,8 +1864,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.refundReference?.message
                                       ? t(
-                                        `validation:${errors?.refundReference?.message}`
-                                      )
+                                          `validation:${errors?.refundReference?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1882,8 +1890,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.accountCode?.message
                                       ? t(
-                                        `validation:${errors?.accountCode?.message}`
-                                      )
+                                          `validation:${errors?.accountCode?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1899,14 +1907,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:creditLimitForClient")}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.creditLimitCustomer}
                                   helperText={
                                     errors?.creditLimitCustomer?.message
                                       ? t(
-                                        `validation:${errors?.creditLimitCustomer?.message}`
-                                      )
+                                          `validation:${errors?.creditLimitCustomer?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1930,14 +1940,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:costLimitForCustomer")}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.costLimitforCustomer}
                                   helperText={
                                     errors?.costLimitforCustomer?.message
                                       ? t(
-                                        `validation:${errors?.costLimitforCustomer?.message}`
-                                      )
+                                          `validation:${errors?.costLimitforCustomer?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1960,14 +1972,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:costLimitForOrder")}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.costLimitforOrder}
                                   helperText={
                                     errors?.costLimitforOrder?.message
                                       ? t(
-                                        `validation:${errors?.costLimitforOrder?.message}`
-                                      )
+                                          `validation:${errors?.costLimitforOrder?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1990,14 +2004,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:invoiceWithRegress")}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.invoicewithRegress}
                                   helperText={
                                     errors?.invoicewithRegress?.message
                                       ? t(
-                                        `validation:${errors?.invoicewithRegress?.message}`
-                                      )
+                                          `validation:${errors?.invoicewithRegress?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -2020,14 +2036,16 @@ const Onboarding = () => {
                                   {...field}
                                   label={t("label:invoiceWithoutRegress")}
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors.invoicewithoutRegress}
                                   helperText={
                                     errors?.invoicewithoutRegress?.message
                                       ? t(
-                                        `validation:${errors?.invoicewithoutRegress?.message}`
-                                      )
+                                          `validation:${errors?.invoicewithoutRegress?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -2056,8 +2074,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.refundReference?.message
                                       ? t(
-                                        `validation:${errors?.refundReference?.message}`
-                                      )
+                                          `validation:${errors?.refundReference?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -2360,7 +2378,9 @@ const Onboarding = () => {
                                       {...field}
                                       onKeyUp={() => changeVatRateIcon(index)}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       className="text-right  custom-input-height"
                                       autoComplete="off"
                                       error={!!errors.vatValue}
@@ -2467,8 +2487,8 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.b2bAccountCode?.message
                                     ? t(
-                                      `validation:${errors?.b2bAccountCode?.message}`
-                                    )
+                                        `validation:${errors?.b2bAccountCode?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"
@@ -2484,7 +2504,9 @@ const Onboarding = () => {
                                 {...field}
                                 label={t("label:fakturaB2b")}
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors.fakturaB2B}
                                 helperText={
@@ -2520,8 +2542,8 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.b2cAccountCode?.message
                                     ? t(
-                                      `validation:${errors?.b2cAccountCode?.message}`
-                                    )
+                                        `validation:${errors?.b2cAccountCode?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"
@@ -2537,7 +2559,9 @@ const Onboarding = () => {
                                 {...field}
                                 label={t("label:fakturaB2c")}
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors.fakturaB2C}
                                 helperText={
