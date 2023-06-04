@@ -20,6 +20,7 @@ class SubscriptionsService {
         currency: row.currency,
         date: row.createdAt,
         name: row.customerName,
+        email: row.customerEmail,
         numberOfOrder: row.numberOfOrder,
         // stage: row.status.toLowerCase(),
         stage: (row?.status && row?.status.toLowerCase()) || "sent",

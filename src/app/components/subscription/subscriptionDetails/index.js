@@ -177,14 +177,14 @@ const subscriptionDetails = () => {
                     </TabList>
                   </Box>
                   <TabPanel value="1">
-                    <OrderLog info={info} />
+                    <OrderLog info={info.logs} />
                   </TabPanel>
                   <TabPanel value="2" className="p-0">
                     <SubscriptionInformation customerInfo={info.customer || []} info={info.subscription || []} />
                   </TabPanel>
-                  <TabPanel value="3" className="py-20 px-0">
-                    <OrderReceipt info={info} />
-                  </TabPanel>
+                  {/*<TabPanel value="3" className="py-20 px-0">*/}
+                  {/*  <OrderReceipt info={info} />*/}
+                  {/*</TabPanel>*/}
                 </TabContext>
               </div>
             </div>
