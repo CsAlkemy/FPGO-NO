@@ -75,7 +75,7 @@ const orderDetails = () => {
             </div>
             <div>
               <div className="subtitle1 text-MonochromeGray-700 ">
-                {orderDetails?.customerDetails?.name || "_"}
+                {orderDetails?.organizationDetails?.name || "_"}
               </div>
               <div className="subtitle3 text-MonochromeGray-300 my-10">
                 {t("label:orderNo")}. {param.uuid}
