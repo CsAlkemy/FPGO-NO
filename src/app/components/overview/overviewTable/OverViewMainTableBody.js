@@ -76,6 +76,8 @@ export default function OverViewMainTableBody(props) {
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
+    if (decision === "subscriptionRefund") setHeaderTitle("subscriptionRefund");
+    if (decision === "subscriptionCancel") setHeaderTitle("Cancel Subscription");
   };
   const handleSendInvoiceModalOpen = () => {
     setEditOpen(true);
@@ -2283,7 +2285,7 @@ export default function OverViewMainTableBody(props) {
                 open={open}
                 setOpen={setOpen}
                 headerTitle={headerTitle}
-                orderId={props.row.id}
+                orderId={props.row.orderUuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
@@ -2307,7 +2309,7 @@ export default function OverViewMainTableBody(props) {
                   className="py-8 px-4"
                   // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
                   sx={resendRefundBoxSX}
-                  onClick={() => handleModalOpen("refund")}
+                  onClick={() => handleModalOpen("subscriptionRefund")}
                 >
                   <UndoIcon
                     style={{ paddingBottom: "3px" }}
@@ -2320,7 +2322,7 @@ export default function OverViewMainTableBody(props) {
                 setOpen={setOpen}
                 orderType={"SUBSCRIPTION"}
                 headerTitle={headerTitle}
-                orderId={props.row.id}
+                orderId={props.row.orderUuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
@@ -2371,7 +2373,7 @@ export default function OverViewMainTableBody(props) {
                   className="py-8 px-4"
                   // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F7F7F7" }}
                   sx={cancelBoxSX}
-                  onClick={() => handleModalOpen("cancel")}
+                  onClick={() => handleModalOpen("subscriptionCancel")}
                 >
                   <CancelIcon style={{ paddingBottom: "3px" }} />
                 </Box>
@@ -2380,7 +2382,8 @@ export default function OverViewMainTableBody(props) {
                 open={open}
                 setOpen={setOpen}
                 headerTitle={headerTitle}
-                orderId={props.row.id}
+                orderId={props.row.orderUuid}
+                subscriptionUuid={props.row.uuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
@@ -2413,7 +2416,7 @@ export default function OverViewMainTableBody(props) {
                 open={open}
                 setOpen={setOpen}
                 headerTitle={headerTitle}
-                orderId={props.row.uuid}
+                orderId={props.row.orderUuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}

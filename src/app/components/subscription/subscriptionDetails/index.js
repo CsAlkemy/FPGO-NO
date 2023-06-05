@@ -15,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import SubscriptionInformation from "./subscriptionInformation";
 import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
+import OrderModal from "../../salesManagement/order/popupModal/orderModal";
 
 const OrderLog = lazy(() => import("./subscriptionLog"));
 const OrderReceipt = lazy(() => import("./subscriptionReceipt"));
@@ -45,7 +46,7 @@ const subscriptionDetails = () => {
 
   const handleCancelOrder = () => {
     setOpen(true);
-    setSetHeaderTitle("Cancel Order");
+    setSetHeaderTitle("Cancel Subscription");
   };
 
   useEffect(() => {
@@ -231,20 +232,22 @@ const subscriptionDetails = () => {
               )}
             </div>
           </Hidden>
-          {/* <OrderModal
+          <OrderModal
             open={open}
             setOpen={setOpen}
             headerTitle={headerTitle}
-            orderId={info.orderUuid}
-            orderName={info.customerDetails.name}
-            orderAmount={ info.orderSummary.grandTotal }
+            orderId={info?.subscription?.orderUuid}
+            orderIdText={t("label:subscriptionId")}
+            subscriptionUuid={info?.subscription?.uuid}
+            orderName={info.customer.customerName}
+            orderAmount={ info.subscription.subTotal }
             customerPhone={
-              info.customerDetails.countryCode && info.customerDetails.msisdn
-                ? info.customerDetails.countryCode + info.customerDetails.msisdn
+              info.customer.countryCode && info.customer.msisdn
+                ? info.customer.countryCode + info.customer.msisdn
                 : ""
             }
-            customerEmail={info.customerDetails.email}
-          /> */}
+            customerEmail={info.customer.customerEmail}
+          />
         </div>
       )}
     </div>

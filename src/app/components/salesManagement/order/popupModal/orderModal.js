@@ -34,7 +34,7 @@ import {
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
   useCompleteReservationMutation,
-  useCapturePaymentMutation,
+  useCapturePaymentMutation, useCancelSubscriptionMutation
 } from "app/store/api/apiSlice";
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
@@ -69,6 +69,7 @@ const OrderModal = (props) => {
     customerPhone,
     customerEmail,
     orderType,
+    subscriptionUuid,
     amountInBank = null,
     remainingAmount = null,
   } = props;
@@ -83,6 +84,7 @@ const OrderModal = (props) => {
   const [categoriesList, setCategoriesList] = useState([]);
   const [refundOrder] = useRefundOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
+  const [cancelSubscription] = useCancelSubscriptionMutation();
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
@@ -120,6 +122,7 @@ const OrderModal = (props) => {
         ? validateSchemaReservationCaptureCardModal
         : [
             "Cancel Order",
+            "Cancel Subscription",
             "Reject Refund Request",
             "Cancel Reservation",
           ].includes(headerTitle)
@@ -219,6 +222,27 @@ const OrderModal = (props) => {
         }
         if (window.location.pathname === "/create-order/details")
           navigate(`/sales/orders-list`);
+        else if (
+          window.location.pathname === `/reservations-view/details/${orderId}`
+        )
+          navigate("/reservations");
+        // else window.location.reload();
+        setTimeout(() => {
+          setOpen(false);
+        }, 1000);
+        setApiLoading(false);
+      });
+    } else if (headerTitle === "Cancel Subscription") {
+      setApiLoading(true);
+      cancelSubscription({uuid : subscriptionUuid, cancellationNote : values?.cancellationNote}).then((res) => {
+        if (res?.data?.status_code === 202) {
+          enqueueSnackbar(t(`message:${res?.data?.message}`), {
+            variant: "success",
+          });
+          // setApiLoading(false);
+        }
+        if (window.location.pathname === `/subscription/details/${subscriptionUuid}`)
+          navigate(`/subscriptions/list`);
         else if (
           window.location.pathname === `/reservations-view/details/${orderId}`
         )
@@ -354,7 +378,7 @@ const OrderModal = (props) => {
                         {orderName ? orderName : "-"}
                       </div>
                       <div className="text-MonochromeGray-300">
-                        {orderIdTextLabel}: {orderId ? orderId : "-"}
+                        {orderIdTextLabel}: {["Cancel Subscription"].includes(headerTitle) && subscriptionUuid ? subscriptionUuid :  orderId ? orderId : "-"}
                       </div>
                     </div>
                     <div className="header6 text-MonochromeGray-700">
@@ -388,6 +412,7 @@ const OrderModal = (props) => {
               >
                 {[
                   "Cancel Order",
+                  "Cancel Subscription",
                   "Reject Refund Request",
                   "Cancel Reservation",
                   "Complete Reservation",
@@ -559,6 +584,17 @@ const OrderModal = (props) => {
                     </div>
                   )}
                 {["Send Refund", "Refund Order"].includes(headerTitle) && (
+                  <div
+                    className="flex justify-between py-16 px-12"
+                    style={{ backgroundColor: "#F7F7F7", borderRadius: "4px" }}
+                  >
+                    <p className="subtitle2">{t("label:refundAmount")}</p>
+                    <p className="subtitle2">
+                      {t("label:nok")} {orderAmount}
+                    </p>
+                  </div>
+                )}
+                {["subscriptionRefund"].includes(headerTitle) && (
                   <div
                     className="flex justify-between py-16 px-12"
                     style={{ backgroundColor: "#F7F7F7", borderRadius: "4px" }}

@@ -12,6 +12,7 @@ class SubscriptionsService {
       return {
         uuid: row.subscriptionUuid,
         id: row.subscriptionId,
+        orderUuid: row.orderUuid,
         paymentsMade: `${row?.numberOfOrder || 0}/${row.repeats}`,
         repeats: row.repeats,
         amount: row.amount,

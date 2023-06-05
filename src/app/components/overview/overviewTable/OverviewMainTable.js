@@ -805,6 +805,7 @@ export default function OverviewMainTable(props) {
         break;
       case failedPaymentsListOverview:
         failedPaymentsListTableTabPanelsData(event, newValue);
+        break;
       case reservationListOverview:
         reserveationListTableTabPanelsData(event, newValue);
         break;

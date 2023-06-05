@@ -455,6 +455,18 @@ export const apiSlice = createApi({
       query: () => "/subscription/failed/list",
       providesTags: ["FailedSubscriptionsList"],
     }),
+    cancelSubscription: builder.mutation({
+      query: (payload) => ({
+        url: `/subscription/cancel/${payload.uuid}`,
+        method: "POST",
+        body: {
+          cancellationNote: payload?.cancellationNote
+            ? payload.cancellationNote
+            : null,
+        },
+      }),
+      invalidatesTags: ["SubscriptionsList"],
+    }),
   }),
 });
 
@@ -509,4 +521,5 @@ export const {
   useGetSubscriptionsListQuery,
   useGetFailedSubscriptionsListQuery,
   useCreateSubscriptionMutation,
+  useCancelSubscriptionMutation,
 } = apiSlice;
