@@ -509,25 +509,31 @@ class ClientService {
                   let d;
                   d = response.data.data.map((row) => {
                     return {
-                      clientId: row?.clientId ? row.clientId : "-",
-                      clientName: row?.clientName ? row.clientName : "-",
-                      partnerName: row?.partnerName ? row.partnerName : "-",
-                      planPrice: row?.planPrice ? row.planPrice : "-",
-                      smsCost: row?.smsCost ? row.smsCost : "-",
-                      commissionRate: row?.commisionRate
+                      "Klient ID": row?.clientId ? row.clientId : "-",
+                      "Klientens navn": row?.clientName ? row.clientName : "-",
+                      "Partnerens navn": row?.partnerName
+                        ? row.partnerName
+                        : "-",
+                      "Månedlig planavgift": row?.planPrice
+                        ? row.planPrice
+                        : "-",
+                      "SMS kostnad": row?.smsCost ? row.smsCost : "-",
+                      "Kort/VIPPS kostnad": row?.commisionRate
                         ? row.commisionRate
                         : "-",
-                      b2bInvoiceFee: row?.b2bInvoiceFee
+                      "Fakturagebyr for B2B": row?.b2bInvoiceFee
                         ? row.b2bInvoiceFee
                         : "-",
-                      b2cInvoiceFee: row?.b2cInvoiceFee
+                      "Fakturagebyr for B2C": row?.b2cInvoiceFee
                         ? row.b2cInvoiceFee
                         : "-",
-                      clientType: row?.clientType ? row.clientType : "-",
-                      contractStartDate: row?.contractStartDate
+                      Klienttype: row?.clientType ? row.clientType : "-",
+                      "Kontraktens startdato": row?.contractStartDate
                         ? row.contractStartDate
                         : "-",
-                      clientStatus: row?.clientStatus ? row.clientStatus : "-",
+                      "Klientens status": row?.clientStatus
+                        ? row.clientStatus
+                        : "-",
                     };
                   });
                   resolve(d);

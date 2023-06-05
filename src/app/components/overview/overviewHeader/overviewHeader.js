@@ -138,7 +138,7 @@ export default function OverviewHeader(props) {
           let wb = utils.book_new(),
             ws = utils.json_to_sheet(response);
           utils.book_append_sheet(wb, ws, "client list");
-          writeFile(wb, `Client_Lists.xlsx`);
+          writeFile(wb, `Front Payment AS_Klientliste.xlsx`);
         })
         .catch((e) => {
           enqueueSnackbar(t(`message:${e}`), { variant: "error" });
