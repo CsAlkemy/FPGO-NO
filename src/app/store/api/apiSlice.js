@@ -94,6 +94,7 @@ export const apiSlice = createApi({
     "ApprovalClientsList",
     "RefundRequestsList",
     "SubscriptionsList",
+    "FailedSubscriptionsList"
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -450,6 +451,10 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["SubscriptionsList"],
     }),
+    getFailedSubscriptionsList: builder.query({
+      query: () => "/subscription/failed/list",
+      providesTags: ["FailedSubscriptionsList"],
+    }),
   }),
 });
 
@@ -502,5 +507,6 @@ export const {
   useCompleteReservationMutation,
   useCapturePaymentMutation,
   useGetSubscriptionsListQuery,
+  useGetFailedSubscriptionsListQuery,
   useCreateSubscriptionMutation,
 } = apiSlice;

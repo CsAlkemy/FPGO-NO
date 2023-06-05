@@ -47,15 +47,16 @@ class SubscriptionsService {
     let d;
     d = data.map((row) => {
       return {
-        uuid: row.uuid,
-        date: row.date,
-        orderId: row.orderId,
-        name: row.name,
+        uuid: row.subscriptionId,
+        date: row.orderDate,
+        orderId: row.orderUuid,
+        name: row.customerName,
         phone:
           row?.countryCode && row?.msisdn ? row.countryCode + row.msisdn : "",
         subscriptionId: row.subscriptionId,
         amount: row.amount,
         status: row.status.toLowerCase(),
+        stage: row.status.toLowerCase(),
         translationKey: row.translationKey,
       };
     });
