@@ -137,14 +137,16 @@ const OrderModal = (props) => {
       uuid: orderId,
       checkPhone,
       checkEmail,
-      fullRefundAmount : orderAmount,
-      headerTitle
+      fullRefundAmount: orderAmount,
+      headerTitle,
     };
     if (flag) {
       setApiLoading(true);
       const payload = {
         isPartial: refundType === "partial",
-        amount: ["Send Refund", "Refund Order"].includes(headerTitle) ? orderAmount : values?.refundAmount,
+        amount: ["Send Refund", "Refund Order"].includes(headerTitle)
+          ? orderAmount
+          : values?.refundAmount,
         message: flagMessage,
         uuid: orderId,
       };
@@ -517,7 +519,9 @@ const OrderModal = (props) => {
                                 : t("label:refundAmount")
                             }
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             variant="outlined"
                             error={!!errors.refundAmount}
@@ -538,9 +542,14 @@ const OrderModal = (props) => {
                     </div>
                   )}
                 {["Send Refund", "Refund Order"].includes(headerTitle) && (
-                  <div className="flex justify-between py-16 px-12" style={{backgroundColor: "#F7F7F7", borderRadius: "4px"}}>
+                  <div
+                    className="flex justify-between py-16 px-12"
+                    style={{ backgroundColor: "#F7F7F7", borderRadius: "4px" }}
+                  >
                     <p className="subtitle2">{t("label:refundAmount")}</p>
-                    <p className="subtitle2">{t("label:nok")} {orderAmount}</p>
+                    <p className="subtitle2">
+                      {t("label:nok")} {orderAmount}
+                    </p>
                   </div>
                 )}
                 {/*{headerTitle === "moreThanThreeRefundAttempts" && (*/}
@@ -560,7 +569,9 @@ const OrderModal = (props) => {
                           {...field}
                           label={t("label:amount")}
                           type="number"
-                          onWheel={event => { event.target.blur()}}
+                          onWheel={(event) => {
+                            event.target.blur();
+                          }}
                           autoComplete="off"
                           variant="outlined"
                           error={!!errors.chargeAmount}

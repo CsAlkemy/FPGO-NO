@@ -43,9 +43,9 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import { useNavigate } from "react-router-dom";
 import FuseUtils from "@fuse/utils";
 import { Cancel } from "@mui/icons-material";
-import { countryList } from "src/app/utils/countries";
-import { Box } from "@mui/system";
 import EventIcon from "@mui/icons-material/Event";
+import { countryList } from "../../../utils/countries";
+import Box from "@mui/material/Box";
 
 const createProducts = () => {
   const { t } = useTranslation();
@@ -59,8 +59,9 @@ const createProducts = () => {
   const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
-  const [isAddCustomerButtonDisable, setIsAddCustomerButtonDisable] = useState(false)
-  const [ manualCustomerMsisdn, setManualCustomerMsisdn] = useState(null)
+  const [isAddCustomerButtonDisable, setIsAddCustomerButtonDisable] =
+    useState(false);
+  const [manualCustomerMsisdn, setManualCustomerMsisdn] = useState(null);
   const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] =
     useState("+47");
   const [searchCustomerPrefixCountry, setSearchCustomerPrefixCountry] =
@@ -179,7 +180,6 @@ const createProducts = () => {
                   country: row?.country,
                   searchString:
                     // row?.name + " ( " + row?.phone + " )" + row.uuid,
-                    //   row?.phone.toString().slice(searchCustomerPrefixCountryCode.length) + row.uuid,
                     row?.phone + row.uuid,
                 });
               });
@@ -293,7 +293,9 @@ const createProducts = () => {
   const valHtml = val.map((option, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
     // const label = option.name || option.phone;
-    const label = option?.name ? option?.name : `${option?.phone.split("^")[0]}${option?.phone.split("^")[1]}`;
+    const label = option?.name
+      ? option?.name
+      : `${option?.phone.split("^")[0]}${option?.phone.split("^")[1]}`;
     const isExistingCustomer = option?.name || null;
     return isExistingCustomer ? (
       <Chip
@@ -615,9 +617,9 @@ const createProducts = () => {
                       }}
                       onInputChange={(event, value) => {
                         setNewCustomer(
-                          searchCustomerPrefixCountryCode+"^"+value
+                          searchCustomerPrefixCountryCode + "^" + value
                         );
-                        setManualCustomerMsisdn(value)
+                        setManualCustomerMsisdn(value);
                         if (value.length === 0) setCustomerSearchBy(undefined);
                         if (value.length < 8 || value.length > 15) {
                           setIsAddCustomerButtonDisable(true);
@@ -772,7 +774,6 @@ const createProducts = () => {
                   )}
                 />
               </div>
-
               <div className="flex gap-5 m-5 items-center">
                 <InfoIcon className="text-primary-500 h-[15px] w-[15px]" />
                 <span className="body4 text-m-grey-500">
@@ -1194,6 +1195,10 @@ const createProducts = () => {
                                   className="bg-white custom-input-height col-span-1"
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.rate}
+                                  type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   variant="outlined"
                                   type="number"
                                   onWheel={(event) => {

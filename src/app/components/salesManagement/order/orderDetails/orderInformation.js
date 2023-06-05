@@ -89,7 +89,9 @@ const OrderInformation = ({ info }) => {
       name: "sweden",
     },
   ]);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2, 3, 4, 5, 6, 7,8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+  const [addOrderIndex, setAddOrderIndex] = React.useState([
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+  ]);
 
   const [taxVariable, setTaxVariable] = React.useState([
     {
@@ -460,7 +462,9 @@ const OrderInformation = ({ info }) => {
                                   //label="Qty"
                                   className="bg-white custom-input-height col-span-2"
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.quantity}
                                   helperText={
@@ -545,7 +549,9 @@ const OrderInformation = ({ info }) => {
                                   className="bg-white custom-input-height col-span-1"
                                   // type="text"
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -679,7 +685,9 @@ const OrderInformation = ({ info }) => {
                                 //label="Qty"
                                 className="bg-white custom-input-height"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.quantity}
                                 helperText={
@@ -768,7 +776,9 @@ const OrderInformation = ({ info }) => {
                                 className="bg-white custom-input-height"
                                 // type="text"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors?.order?.[index]?.tax}
                                 helperText={
@@ -1365,7 +1375,13 @@ const OrderInformation = ({ info }) => {
                                 />
                               </div>
                               <div className="mt-32 sm:mt-0">
-                                <div className={`${info?.customerDetails?.type === "Corporate" ? 'form-pair-input': ''} gap-x-20 `}>
+                                <div
+                                  className={`${
+                                    info?.customerDetails?.type === "Corporate"
+                                      ? "form-pair-input"
+                                      : ""
+                                  } gap-x-20 `}
+                                >
                                   <Controller
                                     name="customerName"
                                     control={control}
@@ -1396,59 +1412,56 @@ const OrderInformation = ({ info }) => {
                                       />
                                     )}
                                   />
-                                  {
-                                      info?.customerDetails?.type === 'Corporate' && (
-                                          <Controller
-                                              name="orgorPID"
-                                              control={control}
-                                              render={({ field }) => (
-                                                  <TextField
-                                                      {...field}
-                                                      label={
-                                                        t("label:organizationId")
-                                                        // customData.customerType === "private"
-                                                        //   ? t("label:pNumber")
-                                                        //   : t("label:organizationId")
-                                                      }
-                                                      type="text"
-                                                      autoComplete="off"
-                                                      error={!!errors.orgorPID}
-                                                      required={
-                                                          customData.customerType ===
-                                                          "corporate"
-                                                      }
-                                                      helperText={errors?.orgorPID?.message}
-                                                      variant="outlined"
-                                                      fullWidth
-                                                      disabled
-                                                      value={
-                                                          field.value ||
-                                                          (info.customerDetails?.type ===
-                                                          "Private"
-                                                              ?  ""
-                                                              : info.customerDetails
-                                                                  ?.organizationId
-                                                                  ? info.customerDetails
-                                                                      ?.organizationId
-                                                                  : "")
-                                                      }
-                                                      defaultValue={
-                                                        info.customerDetails?.type ===
-                                                        "Private"
-                                                            ? ""
-                                                            : info.customerDetails
-                                                                ?.organizationId
-                                                                ? info.customerDetails
-                                                                    ?.organizationId
-                                                                : ""
-                                                      }
-                                                  />
-                                              )}
-                                          />
-                                      )
-                                  }
-
-
+                                  {info?.customerDetails?.type ===
+                                    "Corporate" && (
+                                    <Controller
+                                      name="orgorPID"
+                                      control={control}
+                                      render={({ field }) => (
+                                        <TextField
+                                          {...field}
+                                          label={
+                                            t("label:organizationId")
+                                            // customData.customerType === "private"
+                                            //   ? t("label:pNumber")
+                                            //   : t("label:organizationId")
+                                          }
+                                          type="text"
+                                          autoComplete="off"
+                                          error={!!errors.orgorPID}
+                                          required={
+                                            customData.customerType ===
+                                            "corporate"
+                                          }
+                                          helperText={errors?.orgorPID?.message}
+                                          variant="outlined"
+                                          fullWidth
+                                          disabled
+                                          value={
+                                            field.value ||
+                                            (info.customerDetails?.type ===
+                                            "Private"
+                                              ? ""
+                                              : info.customerDetails
+                                                  ?.organizationId
+                                              ? info.customerDetails
+                                                  ?.organizationId
+                                              : "")
+                                          }
+                                          defaultValue={
+                                            info.customerDetails?.type ===
+                                            "Private"
+                                              ? ""
+                                              : info.customerDetails
+                                                  ?.organizationId
+                                              ? info.customerDetails
+                                                  ?.organizationId
+                                              : ""
+                                          }
+                                        />
+                                      )}
+                                    />
+                                  )}
                                 </div>
                                 <div className="">
                                   <div className="form-pair-three-by-one">
@@ -1866,7 +1879,9 @@ const OrderInformation = ({ info }) => {
                                           {...field}
                                           label={t("label:internalReferenceNo")}
                                           type="number"
-                                          onWheel={event => { event.target.blur()}}
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
                                           autoComplete="off"
                                           error={!!errors.internalReferenceNo}
                                           helperText={

@@ -40,11 +40,13 @@ import {
   fpAdminUsersOverview,
   ordersListOverview,
   organizationWiseUsersOverview,
+  payoutReportsListOverview,
   productsListOverview,
   refundRequestsOverview,
   subClientAdminOverview,
   userListOverview,
-  reservationListOverview, payoutReportsListOverview
+  reservationListOverview,
+  payoutReportsListOverview,
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from "../../../utils/UtilsService";
@@ -626,15 +628,23 @@ export default function OverviewMainTable(props) {
         setData(props.tableData);
         break;
       case 1:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "active"));
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "active")
+        );
         setFilteredData(
           props.tableData.filter((row) => row.status.toLowerCase() === "active")
         );
         break;
       case 2:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "inactive"));
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "inactive"
+          )
+        );
         setFilteredData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "inactive")
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "inactive"
+          )
         );
         break;
     }
@@ -852,7 +862,7 @@ export default function OverviewMainTable(props) {
         navigate(`/reports/payouts/${info.uuid}`, {
           state: {
             orgName: info.name,
-          }
+          },
         });
         break;
     }

@@ -15,7 +15,8 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
-  reservationListOverview, payoutReportsListOverview
+  reservationListOverview,
+  payoutReportsListOverview,
 } from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";

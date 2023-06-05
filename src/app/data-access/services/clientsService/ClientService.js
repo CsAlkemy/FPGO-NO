@@ -407,7 +407,9 @@ class ClientService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = endTime ?`${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}/${endTime}` : `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
+            const URL = endTime
+              ? `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}/${endTime}`
+              : `${EnvVariable.BASEURL}/clients/${uuid}/timeline/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {
@@ -481,6 +483,68 @@ class ClientService {
               .catch((e) => {
                 if (e?.response?.data?.status_code === 404)
                   resolve(e.response.data);
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
+    });
+  };
+
+  exportClientLists = async () => {
+    return new Promise((resolve, reject) => {
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            const URL = `${EnvVariable.BASEURL}/clients/export/`;
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  let d;
+                  d = response.data.data.map((row) => {
+                    return {
+                      "Klient ID": row?.clientId ? row.clientId : "-",
+                      "Klientens navn": row?.clientName ? row.clientName : "-",
+                      "Partnerens navn": row?.partnerName
+                        ? row.partnerName
+                        : "-",
+                      "Månedlig planavgift": row?.planPrice
+                        ? row.planPrice
+                        : "-",
+                      "SMS kostnad": row?.smsCost ? row.smsCost : "-",
+                      "Kort/VIPPS kostnad": row?.commisionRate
+                        ? row.commisionRate
+                        : "-",
+                      "Fakturagebyr for B2B": row?.b2bInvoiceFee
+                        ? row.b2bInvoiceFee
+                        : "-",
+                      "Fakturagebyr for B2C": row?.b2cInvoiceFee
+                        ? row.b2cInvoiceFee
+                        : "-",
+                      Klienttype: row?.clientType ? row.clientType : "-",
+                      "Kontraktens startdato": row?.contractStartDate
+                        ? row.contractStartDate
+                        : "-",
+                      "Klientens status": row?.clientStatus
+                        ? row.clientStatus
+                        : "-",
+                    };
+                  });
+                  resolve(d);
+                } else if (
+                  response.data.status_code === 200 &&
+                  !response.data.is_data
+                ) {
+                  resolve([]);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
                 reject(e?.response?.data?.message);
               });
           } else reject("somethingWentWrong");

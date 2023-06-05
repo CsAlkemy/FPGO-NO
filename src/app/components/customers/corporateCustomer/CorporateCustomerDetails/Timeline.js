@@ -30,18 +30,21 @@ const TimelineLog = () => {
   const handleDateChange = (date) => {
     setIsFetching(true);
     setDefaultTimeline(false);
-    
-    let prepareSelectedDate = `${date.getMonth()+1}.${
+    let prepareSelectedDate = `${date.getMonth() + 1}.${
       date.getDate() - (date.getDate() - 1)
-    }.${date.getFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`
-
+    }.${date.getFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`;
     const startTime = new Date(prepareSelectedDate).getTime() / 1000;
-
-    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-    let prepareLastDateString = `${lastDay.getMonth()+1}.${lastDay.getDate()}.${lastDay.getFullYear()} ${lastDay.getUTCHours()}:${lastDay.getUTCMinutes()}:${lastDay.getUTCSeconds()}`
+    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    let prepareLastDateString = `${
+      lastDay.getMonth() + 1
+    }.${lastDay.getDate()}.${lastDay.getFullYear()} ${lastDay.getUTCHours()}:${lastDay.getUTCMinutes()}:${lastDay.getUTCSeconds()}`;
     const endTime = new Date(prepareLastDateString).getTime() / 1000;
     setSelectedDate(prepareSelectedDate);
-    CustomersService.getCustomerTimelineByUUID(queryParams.id, startTime, endTime)
+    CustomersService.getCustomerTimelineByUUID(
+      queryParams.id,
+      startTime,
+      endTime
+    )
       .then((res) => {
         setLogs(res?.data);
         setIsFetching(false);
@@ -55,13 +58,14 @@ const TimelineLog = () => {
   useEffect(() => {
     if (defaultTimeline && isFetching) {
       let currentDate = new Date();
-      let prepareDateStringOneYearBeforeCurrentMonth = `${currentDate.getMonth()+1}.${
-        currentDate.getDate() - (currentDate.getDate() - 1)
-      }.${currentDate.getFullYear()-1} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}:${currentDate.getUTCSeconds()}`
+      let prepareDateStringOneYearBeforeCurrentMonth = `${
+        currentDate.getMonth() + 1
+      }.${currentDate.getDate() - (currentDate.getDate() - 1)}.${
+        currentDate.getFullYear() - 1
+      } ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}:${currentDate.getUTCSeconds()}`;
 
-      let startDate = new Date(prepareDateStringOneYearBeforeCurrentMonth).getTime()/1000
-      const timeStamp = Math.floor(new Date(new Date().setFullYear(new Date().getFullYear() - 1))/1000);
-      const endTime = Math.floor(new Date().getTime()/1000);
+      let startDate =
+        new Date(prepareDateStringOneYearBeforeCurrentMonth).getTime() / 1000;
       CustomersService.getCustomerTimelineByUUID(queryParams.id, startDate)
         .then((res) => {
           setLogs(res?.data);
@@ -82,7 +86,9 @@ const TimelineLog = () => {
           views={["year", "month"]}
           value={selectedDate}
           onChange={handleDateChange}
-          renderInput={(params) => <TextField {...params} error={false} type="date" />}
+          renderInput={(params) => (
+            <TextField {...params} error={false} type="date" />
+          )}
           disableFuture
         />
       </div>

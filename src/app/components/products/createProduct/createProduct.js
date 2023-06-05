@@ -345,11 +345,14 @@ const createProducts = (onSubmit = () => {}) => {
                     type="checkbox"
                     control={control}
                     render={({ field: { onChange, value, onBlur, ref } }) => (
-                      <FormControl error={!!errors.differentAccountNumber} required>
+                      <FormControl
+                        error={!!errors.differentAccountNumber}
+                        required
+                      >
                         <FormControlLabel
                           // style={{ display: "table" }}
                           control={
-                            <div >
+                            <div>
                               <Checkbox
                                 checked={value}
                                 onBlur={onBlur}
@@ -373,7 +376,9 @@ const createProducts = (onSubmit = () => {}) => {
                         />
                         <FormHelperText className="ml-32">
                           {errors?.differentAccountNumber?.message
-                            ? t(`validation:${errors?.differentAccountNumber?.message}`)
+                            ? t(
+                                `validation:${errors?.differentAccountNumber?.message}`
+                              )
                             : ""}
                         </FormHelperText>
                       </FormControl>

@@ -513,15 +513,15 @@ const createProducts = () => {
                               }
                               label={
                                 <div className="body3">
-                                  {t(
-                                    "label:differentAccountCode"
-                                  )}
+                                  {t("label:differentAccountCode")}
                                 </div>
                               }
                             />
                             <FormHelperText className="ml-32">
                               {errors?.differentAccountNumber?.message
-                                ? t(`validation:${errors?.differentAccountNumber?.message}`)
+                                ? t(
+                                    `validation:${errors?.differentAccountNumber?.message}`
+                                  )
                                 : ""}
                             </FormHelperText>
                           </FormControl>
