@@ -3,6 +3,7 @@ import authRoles from "../../data-access/utils/AuthRoles";
 import SubscriptionDetails from "../../components/subscription/subscriptionDetails";
 import SubscriptionsListOverview from "../overviews/subscriptions/SubscriptionsListOverview";
 import FailedPaymentsListOverview from "../overviews/subscriptions/FailedPaymentsListOverview";
+import FailedPaymentDetails from "../../components/subscription/failedPaymentDetails";
 
 const CreateSubscription = lazy(() =>
   import("../../components/subscription/index")
@@ -85,6 +86,10 @@ export const SubscriptionsConfigRBAC = {
     {
       path: "/subscriptions/failed-payments-list",
       element: <FailedPaymentsListOverview />,
+    },
+    {
+      path: "/subscription/failed/:uuid",
+      element: <FailedPaymentDetails />,
     },
   ],
 };
