@@ -35,8 +35,8 @@ const ReservationDropdown = (props) => {
   let refundableAmount = data.capturedAmount - data.amountRefunded;
 
   //console.log(refundableAmount);
-  console.log(data);
-  data.isPaid = true;
+  //console.log(data);
+  //data.isPaid = true;
   //data.status = "sent";
   // data.reservedAt = 1679476569;
   // data.reservedAt = 1679735769;

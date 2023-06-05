@@ -44,7 +44,7 @@ import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal"
 import ReservationDropdown from "../../salesManagement/reservations/dropdown";
 
 export default function OverViewMainTableBody(props) {
-  console.log(props);
+  //console.log(props);
   const { t } = useTranslation();
   const [openHigh, setOpenHigh] = useState(false);
   const [openModerate, setOpenModerate] = useState(false);

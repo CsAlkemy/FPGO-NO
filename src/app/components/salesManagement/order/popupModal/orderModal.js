@@ -253,6 +253,7 @@ const OrderModal = (props) => {
         setApiLoading(false);
       });
     } else if (["Resend Order", "Resend Reservation"].includes(headerTitle)) {
+      //console.log('hello');
       setApiLoading(true);
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
