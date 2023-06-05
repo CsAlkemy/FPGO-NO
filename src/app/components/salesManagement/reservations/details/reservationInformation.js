@@ -263,9 +263,7 @@ const ReservationInformation = ({ info }) => {
                     disabled
                     value={
                       field.value ||
-                      (info.invoiceReferences?.referenceNumber
-                        ? info.invoiceReferences?.referenceNumber
-                        : "")
+                      (info.referenceNumber ? info.referenceNumber : "")
                     }
                   />
                 )}
@@ -286,9 +284,7 @@ const ReservationInformation = ({ info }) => {
                     disabled
                     value={
                       field.value ||
-                      (info.invoiceReferences?.customerReference
-                        ? info.invoiceReferences?.customerReference
-                        : "")
+                      (info.customerReference ? info.customerReference : "")
                     }
                   />
                 )}
@@ -642,15 +638,13 @@ const ReservationInformation = ({ info }) => {
                       disabled
                       value={
                         field.value ||
-                        (info.invoiceReferences?.customerNotes
-                          ? info.invoiceReferences?.customerNotes
-                          : "")
+                        (info.customerNotes ? info.customerNotes : "")
                       }
                     />
                   )}
                 />
                 <CharCount
-                  current={info.invoiceReferences?.customerNotes?.length || 0}
+                  current={info.customerNotes?.length || 0}
                   total={200}
                 />
               </div>
@@ -672,17 +666,13 @@ const ReservationInformation = ({ info }) => {
                       disabled
                       value={
                         field.value ||
-                        (info.invoiceReferences?.termsAndCondition
-                          ? info.invoiceReferences?.termsAndCondition
-                          : "")
+                        (info.termsAndCondition ? info.termsAndCondition : "")
                       }
                     />
                   )}
                 />
                 <CharCount
-                  current={
-                    info.invoiceReferences?.termsAndCondition?.length || 0
-                  }
+                  current={info.termsAndCondition?.length || 0}
                   total={200}
                 />
               </div>
