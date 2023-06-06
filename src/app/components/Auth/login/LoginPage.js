@@ -36,7 +36,6 @@ const LoginPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const inputRef = useRef();
-  const dispatch = useDispatch();
 
   const [resendClicked, setResendClicked] = React.useState(false);
 
