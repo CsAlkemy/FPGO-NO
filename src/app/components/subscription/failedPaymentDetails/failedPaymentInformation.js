@@ -1,110 +1,42 @@
-import { DesktopDatePicker, LoadingButton } from "@mui/lab";
+import { DesktopDatePicker } from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Autocomplete,
   Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormHelperText,
   Hidden,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import DiscardConfirmModal from "../../common/confirmDiscard";
 import {
   createSubscriptionDefaultValue,
   quickOrderValidation,
 } from "../utils/helper";
 import { IoMdAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import CharCount from "../../common/charCount";
 import { yupResolver } from "@hookform/resolvers/yup";
-import AuthService from "../../../data-access/services/authService";
-import ProductService from "../../../data-access/services/productsService/ProductService";
-import CustomersService from "../../../data-access/services/customersService/CustomersService";
-import ClientService from "../../../data-access/services/clientsService/ClientService";
-import UtilsServices from "../../../data-access/utils/UtilsServices";
-import { useCreateQuickOrderMutation } from "app/store/api/apiSlice";
-import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import { useSnackbar } from "notistack";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
-import { useNavigate } from "react-router-dom";
 
-const SubscriptionInformation = ({ info, customerInfo }) => {
+const FailedPaymentInformation = ({ info }) => {
   const { t } = useTranslation();
-  const userInfo = UtilsServices.getFPUserData();
-  const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
-  const [loading, setLoading] = React.useState(false);
   const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
-  const [productsList, setProductsList] = useState([]);
-  const [customersList, setCustomersList] = useState([]);
-  const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
   ]);
-  const [itemLoader, setItemLoader] = useState(false);
-  const [customerSearchBoxDropdownOpen, setCustomerSearchBoxDropdownOpen] =
-    useState(false);
   const [disableRowIndexes, setDisableRowIndexes] = useState([]);
-  const [taxes, setTaxes] = React.useState([]);
-
-  let subTotal = 0;
-  let totalTax = 0;
-  let totalDiscount = 0;
-  let grandTotal = 0;
-
-  let defaultTaxValue;
-
-  const [billingFrequency, setBillingFrequency] = React.useState([
-    {
-      title: "Monthly",
-      value: "month",
-    },
-    {
-      title: "weekly",
-      value: "week",
-    },
-    {
-      title: "daily",
-      value: "day",
-    },
-  ]);
-
-  const enableCurrentProductRow = (ind) => {
-    setDisableRowIndexes(disableRowIndexes.filter((item) => item !== ind));
-  };
   const [open, setOpen] = React.useState(false);
 
-  const {
-    control,
-    formState,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    resetField,
-  } = useForm({
+  const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
     createSubscriptionDefaultValue,
     resolver: yupResolver(quickOrderValidation),
   });
-  const { isValid, dirtyFields, errors, touchedFields } = formState;
+  const { errors } = formState;
 
   useEffect(() => {
-    // createSubscriptionDefaultValue.billingFrequency = info.frequency || ""
     createSubscriptionDefaultValue.repeatsNoOfTimes = info.repeats || "";
     if (info?.products && info?.products && info?.products.length >= 2) {
       setAddOrderIndex(
@@ -114,78 +46,10 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
       setAddOrderIndex(addOrderIndex.filter((item, index) => item < 1));
     }
     reset({ ...createSubscriptionDefaultValue });
-  }, []);
-
-  const pnameOnBlur = (e) => {
-    if (!e.target.value.length) {
-      resetField(`${e.target.name}`);
-    }
-  };
+  }, [info]);
   const onSubmit = (values) => {
     //console.log(values);
   };
-
-  const disableCurrentProductRow = (index) => {
-    setDisableRowIndexes([...disableRowIndexes, index]);
-  };
-
-  const onSameRowAction = (index) => {
-    setValue(`order[${index}].productName`, "");
-    resetField(`order[${index}].productName`);
-    resetField(`order[${index}].productID`);
-    resetField(`order[${index}].quantity`);
-    resetField(`order[${index}].rate`);
-    resetField(`order[${index}].discount`);
-    resetField(`order[${index}].tax`);
-
-    setValue(`order[${index}].productName`, "");
-    setValue(`order[${index}].productID`, "");
-    setValue(`order[${index}].quantity`, "");
-    setValue(`order[${index}].rate`, "");
-    setValue(`order[${index}].discount`, "");
-    setValue(`order[${index}].tax`, "");
-    enableCurrentProductRow(index);
-  };
-
-  const productWiseTotal = (index) => {
-    const watchQuantity = watch(`order[${index}].quantity`);
-    const watchRate = watch(`order[${index}].rate`);
-    const watchDiscount = watch(`order[${index}].discount`) || 0;
-    const watchTax = watch(`order[${index}].tax`);
-    const watchName = watch(`order[${index}].productName`);
-    const watchId = watch(`order[${index}].productID`);
-    let rate, splitedRate, dotFormatRate, floatRate;
-    if (!!watchRate) {
-      rate = watchRate;
-      splitedRate = rate.toString().includes(",") ? rate.split(",") : rate;
-      dotFormatRate =
-        typeof splitedRate === "object"
-          ? `${splitedRate[0]}.${splitedRate[1]}`
-          : splitedRate;
-      floatRate = parseFloat(dotFormatRate);
-    }
-
-    const total =
-      parseInt(watchQuantity) * floatRate - parseFloat(watchDiscount);
-    const subTotalCalculation =
-      (parseInt(watchQuantity) * floatRate) / ((100 + watchTax) / 100);
-    const totalTaxCalculation = subTotalCalculation
-      ? (subTotalCalculation * (watchTax / 100)) / 2
-      : 0;
-
-    if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
-    if (subTotalCalculation)
-      subTotal = subTotal + parseFloat(subTotalCalculation);
-    if (totalTaxCalculation) totalTax = totalTax + totalTaxCalculation;
-    if (watchDiscount)
-      totalDiscount = totalDiscount + parseFloat(watchDiscount);
-    if (total) grandTotal = grandTotal + total;
-    if (total > 0) {
-      return ` ${total}`;
-    }
-  };
-
-  console.log("Info : ",info);
 
   return (
     <div className="create-product-container">
@@ -203,32 +67,28 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                     <div className="p-20 rounded-8 border-MonochromeGray-50 border-2 mb-20 w-full md:w-2/4">
                       <div className="flex justify-between items-center">
                         <div className="subtitle1 text-MonochromeGray-700">
-                          {customerInfo?.customerName || ""}
+                          {info?.customerName || ""}
                         </div>
                       </div>
                       <div className="">
                         <div className="text-MonochromeGray-700 body2 mt-16">
-                          {customerInfo?.countryCode && customerInfo?.msisdn
-                            ? customerInfo?.countryCode + customerInfo?.msisdn
+                          {info?.countryCode && info?.msisdn
+                            ? info?.countryCode + info?.msisdn
                             : ""}
                         </div>
                         <div className="text-MonochromeGray-700 body2">
-                          {customerInfo?.customerEmail || ""}
+                          {info?.email || ""}
                         </div>
                         <div className="text-MonochromeGray-700 body2">
-                          {customerInfo?.street
-                            ? `${customerInfo?.street}, `
-                            : ""}{" "}
-                          {customerInfo?.city || ""}{" "}
-                          {customerInfo?.zip ? `${customerInfo?.zip}, ` : ""}{" "}
-                          {customerInfo?.country || ""}
+                          {info?.street ? `${info?.street}, ` : ""}{" "}
+                          {info?.city || ""} {info?.zip ? `${info?.zip}, ` : ""}{" "}
+                          {info?.country || ""}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-4 gap-20 my-32">
                 <Controller
                   name="orderDate"
@@ -329,120 +189,6 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                   )}
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-20 my-32">
-                <Controller
-                  name="billingFrequency*"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl error={!!errors.billingFrequency} fullWidth>
-                      <InputLabel id="billingFrequency">
-                        {t("label:billingFrequency")} *
-                      </InputLabel>
-                      <Select
-                        {...field}
-                        labelId="billingFrequency"
-                        id="select"
-                        label={t("label:billingFrequency")}
-                        defaultValue={info?.frequency || "month"}
-                        disabled
-                        value={field.value}
-                        required
-                      >
-                        {billingFrequency.length ? (
-                          billingFrequency.map((frequency, index) => {
-                            return (
-                              <MenuItem key={index} value={frequency.value}>
-                                {t(`label:${frequency.title}`)}
-                              </MenuItem>
-                            );
-                          })
-                        ) : (
-                          <MenuItem key={0} value={30}>
-                            Monthly
-                          </MenuItem>
-                        )}
-                      </Select>
-                      <FormHelperText>
-                        {errors?.billingFrequency?.message
-                          ? t(`validation:${errors?.billingFrequency?.message}`)
-                          : ""}
-                      </FormHelperText>
-                    </FormControl>
-                  )}
-                />
-
-                <Controller
-                  name="repeatsNoOfTimes"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label={t("label:repeatsNoOfTimes")}
-                      type="number"
-                      required
-                      autoComplete="off"
-                      disabled
-                      error={!!errors.repeatsNoOfTimes}
-                      helperText={
-                        errors?.repeatsNoOfTimes?.message
-                          ? t(`validation:${errors?.repeatsNoOfTimes?.message}`)
-                          : ""
-                      }
-                      defaultValue={info?.repeats || ""}
-                      variant="outlined"
-                      fullWidth
-                    />
-                  )}
-                />
-                <Controller
-                  name="subscriptionEnds"
-                  control={control}
-                  render={({ field: { onChange, value, onBlur } }) => (
-                    <DesktopDatePicker
-                      label={t("label:subscriptionEnds")}
-                      mask=""
-                      inputFormat="dd.MM.yyyy"
-                      value={!value ? new Date() : value}
-                      required
-                      onChange={onChange}
-                      minDate={new Date().setDate(new Date().getDate() - 30)}
-                      maxDate={new Date().setDate(new Date().getDate() + 30)}
-                      PopperProps={{
-                        sx: {
-                          "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
-                            {
-                              borderRadius: "8px",
-                              "&.Mui-selected": {
-                                backgroundColor: "#c9eee7",
-                                color: "#323434",
-                              },
-                            },
-                        },
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          onBlur={onBlur}
-                          required
-                          disabled
-                          type="date"
-                          error={!!errors.subscriptionEnds}
-                          helperText={
-                            errors?.subscriptionEnds?.message
-                              ? t(
-                                  `validation:${errors?.subscriptionEnds?.message}`
-                                )
-                              : ""
-                          }
-                          sx={{
-                            svg: { color: "#E7AB52" },
-                          }}
-                        />
-                      )}
-                    />
-                  )}
-                />
-              </div>
               <div className="send-order-credit-check">
                 <div className="caption2 text-MonochromeGray-300 my-10">
                   {t("label:sendOrderBy")}
@@ -456,7 +202,7 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                   <Button
                     variant="outlined"
                     className={`${
-                      info?.sendOrderViaSms
+                      info?.sendOrderViaSms === 1
                         ? "create-order-capsule-button-active"
                         : "create-order-capsule-button"
                     }`}
@@ -468,7 +214,7 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                     variant="outlined"
                     disabled
                     className={`${
-                      info?.sendOrderViaEmail
+                      info?.sendOrderViaEmail === 1
                         ? "create-order-capsule-button-active"
                         : "create-order-capsule-button"
                     }`}
@@ -675,7 +421,11 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                             <div>{t("label:total")}</div>
                             <div>
                               {t("label:nok")}{" "}
-                              {info?.products?.[index]?.amount ? ThousandSeparator(info?.products?.[index]?.amount) : 0}
+                              {info?.products?.[index]?.amount
+                                ? ThousandSeparator(
+                                    info?.products?.[index]?.amount
+                                  )
+                                : 0}
                             </div>
                           </div>
                         </div>
@@ -883,7 +633,9 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                       <div className="my-auto">
                         <div className="body3 text-right">
                           {t("label:nok")}{" "}
-                          {info?.products?.[index]?.amount ? ThousandSeparator(info?.products?.[index]?.amount) : 0}
+                          {info?.products?.[index]?.amount
+                            ? ThousandSeparator(info?.products?.[index]?.amount)
+                            : 0}
                         </div>
                       </div>
                     </div>
@@ -907,7 +659,7 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                           type="text"
                           autoComplete="off"
                           disabled
-                          value={info?.customerNote || ""}
+                          value={info?.customerNotes || ""}
                           error={!!errors.customerNotes}
                           helperText={
                             errors?.customerNotes?.message
@@ -979,9 +731,8 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                           {t("label:tax")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} {info?.tax
-                          ? ThousandSeparator(info?.tax)
-                          : 0}
+                          {t("label:nok")}{" "}
+                          {info?.tax ? ThousandSeparator(info?.tax) : 0}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-10">
@@ -989,9 +740,10 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                           {t("label:discount")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} {info?.discount
-                          ? ThousandSeparator(info?.discount)
-                          : 0}
+                          {t("label:nok")}{" "}
+                          {info?.discount
+                            ? ThousandSeparator(info?.discount)
+                            : 0}
                         </div>
                       </div>
                     </div>
@@ -1004,29 +756,10 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                           {t("label:payablePerCycle")}
                         </div>
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:nok")} {info?.payablePerCycle ? ThousandSeparator(info?.payablePerCycle) : 0}
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center my-10">
-                        <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:frequency")}
-                        </div>
-                        <div className="body3 text-MonochromeGray-700">
-                          {info?.frequency === "month"
-                            ? t("label:monthly")
-                            : info?.frequency === "week"
-                            ? t("label:weekly")
-                            : t("label:daily")}
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center my-10">
-                        <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:repeats")}
-                        </div>
-                        <div className="body3 text-MonochromeGray-700">
-                          {info?.repeats || 0} {t("label:times")}
+                          {t("label:nok")}{" "}
+                          {info?.payablePerCycle
+                            ? ThousandSeparator(info?.payablePerCycle)
+                            : 0}
                         </div>
                       </div>
                     </div>
@@ -1037,15 +770,7 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
           </form>
         </div>
       </div>
-      <DiscardConfirmModal
-        open={open}
-        setOpen={setOpen}
-        reset={reset}
-        title={t("label:areYouSureThatYouWouldLikeToDiscardTheProcess")}
-        subTitle={t("label:onceConfirmedThisActionCannotBeReverted")}
-        route={-1}
-      />
     </div>
   );
 };
-export default SubscriptionInformation;
+export default FailedPaymentInformation;

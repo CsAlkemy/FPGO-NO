@@ -188,6 +188,48 @@ class SubscriptionsService {
       }
     });
   };
+  getFailedPaymentDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
+    return new Promise((resolve, reject) => {
+      const URL = `${EnvVariable.BASEURL}/subscription/failed/details/${uuid}`;
+      if (isSkipIsAuthenticated) {
+        return axios
+            .get(URL)
+            .then((response) => {
+              if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+              ) {
+                resolve(response.data);
+              } else reject("somethingWentWrong");
+            })
+            .catch((e) => {
+              reject(e?.response?.data?.message);
+            });
+      } else {
+        return AuthService.axiosRequestHelper()
+            .then((status) => {
+              if (status) {
+                return axios
+                    .get(URL)
+                    .then((response) => {
+                      if (
+                          response?.data?.status_code === 200 &&
+                          response?.data?.is_data
+                      ) {
+                        resolve(response.data);
+                      } else reject("somethingWentWrong");
+                    })
+                    .catch((e) => {
+                      reject(e?.response?.data?.message);
+                    });
+              } else reject("somethingWentWrong");
+            })
+            .catch((e) => {
+              reject("somethingWentWrong");
+            });
+      }
+    });
+  };
 
   prepareUpdateSubscriptionPayload = (uuid, type, params) => {
     const categoryUuids = params.assignedCategories

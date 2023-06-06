@@ -7,49 +7,13 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
-import React, { useEffect, useState } from "react";
-import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import {Hidden, Skeleton} from "@mui/material";
+import React from "react";
+import { Hidden, Skeleton } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import {CharCont} from "../../../utils/helperFunctions";
+import { CharCont } from "../../../utils/helperFunctions";
 
-const orderLog = ({ info }) => {
+const orderLog = ({ logs }) => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [logs, setLogs] = useState([]);
-
-  useEffect(() => {
-    if (loading){
-      OrdersService.getOrdersLogByUUID(info.orderUuid)
-        .then((res) => {
-          let orderData = [];
-          let data = res?.data;
-          let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
-
-          if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
-            orderData.push({
-              "title": "orderExpiredAndWasNotPaid",
-              "slug":"order-expired",
-              "datetime":info.paymentLinkDueDate,
-              "sentTo": null,
-              "actionBy":null,
-              "note":null,
-              "paymentMethod":null,
-              "refundAmount":null
-            });
-          }
-          orderData.push(...data);
-
-          setLogs(orderData);
-          setLoading(false);
-        })
-        .catch((e) => {
-          setLogs([]);
-          setLoading(false);
-        });
-    }
-  }, [loading]);
-
   return (
     <div className="mb-32 md:mb-0">
       {logs?.length > 0 ? (
@@ -96,13 +60,13 @@ const orderLog = ({ info }) => {
                         {/*{log.title}*/}
                         {t(`label:${log.translationKey}`)}
                       </div>
-                      {log?.datetime && (
+                      {log?.date && (
                         <div className="flex gap-5">
                           <div className="text-MonochromeGray-300 body4">
                             {t("label:date")}:
                           </div>
                           <div className="body4 text-MonochromeGray-700">
-                            {log.datetime}
+                            {log.date}
                           </div>
                         </div>
                       )}
