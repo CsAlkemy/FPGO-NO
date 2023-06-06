@@ -679,7 +679,7 @@ export const validateSchemaCustomerPrivate = yup.object().shape({
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
-  //billingCountry: yup.string().required("youMustEnterYourCountry"),
+  billingCountry: yup.string().required("youMustEnterYourCountry"),
   customerName: yup.string().required("youMustEnterCustomerName"),
 });
 
