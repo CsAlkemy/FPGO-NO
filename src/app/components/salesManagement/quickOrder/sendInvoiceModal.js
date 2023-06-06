@@ -252,7 +252,11 @@ const SendInvoiceModal = (props) => {
                       />
                     </div>
                     <div className="">
-                      <div className={`${customerType === "corporate"? 'form-pair-input': ''} gap-x-20 `}>
+                      <div
+                        className={`${
+                          customerType === "corporate" ? "form-pair-input" : ""
+                        } gap-x-20 `}
+                      >
                         <Controller
                           name="customerName"
                           control={control}
@@ -286,7 +290,9 @@ const SendInvoiceModal = (props) => {
                                 {...field}
                                 label={t("label:organizationId")}
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 error={!!errors.orgID}
                                 required

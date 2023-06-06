@@ -1,14 +1,14 @@
-import React, {createRef, useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {selectUser} from "app/store/userSlice";
+import React, { createRef, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "app/store/userSlice";
 import PaymentHeader from "../payment/paymentHeader";
 import OrdersService from "../../../data-access/services/ordersService/OrdersService";
-import {useSnackbar} from "notistack";
-import {useParams} from "react-router-dom";
-import {useTranslation} from "react-i18next";
+import { useSnackbar } from "notistack";
+import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Pdf from "react-to-pdf";
-import {ThousandSeparator} from "../../../utils/helperFunctions";
-import {LoadingButton} from "@mui/lab";
+import { ThousandSeparator } from "../../../utils/helperFunctions";
+import { LoadingButton } from "@mui/lab";
 
 const orderReceipt = () => {
   const { t } = useTranslation();
@@ -197,13 +197,13 @@ const orderReceipt = () => {
                     <div className="my-auto py-16 px-10 ">{row.name}</div>
                     <div className="my-auto py-16 px-10">{row.quantity}</div>
                     <div className="my-auto py-16 px-10 text-right">
-                      { ThousandSeparator(row.rate) }
+                      {ThousandSeparator(row.rate)}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
                       {row.tax}
                     </div>
                     <div className="my-auto py-16 px-10 text-right">
-                      { ThousandSeparator(row.amount) }
+                      {ThousandSeparator(row.amount)}
                     </div>
                   </div>
                 ))
@@ -246,7 +246,9 @@ const orderReceipt = () => {
                   <div>
                     {orderDetails?.orderSummary &&
                     orderDetails?.orderSummary?.grandTotal
-                      ? ThousandSeparator(orderDetails?.orderSummary?.grandTotal)
+                      ? ThousandSeparator(
+                          orderDetails?.orderSummary?.grandTotal
+                        )
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>

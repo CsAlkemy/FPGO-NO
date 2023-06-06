@@ -16,7 +16,6 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
-  Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -31,7 +30,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import PhoneInput from "react-phone-input-2";
 import { useNavigate, useParams } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import ConfirmModal from "../../common/confirmmationDialog";
@@ -49,7 +47,6 @@ import {
   useUpdateClientStatusMutation,
 } from "app/store/api/apiSlice";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
-
 const ClientDetails = () => {
   const { t } = useTranslation();
   const [orgTypeList, setOrgTypeList] = useState([]);
@@ -69,9 +66,7 @@ const ClientDetails = () => {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const params = useParams();
-  const [plan, setPlan] = React.useState(1);
   const navigate = useNavigate();
-  const plansPrice = ["200", "350", "500"];
   const sameAddressRef = useRef(null);
   const [info, setInfo] = useState([]);
   const [tabValue, setTabValue] = React.useState("1");
@@ -81,11 +76,9 @@ const ClientDetails = () => {
   const [updateClient] = useUpdateClientMutation();
   const [updateClientStatus] = useUpdateClientStatusMutation();
   const [customApticInfoData, setCustomApticInfoData] = useState("purchase");
-
   const [dialCodePrimary, setDialCodePrimary] = useState();
   const [dialCodeBilling, setDialCodeBilling] = useState();
   const [dialCodeShipping, setDialCodeShipping] = useState();
-
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
     code: "NOK",
@@ -161,22 +154,6 @@ const ClientDetails = () => {
         .then((res) => {
           setInfo(res.data);
           const info = res?.data;
-          const planValue = parseInt(
-            info?.contractDetails?.planTag?.split(" ")[1]
-          );
-          if (planValue) {
-            if (planValue === 1) {
-              setPlan(1);
-              // plan1.current.click();
-            } else if (planValue === 2) {
-              setPlan(2);
-              // plan2.current.click();
-            } else if (planValue === 3) {
-              setPlan(3);
-              // plan3.current.click();
-            }
-          }
-
           if (info?.apticInformation?.isPurchasable)
             setCustomApticInfoData("purchase");
           else setCustomApticInfoData("administration");
@@ -213,6 +190,9 @@ const ClientDetails = () => {
           defaultValue.clientName = info?.organizationDetails?.name
             ? info.organizationDetails.name
             : "";
+          defaultValue.partnerName = info?.organizationDetails?.partnerName
+            ? info.organizationDetails.partnerName
+            : "";
           defaultValue.organizationType = info?.organizationDetails?.type
             ? info.organizationDetails?.type
             : "";
@@ -225,17 +205,23 @@ const ClientDetails = () => {
               ? info.primaryContactDetails?.countryCode +
                 info.primaryContactDetails?.msisdn
               : "";
-          setDialCodePrimary(info.primaryContactDetails?.countryCode)
-          setValue("primaryPhoneNumber",info.primaryContactDetails?.countryCode +
-            info.primaryContactDetails?.msisdn || null)
+          setDialCodePrimary(info.primaryContactDetails?.countryCode);
+          setValue(
+            "primaryPhoneNumber",
+            info.primaryContactDetails?.countryCode +
+              info.primaryContactDetails?.msisdn || null
+          );
           defaultValue.designation = info?.primaryContactDetails?.designation
             ? info.primaryContactDetails?.designation
             : "";
           defaultValue.email = info?.primaryContactDetails?.email
             ? info.primaryContactDetails?.email
             : "";
-          defaultValue.contactEndDate = info?.contractDetails?.endDate
-            ? info.contractDetails.endDate
+          defaultValue.contactStartDate = info?.contractDetails?.startDate
+            ? info.contractDetails.startDate
+            : "";
+          defaultValue.planPrice = info?.contractDetails?.planPrice
+            ? info.contractDetails.planPrice
             : "";
           defaultValue.commision =
             info?.contractDetails?.commissionRate === 0
@@ -274,9 +260,12 @@ const ClientDetails = () => {
                 ? info.addresses["billing"].countryCode +
                   info.addresses["billing"].msisdn
                 : "";
-            setDialCodeBilling(info.addresses["billing"].countryCode)
-            setValue("billingPhoneNumber",info.addresses["billing"].countryCode +
-            info.addresses["billing"].msisdn || null)
+            setDialCodeBilling(info.addresses["billing"].countryCode);
+            setValue(
+              "billingPhoneNumber",
+              info.addresses["billing"].countryCode +
+                info.addresses["billing"].msisdn || null
+            );
             defaultValue.billingEmail = info?.addresses["billing"]?.email
               ? info.addresses["billing"].email
               : "";
@@ -300,9 +289,12 @@ const ClientDetails = () => {
                 ? info.addresses["shipping"].countryCode +
                   info.addresses["shipping"].msisdn
                 : "";
-            setDialCodeShipping(info.addresses["shipping"].countryCode)
-            setValue("shippingPhoneNumber",info.addresses["shipping"].countryCode +
-            info.addresses["shipping"].msisdn || null)
+            setDialCodeShipping(info.addresses["shipping"].countryCode);
+            setValue(
+              "shippingPhoneNumber",
+              info.addresses["shipping"].countryCode +
+                info.addresses["shipping"].msisdn || null
+            );
             defaultValue.shippingEmail = info?.addresses["shipping"]?.email
               ? info.addresses["shipping"].email
               : "";
@@ -598,21 +590,15 @@ const ClientDetails = () => {
     const msisdn = values?.primaryPhoneNumber
       ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
-    const countryCode = dialCodePrimary
-      ? dialCodePrimary
-      : null;
+    const countryCode = dialCodePrimary ? dialCodePrimary : null;
     const bl_msisdn = values?.billingPhoneNumber
       ? values?.billingPhoneNumber.slice(dialCodeBilling?.length)
       : null;
-    const bl_countryCode = dialCodeBilling
-      ? dialCodeBilling
-      : null;
+    const bl_countryCode = dialCodeBilling ? dialCodeBilling : null;
     const sh_msisdn = values?.shippingPhoneNumber
       ? values?.shippingPhoneNumber.slice(dialCodeShipping?.length)
       : null;
-    const sh_countryCode = dialCodeShipping
-      ? dialCodeShipping
-      : null;
+    const sh_countryCode = dialCodeShipping ? dialCodeShipping : null;
 
     const vatRates = values.vat.length
       ? values.vat
@@ -643,6 +629,7 @@ const ClientDetails = () => {
         type: values?.organizationType ? values?.organizationType : null,
         brandId: null,
         groupId: null,
+        partnerName: values?.partnerName ? values.partnerName : null,
       },
       primaryContactDetails: {
         uuid: info.primaryContactDetails.uuid,
@@ -653,8 +640,9 @@ const ClientDetails = () => {
         msisdn,
       },
       contractDetails: {
-        startDate: ClientService.prepareDate(new Date()),
-        endDate: ClientService.prepareDate(values.contactEndDate),
+        startDate: ClientService.prepareDate(values.contactStartDate),
+        endDate: ClientService.prepareDate(new Date()),
+        planPrice: parseFloat(values.planPrice),
         commissionRate: parseFloat(values.commision),
         smsCost: parseFloat(values.smsCost),
         emailCost: parseFloat(values.emailCost),
@@ -767,16 +755,6 @@ const ClientDetails = () => {
         country: values.shippingCountry,
       };
     }
-    if (plan === 1) {
-      clientUpdatedData.contractDetails.planTag = "Plan 1";
-      clientUpdatedData.contractDetails.planPrice = parseFloat(plansPrice[0]);
-    } else if (plan === 2) {
-      clientUpdatedData.contractDetails.planTag = "Plan 2";
-      clientUpdatedData.contractDetails.planPrice = parseFloat(plansPrice[1]);
-    } else {
-      clientUpdatedData.contractDetails.planTag = "Plan 3";
-      clientUpdatedData.contractDetails.planPrice = parseFloat(plansPrice[2]);
-    }  
     setLoading(true);
     updateClient(clientUpdatedData).then((response) => {
       if (response?.data?.status_code === 202) {
@@ -919,6 +897,7 @@ const ClientDetails = () => {
                             {t("label:clientDetails")}
                             {dirtyFields.organizationID &&
                             dirtyFields.clientName &&
+                            dirtyFields.partnerName &&
                             dirtyFields.organizationType ? (
                               <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                             ) : (
@@ -1052,6 +1031,29 @@ const ClientDetails = () => {
                                   )}
                                 />
                               )}
+                              <Controller
+                                name="partnerName"
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label={t("label:partnerName")}
+                                    type="text"
+                                    autoComplete="off"
+                                    error={!!errors.partnerName}
+                                    helperText={
+                                      errors?.partnerName?.message
+                                        ? t(
+                                            `validation:${errors?.partnerName?.message}`
+                                          )
+                                        : ""
+                                    }
+                                    variant="outlined"
+                                    fullWidth
+                                    value={field.value || ""}
+                                  />
+                                )}
+                              />
                             </div>
                           </div>
                         </div>
@@ -1096,49 +1098,49 @@ const ClientDetails = () => {
                               />
                               <FrontPaymentPhoneInput
                                 control={control}
-                                defaultValue='no'
+                                defaultValue="no"
                                 disable={false}
                                 error={errors.primaryPhoneNumber}
                                 label="phone"
                                 name="primaryPhoneNumber"
-                                required = {true}
-                                trigger = {trigger}
-                                setValue = {setValue}
-                                setDialCode = {setDialCodePrimary}
+                                required={true}
+                                trigger={trigger}
+                                setValue={setValue}
+                                setDialCode={setDialCodePrimary}
                               />
-                              {/* <Controller
-                                name="primaryPhoneNumber"
-                                control={control}
-                                render={({ field }) => (
-                                  <FormControl
-                                    error={!!errors.primaryPhoneNumber}
-                                    required
-                                    fullWidth
-                                  >
-                                    <PhoneInput
-                                      {...field}
-                                      className={
-                                        errors.primaryPhoneNumber
-                                          ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                          : "input-phone-number-field"
-                                      }
-                                      country="no"
-                                      enableSearch
-                                      autocompleteSearch
-                                      countryCodeEditable={false}
-                                      specialLabel={`${t("label:phone")}*`}
-                                      onBlur={handleOnBlurGetDialCode}
-                                    />
-                                    <FormHelperText>
-                                      {errors?.primaryPhoneNumber?.message
-                                        ? t(
-                                            `validation:${errors?.primaryPhoneNumber?.message}`
-                                          )
-                                        : ""}
-                                    </FormHelperText>
-                                  </FormControl>
-                                )}
-                              /> */}
+                              {/*<Controller*/}
+                              {/*  name="primaryPhoneNumber"*/}
+                              {/*  control={control}*/}
+                              {/*  render={({ field }) => (*/}
+                              {/*    <FormControl*/}
+                              {/*      error={!!errors.primaryPhoneNumber}*/}
+                              {/*      required*/}
+                              {/*      fullWidth*/}
+                              {/*    >*/}
+                              {/*      <PhoneInput*/}
+                              {/*        {...field}*/}
+                              {/*        className={*/}
+                              {/*          errors.primaryPhoneNumber*/}
+                              {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                              {/*            : "input-phone-number-field"*/}
+                              {/*        }*/}
+                              {/*        country="no"*/}
+                              {/*        enableSearch*/}
+                              {/*        autocompleteSearch*/}
+                              {/*        countryCodeEditable={false}*/}
+                              {/*        specialLabel={`${t("label:phone")}*`}*/}
+                              {/*        onBlur={handleOnBlurGetDialCode}*/}
+                              {/*      />*/}
+                              {/*      <FormHelperText>*/}
+                              {/*        {errors?.primaryPhoneNumber?.message*/}
+                              {/*          ? t(*/}
+                              {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                              {/*            )*/}
+                              {/*          : ""}*/}
+                              {/*      </FormHelperText>*/}
+                              {/*    </FormControl>*/}
+                              {/*  )}*/}
+                              {/*/>*/}
                               <Controller
                                 name="designation"
                                 control={control}
@@ -1192,7 +1194,8 @@ const ClientDetails = () => {
                         <div className="contract-details">
                           <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                             {t("label:contractDetails")}
-                            {dirtyFields.contactEndDate &&
+                            {dirtyFields.contactStartDate &&
+                            dirtyFields.planPrice &&
                             dirtyFields.commision &&
                             dirtyFields.smsCost &&
                             dirtyFields.emailCost &&
@@ -1204,53 +1207,15 @@ const ClientDetails = () => {
                             )}
                           </div>
                           <div className="px-16">
-                            <div className="create-user-roles caption2">
-                              {t("label:choosePlan")}
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
-                              <button
-                                type="button"
-                                className={
-                                  plan === 1
-                                    ? "create-user-role-button-active"
-                                    : "create-user-role-button"
-                                }
-                                onClick={() => setPlan(1)}
-                              >
-                                {t("label:plan1")}
-                              </button>
-                              <button
-                                type="button"
-                                className={
-                                  plan === 2
-                                    ? "create-user-role-button-active"
-                                    : "create-user-role-button"
-                                }
-                                onClick={() => setPlan(2)}
-                              >
-                                {t("label:plan2")}
-                              </button>
-                              <button
-                                type="button"
-                                className={
-                                  plan === 3
-                                    ? "create-user-role-button-active"
-                                    : "create-user-role-button"
-                                }
-                                onClick={() => setPlan(3)}
-                              >
-                                {t("label:plan3")}
-                              </button>
-                            </div>
                             <div className="contract-details-container w-full sm:w-11/12">
                               <Controller
-                                name="contactEndDate"
+                                name="contactStartDate"
                                 control={control}
                                 render={({
                                   field: { onChange, value, onBlur },
                                 }) => (
                                   <DesktopDatePicker
-                                    label={t("label:contractEndDate")}
+                                    label={t("label:contractStartDate")}
                                     mask=""
                                     inputFormat="dd.MM.yyyy"
                                     value={value}
@@ -1272,16 +1237,49 @@ const ClientDetails = () => {
                                         {...params}
                                         onBlur={onBlur}
                                         type="date"
-                                        error={!!errors.contactEndDate}
+                                        error={!!errors.contactStartDate}
                                         helperText={
-                                          errors?.contactEndDate?.message
+                                          errors?.contactStartDate?.message
                                             ? t(
-                                                `validation:${errors?.contactEndDate?.message}`
+                                                `validation:${errors?.contactStartDate?.message}`
                                               )
                                             : ""
                                         }
                                       />
                                     )}
+                                  />
+                                )}
+                              />
+                              <Controller
+                                name="planPrice"
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label={t("label:monthlyPlanFee")}
+                                    type="text"
+                                    required
+                                    autoComplete="off"
+                                    error={!!errors.planPrice}
+                                    helperText={
+                                      errors?.planPrice?.message
+                                        ? t(
+                                            `validation:${errors?.planPrice?.message}`
+                                          )
+                                        : ""
+                                    }
+                                    variant="outlined"
+                                    value={
+                                      field.value === 0 ? 0 : field.value || ""
+                                    }
+                                    fullWidth
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment position="start">
+                                          {t("label:kr")}
+                                        </InputAdornment>
+                                      ),
+                                    }}
                                   />
                                 )}
                               />
@@ -1480,51 +1478,51 @@ const ClientDetails = () => {
                             </div>
                             <div className="px-16">
                               <div className="form-pair-input gap-x-20">
-                              <FrontPaymentPhoneInput
-                                control={control}
-                                defaultValue='no'
-                                disable={false}
-                                error={errors.billingPhoneNumber}
-                                label="phone"
-                                name="billingPhoneNumber"
-                                required = {true}
-                                trigger = {trigger}
-                                setValue = {setValue}
-                                setDialCode = {setDialCodeBilling}
-                              />
-                                {/* <Controller
-                                  name="billingPhoneNumber"
+                                <FrontPaymentPhoneInput
                                   control={control}
-                                  render={({ field }) => (
-                                    <FormControl
-                                      error={!!errors.billingPhoneNumber}
-                                      required
-                                      fullWidth
-                                    >
-                                      <PhoneInput
-                                        {...field}
-                                        className={
-                                          errors.billingPhoneNumber
-                                            ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                            : "input-phone-number-field"
-                                        }
-                                        country="no"
-                                        enableSearch
-                                        autocompleteSearch
-                                        countryCodeEditable={false}
-                                        specialLabel={`${t("label:phone")}*`}
-                                        onBlur={handleOnBlurGetDialCode}
-                                      />
-                                      <FormHelperText>
-                                        {errors?.billingPhoneNumber?.message
-                                          ? t(
-                                              `validation:${errors?.billingPhoneNumber?.message}`
-                                            )
-                                          : ""}
-                                      </FormHelperText>
-                                    </FormControl>
-                                  )}
-                                /> */}
+                                  defaultValue="no"
+                                  disable={false}
+                                  error={errors.billingPhoneNumber}
+                                  label="phone"
+                                  name="billingPhoneNumber"
+                                  required={true}
+                                  trigger={trigger}
+                                  setValue={setValue}
+                                  setDialCode={setDialCodeBilling}
+                                />
+                                {/*<Controller*/}
+                                {/*  name="billingPhoneNumber"*/}
+                                {/*  control={control}*/}
+                                {/*  render={({ field }) => (*/}
+                                {/*    <FormControl*/}
+                                {/*      error={!!errors.billingPhoneNumber}*/}
+                                {/*      required*/}
+                                {/*      fullWidth*/}
+                                {/*    >*/}
+                                {/*      <PhoneInput*/}
+                                {/*        {...field}*/}
+                                {/*        className={*/}
+                                {/*          errors.billingPhoneNumber*/}
+                                {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                                {/*            : "input-phone-number-field"*/}
+                                {/*        }*/}
+                                {/*        country="no"*/}
+                                {/*        enableSearch*/}
+                                {/*        autocompleteSearch*/}
+                                {/*        countryCodeEditable={false}*/}
+                                {/*        specialLabel={`${t("label:phone")}*`}*/}
+                                {/*        onBlur={handleOnBlurGetDialCode}*/}
+                                {/*      />*/}
+                                {/*      <FormHelperText>*/}
+                                {/*        {errors?.billingPhoneNumber?.message*/}
+                                {/*          ? t(*/}
+                                {/*              `validation:${errors?.billingPhoneNumber?.message}`*/}
+                                {/*            )*/}
+                                {/*          : ""}*/}
+                                {/*      </FormHelperText>*/}
+                                {/*    </FormControl>*/}
+                                {/*  )}*/}
+                                {/*/>*/}
                                 <Controller
                                   name="billingEmail"
                                   control={control}
@@ -1749,16 +1747,50 @@ const ClientDetails = () => {
                                   <div className="form-pair-input gap-x-20">
                                     <FrontPaymentPhoneInput
                                       control={control}
-                                      defaultValue='no'
+                                      defaultValue="no"
                                       disable={false}
                                       error={errors.shippingPhoneNumber}
                                       label="phone"
                                       name="shippingPhoneNumber"
-                                      required = {false}
-                                      trigger = {trigger}
-                                      setValue = {setValue}
-                                      setDialCode = {setDialCodeShipping}
+                                      required={false}
+                                      trigger={trigger}
+                                      setValue={setValue}
+                                      setDialCode={setDialCodeShipping}
                                     />
+                                    {/*<Controller*/}
+                                    {/*  name="shippingPhoneNumber"*/}
+                                    {/*  control={control}*/}
+                                    {/*  render={({ field }) => (*/}
+                                    {/*    <FormControl*/}
+                                    {/*      error={!!errors.shippingPhoneNumber}*/}
+                                    {/*      // required*/}
+                                    {/*      fullWidth*/}
+                                    {/*    >*/}
+                                    {/*      <PhoneInput*/}
+                                    {/*        {...field}*/}
+                                    {/*        className={*/}
+                                    {/*          errors.shippingPhoneNumber*/}
+                                    {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                                    {/*            : "input-phone-number-field"*/}
+                                    {/*        }*/}
+                                    {/*        country="no"*/}
+                                    {/*        enableSearch*/}
+                                    {/*        autocompleteSearch*/}
+                                    {/*        countryCodeEditable={false}*/}
+                                    {/*        specialLabel={t("label:phone")}*/}
+                                    {/*        onBlur={handleOnBlurGetDialCode}*/}
+                                    {/*      />*/}
+                                    {/*      <FormHelperText>*/}
+                                    {/*        {errors?.shippingPhoneNumber*/}
+                                    {/*          ?.message*/}
+                                    {/*          ? t(*/}
+                                    {/*              `validation:${errors?.shippingPhoneNumber?.message}`*/}
+                                    {/*            )*/}
+                                    {/*          : ""}*/}
+                                    {/*      </FormHelperText>*/}
+                                    {/*    </FormControl>*/}
+                                    {/*  )}*/}
+                                    {/*/>*/}
                                     <Controller
                                       name="shippingEmail"
                                       control={control}
@@ -2050,8 +2082,8 @@ const ClientDetails = () => {
                                       helperText={
                                         errors?.bankAccountCode?.message
                                           ? t(
-                                            `validation:${errors?.bankAccountCode?.message}`
-                                          )
+                                              `validation:${errors?.bankAccountCode?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -2243,8 +2275,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.accountCode?.message
                                             ? t(
-                                              `validation:${errors?.accountCode?.message}`
-                                            )
+                                                `validation:${errors?.accountCode?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2265,8 +2297,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.refundReference?.message
                                             ? t(
-                                              `validation:${errors?.refundReference?.message}`
-                                            )
+                                                `validation:${errors?.refundReference?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2291,8 +2323,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.accountCode?.message
                                             ? t(
-                                              `validation:${errors?.accountCode?.message}`
-                                            )
+                                                `validation:${errors?.accountCode?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2311,13 +2343,14 @@ const ClientDetails = () => {
                                         onWheel={(event) => {
                                           event.target.blur();
                                         }}
+                                        value={field.value || ""}
                                         autoComplete="off"
                                         error={!!errors.creditLimitCustomer}
                                         helperText={
                                           errors?.creditLimitCustomer?.message
                                             ? t(
-                                              `validation:${errors?.creditLimitCustomer?.message}`
-                                            )
+                                                `validation:${errors?.creditLimitCustomer?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2344,13 +2377,14 @@ const ClientDetails = () => {
                                         onWheel={(event) => {
                                           event.target.blur();
                                         }}
+                                        value={field.value || ""}
                                         autoComplete="off"
                                         error={!!errors.costLimitforCustomer}
                                         helperText={
                                           errors?.costLimitforCustomer?.message
                                             ? t(
-                                              `validation:${errors?.costLimitforCustomer?.message}`
-                                            )
+                                                `validation:${errors?.costLimitforCustomer?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2381,8 +2415,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.costLimitforOrder?.message
                                             ? t(
-                                              `validation:${errors?.costLimitforOrder?.message}`
-                                            )
+                                                `validation:${errors?.costLimitforOrder?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2413,8 +2447,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.invoicewithRegress?.message
                                             ? t(
-                                              `validation:${errors?.invoicewithRegress?.message}`
-                                            )
+                                                `validation:${errors?.invoicewithRegress?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2445,8 +2479,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.invoicewithoutRegress?.message
                                             ? t(
-                                              `validation:${errors?.invoicewithoutRegress?.message}`
-                                            )
+                                                `validation:${errors?.invoicewithoutRegress?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2475,8 +2509,8 @@ const ClientDetails = () => {
                                         helperText={
                                           errors?.refundReference?.message
                                             ? t(
-                                              `validation:${errors?.refundReference?.message}`
-                                            )
+                                                `validation:${errors?.refundReference?.message}`
+                                              )
                                             : ""
                                         }
                                         variant="outlined"
@@ -2851,7 +2885,7 @@ const ClientDetails = () => {
                                     {t("label:name")}
                                   </div>
                                   <div className="my-auto text-right text-MonochromeGray-500 col-span-2">
-                                    {`Value (%)`}
+                                    {"Value (%)"}
                                   </div>
                                   <div className="my-auto text-MonochromeGray-500 col-span-3">
                                     {t("label:bookKeepingReference")}
@@ -2878,7 +2912,9 @@ const ClientDetails = () => {
                                             autoComplete="off"
                                             className="bg-white custom-input-height"
                                             error={!!errors.vatCode}
-                                            helperText={errors?.vatCode?.message}
+                                            helperText={
+                                              errors?.vatCode?.message
+                                            }
                                             variant="outlined"
                                             required
                                             fullWidth
@@ -3054,8 +3090,8 @@ const ClientDetails = () => {
                                       helperText={
                                         errors?.b2bAccountCode?.message
                                           ? t(
-                                            `validation:${errors?.b2bAccountCode?.message}`
-                                          )
+                                              `validation:${errors?.b2bAccountCode?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -3078,7 +3114,9 @@ const ClientDetails = () => {
                                       error={!!errors.fakturaB2B}
                                       hhelperText={
                                         errors?.fakturaB2B?.message
-                                          ? t(`validation:${errors?.fakturaB2B?.message}`)
+                                          ? t(
+                                              `validation:${errors?.fakturaB2B?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -3107,8 +3145,8 @@ const ClientDetails = () => {
                                       helperText={
                                         errors?.b2cAccountCode?.message
                                           ? t(
-                                            `validation:${errors?.b2cAccountCode?.message}`
-                                          )
+                                              `validation:${errors?.b2cAccountCode?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"
@@ -3131,7 +3169,9 @@ const ClientDetails = () => {
                                       error={!!errors.fakturaB2C}
                                       helperText={
                                         errors?.fakturaB2C?.message
-                                          ? t(`validation:${errors?.fakturaB2C?.message}`)
+                                          ? t(
+                                              `validation:${errors?.fakturaB2C?.message}`
+                                            )
                                           : ""
                                       }
                                       variant="outlined"

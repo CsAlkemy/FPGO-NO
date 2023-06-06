@@ -12,7 +12,6 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
-  Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -26,7 +25,6 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import DiscardConfirmModal from "../../common/confirmDiscard";
@@ -44,7 +42,6 @@ const CreateClient = () => {
   const [dialCodePrimary, setDialCodePrimary] = useState();
   const [dialCodeBilling, setDialCodeBilling] = useState();
   const [dialCodeShipping, setDialCodeShipping] = useState();
-
   const [hide, setHide] = useState(true);
   const [sameAddress, setSameAddress] = useState(false);
   const [uploadDocuments, setUploadDocuments] = useState([]);
@@ -53,7 +50,6 @@ const CreateClient = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [recheckSchema, setRecheckSchema] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [plan, setPlan] = useState(1);
   const [loading, setLoading] = React.useState(false);
   const [ownerRef, setOwnerRef] = React.useState(true);
   const [createClient] = useCreateClientMutation();
@@ -65,7 +61,6 @@ const CreateClient = () => {
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
-  const plansPrice = ["200", "350", "500"];
 
   let schema =
     customApticInfoData === "purchase"
@@ -105,9 +100,9 @@ const CreateClient = () => {
     resolver: yupResolver(schema),
   });
 
-  const watchContactEndDate = watch(`contactEndDate`)
-    ? watch(`contactEndDate`)
-    : setValue("contactEndDate", new Date());
+  // const watchContactStartDate = watch(`contactStartDate`)
+  //   ? watch(`contactStartDate`)
+  //   : setValue("contactStartDate", new Date());
 
   const handleOnBlurGetDialCode = (value, data, event) => {
     setDialCode(data?.dialCode);
@@ -176,21 +171,15 @@ const CreateClient = () => {
     const msisdn = values?.primaryPhoneNumber
       ? values.primaryPhoneNumber.slice(dialCodePrimary.length)
       : null;
-    const countryCode = dialCodePrimary
-      ? dialCodePrimary
-      : null;
+    const countryCode = dialCodePrimary ? dialCodePrimary : null;
     const bl_msisdn = values.billingPhoneNumber
       ? values.billingPhoneNumber.slice(dialCodeBilling.length)
       : null;
-    const bl_countryCode = dialCodeBilling
-      ? dialCodeBilling
-      : null;
+    const bl_countryCode = dialCodeBilling ? dialCodeBilling : null;
     const sh_msisdn = values.shippingPhoneNumber
       ? values.shippingPhoneNumber.slice(dialCodeShipping.length)
       : null;
-    const sh_countryCode = dialCodeShipping
-      ? dialCodeShipping
-      : null;
+    const sh_countryCode = dialCodeShipping ? dialCodeShipping : null;
 
     const vatRates = values.vat.length
       ? values.vat
@@ -216,6 +205,7 @@ const CreateClient = () => {
         type: values?.organizationType ? values?.organizationType : null,
         brandId: null,
         groupId: null,
+        partnerName: values?.partnerName ? values.partnerName : null,
       },
       primaryContactDetails: {
         name: values.fullName,
@@ -227,8 +217,9 @@ const CreateClient = () => {
       contractDetails: {
         // startDate: new Date(),
         // endDate: values.contactEndDate,
-        startDate: ClientService.prepareDate(new Date()),
-        endDate: ClientService.prepareDate(values.contactEndDate),
+        startDate: ClientService.prepareDate(values.contactStartDate),
+        endDate: ClientService.prepareDate(new Date()),
+        planPrice: parseFloat(values.planPrice),
         commissionRate: parseFloat(values.commision),
         smsCost: parseFloat(values.smsCost),
         emailCost: parseFloat(values.emailCost),
@@ -330,16 +321,6 @@ const CreateClient = () => {
         city: values.shippingCity,
         country: values.shippingCountry,
       };
-    }
-    if (plan === 1) {
-      createClientData.contractDetails.planTag = "Plan 1";
-      createClientData.contractDetails.planPrice = parseFloat(plansPrice[0]);
-    } else if (plan === 2) {
-      createClientData.contractDetails.planTag = "Plan 2";
-      createClientData.contractDetails.planPrice = parseFloat(plansPrice[1]);
-    } else {
-      createClientData.contractDetails.planTag = "Plan 3";
-      createClientData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
     setLoading(true);
     createClient(createClientData).then((response) => {
@@ -458,6 +439,7 @@ const CreateClient = () => {
                   {t("label:clientDetails")}
                   {dirtyFields.id &&
                   dirtyFields.clientName &&
+                  dirtyFields.partnerName &&
                   dirtyFields.organizationType ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
@@ -565,6 +547,26 @@ const CreateClient = () => {
                         </FormControl>
                       )}
                     />
+                    <Controller
+                      name="partnerName"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label={t("label:partnerName")}
+                          type="text"
+                          autoComplete="off"
+                          error={!!errors.partnerName}
+                          helperText={
+                            errors?.partnerName?.message
+                              ? t(`validation:${errors?.partnerName?.message}`)
+                              : ""
+                          }
+                          variant="outlined"
+                          fullWidth
+                        />
+                      )}
+                    />
                   </div>
                 </div>
               </div>
@@ -616,39 +618,39 @@ const CreateClient = () => {
                       setValue={setValue}
                       setDialCode={setDialCodePrimary}
                     />
-                    {/* <Controller
-                      name="primaryPhoneNumber"
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl
-                          error={!!errors.primaryPhoneNumber}
-                          required
-                          fullWidth
-                        >
-                          <PhoneInput
-                            {...field}
-                            className={
-                              errors.primaryPhoneNumber
-                                ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                : "input-phone-number-field"
-                            }
-                            country="no"
-                            enableSearch
-                            autocompleteSearch
-                            countryCodeEditable={false}
-                            specialLabel={`${t("label:phone")}*`}
-                            onBlur={handleOnBlurGetDialCode}
-                          />
-                          <FormHelperText>
-                            {errors?.primaryPhoneNumber?.message
-                              ? t(
-                                  `validation:${errors?.primaryPhoneNumber?.message}`
-                                )
-                              : ""}
-                          </FormHelperText>
-                        </FormControl>
-                      )}
-                    /> */}
+                    {/*<Controller*/}
+                    {/*  name="primaryPhoneNumber"*/}
+                    {/*  control={control}*/}
+                    {/*  render={({ field }) => (*/}
+                    {/*    <FormControl*/}
+                    {/*      error={!!errors.primaryPhoneNumber}*/}
+                    {/*      required*/}
+                    {/*      fullWidth*/}
+                    {/*    >*/}
+                    {/*      <PhoneInput*/}
+                    {/*        {...field}*/}
+                    {/*        className={*/}
+                    {/*          errors.primaryPhoneNumber*/}
+                    {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                    {/*            : "input-phone-number-field"*/}
+                    {/*        }*/}
+                    {/*        country="no"*/}
+                    {/*        enableSearch*/}
+                    {/*        autocompleteSearch*/}
+                    {/*        countryCodeEditable={false}*/}
+                    {/*        specialLabel={`${t("label:phone")}*`}*/}
+                    {/*        onBlur={handleOnBlurGetDialCode}*/}
+                    {/*      />*/}
+                    {/*      <FormHelperText>*/}
+                    {/*        {errors?.primaryPhoneNumber?.message*/}
+                    {/*          ? t(*/}
+                    {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                    {/*            )*/}
+                    {/*          : ""}*/}
+                    {/*      </FormHelperText>*/}
+                    {/*    </FormControl>*/}
+                    {/*  )}*/}
+                    {/*/>*/}
                     <Controller
                       name="designation"
                       control={control}
@@ -696,7 +698,8 @@ const CreateClient = () => {
               <div className="contract-details">
                 <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                   {t("label:contractDetails")}
-                  {dirtyFields.contactEndDate &&
+                  {dirtyFields.contactStartDate &&
+                  dirtyFields.planPrice &&
                   dirtyFields.commision &&
                   dirtyFields.smsCost &&
                   dirtyFields.emailCost &&
@@ -708,51 +711,13 @@ const CreateClient = () => {
                   )}
                 </div>
                 <div className="px-16">
-                  <div className="create-user-roles caption2">
-                    {t("label:choosePlan")}
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
-                    <button
-                      type="button"
-                      className={
-                        plan === 1
-                          ? "create-user-role-button-active"
-                          : "create-user-role-button"
-                      }
-                      onClick={() => setPlan(1)}
-                    >
-                      {t("label:plan1")}
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        plan === 2
-                          ? "create-user-role-button-active"
-                          : "create-user-role-button"
-                      }
-                      onClick={() => setPlan(2)}
-                    >
-                      {t("label:plan2")}
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        plan === 3
-                          ? "create-user-role-button-active"
-                          : "create-user-role-button"
-                      }
-                      onClick={() => setPlan(3)}
-                    >
-                      {t("label:plan3")}
-                    </button>
-                  </div>
                   <div className="contract-details-container w-full sm:w-11/12">
                     <Controller
-                      name="contactEndDate"
+                      name="contactStartDate"
                       control={control}
                       render={({ field: { onChange, value, onBlur } }) => (
                         <DesktopDatePicker
-                          label={t("label:contractEndDate")}
+                          label={t("label:contractStartDate")}
                           mask=""
                           inputFormat="dd.MM.yyyy"
                           value={value}
@@ -774,16 +739,45 @@ const CreateClient = () => {
                               {...params}
                               onBlur={onBlur}
                               type="date"
-                              error={!!errors.contactEndDate}
+                              error={!!errors.contactStartDate}
                               helperText={
-                                errors?.contactEndDate?.message
+                                errors?.contactStartDate?.message
                                   ? t(
-                                      `validation:${errors?.contactEndDate?.message}`
+                                      `validation:${errors?.contactStartDate?.message}`
                                     )
                                   : ""
                               }
                             />
                           )}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="planPrice"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label={t("label:monthlyPlanFee")}
+                          type="text"
+                          required
+                          autoComplete="off"
+                          error={!!errors.planPrice}
+                          helperText={
+                            errors?.planPrice?.message
+                              ? t(`validation:${errors?.planPrice?.message}`)
+                              : ""
+                          }
+                          variant="outlined"
+                          value={field.value === 0 ? 0 : field.value || ""}
+                          fullWidth
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="start">
+                                {t("label:kr")}
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       )}
                     />
@@ -971,6 +965,39 @@ const CreateClient = () => {
                         setValue={setValue}
                         setDialCode={setDialCodeBilling}
                       />
+                      {/*<Controller*/}
+                      {/*  name="billingPhoneNumber"*/}
+                      {/*  control={control}*/}
+                      {/*  render={({ field }) => (*/}
+                      {/*    <FormControl*/}
+                      {/*      error={!!errors.billingPhoneNumber}*/}
+                      {/*      required*/}
+                      {/*      fullWidth*/}
+                      {/*    >*/}
+                      {/*      <PhoneInput*/}
+                      {/*        {...field}*/}
+                      {/*        className={*/}
+                      {/*          errors.billingPhoneNumber*/}
+                      {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                      {/*            : "input-phone-number-field"*/}
+                      {/*        }*/}
+                      {/*        country="no"*/}
+                      {/*        enableSearch*/}
+                      {/*        autocompleteSearch*/}
+                      {/*        countryCodeEditable={false}*/}
+                      {/*        specialLabel={`${t("label:phone")}*`}*/}
+                      {/*        onBlur={handleOnBlurGetDialCode}*/}
+                      {/*      />*/}
+                      {/*      <FormHelperText>*/}
+                      {/*        {errors?.billingPhoneNumber?.message*/}
+                      {/*          ? t(*/}
+                      {/*              `validation:${errors?.billingPhoneNumber?.message}`*/}
+                      {/*            )*/}
+                      {/*          : ""}*/}
+                      {/*      </FormHelperText>*/}
+                      {/*    </FormControl>*/}
+                      {/*  )}*/}
+                      {/*/>*/}
                       <Controller
                         name="billingEmail"
                         control={control}
@@ -1169,46 +1196,45 @@ const CreateClient = () => {
                             setValue={setValue}
                             setDialCode={setDialCodeShipping}
                           />
-
-                          {/* <Controller
-                            // name={
-                            //   sameAddress === true
-                            //     ? "billingPhoneNumber"
-                            //     : "shippingPhoneNumber"
-                            // }
-                            name="shippingPhoneNumber"
-                            control={control}
-                            render={({ field }) => (
-                              <FormControl
-                                error={!!errors.shippingPhoneNumber}
-                                // required
-                                fullWidth
-                              >
-                                <PhoneInput
-                                  {...field}
-                                  className={
-                                    errors.shippingPhoneNumber
-                                      ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                      : "input-phone-number-field"
-                                  }
-                                  country="no"
-                                  enableSearch
-                                  disabled={sameAddress}
-                                  autocompleteSearch
-                                  countryCodeEditable={false}
-                                  specialLabel={t("label:phone")}
-                                  onBlur={handleOnBlurGetDialCode}
-                                />
-                                <FormHelperText>
-                                  {errors?.shippingPhoneNumber?.message
-                                    ? t(
-                                        `validation:${errors?.shippingPhoneNumber?.message}`
-                                      )
-                                    : ""}
-                                </FormHelperText>
-                              </FormControl>
-                            )}
-                          /> */}
+                          {/*<Controller*/}
+                          {/*  // name={*/}
+                          {/*  //   sameAddress === true*/}
+                          {/*  //     ? "billingPhoneNumber"*/}
+                          {/*  //     : "shippingPhoneNumber"*/}
+                          {/*  // }*/}
+                          {/*  name="shippingPhoneNumber"*/}
+                          {/*  control={control}*/}
+                          {/*  render={({ field }) => (*/}
+                          {/*    <FormControl*/}
+                          {/*      error={!!errors.shippingPhoneNumber}*/}
+                          {/*      // required*/}
+                          {/*      fullWidth*/}
+                          {/*    >*/}
+                          {/*      <PhoneInput*/}
+                          {/*        {...field}*/}
+                          {/*        className={*/}
+                          {/*          errors.shippingPhoneNumber*/}
+                          {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                          {/*            : "input-phone-number-field"*/}
+                          {/*        }*/}
+                          {/*        country="no"*/}
+                          {/*        enableSearch*/}
+                          {/*        disabled={sameAddress}*/}
+                          {/*        autocompleteSearch*/}
+                          {/*        countryCodeEditable={false}*/}
+                          {/*        specialLabel={t("label:phone")}*/}
+                          {/*        onBlur={handleOnBlurGetDialCode}*/}
+                          {/*      />*/}
+                          {/*      <FormHelperText>*/}
+                          {/*        {errors?.shippingPhoneNumber?.message*/}
+                          {/*          ? t(*/}
+                          {/*              `validation:${errors?.shippingPhoneNumber?.message}`*/}
+                          {/*            )*/}
+                          {/*          : ""}*/}
+                          {/*      </FormHelperText>*/}
+                          {/*    </FormControl>*/}
+                          {/*  )}*/}
+                          {/*/>*/}
                           <Controller
                             name="shippingEmail"
                             control={control}

@@ -26,7 +26,7 @@ const paymentHeader = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const urlParams = new URLSearchParams(window.location.search);
-  const lang = urlParams.get('lang');
+  const lang = urlParams.get("lang");
   const checkout = window.location.pathname.includes("/checkout");
   const orderDetails = window.location.pathname.includes("/order/details");
   const orderReceipt = window.location.pathname.includes("/order/receipt");
@@ -49,7 +49,7 @@ const paymentHeader = () => {
     else {
         dispatch(changeLanguage("no"));
       setDefaultLang("Norwegian")
-    } 
+    }
   }, [lang]);
 
   const handleLanguageChange = (lng) => {

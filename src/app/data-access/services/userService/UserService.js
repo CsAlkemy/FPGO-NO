@@ -471,9 +471,7 @@ class UserService {
     const msisdn = params?.phoneNumber
       ? params?.phoneNumber.slice(dialCode.length)
       : null;
-    const countryCode = dialCode
-      ? dialCode
-      : null;
+    const countryCode = dialCode ? dialCode : null;
 
     return {
       role,

@@ -63,6 +63,9 @@ const LoginPage = () => {
     password: "",
     remember: true,
   };
+  useEffect(() => {
+    dispatch(changeLanguage("no"));
+  }, []);
 
   useEffect(() => {
     dispatch(changeLanguage("no"));

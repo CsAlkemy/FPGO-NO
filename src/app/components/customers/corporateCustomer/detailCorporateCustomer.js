@@ -47,6 +47,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
   const queryParams = useParams();
   // const info = JSON.parse(localStorage.getItem("tableRowDetails"));
+  const [dialCode, setDialCode] = React.useState();
   const [info, setInfo] = useState([]);
   const [sameAddress, setSameAddress] = React.useState(false);
   const [initialSameAddressRef, setInitialSameAddressRef] = useState(false);
@@ -56,7 +57,6 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   const [loading, setLoading] = React.useState(false);
   const [expanded, setExpanded] = React.useState(true);
   const [expandedPanel2, setExpandedPanel2] = React.useState(true);
-  const [dialCode, setDialCode] = React.useState();
   const [isLoading, setIsLoading] = useState(true);
   const addAnotherContactRef = useRef(null);
   const [updateCustomerStatus] = useUpdateCustomerStatusMutation();
@@ -86,11 +86,12 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   };
 
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch, trigger } = useForm({
-    mode: "onChange",
-    CorporateDetailsDefaultValue,
-    resolver: yupResolver(validateSchema),
-  });
+  const { control, formState, handleSubmit, reset, setValue, watch, trigger } =
+    useForm({
+      mode: "onChange",
+      CorporateDetailsDefaultValue,
+      resolver: yupResolver(validateSchema),
+    });
   const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const billingAddress = watch("billingAddress") || "";
@@ -120,8 +121,9 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             info?.countryCode && info?.msisdn
               ? info.countryCode + info.msisdn
               : "";
-          setDialCode(info.countryCode)
-          setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
+          setDialCode(info?.countryCode);
+          setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "");
+
           CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
             ?.street
             ? info.addresses.billing.street
@@ -272,8 +274,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         : "";
       CorporateDetailsDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
-      setDialCode(info?.countryCode)
-      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
+      setDialCode(info?.countryCode);
+      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "");
 
       CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
         ?.street
@@ -544,7 +546,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                       loading={loading}
                       disabled={
                         user.role[0] === FP_ADMIN ||
-                        (!isDirty && sameAddress === initialSameAddressRef) || !isValid
+                        (!isDirty && sameAddress === initialSameAddressRef) ||
+                        !isValid
                       }
                       loadingPosition="center"
                     >
@@ -710,48 +713,48 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                 />
                                 <FrontPaymentPhoneInput
                                   control={control}
-                                  defaultValue='no'
+                                  defaultValue="no"
                                   disable={false}
                                   error={errors.primaryPhoneNumber}
                                   label="phone"
                                   name="primaryPhoneNumber"
-                                  required = {true}
-                                  trigger = {trigger}
-                                  setValue = {setValue}
-                                  setDialCode = {setDialCode}
+                                  required={true}
+                                  trigger={trigger}
+                                  setValue={setValue}
+                                  setDialCode={setDialCode}
                                 />
-                                {/* <Controller
-                                  name="primaryPhoneNumber"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <FormControl
-                                      error={!!errors.primaryPhoneNumber}
-                                      fullWidth
-                                    >
-                                      <PhoneInput
-                                        {...field}
-                                        className={
-                                          errors.primaryPhoneNumber
-                                            ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                            : "input-phone-number-field"
-                                        }
-                                        country="no"
-                                        enableSearch
-                                        autocompleteSearch
-                                        countryCodeEditable={false}
-                                        specialLabel={`${t("label:phone")}*`}
-                                        // onBlur={handleOnBlurGetDialCode}
-                                      />
-                                      <FormHelperText>
-                                        {errors?.primaryPhoneNumber?.message
-                                          ? t(
-                                              `validation:${errors?.primaryPhoneNumber?.message}`
-                                            )
-                                          : ""}
-                                      </FormHelperText>
-                                    </FormControl>
-                                  )}
-                                /> */}
+                                {/*<Controller*/}
+                                {/*  name="primaryPhoneNumber"*/}
+                                {/*  control={control}*/}
+                                {/*  render={({ field }) => (*/}
+                                {/*    <FormControl*/}
+                                {/*      error={!!errors.primaryPhoneNumber}*/}
+                                {/*      fullWidth*/}
+                                {/*    >*/}
+                                {/*      <PhoneInput*/}
+                                {/*        {...field}*/}
+                                {/*        className={*/}
+                                {/*          errors.primaryPhoneNumber*/}
+                                {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                                {/*            : "input-phone-number-field"*/}
+                                {/*        }*/}
+                                {/*        country="no"*/}
+                                {/*        enableSearch*/}
+                                {/*        autocompleteSearch*/}
+                                {/*        countryCodeEditable={false}*/}
+                                {/*        specialLabel={`${t("label:phone")}*`}*/}
+                                {/*        // onBlur={handleOnBlurGetDialCode}*/}
+                                {/*      />*/}
+                                {/*      <FormHelperText>*/}
+                                {/*        {errors?.primaryPhoneNumber?.message*/}
+                                {/*          ? t(*/}
+                                {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                                {/*            )*/}
+                                {/*          : ""}*/}
+                                {/*      </FormHelperText>*/}
+                                {/*    </FormControl>*/}
+                                {/*  )}*/}
+                                {/*/>*/}
                               </div>
                             </div>
                           </div>
@@ -989,7 +992,9 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                 {...field}
                                                 label={t("label:zipCode")}
                                                 type="number"
-                                                onWheel={event => { event.target.blur()}}
+                                                onWheel={(event) => {
+                                                  event.target.blur();
+                                                }}
                                                 autoComplete="off"
                                                 disabled={sameAddress}
                                                 error={!!errors.shippingZip}

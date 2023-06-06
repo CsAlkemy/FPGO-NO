@@ -48,7 +48,6 @@ const confirmDiscard = (props) => {
           setApiLoading(false);
         } else if (response?.error) {
           const isParam = response?.error?.data?.message.includes("Param");
-          // const message = `${response?.error?.data?.message.split("Param")[0]}${response?.error?.data?.message.split("Param")[1]}`
           const message = isParam
             ? `${t(
                 `message:${

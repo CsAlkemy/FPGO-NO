@@ -68,14 +68,13 @@ export default function CreateUsers() {
       ? validateSchemaCreateBusinessAdmin
       : validateSchemaGeneralAdmin;
 
-  const { control, formState, handleSubmit, reset, setValue, trigger, watch} = useForm(
-    {
+  const { control, formState, handleSubmit, reset, setValue, trigger, watch } =
+    useForm({
       mode: "onChange",
       defaultValues,
       resolver: yupResolver(schema),
-    }
-  );
-  
+    });
+
   const { isValid, dirtyFields, errors } = formState;
   useEffect(() => {
     defaultValues.organization =
@@ -303,15 +302,15 @@ export default function CreateUsers() {
                       />
                       <FrontPaymentPhoneInput
                         control={control}
-                        defaultValue='no'
+                        defaultValue="no"
                         disable={false}
                         error={errors.phoneNumber}
                         label="phone"
                         name="phoneNumber"
-                        required = {true}
-                        trigger = {trigger}
-                        setValue = {setValue}
-                        setDialCode = {setDialCode}
+                        required={true}
+                        trigger={trigger}
+                        setValue={setValue}
+                        setDialCode={setDialCode}
                       />
                       {(type === BUSINESS_ADMIN || type === GENERAL_USER) && (
                         <Controller

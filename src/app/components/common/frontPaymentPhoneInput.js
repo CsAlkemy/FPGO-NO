@@ -21,15 +21,15 @@ export default function FrontPaymentPhoneInput({
 
   const handleOnBlurGetDialCode = (value, data, event, fv) => {
     setValue(name, `+${value}`);
-    trigger(name)
-    setDialCode(`+${data?.dialCode}` );
+    trigger(name);
+    setDialCode(`+${data?.dialCode}`);
   };
   return (
     <Controller
       name={name}
       control={control}
       render={({ field: { ref, onChange, ...field } }) => (
-        <FormControl error={error} required = { required } fullWidth>
+        <FormControl error={error} required={required} fullWidth>
           <PhoneInput
             {...field}
             className={
@@ -42,7 +42,7 @@ export default function FrontPaymentPhoneInput({
             autocompleteSearch
             countryCodeEditable={false}
             disabled={disable ? disable : false}
-            specialLabel={`${t(`label:${label}`)} ${required ? '*': ''}`}
+            specialLabel={`${t(`label:${label}`)} ${required ? "*" : ""}`}
             onChange={handleOnBlurGetDialCode}
           />
           <FormHelperText>
