@@ -224,12 +224,16 @@ const OrderModal = (props) => {
       uuid: orderId,
       checkPhone,
       checkEmail,
+      fullRefundAmount: orderAmount,
+      headerTitle,
     };
     if (flag) {
       setApiLoading(true);
       const payload = {
         isPartial: refundType === "partial",
-        amount: values?.refundAmount,
+        amount: ["Send Refund", "Refund Order"].includes(headerTitle)
+          ? orderAmount
+          : values?.refundAmount,
         message: flagMessage,
         uuid: orderId,
       };
@@ -807,121 +811,153 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
-                {[
-                  "Send Refund",
-                  "Refund Order",
-                  "Capture Payment",
-                  //"Refund from Reservation",
-                ].includes(headerTitle) &&
-                  !flag && (
-                    <div>
-                      <div className="caption2">
-                        {headerTitle === "Capture Payment"
-                          ? t("label:paymentType")
-                          : t("label:refundType")}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
-                        <Button
-                          variant="outlined"
-                          className={`body2 ${
-                            refundType === "full"
-                              ? "create-order-capsule-button-active"
-                              : "create-order-capsule-button"
-                          }`}
-                          onClick={setFullAmount}
-                        >
-                          {headerTitle === "Capture Payment"
-                            ? t("label:fullPayment")
-                            : t("label:fullRefund")}
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          className={`body2 ${
-                            refundType === "partial"
-                              ? "create-order-capsule-button-active"
-                              : "create-order-capsule-button"
-                          }`}
-                          onClick={() => {
-                            setRefundType("partial");
-                            setValue("refundAmount", "");
-                            setValue("captureAmount", "");
-                          }}
-                        >
-                          {headerTitle === "Capture Payment"
-                            ? t("label:partialPayment")
-                            : t("label:partialRefund")}
-                        </Button>
-                      </div>
-                      {headerTitle === "Capture Payment" ? (
-                        <Controller
-                          name="captureAmount"
-                          className="mt-32"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={t("label:amount")}
-                              type="number"
-                              autoComplete="off"
-                              variant="outlined"
-                              error={!!errors.captureAmount}
-                              helperText={errors?.captureAmount?.message}
-                              fullWidth
-                              required
-                              InputProps={{
-                                inputProps: { min: 0, max: 10 },
-                                endAdornment: (
-                                  <InputAdornment position="start">
-                                    {t("label:nok")}
-                                  </InputAdornment>
-                                ),
-                              }}
-                              onChange={(e) => {
-                                var value = parseInt(e.target.value, 10);
-                                if (value > remainingAmount)
-                                  value = remainingAmount;
-                                setValue("captureAmount", value);
-                              }}
-                              disabled={refundType === "full"}
-                            />
-                          )}
-                        />
-                      ) : (
-                        <Controller
-                          name="refundAmount"
-                          className="mt-32"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label={t("label:refundAmount")}
-                              type="number"
-                              autoComplete="off"
-                              variant="outlined"
-                              error={!!errors.refundAmount}
-                              helperText={errors?.refundAmount?.message}
-                              fullWidth
-                              required
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="start">
-                                    {t("label:nok")}
-                                  </InputAdornment>
-                                ),
-                              }}
-                              disabled={refundType === "full"}
-                            />
-                          )}
-                        />
-                      )}
-                    </div>
-                  )}
+                {/*{(headerTitle === "Send Refund" ||*/}
+                {/*  headerTitle === "Refund Order") &&*/}
+                {/*  !flag && (*/}
+                {/*    <div>*/}
+                {/*      <div className="caption2">{t("label:refundType")}</div>*/}
+                {/*      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">*/}
+                {/*        <Button*/}
+                {/*          variant="outlined"*/}
+                {/*          className={`body2 ${*/}
+                {/*            refundType === "full"*/}
+                {/*              ? "create-order-capsule-button-active"*/}
+                {/*              : "create-order-capsule-button"*/}
+                {/*          }`}*/}
+                {/*          onClick={() => {*/}
+                {/*            setRefundType("full");*/}
+                {/*            setValue("refundAmount", orderAmount);*/}
+                {/*          }}*/}
+                {/*        >*/}
+                {/*          {t("label:fullRefund")}*/}
+                {/*        </Button>*/}
+                {/*        <Button*/}
+                {/*          variant="outlined"*/}
+                {/*          className={`body2 ${*/}
+                {/*            refundType === "partial"*/}
+                {/*              ? "create-order-capsule-button-active"*/}
+                {/*              : "create-order-capsule-button"*/}
+                {/*          }`}*/}
+                {/*          onClick={() => {*/}
+                {/*            setRefundType("partial");*/}
+                {/*            setValue("refundAmount", "");*/}
+                {/*          }}*/}
+                {/*        >*/}
+                {/*          {t("label:partialRefund")}*/}
+                {/*        </Button>*/}
+                {/*      </div>*/}
+                {/*      <Controller*/}
+                {/*        name="refundAmount"*/}
+                {/*        className="mt-32"*/}
+                {/*        control={control}*/}
+                {/*        render={({ field }) => (*/}
+                {/*          <TextField*/}
+                {/*            {...field}*/}
+                {/*            label={t("label:refundAmount")}*/}
+                {/*            type="number"*/}
+                {/*            onWheel={event => { event.target.blur()}}*/}
+                {/*            autoComplete="off"*/}
+                {/*            variant="outlined"*/}
+                {/*            error={!!errors.refundAmount}*/}
+                {/*            helperText={errors?.refundAmount?.message}*/}
+                {/*            fullWidth*/}
+                {/*            required*/}
+                {/*            InputProps={{*/}
+                {/*              endAdornment: (*/}
+                {/*                <InputAdornment position="start">*/}
+                {/*                  {t("label:nok")}*/}
+                {/*                </InputAdornment>*/}
+                {/*              ),*/}
+                {/*            }}*/}
+                {/*            disabled={refundType === "full"}*/}
+                {/*          />*/}
+                {/*        )}*/}
+                {/*      />*/}
+                {/*    </div>*/}
+                {/*  )}*/}
+                {["Send Refund", "Refund Order"].includes(headerTitle) && (
+                  <div
+                    className="flex justify-between py-16 px-12"
+                    style={{ backgroundColor: "#F7F7F7", borderRadius: "4px" }}
+                  >
+                    <p className="subtitle2">{t("label:refundAmount")}</p>
+                    <p className="subtitle2">
+                      {t("label:nok")} {orderAmount}
+                    </p>
+                  </div>
+                )}
                 {/*{headerTitle === "moreThanThreeRefundAttempts" && (*/}
                 {/*  <div>*/}
                 {/*    You have exceeded your monthly allowance of 3 refunds.*/}
                 {/*    Further refunds have to be approved by the FP Admin.*/}
                 {/*  </div>*/}
                 {/*)}*/}
+                {"Capture Payment" === headerTitle && (
+                  <div>
+                    <div className="caption2">{t("label:paymentType")}</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
+                      <Button
+                        variant="outlined"
+                        className={`body2 ${
+                          refundType === "full"
+                            ? "create-order-capsule-button-active"
+                            : "create-order-capsule-button"
+                        }`}
+                        onClick={setFullAmount}
+                      >
+                        {t("label:fullPayment")}
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        className={`body2 ${
+                          refundType === "partial"
+                            ? "create-order-capsule-button-active"
+                            : "create-order-capsule-button"
+                        }`}
+                        onClick={() => {
+                          setRefundType("partial");
+                          setValue("refundAmount", "");
+                          setValue("captureAmount", "");
+                        }}
+                      >
+                        {t("label:partialPayment")}
+                      </Button>
+                    </div>
+                    <Controller
+                      name="captureAmount"
+                      className="mt-32"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label={t("label:amount")}
+                          type="number"
+                          autoComplete="off"
+                          variant="outlined"
+                          error={!!errors.captureAmount}
+                          helperText={errors?.captureAmount?.message}
+                          fullWidth
+                          required
+                          InputProps={{
+                            inputProps: { min: 0, max: 10 },
+                            endAdornment: (
+                              <InputAdornment position="start">
+                                {t("label:nok")}
+                              </InputAdornment>
+                            ),
+                          }}
+                          onChange={(e) => {
+                            var value = parseInt(e.target.value, 10);
+                            if (value > remainingAmount)
+                              value = remainingAmount;
+                            setValue("captureAmount", value);
+                          }}
+                          disabled={refundType === "full"}
+                        />
+                      )}
+                    />
+                  </div>
+                )}
                 {["Charge Amount"].includes(headerTitle) && (
                   <div>
                     <Hidden smDown>

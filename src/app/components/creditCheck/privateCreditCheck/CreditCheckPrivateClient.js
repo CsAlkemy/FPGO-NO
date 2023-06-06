@@ -171,31 +171,31 @@ export default function CreditCheckPrivateClient() {
                           />
                         )}
                       />
-                      <Controller
-                        name="phoneNumber"
-                        control={control}
-                        render={({ field }) => (
-                          <FormControl error={!!errors.phoneNumber} fullWidth>
-                            <PhoneInput
-                              {...field}
-                              className={
-                                errors.phoneNumber
-                                  ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                  : "input-phone-number-field"
-                              }
-                              country="no"
-                              enableSearch
-                              autocompleteSearch
-                              countryCodeEditable={false}
-                              specialLabel={t("label:phoneNumber")}
-                              //onBlur={handleOnBlurGetDialCode}
-                            />
-                            <FormHelperText>
-                              {errors?.phoneNumber?.message ? t(`validation:${errors?.phoneNumber?.message}`) : ""}
-                            </FormHelperText>
-                          </FormControl>
-                        )}
-                      />
+                      {/*<Controller*/}
+                      {/*  name="phoneNumber"*/}
+                      {/*  control={control}*/}
+                      {/*  render={({ field }) => (*/}
+                      {/*    <FormControl error={!!errors.phoneNumber} fullWidth>*/}
+                      {/*      <PhoneInput*/}
+                      {/*        {...field}*/}
+                      {/*        className={*/}
+                      {/*          errors.phoneNumber*/}
+                      {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                      {/*            : "input-phone-number-field"*/}
+                      {/*        }*/}
+                      {/*        country="no"*/}
+                      {/*        enableSearch*/}
+                      {/*        autocompleteSearch*/}
+                      {/*        countryCodeEditable={false}*/}
+                      {/*        specialLabel={t("label:phoneNumber")}*/}
+                      {/*        //onBlur={handleOnBlurGetDialCode}*/}
+                      {/*      />*/}
+                      {/*      <FormHelperText>*/}
+                      {/*        {errors?.phoneNumber?.message ? t(`validation:${errors?.phoneNumber?.message}`) : ""}*/}
+                      {/*      </FormHelperText>*/}
+                      {/*    </FormControl>*/}
+                      {/*  )}*/}
+                      {/*/>*/}
                     </div>
                     <div className="mt-48 mb-16">
                       <Controller

@@ -31,12 +31,18 @@ const TimelineLog = () => {
   const handleDateChange = (date) => {
     setIsFetching(true);
     setDefaultTimeline(false);
-    const prepareSelectedDate = `${new Date(date).getMonth() + 1}.09.${new Date(
-      date
-    ).getFullYear()} 00:00:00`;
-    const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
+    let prepareSelectedDate = `${date.getMonth()+1}.${
+        date.getDate() - (date.getDate() - 1)
+    }.${date.getFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`
+
+    const startTime = new Date(prepareSelectedDate).getTime() / 1000;
+
+    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+    let prepareLastDateString = `${lastDay.getMonth()+1}.${lastDay.getDate()}.${lastDay.getFullYear()} ${lastDay.getUTCHours()}:${lastDay.getUTCMinutes()}:${lastDay.getUTCSeconds()}`
+    const endTime = new Date(prepareLastDateString).getTime() / 1000;
+
     setSelectedDate(prepareSelectedDate);
-    CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp)
+    CustomersService.getCustomerTimelineByUUID(queryParams.id, startTime, endTime)
       .then((res) => {
         setLogs(res?.data);
         setIsFetching(false);
@@ -49,11 +55,13 @@ const TimelineLog = () => {
 
   useEffect(() => {
     if (defaultTimeline && isFetching) {
-      const prepareSelectedDate = `${
-        new Date().getMonth() + 1
-      }.09.${new Date().getFullYear()} 00:00:00`;
-      const timeStamp = new Date(prepareSelectedDate).getTime() / 1000;
-      CustomersService.getCustomerTimelineByUUID(queryParams.id, timeStamp)
+      let currentDate = new Date();
+      let prepareDateStringOneYearBeforeCurrentMonth = `${currentDate.getMonth()+1}.${
+          currentDate.getDate() - (currentDate.getDate() - 1)
+      }.${currentDate.getFullYear()-1} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}:${currentDate.getUTCSeconds()}`
+
+      let startDate = new Date(prepareDateStringOneYearBeforeCurrentMonth).getTime()/1000
+      CustomersService.getCustomerTimelineByUUID(queryParams.id, startDate)
         .then((res) => {
           setLogs(res?.data);
           setIsFetching(false);

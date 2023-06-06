@@ -128,9 +128,9 @@ class CreditCheckService {
     const phoneCountryCode = "+" + params.phoneNumber.slice(0, 2);
     return {
       personalId: `${params.personalId}`,
-      countryCode:
-        phoneNumber && phoneCountryCode ? `${phoneCountryCode}` : null,
-      msisdn: phoneNumber && phoneCountryCode ? `${phoneNumber}` : null,
+      // countryCode:
+      //   phoneNumber && phoneCountryCode ? `${phoneCountryCode}` : null,
+      // msisdn: phoneNumber && phoneCountryCode ? `${phoneNumber}` : null,
     };
   };
 

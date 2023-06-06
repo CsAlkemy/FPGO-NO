@@ -21,6 +21,7 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
+  payoutReportsListOverview,
   reservationListOverview,
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
@@ -202,12 +203,25 @@ export default function OverviewHeader(props) {
       </Hidden>
       <Hidden smDown>
         <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-0 sm:px-20">
-          {props.tableRef !== clientOrdersListOverview && (
-            <Typography className="flex header6 col-span-2 my-14 md:my-0">
-              {props.tableRef === customerOrdersListOverview
-                ? ""
-                : props.headerSubtitle}
-            </Typography>
+          {props.tableRef !== clientOrdersListOverview &&
+            props.tableRef !== payoutReportsListOverview && (
+              <Typography className="flex header6 col-span-2 my-14 md:my-0">
+                {props.tableRef === customerOrdersListOverview
+                  ? ""
+                  : props.headerSubtitle}
+              </Typography>
+            )}
+          {props.tableRef === payoutReportsListOverview && (
+            <div className="flex flex-col col-span-2 my-14 md:my-0">
+              <Typography className="header6">
+                {props.tableRef === customerOrdersListOverview
+                  ? ""
+                  : props.headerSubtitle}
+              </Typography>
+              <Typography className="subtitle3" style={{ color: "#838585" }}>
+                {t("label:selectAClientToViewPayouts")}
+              </Typography>
+            </div>
           )}
           {props.tableRef === clientOrdersListOverview && (
             <div className="flex header6 col-span-2 my-14 md:my-0">
@@ -294,7 +308,8 @@ export default function OverviewHeader(props) {
                   </Menu>
                 </div>
               ) : props.tableRef === customerOrdersListOverview ||
-                props.tableRef === clientOrdersListOverview ? (
+                props.tableRef === clientOrdersListOverview ||
+                props.tableRef === payoutReportsListOverview ? (
                 ""
               ) : props.tableRef === creditChecksListOverview ? (
                 <div>

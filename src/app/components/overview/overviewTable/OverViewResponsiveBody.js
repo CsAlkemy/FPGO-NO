@@ -15,7 +15,8 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
-  reservationListOverview
+  payoutReportsListOverview,
+  reservationListOverview,
 } from "./TablesName";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import StoreIcon from "@mui/icons-material/Store";
@@ -77,7 +78,8 @@ export default function OverViewResponsiveBody(props) {
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
-    if(decision === "refundReservations") setHeaderTitle("Refund from Reservation");
+    if (decision === "refundReservations")
+      setHeaderTitle("Refund from Reservation");
   };
   const handleSendInvoiceModalOpen = () => {
     setOpen(true);
@@ -739,7 +741,8 @@ export default function OverViewResponsiveBody(props) {
                 customerPhone={props.row.phone}
                 customerEmail={props.row.email}
               />
-            </>) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
+            </>
+          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
             <>
               <CustomTooltip
                 disableFocusListener
@@ -2159,9 +2162,60 @@ export default function OverViewResponsiveBody(props) {
         //   </TableCell>
         // )
       });
-    case reservationListOverview: 
+    case payoutReportsListOverview:
       return props.headerRows.map((rdt) => {
-        if(rdt.id === 'status') {
+        if (rdt.id === "email") {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700 truncate">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        } else if (rdt.id === "status") {
+          return props.row.status === "Active" ? (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                <OverviewStatus name="Active" />
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                <OverviewStatus name="Inactive" />
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div className="grid grid-cols-2 justify-between items-center">
+              <div className="subtitle3 text-primary-900">
+                {/*{rdt.charAt(0).toUpperCase() + rdt.slice(1).toLowerCase()}*/}
+                {rdt.label}
+              </div>
+              <div className="body3 text-MonochromeGray-700">
+                {props.row[rdt.id]}
+              </div>
+            </div>
+          );
+        }
+      });
+
+    case reservationListOverview:
+      return props.headerRows.map((rdt) => {
+        if (rdt.id === "status") {
           switch (props.row.status) {
             case "sent":
               return (
@@ -2264,7 +2318,11 @@ export default function OverViewResponsiveBody(props) {
                 </div>
               );
           }
-        }  else if (rdt.id === "reservedAmount" || rdt.id === "amountPaid" || rdt.id === "amountInBank") {
+        } else if (
+          rdt.id === "reservedAmount" ||
+          rdt.id === "amountPaid" ||
+          rdt.id === "amountInBank"
+        ) {
           return (
             <div
               className="grid grid-cols-2 justify-between items-center"
@@ -2272,22 +2330,20 @@ export default function OverViewResponsiveBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              <div className="subtitle3 text-primary-900">
-                {rdt.label}
-              </div>
+              <div className="subtitle3 text-primary-900">{rdt.label}</div>
               <div className="body3 text-MonochromeGray-700">
                 {t("label:nok")} {ThousandSeparator(props.row[rdt.id])}
               </div>
             </div>
           );
-        } else if(rdt.id === "options") {
+        } else if (rdt.id === "options") {
           return user.role[0] === FP_ADMIN ? (
             ""
           ) : props.row.status.toLowerCase() === "completed" ? (
             <>
               <CustomTooltip
                 disableFocusListener
-                title={t('label:refundFromReservations')}
+                title={t("label:refundFromReservations")}
                 TransitionComponent={Zoom}
                 placement="bottom-start"
                 enterDelay={300}
@@ -2299,7 +2355,7 @@ export default function OverViewResponsiveBody(props) {
                   className="rounded-4 border-1 hover:bg-white border-MonochromeGray-100 text-MonochromeGray-100 hover:text-primary-500"
                   onClick={() => {
                     handleModalOpen("refundReservations");
-                    setAmountBank(props.row.amountInBank)
+                    setAmountBank(props.row.amountInBank);
                   }}
                 >
                   {t("label:refundFromReservation")}
@@ -2330,9 +2386,7 @@ export default function OverViewResponsiveBody(props) {
                 props.rowClickAction(props.row);
               }}
             >
-              <div className="subtitle3 text-primary-900">
-                {rdt.label}
-              </div>
+              <div className="subtitle3 text-primary-900">{rdt.label}</div>
               <div className="body3 text-MonochromeGray-700">
                 {props.row[rdt.id]}
               </div>

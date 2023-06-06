@@ -9,6 +9,9 @@ const authMobileHeader = (props) => {
   const { isShow } = props;
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const lang = urlParams.get('lang');
+  const resetPassword = window.location.pathname.includes("/reset-password");
   const languages = [
     {
       label: "English",
@@ -47,7 +50,7 @@ const authMobileHeader = (props) => {
           <div>
             <Select
               sx={{ height: 36 }}
-              defaultValue="English"
+              defaultValue={lang === "en" ? "English": "Norwegian"}
               displayEmpty
               renderValue={(value) => {
                 return (
@@ -58,7 +61,7 @@ const authMobileHeader = (props) => {
                     <SvgIcon color="primary">
                       <LanguageIcon className="text-MonochromeGray-300" />
                     </SvgIcon>
-                    <div className="my-auto">{value}</div>
+                    <div className="my-auto">{t(`label:${value.toLowerCase()}`)}</div>
                   </Box>
                 );
               }}

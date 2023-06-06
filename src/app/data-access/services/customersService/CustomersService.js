@@ -4,7 +4,7 @@ import { EnvVariable } from "../../utils/EnvVariables";
 import AuthService from "../authService/AuthService";
 
 class CustomersService {
-  prepareCreatePrivateCustomerPayload = (params, sameAddress) => {
+  prepareCreatePrivateCustomerPayload = (params, sameAddress, dialCode) => {
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
       : null;
@@ -20,12 +20,12 @@ class CustomersService {
     // const countryCode = params.primaryPhoneNumber
     //   ? "+" + params.primaryPhoneNumber.slice(0, 2)
     //   : null;
-    const msisdn = primaryPhoneNumber
-      ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
-      : null;
-    const countryCode = primaryPhoneNumber
-      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
-      : null;
+      const msisdn = params?.primaryPhoneNumber
+          ? params?.primaryPhoneNumber.slice(dialCode?.length)
+          : null;
+      const countryCode = dialCode
+          ? dialCode
+          : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
@@ -259,7 +259,7 @@ class CustomersService {
     });
   };
 
-  prepareCreateCorporateCustomerPayload = (params, sameAddress) => {
+  prepareCreateCorporateCustomerPayload = (params, sameAddress, dialCodePrimary, dialCodePrimaryInfo) => {
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
       : null;
@@ -270,12 +270,10 @@ class CustomersService {
       ? params.shippingPhoneNumber.split("+")
       : null;
 
-    const msisdn = primaryPhoneNumber
-      ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+    const msisdn = params?.primaryPhoneNumber
+      ? params?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
-    const countryCode = primaryPhoneNumber
-      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
-      : null;
+    const countryCode = dialCodePrimary ? dialCodePrimary : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
@@ -626,6 +624,7 @@ class CustomersService {
           ? row.organizationId
           : row.personalNumber,
         phone: phone ? "+" + phone[phone.length - 1] : null,
+        msisdn: row?.msisdn || "",
         email: row.email,
         lastInvoicedOn: row.lastOrderOn,
         lastOrderAmount: row.lastOrderAmount,
@@ -666,7 +665,8 @@ class CustomersService {
                   orgIdOrPNumber: row.organizationId
                     ? row.organizationId
                     : row.personalNumber,
-                  phone: phone ? "+" + phone[phone.length - 1] : null,
+                  // phone: phone ? "+" + phone[phone.length - 1] : null,
+                  phone: row.msisdn,
                   email: row.email,
                   lastInvoicedOn: row.lastOrderOn,
                   lastOrderAmount: row.lastOrderAmount,
@@ -675,6 +675,7 @@ class CustomersService {
                   city: row?.billingAddress?.city,
                   zip: row?.billingAddress?.zip,
                   country: row?.billingAddress?.country,
+                  countryCode: row?.countryCode,
                 };
               });
               d.status_code = 200;
@@ -840,7 +841,8 @@ class CustomersService {
     params,
     sameAddress,
     billingUUID,
-    shippingUUID
+    shippingUUID,
+    dialCode
   ) => {
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
@@ -855,11 +857,9 @@ class CustomersService {
     const data = {
       customerID: params.customerID,
       name: params.customerName,
-      countryCode: primaryPhoneNumber
-        ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
-        : null,
-      msisdn: primaryPhoneNumber
-        ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+      countryCode: dialCode ? dialCode : null,
+      msisdn: params?.primaryPhoneNumber
+        ? params?.primaryPhoneNumber.slice(dialCode?.length)
         : null,
       personalNumber: `${params.pNumber !== null ? params.pNumber : ""}`,
       email: params.customerEmail,
@@ -980,7 +980,8 @@ class CustomersService {
   prepareUpdateCorporateCustomerPayload = (
     params,
     sameAddress,
-    detailsInfo
+    detailsInfo,
+    dialCode
   ) => {
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
@@ -993,12 +994,10 @@ class CustomersService {
       : null;
     const phone = params?.phone ? params.phone.split("+") : null;
 
-    const msisdn = primaryPhoneNumber
-      ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+    const msisdn = params?.primaryPhoneNumber
+      ? params?.primaryPhoneNumber.slice(dialCode?.length)
       : null;
-    const countryCode = primaryPhoneNumber
-      ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
-      : null;
+    const countryCode = dialCode ? dialCode : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
@@ -1345,12 +1344,12 @@ class CustomersService {
     });
   };
 
-  getCustomerTimelineByUUID = async (uuid, startTime) => {
+  getCustomerTimelineByUUID = async (uuid, startTime, endTime = null) => {
     return new Promise((resolve, reject) => {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
+            const URL = endTime ? `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}/${endTime}` : `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {

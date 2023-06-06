@@ -33,7 +33,7 @@ import {
   useGetCustomersListQuery,
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
-
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 const createPrivateCustomer = () => {
   const { t } = useTranslation();
   const [sameAddress, setSameAddress] = React.useState(true);
@@ -41,12 +41,13 @@ const createPrivateCustomer = () => {
   const [expanded, setExpanded] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [dialCode, setDialCode] = React.useState();
   const [createPrivateCustomer] = useCreatePrivateCustomerMutation();
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   // form
-  const { control, formState, handleSubmit, reset, setValue } = useForm({
+  const { control, formState, handleSubmit, reset, setValue, trigger, watch } = useForm({
     mode: "onChange",
     PrivateDefaultValue,
     resolver: yupResolver(validateSchemaPrivate),
@@ -56,7 +57,7 @@ const createPrivateCustomer = () => {
   const onSubmit = (values) => {
     setLoading(true);
     const preparedPayload =
-      CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress);
+      CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress, dialCode);
     createPrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
         enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
@@ -122,7 +123,7 @@ const createPrivateCustomer = () => {
               <div className="col-span-1 md:col-span-4 bg-white">
                 <div className="  subtitle3 header-bg-900-product flex flex-row items-center gap-10">
                   {t("label:primaryInformation")}
-                  {dirtyFields.primaryPhoneNumber &&
+                  {watch("primaryPhoneNumber")?.length>0 &&
                   dirtyFields.customerEmail &&
                   dirtyFields.customerName &&
                   dirtyFields.billingAddress &&
@@ -135,34 +136,46 @@ const createPrivateCustomer = () => {
                   )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-32 px-10 md:px-16">
-                  <Controller
-                    name="primaryPhoneNumber"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControl
-                        error={!!errors.primaryPhoneNumber}
-                        fullWidth
-                      >
-                        <PhoneInput
-                          {...field}
-                          className={
-                            errors.primaryPhoneNumber
-                              ? "input-phone-number-field border-1 rounded-md border-red-300"
-                              : "input-phone-number-field"
-                          }
-                          country="no"
-                          enableSearch
-                          autocompleteSearch
-                          countryCodeEditable={false}
-                          specialLabel={`${t("label:phone")}*`}
-                          // onBlur={handleOnBlurGetDialCode}
-                        />
-                        <FormHelperText>
-                          {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
-                        </FormHelperText>
-                      </FormControl>
-                    )}
+                  <FrontPaymentPhoneInput
+                      control={control}
+                      defaultValue='no'
+                      disable={false}
+                      error={errors.primaryPhoneNumber}
+                      label="phone"
+                      name="primaryPhoneNumber"
+                      required = {true}
+                      trigger = {trigger}
+                      setValue = {setValue}
+                      setDialCode = {setDialCode}
                   />
+                  {/*<Controller*/}
+                  {/*  name="primaryPhoneNumber"*/}
+                  {/*  control={control}*/}
+                  {/*  render={({ field }) => (*/}
+                  {/*    <FormControl*/}
+                  {/*      error={!!errors.primaryPhoneNumber}*/}
+                  {/*      fullWidth*/}
+                  {/*    >*/}
+                  {/*      <PhoneInput*/}
+                  {/*        {...field}*/}
+                  {/*        className={*/}
+                  {/*          errors.primaryPhoneNumber*/}
+                  {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                  {/*            : "input-phone-number-field"*/}
+                  {/*        }*/}
+                  {/*        country="no"*/}
+                  {/*        enableSearch*/}
+                  {/*        autocompleteSearch*/}
+                  {/*        countryCodeEditable={false}*/}
+                  {/*        specialLabel={`${t("label:phone")}*`}*/}
+                  {/*        // onBlur={handleOnBlurGetDialCode}*/}
+                  {/*      />*/}
+                  {/*      <FormHelperText>*/}
+                  {/*        {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}*/}
+                  {/*      </FormHelperText>*/}
+                  {/*    </FormControl>*/}
+                  {/*  )}*/}
+                  {/*/>*/}
                   <Controller
                     name="customerEmail"
                     control={control}
@@ -208,6 +221,7 @@ const createPrivateCustomer = () => {
                         label={t("label:pNumber")}
                         className="w-full md:w-3/5"
                         type="number"
+                        onWheel={event => { event.target.blur()}}
                         autoComplete="off"
                         error={!!errors.pNumber}
                         helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
@@ -393,6 +407,7 @@ const createPrivateCustomer = () => {
                                           {...field}
                                           label={t("label:zipCode")}
                                           type="number"
+                                          onWheel={event => { event.target.blur()}}
                                           autoComplete="off"
                                           disabled={sameAddress}
                                           error={!!errors.shippingZip}
