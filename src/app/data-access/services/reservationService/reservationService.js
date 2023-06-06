@@ -109,12 +109,18 @@ class ReservationService {
       customerDetails: {
         uuid: userID,
         type: params.customerType,
-        countryCode: primaryPhoneNumber
-          ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
-          : null,
-        msisdn: primaryPhoneNumber
-          ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
-          : null,
+        // countryCode: primaryPhoneNumber
+        //   ? "+" + primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(0, 2)
+        //   : null,
+        countryCode: params.dialCode ? params.dialCode : null,
+        // msisdn: primaryPhoneNumber
+        //   ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
+        //   : null,
+
+        // msisdn: params.phone
+        //   ? params.phone.slice(params?.dialCode?.length)
+        //   : null,
+        msisdn: params.phone,
         email: params.email,
         name: params.name,
         personalNumber:

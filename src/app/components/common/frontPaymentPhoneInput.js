@@ -20,6 +20,8 @@ export default function FrontPaymentPhoneInput({
   const { t } = useTranslation();
 
   const handleOnBlurGetDialCode = (value, data, event, fv) => {
+    // console.log(name + value);
+    // console.log(data);
     setValue(name, `+${value}`);
     trigger(name);
     setDialCode(`+${data?.dialCode}`);

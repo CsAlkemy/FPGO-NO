@@ -79,6 +79,7 @@ import CharCount from "../../common/charCount";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 
 const ReservationCreate = () => {
   const { t } = useTranslation();
@@ -102,6 +103,7 @@ const ReservationCreate = () => {
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [openCreateCustomer, setOpenCreateCustomer] = useState(false);
   const [val, setVal] = useState([]);
+  const [dialCode, setDialCode] = React.useState();
   setCustomDateDropDown;
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -235,6 +237,7 @@ const ReservationCreate = () => {
     errors: errorsCustomer,
     touchedFields: touchedFieldsCustomer,
   } = formStateCustomer;
+
   const onSubmitCustomer = (values) => {
     //console.log(values);
     let customerIDNo = "";
@@ -243,15 +246,17 @@ const ReservationCreate = () => {
     } else if (values.pNumber != undefined) {
       customerIDNo = values.pNumber;
     }
-    const primary_phone_number =
-      values.primaryPhoneNumber.indexOf("+") == 0
-        ? values.primaryPhoneNumber
-        : "+" + values.primaryPhoneNumber;
+    // const primary_phone_number =
+    //   values.primaryPhoneNumber.indexOf("+") == 0
+    //     ? values.primaryPhoneNumber
+    //     : "+" + values.primaryPhoneNumber;
+    const phoneMsisdn = values.primaryPhoneNumber.slice(dialCode.length);
     const customerUpData = {
       name: values.customerName,
       orgOrPNumber: customerIDNo,
       email: values.email,
-      phone: primary_phone_number,
+      //phone: values.primaryPhoneNumber,
+      phone: phoneMsisdn,
       street: values.billingAddress,
       city: values.billingCity,
       zip: values.billingZip,
@@ -297,6 +302,7 @@ const ReservationCreate = () => {
         totalDiscount,
         grandTotal,
       },
+      dialCode,
     });
     // console.log(data);
     // return;
@@ -465,6 +471,7 @@ const ReservationCreate = () => {
                     ? row?.orgIdOrPNumber
                     : null,
                   email: row?.email ? row?.email : null,
+                  countryCode: row?.countryCode ? row?.countryCode : null,
                   phone: row?.phone ? row?.phone : null,
                   type: row.type,
                   street: row?.street,
@@ -472,7 +479,13 @@ const ReservationCreate = () => {
                   zip: row?.zip,
                   country: row?.country,
                   searchString:
-                    row?.name + " ( " + row?.phone + ` - ${row.type} )`,
+                    row?.name +
+                    " ( " +
+                    " " +
+                    row?.countryCode +
+                    " " +
+                    row?.phone +
+                    ` - ${row.type} )`,
                 });
               });
           }
@@ -562,11 +575,16 @@ const ReservationCreate = () => {
 
   const triggerSelectCustomer = (customerData) => {
     if (customerData) {
+      //console.log(customerData);
+      const selectedPhoneNumber =
+        customerData.countryCode + " " + customerData.phone;
       clearErrors(["pNumber", "orgID"]);
       setRecheckSchema(false);
       setCustomerSearchBy(undefined);
       setCustomerSearchBoxLength(0);
-      setValueCustomer("primaryPhoneNumber", customerData.phone);
+      setDialCode(customerData.countryCode);
+      //setValueCustomer("primaryPhoneNumber", customerData.phone);
+      setValueCustomer("primaryPhoneNumber", selectedPhoneNumber);
       setValueCustomer("email", customerData.email);
       setValueCustomer("customerName", customerData.name);
       customerData.type === "Corporate"
@@ -749,6 +767,7 @@ const ReservationCreate = () => {
                               {customerSearchBy === "phone" &&
                               customerSearchBoxLength > 0 ? (
                                 <div>
+                                  {option.countryCode + " "}
                                   <span
                                     style={{ color: "#0088AE" }}
                                   >{`${option.phone.slice(
@@ -760,13 +779,17 @@ const ReservationCreate = () => {
                                   )}`}</span>
                                 </div>
                               ) : (
-                                <div>{`${option.phone}`}</div>
+                                <div>{`${
+                                  option.countryCode + " " + option.phone
+                                }`}</div>
                               )}
                             </div>
                           ) : (
                             <div>
                               <div>{`${option.name}`}</div>
-                              <div>{`${option.phone}`}</div>
+                              <div>{`${
+                                option.countryCode + " " + option.phone
+                              }`}</div>
                             </div>
                           )}
                         </MenuItem>
@@ -845,7 +868,7 @@ const ReservationCreate = () => {
                             const closeIcon = document.querySelectorAll(
                               ".search-customer-order-create .MuiAutocomplete-clearIndicator"
                             );
-                            closeIcon[0].click();
+                            if (closeIcon.length) closeIcon[0].click();
                           }}
                         >
                           <svg
@@ -859,7 +882,9 @@ const ReservationCreate = () => {
                           </svg>
                         </span>
                       </div>
-                      <p className="body-p">{selectedCustomer.phone}</p>
+                      <p className="body-p">
+                        {dialCode + " " + selectedCustomer.phone}
+                      </p>
                       <p className="body-p">{selectedCustomer.email}</p>
                       <p className="body-p">
                         {selectedCustomer.street +
@@ -1871,7 +1896,19 @@ const ReservationCreate = () => {
               <DialogContent>
                 <div className="w-full my-32">
                   <div className="form-pair-input gap-x-20">
-                    <Controller
+                    <FrontPaymentPhoneInput
+                      control={controlCustomer}
+                      defaultValue="no"
+                      disable={false}
+                      error={errorsCustomer.primaryPhoneNumber}
+                      label="phone"
+                      name="primaryPhoneNumber"
+                      required={true}
+                      trigger={trigger}
+                      setValue={setValueCustomer}
+                      setDialCode={setDialCode}
+                    />
+                    {/* <Controller
                       name="primaryPhoneNumber"
                       control={controlCustomer}
                       render={({ field }) => (
@@ -1903,7 +1940,7 @@ const ReservationCreate = () => {
                           </FormHelperText>
                         </FormControl>
                       )}
-                    />
+                    /> */}
                     <Controller
                       name="email"
                       control={controlCustomer}
@@ -2109,7 +2146,7 @@ const ReservationCreate = () => {
                         )}
                       />
                       <CountrySelect
-                        control={control}
+                        control={controlCustomer}
                         name="billingCountry"
                         label={"country"}
                         // placeholder={"country"}
