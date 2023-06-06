@@ -31,33 +31,27 @@ const paymentHeader = () => {
   const orderDetails = window.location.pathname.includes("/order/details");
   const orderReceipt = window.location.pathname.includes("/order/receipt");
   const checkOutOrder = window.location.pathname.includes("checkout");
-  const [defaultLang, setDefaultLang] = React.useState(
-    lang === "en" ? "English" : "Norwegian"
-  );
+  const [defaultLang, setDefaultLang ] = React.useState( lang ==='en' ? "English" : "Norwegian")
+
   useEffect(() => {
     if (lang === "en") {
       dispatch(changeLanguage("en"));
-      setDefaultLang("English");
-    } else if (orderDetails || orderReceipt || checkOutOrder) {
+      setDefaultLang("English")
+    }
+    else if (orderDetails || orderReceipt || checkOutOrder) {
       dispatch(changeLanguage("no"));
-      setDefaultLang("Norwegian");
-    } else if (
-      !!localStorage.getItem("i18nextLng") &&
-      localStorage.getItem("i18nextLng")
-    ) {
-      dispatch(changeLanguage("en"));
-      setDefaultLang("English");
-    } else {
-      dispatch(changeLanguage("no"));
-      setDefaultLang("Norwegian");
+      setDefaultLang("Norwegian")
+    }
+    else if (!!localStorage.getItem("i18nextLng") && localStorage.getItem("i18nextLng")) {
+      dispatch(changeLanguage("en"))
+      setDefaultLang("English")
+    }
+    else {
+        dispatch(changeLanguage("no"));
+      setDefaultLang("Norwegian")
     }
   }, [lang]);
 
-  useEffect(() => {
-    lang === "no"
-      ? dispatch(changeLanguage("no"))
-      : dispatch(changeLanguage("en"));
-  }, [lang]);
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
   };
@@ -72,6 +66,13 @@ const paymentHeader = () => {
       <div>
         <Select
           sx={{ height: 36 }}
+          // defaultValue={
+          //   lang === "en" ||
+          //   (!!localStorage.getItem("i18nextLng") &&
+          //     localStorage.getItem("i18nextLng") === "en") && !orderDetails
+          //     ? "English"
+          //     : "Norwegian"
+          // }
           defaultValue={defaultLang}
           displayEmpty
           renderValue={(value) => {
