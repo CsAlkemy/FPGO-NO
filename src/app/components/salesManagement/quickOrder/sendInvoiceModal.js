@@ -253,9 +253,7 @@ const SendInvoiceModal = (props) => {
                     </div>
                     <div className="">
                       <div
-                        className={`${
-                          customerType === "corporate" ? "form-pair-input" : ""
-                        } gap-x-20 `}
+                        className="form-pair-input gap-x-20"
                       >
                         <Controller
                           name="customerName"
@@ -308,32 +306,32 @@ const SendInvoiceModal = (props) => {
                             )}
                           />
                         )}
-                        {/*{customerType === "private" && (*/}
-                        {/*  <Controller*/}
-                        {/*    name="pNumber"*/}
-                        {/*    control={control}*/}
-                        {/*    render={({ field }) => (*/}
-                        {/*      <TextField*/}
-                        {/*        {...field}*/}
-                        {/*        label={t("label:pNumber")}*/}
-                        {/*        type="number"*/}
-                        {/*        autoComplete="off"*/}
-                        {/*        error={!!errors.pNumber}*/}
-                        {/*        helperText={*/}
-                        {/*          errors?.pNumber?.message*/}
-                        {/*            ? t(*/}
-                        {/*                `validation:${errors?.pNumber?.message}`*/}
-                        {/*              )*/}
-                        {/*            : ""*/}
-                        {/*        }*/}
-                        {/*        // ref={orgOrPNumberRef}*/}
-                        {/*        variant="outlined"*/}
-                        {/*        fullWidth*/}
-                        {/*        value={field.value || ""}*/}
-                        {/*      />*/}
-                        {/*    )}*/}
-                        {/*  />*/}
-                        {/*)}*/}
+                        {customerType === "private" && (
+                          <Controller
+                            name="pNumber"
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label={t("label:pNumber")}
+                                type="number"
+                                autoComplete="off"
+                                error={!!errors.pNumber}
+                                helperText={
+                                  errors?.pNumber?.message
+                                    ? t(
+                                        `validation:${errors?.pNumber?.message}`
+                                      )
+                                    : ""
+                                }
+                                // ref={orgOrPNumberRef}
+                                variant="outlined"
+                                fullWidth
+                                value={field.value || ""}
+                              />
+                            )}
+                          />
+                        )}
                         {/*<Controller*/}
                         {/*  name="orgIdOrPNumber"*/}
                         {/*  control={control}*/}

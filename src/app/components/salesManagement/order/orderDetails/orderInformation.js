@@ -1376,11 +1376,7 @@ const OrderInformation = ({ info }) => {
                               </div>
                               <div className="mt-32 sm:mt-0">
                                 <div
-                                  className={`${
-                                    info?.customerDetails?.type === "Corporate"
-                                      ? "form-pair-input"
-                                      : ""
-                                  } gap-x-20 `}
+                                  className="form-pair-input gap-x-20"
                                 >
                                   <Controller
                                     name="customerName"
@@ -1412,56 +1408,60 @@ const OrderInformation = ({ info }) => {
                                       />
                                     )}
                                   />
-                                  {info?.customerDetails?.type ===
-                                    "Corporate" && (
-                                    <Controller
+                                  <Controller
                                       name="orgorPID"
                                       control={control}
                                       render={({ field }) => (
-                                        <TextField
-                                          {...field}
-                                          label={
-                                            t("label:organizationId")
-                                            // customData.customerType === "private"
-                                            //   ? t("label:pNumber")
-                                            //   : t("label:organizationId")
-                                          }
-                                          type="text"
-                                          autoComplete="off"
-                                          error={!!errors.orgorPID}
-                                          required={
-                                            customData.customerType ===
-                                            "corporate"
-                                          }
-                                          helperText={errors?.orgorPID?.message}
-                                          variant="outlined"
-                                          fullWidth
-                                          disabled
-                                          value={
-                                            field.value ||
-                                            (info.customerDetails?.type ===
-                                            "Private"
-                                              ? ""
-                                              : info.customerDetails
-                                                  ?.organizationId
-                                              ? info.customerDetails
-                                                  ?.organizationId
-                                              : "")
-                                          }
-                                          defaultValue={
-                                            info.customerDetails?.type ===
-                                            "Private"
-                                              ? ""
-                                              : info.customerDetails
-                                                  ?.organizationId
-                                              ? info.customerDetails
-                                                  ?.organizationId
-                                              : ""
-                                          }
-                                        />
+                                          <TextField
+                                              {...field}
+                                              label={
+                                                customData.customerType === "private"
+                                                    ? t("label:pNumber")
+                                                    : t("label:organizationId")
+                                              }
+                                              type="text"
+                                              autoComplete="off"
+                                              error={!!errors.orgorPID}
+                                              required={
+                                                  customData.customerType ===
+                                                  "corporate"
+                                              }
+                                              helperText={errors?.orgorPID?.message}
+                                              variant="outlined"
+                                              fullWidth
+                                              disabled
+                                              value={
+                                                  field.value ||
+                                                  (info.customerDetails?.type ===
+                                                  "Private"
+                                                      ? info.customerDetails
+                                                          ?.personalNumber
+                                                          ? info.customerDetails
+                                                              ?.personalNumber
+                                                          : ""
+                                                      : info.customerDetails
+                                                          ?.organizationId
+                                                          ? info.customerDetails
+                                                              ?.organizationId
+                                                          : "")
+                                              }
+                                              defaultValue={
+                                                info.customerDetails?.type ===
+                                                "Private"
+                                                    ? info.customerDetails
+                                                        ?.personalNumber
+                                                        ? info.customerDetails
+                                                            ?.personalNumber
+                                                        : ""
+                                                    : info.customerDetails
+                                                        ?.organizationId
+                                                        ? info.customerDetails
+                                                            ?.organizationId
+                                                        : ""
+                                              }
+                                          />
                                       )}
-                                    />
-                                  )}
+                                  />
                                 </div>
                                 <div className="">
                                   <div className="form-pair-three-by-one">

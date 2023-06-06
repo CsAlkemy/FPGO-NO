@@ -115,9 +115,9 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
       }
 
       PrivateDefaultValue.customerID = info?.uuid ? info?.uuid : "";
-      // PrivateDefaultValue.pNumber = info?.personalNumber
-      //   ? info.personalNumber
-      //   : "";
+      PrivateDefaultValue.pNumber = info?.personalNumber
+        ? info.personalNumber
+        : "";
       PrivateDefaultValue.customerEmail = info?.email ? info.email : "";
       PrivateDefaultValue.customerName = info?.name ? info.name : "";
       PrivateDefaultValue.primaryPhoneNumber =
@@ -439,26 +439,26 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                 )}
                               />
                             </div>
-                            {/*<div className="grid grid-cols-1 sm:grid-cols-3 mt-40">*/}
-                            {/*  <Controller*/}
-                            {/*    name="pNumber"*/}
-                            {/*    control={control}*/}
-                            {/*    render={({ field }) => (*/}
-                            {/*      <TextField*/}
-                            {/*        {...field}*/}
-                            {/*        label={t("label:pNumber")}*/}
-                            {/*        className="bg-white"*/}
-                            {/*        type="number"*/}
-                            {/*        autoComplete="off"*/}
-                            {/*        error={!!errors.pNumber}*/}
-                            {/*        helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}*/}
-                            {/*        variant="outlined"*/}
-                            {/*        fullWidth*/}
-                            {/*        value={field.value || ""}*/}
-                            {/*      />*/}
-                            {/*    )}*/}
-                            {/*  />*/}
-                            {/*</div>*/}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 mt-40">
+                              <Controller
+                                name="pNumber"
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label={t("label:pNumber")}
+                                    className="bg-white"
+                                    type="number"
+                                    autoComplete="off"
+                                    error={!!errors.pNumber}
+                                    helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
+                                    variant="outlined"
+                                    fullWidth
+                                    value={field.value || ""}
+                                  />
+                                )}
+                              />
+                            </div>
                           </div>
                         </div>
                         <div className="my-20">

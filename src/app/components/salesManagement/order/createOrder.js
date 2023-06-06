@@ -2163,8 +2163,7 @@ const createOrder = () => {
                                     setValue("customerName", data.name);
                                     data.type === "Corporate"
                                       ? setValue("orgID", data.orgOrPNumber)
-                                      : "";
-                                    // : setValue("pNumber", data.orgOrPNumber);
+                                      : setValue("pNumber", data.orgOrPNumber);
                                     setValue("billingAddress", data.street);
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
@@ -2186,7 +2185,7 @@ const createOrder = () => {
                                     setValue("email", "");
                                     setValue("customerName", "");
                                     setValue("orgID", "");
-                                    // setValue("pNumber", "");
+                                    setValue("pNumber", "");
                                     setValue("billingAddress", "");
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
@@ -2383,11 +2382,7 @@ const createOrder = () => {
                           </div>
                           <div className="mt-32 sm:mt-0">
                             <div
-                              className={`${
-                                customData.customerType === "corporate"
-                                  ? "form-pair-input"
-                                  : ""
-                              } gap-x-20 `}
+                              className="form-pair-input gap-x-20"
                             >
                               <Controller
                                 name="customerName"
@@ -2442,32 +2437,32 @@ const createOrder = () => {
                                   )}
                                 />
                               )}
-                              {/*{customData.customerType === "private" && (*/}
-                              {/*  <Controller*/}
-                              {/*    name="pNumber"*/}
-                              {/*    control={control}*/}
-                              {/*    render={({ field }) => (*/}
-                              {/*      <TextField*/}
-                              {/*        {...field}*/}
-                              {/*        label={t("label:pNumber")}*/}
-                              {/*        type="number"*/}
-                              {/*        autoComplete="off"*/}
-                              {/*        error={!!errors.pNumber}*/}
-                              {/*        helperText={*/}
-                              {/*          errors?.pNumber?.message*/}
-                              {/*            ? t(*/}
-                              {/*                `validation:${errors?.pNumber?.message}`*/}
-                              {/*              )*/}
-                              {/*            : ""*/}
-                              {/*        }*/}
-                              {/*        // ref={orgOrPNumberRef}*/}
-                              {/*        variant="outlined"*/}
-                              {/*        fullWidth*/}
-                              {/*        value={field.value || ""}*/}
-                              {/*      />*/}
-                              {/*    )}*/}
-                              {/*  />*/}
-                              {/*)}*/}
+                              { customData.customerType === "private" && (
+                                <Controller
+                                  name="pNumber"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:pNumber")}
+                                      type="number"
+                                      autoComplete="off"
+                                      error={!!errors.pNumber}
+                                      helperText={
+                                        errors?.pNumber?.message
+                                          ? t(
+                                              `validation:${errors?.pNumber?.message}`
+                                            )
+                                          : ""
+                                      }
+                                      // ref={orgOrPNumberRef}
+                                      variant="outlined"
+                                      fullWidth
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+                              )}
                             </div>
                           </div>
                           <div className="">
