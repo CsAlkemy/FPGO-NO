@@ -634,6 +634,8 @@ export const validateSchemaCreateReservation = yup.object().shape({
       ),
     })
   ),
+  customerNotes: yup.string().max(200, ""),
+  termsConditions: yup.string().max(200, ""),
 });
 
 export const CreateReservationDefaultValue = {
@@ -677,7 +679,7 @@ export const validateSchemaCustomerPrivate = yup.object().shape({
   billingAddress: yup.string().required("youMustEnterYourStreetAddress"),
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
-  billingCountry: yup.string().required("youMustEnterYourCountry"),
+  //billingCountry: yup.string().required("youMustEnterYourCountry"),
   customerName: yup.string().required("youMustEnterCustomerName"),
 });
 

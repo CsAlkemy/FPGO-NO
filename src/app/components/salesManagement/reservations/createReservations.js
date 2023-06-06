@@ -78,6 +78,7 @@ import CharCount from "../../common/charCount";
 // import { es, nn, nb } from "date-fns/locale";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import CountrySelect from "../../common/countries";
 
 const ReservationCreate = () => {
   const { t } = useTranslation();
@@ -171,6 +172,7 @@ const ReservationCreate = () => {
   const watchAllFields = watch();
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
+  //console.log(errors);
 
   const activeCustomerSchema = () => {
     if (customData.orderBy === "sms" && customData.customerType === "private")
@@ -2106,8 +2108,15 @@ const ReservationCreate = () => {
                           />
                         )}
                       />
-
-                      <Controller
+                      <CountrySelect
+                        control={control}
+                        name="billingCountry"
+                        label={"country"}
+                        // placeholder={"country"}
+                        required={true}
+                        error={errorsCustomer.billingCountry}
+                      />
+                      {/* <Controller
                         name="billingCountry"
                         control={controlCustomer}
                         render={({ field }) => (
@@ -2151,7 +2160,7 @@ const ReservationCreate = () => {
                             </FormHelperText>
                           </FormControl>
                         )}
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>

@@ -452,6 +452,7 @@ export const apiSlice = createApi({
         body: {
           source: "captured",
           amount: payload.refundableAmount,
+          reference: null,
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -464,6 +465,7 @@ export const apiSlice = createApi({
         body: {
           source: "charged",
           amount: payload.refundableAmount,
+          reference: payload.chargeKey,
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>

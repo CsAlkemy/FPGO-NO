@@ -42,12 +42,13 @@ const ReservationDetails = () => {
   const [remainingAmount, setRemainingAmount] = useState(null);
   const [amountRefunded, setAmountRefunded] = useState(null);
   const [refundableChargeAmount, setRefundableChargeAmount] = useState(null);
+  const [chargeKey, setChargeKey] = useState(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const handleModalOpen = (decision, chargedAmount = 0) => {
+  const handleModalOpen = (decision, chargedAmount = 0, chargeNote = null) => {
     setOpen(true);
     setAnchorEl(null);
     //setRemainingAmount(null);
@@ -74,6 +75,7 @@ const ReservationDetails = () => {
     if (decision === "refundChargeTransection") {
       setHeaderTitle("Refund Transaction");
       setRefundableChargeAmount(chargedAmount);
+      setChargeKey(chargeNote);
     }
   };
 
@@ -386,6 +388,7 @@ const ReservationDetails = () => {
               info.paymentDetails.capturedAmount - amountRefunded
             }
             refundableChargeAmount={refundableChargeAmount}
+            chargeKey={chargeKey}
           />
         </div>
       )}

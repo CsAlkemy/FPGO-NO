@@ -80,6 +80,7 @@ const OrderModal = (props) => {
     capturedAmount = 0,
     refundableAmount = 0,
     refundableChargeAmount = 0,
+    chargeKey = null,
   } = props;
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
@@ -398,6 +399,7 @@ const OrderModal = (props) => {
       setApiLoading(true);
       refundChargedTransection({
         refundableAmount: refundableChargeAmount,
+        chargeKey: chargeKey,
         uuid: orderId,
       }).then((response) => {
         reservationRequestCompletedAction(response);
@@ -1454,7 +1456,7 @@ const OrderModal = (props) => {
                       (["Cancel Reservation", "Complete Reservation"].includes(
                         headerTitle
                       ) &&
-                        !watch("cancellationNote")) ||
+                        !(watch("cancellationNote") && isValid)) ||
                       (headerTitle === "Capture Payment" &&
                         !watch("captureAmount")) ||
                       (headerTitle === "Charge Amount" &&

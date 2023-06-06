@@ -131,39 +131,30 @@ const ReservationDropdown = (props) => {
               "aria-labelledby": buttonId,
             }}
           >
-            <MenuItem
-              disabled={
-                !data.reservedAt || DayDiffFromToday(data.reservedAt) > 60
-              }
-              onClick={() => handleModalOpen("chargeFromCard")}
-            >
-              <ListItemIcon>
-                <CreditCardIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:chargeFromCard")}</ListItemText>
-            </MenuItem>
-            <MenuItem
-              disabled={
-                !data.reservedAt ||
-                DayDiffFromToday(data.reservedAt) > 7 ||
-                data.capturedAmount >= data.reservedAmount
-              }
-              onClick={() => handleModalOpen("capturePayments")}
-            >
-              <ListItemIcon>
-                <PaymentsIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:capturePayments")}</ListItemText>
-            </MenuItem>
-            <MenuItem
-              disabled={refundableAmount <= 0}
-              onClick={() => handleModalOpen("refundReservation")}
-            >
-              <ListItemIcon>
-                <UndoIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:refundFromReservations")}</ListItemText>
-            </MenuItem>
+            {data.reservedAt && DayDiffFromToday(data.reservedAt) <= 60 && (
+              <MenuItem onClick={() => handleModalOpen("chargeFromCard")}>
+                <ListItemIcon>
+                  <CreditCardIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:chargeFromCard")}</ListItemText>
+              </MenuItem>
+            )}
+            {data.reservedAt && DayDiffFromToday(data.reservedAt) <= 7 && (
+              <MenuItem onClick={() => handleModalOpen("capturePayments")}>
+                <ListItemIcon>
+                  <PaymentsIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:capturePayments")}</ListItemText>
+              </MenuItem>
+            )}
+            {refundableAmount > 0 && (
+              <MenuItem onClick={() => handleModalOpen("refundReservation")}>
+                <ListItemIcon>
+                  <UndoIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:refundFromReservations")}</ListItemText>
+              </MenuItem>
+            )}
             <MenuItem onClick={() => handleModalOpen("completeReservation")}>
               <ListItemIcon>
                 <DoneAllIcon fontSize="small" />
@@ -199,30 +190,22 @@ const ReservationDropdown = (props) => {
               "aria-labelledby": buttonId,
             }}
           >
-            <MenuItem
-              disabled={
-                !data.reservedAt || DayDiffFromToday(data.reservedAt) > 60
-              }
-              onClick={() => handleModalOpen("chargeFromCard")}
-            >
-              <ListItemIcon>
-                <CreditCardIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:chargeFromCard")}</ListItemText>
-            </MenuItem>
-            <MenuItem
-              disabled={
-                !data.reservedAt ||
-                DayDiffFromToday(data.reservedAt) > 7 ||
-                data.capturedAmount >= data.reservedAmount
-              }
-              onClick={() => handleModalOpen("capturePayments")}
-            >
-              <ListItemIcon>
-                <PaymentsIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:capturePayments")}</ListItemText>
-            </MenuItem>
+            {data.reservedAt && DayDiffFromToday(data.reservedAt) <= 60 && (
+              <MenuItem onClick={() => handleModalOpen("chargeFromCard")}>
+                <ListItemIcon>
+                  <CreditCardIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:chargeFromCard")}</ListItemText>
+              </MenuItem>
+            )}
+            {data.reservedAt && DayDiffFromToday(data.reservedAt) <= 7 && (
+              <MenuItem onClick={() => handleModalOpen("capturePayments")}>
+                <ListItemIcon>
+                  <PaymentsIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:capturePayments")}</ListItemText>
+              </MenuItem>
+            )}
             <MenuItem onClick={() => handleModalOpen("cancelReservation")}>
               <ListItemIcon>
                 <CancelIcon fontSize="small" />

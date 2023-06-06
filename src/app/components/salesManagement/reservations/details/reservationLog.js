@@ -218,7 +218,8 @@ const ReservationLog = ({
                             onClick={() =>
                               handleModalOpen(
                                 "refundChargeTransection",
-                                log.refundAmount
+                                log.refundAmount,
+                                log.note
                               )
                             }
                           >
