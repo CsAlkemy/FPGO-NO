@@ -960,7 +960,8 @@ export default function OverviewMainTable(props) {
         navigate(`/create-order/details/${info.uuid}`);
         break;
       case failedPaymentsListOverview:
-        navigate(`/subscription/details/${info.uuid}`);
+        navigate(`/subscription/failed/${info.uuid}`);
+        break;
       case reservationListOverview:
         navigate(`/reservations-view/details/${info.uuid}`);
         break;
