@@ -141,7 +141,7 @@ const subscriptionDetails = () => {
                     </TabList>
                   </Box>
                   <TabPanel value="1">
-                    <FailedPaymentLog logs={info.logs} />
+                    <FailedPaymentLog logs={info.logs} details={info.details} />
                   </TabPanel>
                   <TabPanel value="2" className="p-0">
                     <FailedPaymentInformation info={info.details || []} />
