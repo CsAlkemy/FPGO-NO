@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import { Hidden, Skeleton } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import { CharCont, ThousandSeparator } from "../../../utils/helperFunctions";
+import { CharCont } from "../../../utils/helperFunctions";
 
 const orderLog = ({ logs, details }) => {
   const { t } = useTranslation();
@@ -198,8 +198,7 @@ const orderLog = ({ logs, details }) => {
                 {t("label:subTotal")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}{" "}
-                {details.subTotal || 0}
+                {t("label:nok")} {details.subTotal || 0}
               </div>
             </div>
             <div className="flex justify-between items-center  my-20">
@@ -207,8 +206,7 @@ const orderLog = ({ logs, details }) => {
                 {t("label:discount")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}{" "}
-                {details.totalDiscount || 0}
+                {t("label:nok")} {details.totalDiscount || 0}
               </div>
             </div>
             <div className="flex justify-between items-center  my-20">
@@ -216,8 +214,7 @@ const orderLog = ({ logs, details }) => {
                 {t("label:tax")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}{" "}
-                {details.totalTax || 0}
+                {t("label:nok")} {details.totalTax || 0}
               </div>
             </div>
           </div>
@@ -227,8 +224,7 @@ const orderLog = ({ logs, details }) => {
                 {t("label:payablePerCycle")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}{" "}
-                {details.payablePerCycle || 0}
+                {t("label:nok")} {details.payablePerCycle || 0}
               </div>
             </div>
           </div>
@@ -236,9 +232,7 @@ const orderLog = ({ logs, details }) => {
             <div className="subtitle3 text-MonochromeGray-700">
               {t("label:subscriptionCycle")}
             </div>
-            <div className="body3 text-MonochromeGray-700">
-              7/12
-            </div>
+            <div className="body3 text-MonochromeGray-700">7/12</div>
           </div>
           <div className="mt-10 mb-20 body3 px-32">
             {t("label:orderSummaryDetails")}
