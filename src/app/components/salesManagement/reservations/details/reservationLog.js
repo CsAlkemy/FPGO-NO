@@ -130,7 +130,11 @@ const ReservationLog = ({
                       <div className="ml-5 mt-10 mb-10">
                         <div className="subtitle3 text-MonochromeGray-700">
                           {/* {log.title} */}
-                          {t(`label:${_.camelCase(log.slug)}`)}
+                          {log.slug === "order-resent"
+                            ? t("label:reservationResent")
+                            : log.slug === "order-cancelled"
+                            ? t("label:reservationCancelled")
+                            : t(`label:${_.camelCase(log.slug)}`)}
                           {/* {t(`label:${log.translationKey}`)} */}
                         </div>
                         {log?.datetime && (

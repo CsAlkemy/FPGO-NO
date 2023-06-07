@@ -94,7 +94,7 @@ const ReservationCreate = () => {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [recheckSchema, setRecheckSchema] = useState(true);
-  //const [itemLoader, setItemLoader] = useState(false);
+  const [itemLoader, setItemLoader] = useState(false);
   const [customerSearchBoxLength, setCustomerSearchBoxLength] = useState(0);
   const [customerSearchBy, setCustomerSearchBy] = useState(undefined);
   const [createReservation, response] = useCreateReservationMutation();
@@ -1750,7 +1750,6 @@ const ReservationCreate = () => {
                 >
                   {t(`label:addItem`)}
                 </Button>
-                <hr className=" mt-20 border-half-bottom" />
               </div>
             </Hidden>
 
@@ -2214,7 +2213,8 @@ const ReservationCreate = () => {
                 </Button>
                 {selectedCustomer ? (
                   <Button
-                    className="body3x lg-blue-btn"
+                    className="body3x lg-blue-btn lg-dark-blue-btn"
+                    color="secondary"
                     variant="outlined"
                     //onClick={ () => {setOpenCreateCustomer(false) }}
                     disabled={!isValidCustomer}
@@ -2224,8 +2224,9 @@ const ReservationCreate = () => {
                   </Button>
                 ) : (
                   <Button
-                    className="body3x lg-blue-btn"
-                    variant="outlined"
+                    className="body3x lg-blue-btn lg-dark-blue-btn"
+                    color="secondary"
+                    variant="contained"
                     //onClick={ () => {setOpenCreateCustomer(false) }}
                     disabled={!isValidCustomer}
                     type="submit"

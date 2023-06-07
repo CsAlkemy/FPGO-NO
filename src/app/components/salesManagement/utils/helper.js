@@ -597,8 +597,8 @@ export const validateSchemaReservationChargeCardModal = yup.object().shape({
 export const validateSchemaCreateReservation = yup.object().shape({
   orderDate: yup
     .string()
-    .typeError("youMustEnterOrderDate")
-    .required("youMustEnterOrderDate"),
+    .typeError("youMustEnterReservationDate")
+    .required("youMustEnterReservationDate"),
   dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
   order: yup.array().of(

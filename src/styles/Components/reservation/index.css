@@ -59,6 +59,15 @@
 .lg-blue-btn {
   color: #00617c;
 }
+.lg-dark-blue-btn {
+  background-color: #0088ae;
+  color: #ffffff;
+  min-width: 156px;
+}
+.lg-dark-blue-btn:hover {
+  color: #ffffff;
+  background-color: rgb(40, 128, 152);
+}
 .body-p {
   font-size: 15px;
   line-height: 1.6;
@@ -201,5 +210,8 @@
 @media only screen and (max-width: 440px) {
   .amount-section .amount-col {
     width: 100%;
+  }
+  .lg-dark-blue-btn {
+    min-width: 120px;
   }
 }
