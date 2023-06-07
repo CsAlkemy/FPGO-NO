@@ -203,11 +203,7 @@ export default function OverviewFloatingButtons(props) {
       {/*  <MenuItem value={'Private'}>Private</MenuItem>*/}
       {/*  <MenuItem value={'Corporate'}>Corporate</MenuItem>*/}
       {/*</Select>*/}
-      {[
-        ordersListOverview,
-        clientsListOverview,
-        approvalListOverviewFPAdmin,
-      ].includes(props.tableRef) && (
+      {[ordersListOverview, clientsListOverview].includes(props.tableRef) && (
         <div className="button2">
           <Button
             color="secondary"
