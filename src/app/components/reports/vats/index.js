@@ -416,7 +416,7 @@ export default function VatReports() {
           <div className="flex px-10 w-full justify-start items-center mb-10">
             <div className="flex gap-5 body4 cursor-pointer">
               <ErrorIcon className="icon-size-14 mt-4" />
-              {t("label:vatReportFilterGuideline")}
+              {t("label:vatReportFilterGuidelineStart")} <br/> {t("label:vatReportFilterGuidelineEnd")}
             </div>
           </div>
           <div className="w-full px-10">
