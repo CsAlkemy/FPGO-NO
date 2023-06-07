@@ -34,7 +34,7 @@ import {
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
   useCompleteReservationMutation,
-  useCapturePaymentMutation, useCancelSubscriptionMutation
+  useCapturePaymentMutation, useCancelSubscriptionMutation, useRefundSubscriptionOrderMutation
 } from "app/store/api/apiSlice";
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
@@ -72,6 +72,8 @@ const OrderModal = (props) => {
     subscriptionUuid,
     amountInBank = null,
     remainingAmount = null,
+    tableName = null,
+    cycleData
   } = props;
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
@@ -83,6 +85,7 @@ const OrderModal = (props) => {
   const [flagMessage, setFlagMessage] = useState("");
   const [categoriesList, setCategoriesList] = useState([]);
   const [refundOrder] = useRefundOrderMutation();
+  const [refundSubscriptionOrder] = useRefundSubscriptionOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
   const [cancelSubscription] = useCancelSubscriptionMutation();
   const [resendOrder] = useResendOrderMutation();
@@ -256,7 +259,7 @@ const OrderModal = (props) => {
     } else if (
       ["Send Refund", "Refund Order", "Refund from Reservation"].includes(
         headerTitle
-      )
+      ) && !orderType
     ) {
       setApiLoading(true);
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
@@ -273,6 +276,47 @@ const OrderModal = (props) => {
               `/reservations-view/details/${orderId}`
             )
               navigate("/reservations");
+            // setApiLoading(false);
+          } else if (response?.error) {
+            if (response?.error?.data?.status_code === 400) {
+              if (
+                // !response?.error?.data?.message.toLowerCase().includes("admin")
+                !(
+                  response?.error?.data?.message ===
+                    "refundRejectionForWeeklyThresholdExceed" ||
+                  response?.error?.data?.message ===
+                    "refundRejectionForRequestAmountThresholdExceed"
+                )
+              ) {
+                setIsDisableRefundRequest(true);
+              }
+              setFlagMessage(response?.error?.data?.message);
+              setFlag(true);
+              // enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+              //   variant: "error",
+              // });
+            } else setOpen(false);
+            // setApiLoading(false);
+          }
+          setApiLoading(false);
+          // setOpen(false);
+        }
+      );
+    } else if (
+      ["Send Refund"].includes(
+        headerTitle
+      ) && orderType === "SUBSCRIPTION"
+    ) {
+      setApiLoading(true);
+      refundSubscriptionOrder({ cycles : ["Cycle 1", "Cycle 2"], amount : 4900, uuid : subscriptionUuid }).then(
+        (response) => {
+          if (response?.data?.status_code === 202) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            setOpen(false);
+            if (window.location.pathname === `/subscription/details/${orderId}`)
+              navigate(`/subscriptions/list`);
             // setApiLoading(false);
           } else if (response?.error) {
             if (response?.error?.data?.status_code === 400) {
@@ -353,6 +397,7 @@ const OrderModal = (props) => {
       ? "requestForRefundApproval"
       : headerTitle;
   const orderIdTextLabel = orderIdText ? orderIdText : t("label:orderId");
+
   return (
     <div>
       <Dialog
@@ -583,18 +628,56 @@ const OrderModal = (props) => {
                       />
                     </div>
                   )}
-                {["Send Refund", "Refund Order"].includes(headerTitle) && (
-                  <div
-                    className="flex justify-between py-16 px-12"
-                    style={{ backgroundColor: "#F7F7F7", borderRadius: "4px" }}
-                  >
-                    <p className="subtitle2">{t("label:refundAmount")}</p>
-                    <p className="subtitle2">
-                      {t("label:nok")} {orderAmount}
-                    </p>
-                  </div>
-                )}
-                {["subscriptionRefund"].includes(headerTitle) && (
+                {headerTitle === "Send Refund" &&
+                  orderType === "SUBSCRIPTION" && (
+                    <div>
+                      <Controller
+                        control={control}
+                        name="subscriptionCycle"
+                        render={({ field: { ref, onChange, ...field } }) => (
+                          <Autocomplete
+                            multiple
+                            options={mockCycleData}
+                            // options={cycleData.length ? cycleData.0 : }
+                            disableCloseOnSelect
+                            getOptionLabel={(option) => option.title}
+                            onChange={(_, data) => onChange(data)}
+                            renderOption={(props, option, { selected }) => (
+                              <li {...props}>
+                                <Checkbox
+                                  icon={icon}
+                                  checkedIcon={checkedIcon}
+                                  style={{ marginRight: 8 }}
+                                  checked={selected}
+                                />
+                                {`${option.title} ( ${option.date} )`}
+                              </li>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                {...field}
+                                inputRef={ref}
+                                required
+                                placeholder={t(
+                                  "label:subscriptionCycle*"
+                                )}
+                              />
+                            )}
+                          />
+                        )}
+                      />
+                      <div className='flex justify-between items-center mt-5 text-MonochromeGray-500 body4 px-4'>
+                        Select up to 8 subscription cycles
+                        <span>{watch("subscriptionCycle")?.length || 0 }/8</span>
+                      </div>
+                      <div className="p-16 flex justify-between items-center subtitle1 mt-32 bg-MonochromeGray-25 rounded-6 text-MonochromeGray-700">
+                        Total Refund Amount
+                        <span>NOK 0</span>
+                      </div>
+                    </div>
+                  )}
+                {["Send Refund", "Refund Order"].includes(headerTitle) && !orderType && (
                   <div
                     className="flex justify-between py-16 px-12"
                     style={{ backgroundColor: "#F7F7F7", borderRadius: "4px" }}

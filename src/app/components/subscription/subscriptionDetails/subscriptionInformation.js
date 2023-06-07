@@ -71,15 +71,15 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
   const [billingFrequency, setBillingFrequency] = React.useState([
     {
       title: "Monthly",
-      value: "month",
+      value: "monthly",
     },
     {
-      title: "weekly",
-      value: "week",
+      title: "Weekly",
+      value: "weekly",
     },
     {
-      title: "daily",
-      value: "day",
+      title: "Daily",
+      value: "dayily",
     },
   ]);
 
@@ -345,7 +345,8 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                         label={t("label:billingFrequency")}
                         defaultValue={info?.frequency || "month"}
                         disabled
-                        value={field.value}
+                        // value={field.value}
+                        value={info?.frequency || ""}
                         required
                       >
                         {billingFrequency.length ? (

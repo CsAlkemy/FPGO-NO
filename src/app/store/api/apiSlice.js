@@ -467,6 +467,18 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["SubscriptionsList"],
     }),
+    refundSubscriptionOrder: builder.mutation({
+      query: (payload) => ({
+        url: `/subscription/cycles/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          cycles : payload.cycles,
+          amount: `${parseFloat(payload.amount)}`,
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["SubscriptionsList"] : [""],
+    }),
   }),
 });
 
@@ -522,4 +534,5 @@ export const {
   useGetFailedSubscriptionsListQuery,
   useCreateSubscriptionMutation,
   useCancelSubscriptionMutation,
+  useRefundSubscriptionOrderMutation,
 } = apiSlice;

@@ -30,8 +30,10 @@ class SubscriptionsService {
         refundResend:
           row?.status && row?.status.toLowerCase() === "sent"
             ? "Resend"
-            : row?.status && row?.status.toLowerCase() === "completed" ||
-              (row?.status && row?.status.toLowerCase() === "cancelled" && row?.isPaid)
+            : (row?.status && row?.status.toLowerCase() === "completed") ||
+              (row?.status &&
+                row?.status.toLowerCase() === "cancelled" &&
+                row?.isPaid)
             ? "Refund"
             : null,
         isCancel: row?.status && row?.status.toLowerCase() === "sent",
@@ -188,46 +190,74 @@ class SubscriptionsService {
       }
     });
   };
+
   getFailedPaymentDetailsByUUID = async (uuid, isSkipIsAuthenticated) => {
     return new Promise((resolve, reject) => {
       const URL = `${EnvVariable.BASEURL}/subscription/failed/details/${uuid}`;
       if (isSkipIsAuthenticated) {
         return axios
-            .get(URL)
-            .then((response) => {
-              if (
-                  response?.data?.status_code === 200 &&
-                  response?.data?.is_data
-              ) {
-                resolve(response.data);
-              } else reject("somethingWentWrong");
-            })
-            .catch((e) => {
-              reject(e?.response?.data?.message);
-            });
+          .get(URL)
+          .then((response) => {
+            if (
+              response?.data?.status_code === 200 &&
+              response?.data?.is_data
+            ) {
+              resolve(response.data);
+            } else reject("somethingWentWrong");
+          })
+          .catch((e) => {
+            reject(e?.response?.data?.message);
+          });
       } else {
         return AuthService.axiosRequestHelper()
-            .then((status) => {
-              if (status) {
-                return axios
-                    .get(URL)
-                    .then((response) => {
-                      if (
-                          response?.data?.status_code === 200 &&
-                          response?.data?.is_data
-                      ) {
-                        resolve(response.data);
-                      } else reject("somethingWentWrong");
-                    })
-                    .catch((e) => {
-                      reject(e?.response?.data?.message);
-                    });
-              } else reject("somethingWentWrong");
-            })
-            .catch((e) => {
-              reject("somethingWentWrong");
-            });
+          .then((status) => {
+            if (status) {
+              return axios
+                .get(URL)
+                .then((response) => {
+                  if (
+                    response?.data?.status_code === 200 &&
+                    response?.data?.is_data
+                  ) {
+                    resolve(response.data);
+                  } else reject("somethingWentWrong");
+                })
+                .catch((e) => {
+                  reject(e?.response?.data?.message);
+                });
+            } else reject("somethingWentWrong");
+          })
+          .catch((e) => {
+            reject("somethingWentWrong");
+          });
       }
+    });
+  };
+
+  getSubscriptionOrderCycle = async (uuid) => {
+    return new Promise((resolve, reject) => {
+      const URL = `${EnvVariable.BASEURL}/subscription/refund/all-cycles/${uuid}`;
+      return AuthService.axiosRequestHelper()
+        .then((status) => {
+          if (status) {
+            return axios
+              .get(URL)
+              .then((response) => {
+                if (
+                  response?.data?.status_code === 200 &&
+                  response?.data?.is_data
+                ) {
+                  resolve(response.data);
+                } else reject("somethingWentWrong");
+              })
+              .catch((e) => {
+                reject(e?.response?.data?.message);
+              });
+          } else reject("somethingWentWrong");
+        })
+        .catch((e) => {
+          reject("somethingWentWrong");
+        });
     });
   };
 

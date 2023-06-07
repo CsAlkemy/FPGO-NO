@@ -16,39 +16,41 @@ import {CharCont} from "../../../utils/helperFunctions";
 const orderLog = ({ info }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState(info?.logs);
 
-  useEffect(() => {
-    if (loading){
-      OrdersService.getOrdersLogByUUID(info.orderUuid)
-        .then((res) => {
-          let orderData = [];
-          let data = res?.data;
-          let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
+  {/*useEffect(() => {*/}
+  {/*  if (loading){*/}
+  {/*    OrdersService.getOrdersLogByUUID(info.orderUuid)*/}
+  {/*      .then((res) => {*/}
+  //         let orderData = [];
+  //         let data = res?.data;
+  //         let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
+  //
+  //         if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
+  //           orderData.push({
+  //             "title": "orderExpiredAndWasNotPaid",
+  //             "slug":"order-expired",
+  //             "datetime":info.paymentLinkDueDate,
+  //             "sentTo": null,
+  //             "actionBy":null,
+  //             "note":null,
+  //             "paymentMethod":null,
+  //             "refundAmount":null
+  //           });
+  //         }
+  //         orderData.push(...data);
+  //
+  //         setLogs(orderData);
+  //         setLoading(false);
+  //       })
+  //       .catch((e) => {
+  //         setLogs([]);
+  //         setLoading(false);
+  //       });
+  //   }
+  // }, [loading]);
 
-          if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
-            orderData.push({
-              "title": "orderExpiredAndWasNotPaid",
-              "slug":"order-expired",
-              "datetime":info.paymentLinkDueDate,
-              "sentTo": null,
-              "actionBy":null,
-              "note":null,
-              "paymentMethod":null,
-              "refundAmount":null
-            });
-          }
-          orderData.push(...data);
-
-          setLogs(orderData);
-          setLoading(false);
-        })
-        .catch((e) => {
-          setLogs([]);
-          setLoading(false);
-        });
-    }
-  }, [loading]);
+  console.log("Logs : ",info)
 
   return (
     <div className="mb-32 md:mb-0">
@@ -94,7 +96,7 @@ const orderLog = ({ info }) => {
                     <div className="ml-5 mt-10 mb-10">
                       <div className="subtitle3 text-MonochromeGray-700">
                         {/*{log.title}*/}
-                        {t(`label:${log.translationKey}`)}
+                        {t(`label:${log.translateKey}`)}
                       </div>
                       {log?.datetime && (
                         <div className="flex gap-5">
@@ -128,6 +130,16 @@ const orderLog = ({ info }) => {
                           </div>
                           <div className="body4 text-MonochromeGray-700">
                             {log.refundAmount}
+                          </div>
+                        </div>
+                      )}
+                      {log?.amount && (
+                        <div className="flex gap-5">
+                          <div className="text-MonochromeGray-300 body4">
+                            {t("label:amount")}:
+                          </div>
+                          <div className="body4 text-MonochromeGray-700">
+                            {log.amount}
                           </div>
                         </div>
                       )}

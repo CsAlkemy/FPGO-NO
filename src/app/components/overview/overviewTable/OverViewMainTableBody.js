@@ -31,7 +31,7 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import Zoom from "@mui/material/Zoom";
 import { withStyles } from "@mui/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClickAwayListener } from "@mui/base";
 import Box from "@mui/material/Box";
 import OrderModal from "../../salesManagement/order/popupModal/orderModal";
@@ -44,6 +44,8 @@ import { useTranslation } from "react-i18next";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
 import ReservationDropdown from "../../salesManagement/reservations/dropdown";
+import subscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
+import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
 
 export default function OverViewMainTableBody(props) {
   const { t } = useTranslation();
@@ -56,6 +58,8 @@ export default function OverViewMainTableBody(props) {
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
   const [amountBank, setAmountBank] = useState(null);
+  const [subscriptionUuid, setSubscriptionUuid] = useState(null);
+  const [subscriptionsCycles, setSubscriptionsCycles] = useState([])
 
   const handleTooltipClose = () => {
     setOpenHigh(false);
@@ -69,9 +73,10 @@ export default function OverViewMainTableBody(props) {
     else if (tooltip === "low") setOpenLow(true);
   };
 
-  const handleModalOpen = (decision) => {
+  const handleModalOpen = (decision, subscriptionId = null) => {
     setOpen(true);
     setAmountBank(null);
+    if (subscriptionId) setSubscriptionUuid(subscriptionId)
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
@@ -79,6 +84,24 @@ export default function OverViewMainTableBody(props) {
     if (decision === "subscriptionRefund") setHeaderTitle("subscriptionRefund");
     if (decision === "subscriptionCancel") setHeaderTitle("Cancel Subscription");
   };
+
+  useEffect(()=> {
+    if (props.tableName === subscriptionsListOverview && subscriptionUuid) {
+      SubscriptionsService.getSubscriptionOrderCycle(subscriptionUuid)
+        .then((res)=> {
+          console.log("RES : ", res);
+          const serial = subscriptionsCycles.length
+          const resData = res?.data;
+          const data = {serial : {resData}};
+          console.log("subscriptionsCycles UE : ",subscriptionsCycles);
+          if (res?.status_code === 200 && res?.is_data) setSubscriptionsCycles([res?.data])
+          // subscriptionsCycles.push(res)
+          // console.log("subscriptionsCycles 2 : ",subscriptionsCycles);
+        })
+        .catch((e)=> console.log("E : ",e))
+    }
+  },[props.tableName, subscriptionUuid])
+  console.log("subscriptionsCycles : ",subscriptionsCycles);
   const handleSendInvoiceModalOpen = () => {
     setEditOpen(true);
   };
@@ -2309,7 +2332,7 @@ export default function OverViewMainTableBody(props) {
                   className="py-8 px-4"
                   // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
                   sx={resendRefundBoxSX}
-                  onClick={() => handleModalOpen("subscriptionRefund")}
+                  onClick={() => handleModalOpen("refund", props.row.uuid)}
                 >
                   <UndoIcon
                     style={{ paddingBottom: "3px" }}
@@ -2323,6 +2346,9 @@ export default function OverViewMainTableBody(props) {
                 orderType={"SUBSCRIPTION"}
                 headerTitle={headerTitle}
                 orderId={props.row.orderUuid}
+                subscriptionUuid={props.row.uuid}
+                cycleData={subscriptionsCycles}
+                tableName={props.tableName}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
