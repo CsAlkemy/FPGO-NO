@@ -276,11 +276,9 @@ export default function OverviewHeader(props) {
               />
             </Paper>
             <div className="flex gap-10">
-              {[
-                ordersListOverview,
-                clientsListOverview,
-                approvalListOverviewFPAdmin,
-              ].includes(props.tableRef) && (
+              {[ordersListOverview, clientsListOverview].includes(
+                props.tableRef
+              ) && (
                 <div className="button2">
                   <Button
                     color="secondary"
