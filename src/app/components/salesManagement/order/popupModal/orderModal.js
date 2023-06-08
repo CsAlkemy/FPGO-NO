@@ -655,10 +655,10 @@ const OrderModal = (props) => {
 
               {headerTitle === "Complete Reservation" && (
                 <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
-                  <div className="text-MonochromeGray-700">
+                  <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:amountInBank")}
                   </div>
-                  <div className="text-MonochromeGray-700">
+                  <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:nok")} {ThousandSeparator(amountInBank)}
                   </div>
                 </div>

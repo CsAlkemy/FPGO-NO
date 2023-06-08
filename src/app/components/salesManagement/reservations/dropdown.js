@@ -111,6 +111,7 @@ const ReservationDropdown = (props) => {
           setOpen={setOpen}
           headerTitle={headerTitle}
           orderId={data.id}
+          orderIdText={t("label:reservationId")}
           orderName={data.customer}
           orderAmount={data.reservationAmount}
           customerPhone={data.phone}
@@ -167,6 +168,7 @@ const ReservationDropdown = (props) => {
             setOpen={setOpen}
             headerTitle={headerTitle}
             orderId={data.id}
+            orderIdText={t("label:reservationId")}
             orderName={data.customer}
             orderAmount={data.reservationAmount}
             customerPhone={data.phone}
@@ -218,6 +220,7 @@ const ReservationDropdown = (props) => {
             setOpen={setOpen}
             headerTitle={headerTitle}
             orderId={data.id}
+            orderIdText={t("label:reservationId")}
             orderName={data.customer}
             orderAmount={data.reservationAmount}
             customerPhone={data.phone}

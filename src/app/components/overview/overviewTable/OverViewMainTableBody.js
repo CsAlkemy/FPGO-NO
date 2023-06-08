@@ -1855,9 +1855,12 @@ export default function OverViewMainTableBody(props) {
             </TableCell>
           );
         } else if (rdt === "options") {
+          let refundableAmount =
+            props.row.capturedAmount - props.row.amountRefunded;
           return user.role[0] === FP_ADMIN ? (
             ""
-          ) : props.row.status.toLowerCase() === "completed" ? (
+          ) : props.row.status.toLowerCase() === "completed" &&
+            refundableAmount > 0 ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
               <CustomTooltip
                 disableFocusListener
@@ -1883,6 +1886,7 @@ export default function OverViewMainTableBody(props) {
                 setOpen={setOpen}
                 headerTitle={headerTitle}
                 orderId={props.row.id}
+                orderIdText={t("label:reservationId")}
                 orderName={props.row.customer}
                 orderAmount={props.row.reservedAmount}
                 customerPhone={props.row.phone}
