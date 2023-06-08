@@ -63,7 +63,7 @@ const orderReceipt = ({ info }) => {
               </div>
               <div className="subtitle3 text-MonochromeGray-700 flex md:justify-end">
                 {t("label:orderId")}: 
-                {info?.orderUuid ? info?.orderUuid : "-"}
+                {info?.subscription?.orderUuid ? info?.subscription?.orderUuid : "-"}
               </div>
             </div>
 
@@ -71,37 +71,33 @@ const orderReceipt = ({ info }) => {
               <div className="text-MonochromeGray-700 body3 flex flex-col gap-10 md:gap-5">
                 <div>
                   {t("label:customer")}:{" "}
-                  {info?.customerDetails?.name
-                    ? info?.customerDetails?.name
+                  {info?.customer?.customerName
+                    ? info?.customer?.customerName
                     : "-"}
                 </div>
                 <div>
                   {t("label:address")}:{" "}
-                  {info?.customerDetails?.address &&
-                  info?.customerDetails?.address?.street
-                    ? info?.customerDetails?.address?.street + ", "
+                  {info?.customer?.street
+                    ? info?.customer?.street + ", "
                     : "-, "}{" "}
                   <br />{" "}
-                  {info?.customerDetails?.address &&
-                  info?.customerDetails?.address?.zip
-                    ? info?.customerDetails?.address?.zip
+                  {info?.customer?.zip
+                    ? info?.customer?.zip
                     : "-"}{" "}
-                  {info?.customerDetails?.address &&
-                  info?.customerDetails?.address?.city
-                    ? info?.customerDetails?.address?.city + ", "
+                  {info?.customer?.city
+                    ? info?.customer?.city + ", "
                     : "-, "}{" "}
-                  {info?.customerDetails?.address &&
-                  info?.customerDetails?.address?.country
-                    ? info?.customerDetails?.address?.country
+                  {info?.customer?.country
+                    ? info?.customer?.country
                     : "-"}
                 </div>
                 <div className="mt-20">
                   {t("label:orderDate")}:{" "}
-                  {info?.orderDate ? info?.orderDate : "-"}
+                  {info?.subscription?.startDate ? info?.subscription?.startDate : "-"}
                 </div>
                 <div>
                   {t("label:paymentDueDate")}:{" "}
-                  {info?.paymentLinkDueDate ? info?.paymentLinkDueDate : "-"}
+                  {info?.subscription?.dueDateForPaymentLink ? info?.subscription?.dueDateForPaymentLink : "-"}
                 </div>
               </div>
               <div className="text-MonochromeGray-700 body3 flex flex-col gap-10 md:gap-5">
@@ -175,13 +171,13 @@ const orderReceipt = ({ info }) => {
                 {t("label:amount")}
               </div>
             </div>
-            {info?.productList && info?.productList.length
-              ? info.productList.map((row, index) => (
+            {info?.subscription?.products && info?.subscription?.products.length
+              ? info?.subscription?.products.map((row, index) => (
                   <div
                     key={index}
                     className="order-receipt-table body4 border-b-1 border-MonochromeGray-50"
                   >
-                    <div className="my-auto py-16 px-10 ">{row.name}</div>
+                    <div className="my-auto py-16 px-10 ">{row.productName}</div>
                     <div className="my-auto py-16 px-10">{row.quantity}</div>
                     <div className="my-auto py-16 px-10 text-right">
                       {ThousandSeparator(row.rate)}
@@ -201,8 +197,8 @@ const orderReceipt = ({ info }) => {
                 <div className="flex justify-between items-center  my-20 body4 text-MonochromeGray-700">
                   <div>{t("label:subTotal")}</div>
                   <div>
-                    {info?.orderSummary && info?.orderSummary?.subTotal
-                      ? ThousandSeparator(info?.orderSummary?.subTotal)
+                    {info?.subscription?.subTotal
+                      ? ThousandSeparator(info?.subscription?.subTotal)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -210,8 +206,8 @@ const orderReceipt = ({ info }) => {
                 <div className="flex justify-between items-center  my-20">
                   <div>{t("label:discount")}</div>
                   <div>
-                    {info?.orderSummary && info?.orderSummary?.discount
-                      ? ThousandSeparator(info?.orderSummary?.discount)
+                    {info?.subscription?.discount
+                      ? ThousandSeparator(info?.subscription?.discount)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -219,8 +215,8 @@ const orderReceipt = ({ info }) => {
                 <div className="flex justify-between items-center  my-20 border-b-1 border-MonochromeGray-300">
                   <div>{t("label:tax")}</div>
                   <div>
-                    {info?.orderSummary && info?.orderSummary?.tax
-                      ? ThousandSeparator(info?.orderSummary?.tax)
+                    {info?.subscription?.tax
+                      ? ThousandSeparator(info?.subscription?.tax)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
@@ -228,22 +224,22 @@ const orderReceipt = ({ info }) => {
                 <div className="flex justify-between items-center  mb-20 body4 font-700">
                   <div>{t("label:payablePerCycle")}</div>
                   <div>
-                    {info?.orderSummary && info?.orderSummary?.grandTotal
-                      ? ThousandSeparator(info?.orderSummary?.grandTotal)
+                    {info?.subscription?.payablePerCycle
+                      ? ThousandSeparator(info?.subscription?.payablePerCycle)
                       : "-"}{" "}
                     {t("label:nok")}
                   </div>
                 </div>
+                {/*<div className="flex justify-between items-center  mb-20 body3">*/}
+                {/*  <div>{t("label:frequency")}</div>*/}
+                {/*  <div>*/}
+                {/*    {info?.subscription?.payablePerCycle || "-"}*/}
+                {/*  </div>*/}
+                {/*</div>*/}
                 <div className="flex justify-between items-center  mb-20 body3">
-                  <div>{t("label:frequency")}</div>
+                  <div>{t("label:subscriptionCycle")}</div>
                   <div>
-                   Monthly
-                  </div>
-                </div>
-                <div className="flex justify-between items-center  mb-20 body3">
-                  <div>{t("label:repeats")}</div>
-                  <div>
-                    12 Times
+                    {info?.subscription?.repeats || 0}
                   </div>
                 </div>
               </div>

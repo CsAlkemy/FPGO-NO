@@ -212,9 +212,9 @@ const subscriptionDetails = () => {
                       info={info.subscription || []}
                     />
                   </TabPanel>
-                  {/*<TabPanel value="3" className="py-20 px-0">*/}
-                  {/*  <OrderReceipt info={info} />*/}
-                  {/*</TabPanel>*/}
+                  <TabPanel value="3" className="py-20 px-0">
+                    <OrderReceipt info={info} />
+                  </TabPanel>
                 </TabContext>
               </div>
             </div>

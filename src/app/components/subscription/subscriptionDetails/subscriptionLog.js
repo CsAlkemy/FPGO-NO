@@ -56,6 +56,8 @@ const orderLog = ({ info }) => {
   //   }
   // }, [loading]);
 
+  console.log("Info : ",info);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-6 gap-10">
       <div className="mb-32 md:mb-0 col-span-4">
@@ -65,25 +67,25 @@ const orderLog = ({ info }) => {
               <div className="subtitle3 text-MonochromeGray-300">
                 {t("label:subscriptionAmount")}
               </div>
-              <div className="body1 text-MonochromeGray-700 mt-5">NOK 0</div>
+              <div className="body1 text-MonochromeGray-700 mt-5">{t("label:nok")} {info?.subscriptionSummary?.subscriptionAmount}</div>
             </div>
             <div className="border-r-1 border-MonochromeGray-50 p-10">
               <div className="subtitle3 text-MonochromeGray-300">
                 {t("label:amountPaid")}
               </div>
-              <div className="body1 text-MonochromeGray-700 mt-5">NOK 0</div>
+              <div className="body1 text-MonochromeGray-700 mt-5">{t("label:nok")} {info?.subscriptionSummary?.amountPaid}</div>
             </div>
             <div className="border-r-1 border-MonochromeGray-50 p-10">
               <div className="subtitle3 text-MonochromeGray-300">
                 {t("label:amountRefunded")}
               </div>
-              <div className="body1 text-MonochromeGray-700 mt-5">NOK 0</div>
+              <div className="body1 text-MonochromeGray-700 mt-5">{t("label:nok")} {info?.subscriptionSummary?.amountRefunded}</div>
             </div>
             <div className="p-10">
               <div className="subtitle3 text-MonochromeGray-300">
                 {t("label:amountInBank")}
               </div>
-              <div className="body1 text-MonochromeGray-700 mt-5">NOK 0</div>
+              <div className="body1 text-MonochromeGray-700 mt-5">{t("label:nok")} {info?.subscriptionSummary?.amountInBank}</div>
             </div>
           </div>
         </div>
@@ -101,11 +103,11 @@ const orderLog = ({ info }) => {
                 return (
                   <TimelineItem key={index}>
                     <TimelineSeparator>
-                      {log.slug === "order-created" ||
-                      log.slug === "order-sent" ||
-                      log.slug === "order-resent" ||
+                      {log.slug === "subscription-created" ||
+                      log.slug === "card-authorized" ||
+                      log.slug === "order-converted-to-invoice" ||
                       log.slug === "payment-link-opened" ||
-                      log.slug === "partial-refunded" ||
+                      log.slug === "subscription-ended" ||
                       log.slug === "refund-sent" ||
                       log.slug === "invoice-order-exported" ||
                       log.slug === "customer-information-updated" ||
@@ -156,33 +158,33 @@ const orderLog = ({ info }) => {
                             </div>
                           </div>
                         )}
-                        {log?.refundAmount && (
+                        {/*{log?.refundAmount && (*/}
+                        {/*  <div className="flex gap-5">*/}
+                        {/*    <div className="text-MonochromeGray-300 body4">*/}
+                        {/*      {t("label:refundAmount")}:*/}
+                        {/*    </div>*/}
+                        {/*    <div className="body4 text-MonochromeGray-700">*/}
+                        {/*      {log?.refundAmount}*/}
+                        {/*    </div>*/}
+                        {/*  </div>*/}
+                        {/*)}*/}
+                        {log?.orderAmount && (
                           <div className="flex gap-5">
                             <div className="text-MonochromeGray-300 body4">
-                              {t("label:refundAmount")}:
+                              {t("label:orderAmount")}:
                             </div>
                             <div className="body4 text-MonochromeGray-700">
-                              {log.refundAmount}
+                              {log.orderAmount}
                             </div>
                           </div>
                         )}
-                        {log?.amount && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:amount")}:
-                            </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.amount}
-                            </div>
-                          </div>
-                        )}
-                        {log?.subscriptionCycle && (
+                        {log?.cycle && (
                           <div className="flex gap-5">
                             <div className="text-MonochromeGray-300 body4">
                               {t("label:subscriptionCycle")}:
                             </div>
                             <div className="body4 text-MonochromeGray-700">
-                              {log.subscriptionCycle}
+                              {log.cycle}
                             </div>
                           </div>
                         )}
@@ -279,7 +281,7 @@ const orderLog = ({ info }) => {
               </div>
               <div className="body3 text-MonochromeGray-700">
                 {t("label:nok")}
-                {/*{details.subTotal || 0}*/}
+                {info?.subscription?.subTotal || 0}
               </div>
             </div>
             <div className="flex justify-between items-center  my-20">
@@ -288,7 +290,7 @@ const orderLog = ({ info }) => {
               </div>
               <div className="body3 text-MonochromeGray-700">
                 {t("label:nok")}
-                {/*{details.totalDiscount || 0}*/}
+                {info?.subscription?.discount || 0}
               </div>
             </div>
             <div className="flex justify-between items-center  my-20">
@@ -297,7 +299,7 @@ const orderLog = ({ info }) => {
               </div>
               <div className="body3 text-MonochromeGray-700">
                 {t("label:nok")}
-                {/*{details.totalTax || 0}*/}
+                {info?.subscription?.tax || 0}
               </div>
             </div>
           </div>
@@ -308,7 +310,7 @@ const orderLog = ({ info }) => {
               </div>
               <div className="body3 text-MonochromeGray-700">
                 {t("label:nok")}
-                {/*{details.payablePerCycle || 0}*/}
+                {info?.subscription?.payablePerCycle || 0}
               </div>
             </div>
           </div>
@@ -316,13 +318,13 @@ const orderLog = ({ info }) => {
             <div className="subtitle3 text-MonochromeGray-700">
               {t("label:frequency")}
             </div>
-            <div className="body3 text-MonochromeGray-700">Monthly</div>
+            <div className="body3 text-MonochromeGray-700">{info?.subscription?.frequency || "-"}</div>
           </div>
           <div className="flex justify-between items-center  my-20 px-32">
             <div className="subtitle3 text-MonochromeGray-700">
               {t("label:repeats")}
             </div>
-            <div className="body3 text-MonochromeGray-700">12 Times</div>
+            <div className="body3 text-MonochromeGray-700">{info?.subscription?.repeats || 0} {t("label:times")}</div>
           </div>
           <div className="mt-10 mb-20 body3 px-32">
             {t("label:orderSummaryDetails")}
