@@ -26,7 +26,7 @@ const paymentHeader = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const urlParams = new URLSearchParams(window.location.search);
-  const lang = urlParams.get('lang');
+  const lang = urlParams.get("lang");
   const checkout = window.location.pathname.includes("/checkout");
   const orderDetails = window.location.pathname.includes("/order/details");
   const orderReceipt = window.location.pathname.includes("/order/receipt");
@@ -43,8 +43,8 @@ const paymentHeader = () => {
 
   useEffect(() => {
     lang === "no"
-        ? dispatch(changeLanguage("no"))
-        : dispatch(changeLanguage("en"));
+      ? dispatch(changeLanguage("no"))
+      : dispatch(changeLanguage("en"));
   }, [lang]);
   const handleLanguageChange = (lng) => {
     dispatch(changeLanguage(lng));
@@ -62,7 +62,8 @@ const paymentHeader = () => {
           sx={{ height: 36 }}
           // defaultValue="English"
           defaultValue={
-            !checkout && orderDetails && lang === "no" || !checkout && orderReceipt && lang=== "no"
+            (!checkout && orderDetails && lang === "no") ||
+            (!checkout && orderReceipt && lang === "no")
               ? "Norwegian"
               : !!localStorage.getItem("i18nextLng") &&
                 localStorage.getItem("i18nextLng") === "en"
@@ -79,7 +80,9 @@ const paymentHeader = () => {
                 <SvgIcon color="primary">
                   <LanguageIcon className="text-MonochromeGray-300" />
                 </SvgIcon>
-                <div className="my-auto">{t(`label:${value.toLowerCase()}`)}</div>
+                <div className="my-auto">
+                  {t(`label:${value.toLowerCase()}`)}
+                </div>
               </Box>
             );
           }}
