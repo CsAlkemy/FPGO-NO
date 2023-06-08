@@ -515,6 +515,7 @@ const no = {
     october: "Oktober",
     november: "November",
     december: "Desember",
+    youMustEnterYourMonthlyPlanFee: "Du må oppgi den månedlige abonnementsavgiften"
   },
   message: {
     clientNotFound: "Klient ikke funnet",
