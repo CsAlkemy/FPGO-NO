@@ -1451,10 +1451,10 @@ const OrderModal = (props) => {
                     </Hidden>
 
                     <div className="flex justify-between items-center px-12 py-16 mt-20 rounded-4 bg-MonochromeGray-25">
-                      <div className="text-MonochromeGray-700">
+                      <div className="text-MonochromeGray-700 font-semibold">
                         {t("label:grandTotal")}
                       </div>
-                      <div className="text-MonochromeGray-700">
+                      <div className="text-MonochromeGray-700 font-semibold">
                         {t("label:nok")} {ThousandSeparator(grandTotal / 2)}
                       </div>
                     </div>
