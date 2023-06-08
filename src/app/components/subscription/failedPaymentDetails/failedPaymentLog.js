@@ -15,7 +15,7 @@ import { CharCont } from "../../../utils/helperFunctions";
 const orderLog = ({ logs, details }) => {
   const { t } = useTranslation();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-6">
+    <div className="grid grid-cols-1 sm:grid-cols-6 gap-10">
       <div className="mb-32 md:mb-0 col-span-4">
         {logs?.length > 0 ? (
           <Timeline

@@ -7,16 +7,13 @@ import { selectUser } from "app/store/userSlice";
 import React, { lazy, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FP_ADMIN } from "../../../utils/user-roles/UserRoles";
-// import OrderModal from "../popupModal/orderModal";
 import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import FailedPaymentInformation from "./failedPaymentInformation";
 import FailedPaymentLog from "./failedPaymentLog";
 import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
-
-const OrderLog = lazy(() => import("./failedPaymentLog"));
 
 const subscriptionDetails = () => {
   const { t } = useTranslation();
