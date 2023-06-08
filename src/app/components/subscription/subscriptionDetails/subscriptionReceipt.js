@@ -244,20 +244,16 @@ const orderReceipt = ({ info }) => {
                 </div>
               </div>
             </div>
-            {info?.invoiceReferences &&
-              (info?.invoiceReferences?.customerNotes ||
-                info?.invoiceReferences?.termsAndCondition ||
-                info?.invoiceReferences?.referenceNumber ||
-                info?.invoiceReferences?.customerReference) && (
+            {(info?.subscription?.customerNote ||
+                info?.subscription?.termsAndConditions) && (
                 <div className="flex flex-col gap-10 mb-32">
                   <div className="flex flex-col gap-2">
                     <div className="body4 text-MonochromeGray-300">
                       {t("label:customerNotes")}
                     </div>
                     <div className="body3  text-MonochromeGray-700">
-                      {info?.invoiceReferences &&
-                      info?.invoiceReferences?.customerNotes
-                        ? info?.invoiceReferences?.customerNotes
+                      {info?.subscription?.customerNote
+                        ? info?.subscription?.customerNote
                         : "-"}
                     </div>
                   </div>
@@ -266,31 +262,8 @@ const orderReceipt = ({ info }) => {
                       {t("label:tnc")}
                     </div>
                     <div className="body3  text-MonochromeGray-700">
-                      {info?.invoiceReferences &&
-                      info?.invoiceReferences?.termsAndCondition
-                        ? info?.invoiceReferences?.termsAndCondition
-                        : "-"}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="body4 text-MonochromeGray-300">
-                      {t("label:referenceNo")}
-                    </div>
-                    <div className="body3  text-MonochromeGray-700">
-                      {info?.invoiceReferences &&
-                      info?.invoiceReferences?.referenceNumber
-                        ? info?.invoiceReferences?.referenceNumber
-                        : "-"}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="body4 text-MonochromeGray-300">
-                      {t("label:customerReference")}
-                    </div>
-                    <div className="body3  text-MonochromeGray-700">
-                      {info?.invoiceReferences &&
-                      info?.invoiceReferences?.customerReference
-                        ? info?.invoiceReferences?.customerReference
+                      {info?.subscription?.termsAndConditions
+                        ? info?.subscription?.termsAndConditions
                         : "-"}
                     </div>
                   </div>

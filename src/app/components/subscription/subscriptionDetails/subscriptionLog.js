@@ -280,7 +280,7 @@ const orderLog = ({ info }) => {
                 {t("label:subTotal")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}
+                {t("label:nok")} {" "}
                 {info?.subscription?.subTotal || 0}
               </div>
             </div>
@@ -289,7 +289,7 @@ const orderLog = ({ info }) => {
                 {t("label:discount")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}
+                {t("label:nok")} {" "}
                 {info?.subscription?.discount || 0}
               </div>
             </div>
@@ -298,7 +298,7 @@ const orderLog = ({ info }) => {
                 {t("label:tax")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}
+                {t("label:nok")} {" "}
                 {info?.subscription?.tax || 0}
               </div>
             </div>
@@ -309,7 +309,7 @@ const orderLog = ({ info }) => {
                 {t("label:payablePerCycle")}
               </div>
               <div className="body3 text-MonochromeGray-700">
-                {t("label:nok")}
+                {t("label:nok")} {" "}
                 {info?.subscription?.payablePerCycle || 0}
               </div>
             </div>
