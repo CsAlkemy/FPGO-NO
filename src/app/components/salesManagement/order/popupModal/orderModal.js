@@ -669,10 +669,10 @@ const OrderModal = (props) => {
               ) && (
                 //{headerTitle === "Refund from Reservation" && (
                 <div className="flex justify-between items-center p-12 py-16 rounded-4 bg-MonochromeGray-25">
-                  <div className="text-MonochromeGray-700">
+                  <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:refundableAmount")}
                   </div>
-                  <div className="text-MonochromeGray-700">
+                  <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:nok") + " "}
                     {headerTitle === "Refund Transaction"
                       ? ThousandSeparator(refundableChargeAmount)
@@ -683,10 +683,10 @@ const OrderModal = (props) => {
 
               {headerTitle === "Capture Payment" && (
                 <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
-                  <div className="text-MonochromeGray-700">
+                  <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:remainingAmount")}
                   </div>
-                  <div className="text-MonochromeGray-700">
+                  <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:nok")} {ThousandSeparator(remainingAmount)}
                   </div>
                 </div>
