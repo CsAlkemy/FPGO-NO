@@ -42,16 +42,33 @@ const ReservationLog = ({
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
 
+  const [hasSidebar, setHasSidebar] = useState(true);
+
   const user = useSelector(selectUser);
 
   useEffect(() => {
     setLogs(logContent);
     //info.status = "reserved";
+
+    if (
+      !(
+        user.role[0] !== FP_ADMIN &&
+        (info.status.toLowerCase() == "reserved" ||
+          (info.status.toLowerCase() == "completed" &&
+            info.paymentDetails.capturedAmount > 0))
+      )
+    ) {
+      setHasSidebar(false);
+    }
   }, []);
 
   return (
     <div className="reservation-log-content pb-32 px-0 grid grid-cols-1 md:grid-cols-6">
-      <div className="mb-32 md:mb-0 col-span-1 md:col-span-4">
+      <div
+        className={`mb-32 md:mb-0 col-span-1 ${
+          hasSidebar ? "md:col-span-4" : "md:col-span-6"
+        }`}
+      >
         <div className="amount-section">
           <div className="amount-section-inner flex flex-wrap">
             <div className="amount-col amount-reserved-col">
@@ -227,7 +244,7 @@ const ReservationLog = ({
                               )
                             }
                           >
-                            {t("label:refundTransection")}
+                            {t("label:refundTransaction")}
                           </Button>
                         )}
                       </div>
@@ -281,64 +298,68 @@ const ReservationLog = ({
           </div>
         )}
       </div>
-      <div className="col-span-2 reserve-log-sidebar">
-        <div className="border-1 border-MonochromeGray-25">
-          <div className="py-16 px-10 bg-primary-25 subtitle2 ">
-            {t("label:actions")}
-          </div>
-          {user.role[0] !== FP_ADMIN && (
-            <div className="px-12 bg-white pb-20">
-              {/* {info.status} */}
-              {info.status.toLowerCase() == "reserved" && (
-                <>
-                  <Button
-                    //color="secondary"
-                    variant="outlined"
-                    className="body2 action-button button2"
-                    startIcon={<CreditCardIcon style={{ color: "#50C9B1" }} />}
-                    onClick={() => handleModalOpen("chargeFromCard")}
-                    disabled={
-                      !info.paymentDetails.reservedAt ||
-                      DayDiffFromToday(info.paymentDetails.reservedAt) > 60
-                    }
-                  >
-                    {t("label:chargeFromCard")}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    className="body2 action-button button2"
-                    startIcon={<PaymentsIcon style={{ color: "#68C7E7" }} />}
-                    onClick={() => handleModalOpen("capturePayments")}
-                    disabled={
-                      !info.paymentDetails.reservedAt ||
-                      DayDiffFromToday(info.paymentDetails.reservedAt) > 7 ||
-                      info.paymentDetails.capturedAmount >=
-                        info.paymentDetails.reservedAmount
-                    }
-                  >
-                    {t("label:capturePayment")}
-                  </Button>
-                </>
-              )}
-              {(info.status.toLowerCase() == "reserved" ||
-                info.status.toLowerCase() == "completed") &&
-                info.paymentDetails.capturedAmount > 0 && (
-                  <Button
-                    variant="outlined"
-                    className="body2 action-button button2"
-                    startIcon={<UndoIcon style={{ color: "#0088AE" }} />}
-                    onClick={() => handleModalOpen("refundReservation")}
-                    disabled={
-                      amountRefunded >= info.paymentDetails.capturedAmount
-                    }
-                  >
-                    {t("label:refundFromReservation")}
-                  </Button>
-                )}
+      {hasSidebar && (
+        <div className="col-span-2 reserve-log-sidebar">
+          <div className="border-1 border-MonochromeGray-25">
+            <div className="py-16 px-10 bg-primary-25 subtitle2 ">
+              {t("label:actions")}
             </div>
-          )}
+            {user.role[0] !== FP_ADMIN && (
+              <div className="px-12 bg-white pb-20">
+                {/* {info.status} */}
+                {info.status.toLowerCase() == "reserved" && (
+                  <>
+                    <Button
+                      //color="secondary"
+                      variant="outlined"
+                      className="body2 action-button button2"
+                      startIcon={
+                        <CreditCardIcon style={{ color: "#50C9B1" }} />
+                      }
+                      onClick={() => handleModalOpen("chargeFromCard")}
+                      disabled={
+                        !info.paymentDetails.reservedAt ||
+                        DayDiffFromToday(info.paymentDetails.reservedAt) > 60
+                      }
+                    >
+                      {t("label:chargeFromCard")}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      className="body2 action-button button2"
+                      startIcon={<PaymentsIcon style={{ color: "#68C7E7" }} />}
+                      onClick={() => handleModalOpen("capturePayments")}
+                      disabled={
+                        !info.paymentDetails.reservedAt ||
+                        DayDiffFromToday(info.paymentDetails.reservedAt) > 7 ||
+                        info.paymentDetails.capturedAmount >=
+                          info.paymentDetails.reservedAmount
+                      }
+                    >
+                      {t("label:capturePayment")}
+                    </Button>
+                  </>
+                )}
+                {(info.status.toLowerCase() == "reserved" ||
+                  info.status.toLowerCase() == "completed") &&
+                  info.paymentDetails.capturedAmount > 0 && (
+                    <Button
+                      variant="outlined"
+                      className="body2 action-button button2"
+                      startIcon={<UndoIcon style={{ color: "#0088AE" }} />}
+                      onClick={() => handleModalOpen("refundReservation")}
+                      disabled={
+                        amountRefunded >= info.paymentDetails.capturedAmount
+                      }
+                    >
+                      {t("label:refundFromReservation")}
+                    </Button>
+                  )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

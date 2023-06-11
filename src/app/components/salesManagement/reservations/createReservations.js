@@ -1018,11 +1018,11 @@ const ReservationCreate = () => {
                           }
                           disablePast={true}
                           onChange={(_) => {
-                            let utc =
-                              _.getTime() + _.getTimezoneOffset() * 60000;
-                            let nd = new Date(
-                              utc + 3000000 * new Date().getTimezoneOffset()
-                            );
+                            // let utc =
+                            //   _.getTime() + _.getTimezoneOffset() * 60000;
+                            // let nd = new Date(
+                            //   utc + 3000000 * new Date().getTimezoneOffset()
+                            // );
                             return onChange(_);
                             // return onChange(nd)
                           }}

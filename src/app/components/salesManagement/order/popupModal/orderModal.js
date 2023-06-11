@@ -233,6 +233,10 @@ const OrderModal = (props) => {
         isPartial: refundType === "partial",
         amount: ["Send Refund", "Refund Order"].includes(headerTitle)
           ? orderAmount
+          : headerTitle === "Refund from Reservation"
+          ? refundableAmount
+          : headerTitle === "Refund Transaction"
+          ? refundableChargeAmount
           : values?.refundAmount,
         message: flagMessage,
         uuid: orderId,
@@ -397,7 +401,25 @@ const OrderModal = (props) => {
         refundableAmount: refundableAmount,
         uuid: orderId,
       }).then((response) => {
-        reservationRequestCompletedAction(response);
+        if (response?.data?.status_code === 202) {
+          reservationRequestCompletedAction(response);
+        } else if (response?.error) {
+          if (response?.error?.data?.status_code === 400) {
+            if (
+              !(
+                response?.error?.data?.message ===
+                  "refundRejectionForWeeklyThresholdExceed" ||
+                response?.error?.data?.message ===
+                  "refundRejectionForRequestAmountThresholdExceed"
+              )
+            ) {
+              setIsDisableRefundRequest(true);
+            }
+            setFlagMessage(response?.error?.data?.message);
+            setFlag(true);
+          } else setOpen(false);
+          setApiLoading(false);
+        }
       });
     } else if (headerTitle === "Refund Transaction") {
       setApiLoading(true);
@@ -406,7 +428,26 @@ const OrderModal = (props) => {
         chargeKey: chargeKey,
         uuid: orderId,
       }).then((response) => {
-        reservationRequestCompletedAction(response);
+        //reservationRequestCompletedAction(response);
+        if (response?.data?.status_code === 202) {
+          reservationRequestCompletedAction(response);
+        } else if (response?.error) {
+          if (response?.error?.data?.status_code === 400) {
+            if (
+              !(
+                response?.error?.data?.message ===
+                  "refundRejectionForWeeklyThresholdExceed" ||
+                response?.error?.data?.message ===
+                  "refundRejectionForRequestAmountThresholdExceed"
+              )
+            ) {
+              setIsDisableRefundRequest(true);
+            }
+            setFlagMessage(response?.error?.data?.message);
+            setFlag(true);
+          } else setOpen(false);
+          setApiLoading(false);
+        }
       });
     }
   };
@@ -1465,7 +1506,7 @@ const OrderModal = (props) => {
                     {t(`message:${newString[0]}`)} {newString[1] || ""}
                   </div>
                 )}
-                <div className="button-group flex justify-end items-center gap-32 mb-32  mt-32 pt-20 border-t-1 border-MonochromeGray-50">
+                <div className="button-group flex justify-end items-center gap-32 mb-32  mt-32 pt-20 border-MonochromeGray-50">
                   <Button
                     onClick={handleClose}
                     variant="text"

@@ -181,6 +181,11 @@
 .Mui-disabled .MuiButton-startIcon {
   opacity: 0.26;
 }
+.transparent-btn {
+  background-color: transparent;
+  border: 1px solid #e8e8e8;
+  color: #464949;
+}
 
 @media only screen and (min-width: 600px) {
   .create-order-dialog .reservation-modal-inner {

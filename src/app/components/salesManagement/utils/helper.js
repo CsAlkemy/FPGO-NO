@@ -599,7 +599,14 @@ export const validateSchemaCreateReservation = yup.object().shape({
     .string()
     .typeError("youMustEnterReservationDate")
     .required("youMustEnterReservationDate"),
-  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
+  dueDatePaymentLink: yup
+    .string()
+    // .matches(
+    //   /^([0-9]{2})\.([0-9]{2})\.([0-9]{4}) \.([0-9]{2}):\.([0-9]{2})$/,
+    //   "Date must be in format dd.MM.yyyy"
+    // )
+    .typeError("youMustEnterPaymentLinkDueDate")
+    .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
   order: yup.array().of(
     yup.object().shape({

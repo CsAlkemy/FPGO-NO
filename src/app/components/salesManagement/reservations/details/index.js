@@ -187,15 +187,19 @@ const ReservationDetails = () => {
                 {info.status && (
                   <span
                     className={`${
-                      info.status.toLowerCase() === "paid"
+                      info.status.toLowerCase() === "paid" ||
+                      info.status.toLowerCase() === "completed"
                         ? "bg-confirmed"
                         : info.status.toLowerCase() === "sent" ||
                           info.status.toLowerCase() === "refund pending" ||
                           info.status.toLowerCase() === "partial refunded" ||
                           info.status.toLowerCase() === "refunded"
                         ? "bg-pending"
-                        : info.status.toLowerCase() === "invoiced"
+                        : info.status.toLowerCase() === "invoiced" ||
+                          info.status.toLowerCase() === "reserved"
                         ? "bg-invoiced"
+                        : info.status.toLowerCase() === "expired"
+                        ? "bx-expired"
                         : "bg-rejected"
                     } rounded-4 px-16 py-4 body3 ml-10`}
                   >
@@ -239,11 +243,16 @@ const ReservationDetails = () => {
                     {info.status.toLowerCase() === "reserved" &&
                       info?.isPaid == true && (
                         <Button
-                          color="secondary"
+                          // color="secondary"
                           variant="contained"
-                          className="font-semibold rounded-4 w-full sm:w-auto"
+                          className="font-semibold rounded-4 w-full sm:w-auto transparent-btn"
                           disabled={user.role[0] === FP_ADMIN}
-                          startIcon={<DoneAllIcon className="" />}
+                          startIcon={
+                            <DoneAllIcon
+                              className=""
+                              style={{ fill: "#69C77E" }}
+                            />
+                          }
                           onClick={() => handleModalOpen("completeReservation")}
                         >
                           {t("label:complete")}
