@@ -236,7 +236,11 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                       label={t("label:orderDate")}
                       mask=""
                       inputFormat="dd.MM.yyyy"
-                      value={!value ? new Date() : value}
+                      value={
+                        UtilsServices.prepareDotSeparatedDateDDMMYYYYFromMMDDYYYY(
+                          info?.startDate
+                        ) || new Date()
+                      }
                       required
                       disabled
                       onChange={onChange}
@@ -284,10 +288,9 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                       inputFormat="dd.MM.yyyy"
                       disabled
                       value={
-                        !value
-                          ? new Date().setDate(new Date().getDate() + 2)
-                          : value
-                        // : value
+                        UtilsServices.prepareDotSeparatedDateHavingHourMinutes(
+                          info?.dueDateForPaymentLink
+                        ) || new Date()
                       }
                       required
                       onChange={onChange}
@@ -401,7 +404,11 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                       label={t("label:subscriptionEnds")}
                       mask=""
                       inputFormat="dd.MM.yyyy"
-                      value={!value ? new Date() : value}
+                      value={
+                        UtilsServices.prepareDotSeparatedDateDDMMYYYYFromMMDDYYYY(
+                          info?.endDate
+                        ) || new Date()
+                      }
                       required
                       onChange={onChange}
                       minDate={new Date().setDate(new Date().getDate() - 30)}
@@ -674,7 +681,11 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                             <div>{t("label:total")}</div>
                             <div>
                               {t("label:nok")}{" "}
-                              {info?.products?.[index]?.amount ? ThousandSeparator(info?.products?.[index]?.amount) : 0}
+                              {info?.products?.[index]?.amount
+                                ? ThousandSeparator(
+                                    info?.products?.[index]?.amount
+                                  )
+                                : 0}
                             </div>
                           </div>
                         </div>
@@ -882,7 +893,9 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                       <div className="my-auto">
                         <div className="body3 text-right">
                           {t("label:nok")}{" "}
-                          {info?.products?.[index]?.amount ? ThousandSeparator(info?.products?.[index]?.amount) : 0}
+                          {info?.products?.[index]?.amount
+                            ? ThousandSeparator(info?.products?.[index]?.amount)
+                            : 0}
                         </div>
                       </div>
                     </div>
@@ -978,9 +991,8 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                           {t("label:tax")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} {info?.tax
-                          ? ThousandSeparator(info?.tax)
-                          : 0}
+                          {t("label:nok")}{" "}
+                          {info?.tax ? ThousandSeparator(info?.tax) : 0}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-10">
@@ -988,9 +1000,10 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                           {t("label:discount")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")} {info?.discount
-                          ? ThousandSeparator(info?.discount)
-                          : 0}
+                          {t("label:nok")}{" "}
+                          {info?.discount
+                            ? ThousandSeparator(info?.discount)
+                            : 0}
                         </div>
                       </div>
                     </div>
@@ -1003,7 +1016,10 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
                           {t("label:payablePerCycle")}
                         </div>
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:nok")} {info?.payablePerCycle ? ThousandSeparator(info?.payablePerCycle) : 0}
+                          {t("label:nok")}{" "}
+                          {info?.payablePerCycle
+                            ? ThousandSeparator(info?.payablePerCycle)
+                            : 0}
                         </div>
                       </div>
 

@@ -68,6 +68,14 @@ class UtilsServices {
     const changedDate = `${splitedArray[1]}.${splitedArray[0]}.${splitedArray[2]}`;
     return changedDate;
   };
+
+  prepareDotSeparatedDateHavingHourMinutes = (param) => {
+    //ex: 11:23, 21.06.1970 -> 06.21.1970 11:23
+    const splitedArray = param.split(", ");
+    const splitedDateArray = splitedArray[1].split(".");
+    const changedDate = `${splitedDateArray[1]}.${splitedDateArray[0]}.${splitedDateArray[2]} ${splitedArray[0]}`;
+    return changedDate;
+  };
 }
 
 const instance = new UtilsServices();
