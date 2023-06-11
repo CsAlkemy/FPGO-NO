@@ -1827,6 +1827,21 @@ export default function OverViewMainTableBody(props) {
                   />
                 </TableCell>
               );
+            default:
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Reserved"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
           }
         } else if (
           rdt === "reservationAmount" ||

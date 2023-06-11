@@ -199,7 +199,7 @@ const ReservationDetails = () => {
                           info.status.toLowerCase() === "reserved"
                         ? "bg-invoiced"
                         : info.status.toLowerCase() === "expired"
-                        ? "bx-expired"
+                        ? "bg-expired"
                         : "bg-rejected"
                     } rounded-4 px-16 py-4 body3 ml-10`}
                   >

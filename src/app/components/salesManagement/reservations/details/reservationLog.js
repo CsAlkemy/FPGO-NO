@@ -72,25 +72,25 @@ const ReservationLog = ({
         <div className="amount-section">
           <div className="amount-section-inner flex flex-wrap">
             <div className="amount-col amount-reserved-col">
-              <div className="subtitle3">{t("Label:amountReserved")}</div>
+              <div className="subtitle3">{t("label:amountReserved")}</div>
               <div className="subtitle1">
                 NOK {ThousandSeparator(info.paymentDetails.reservedAmount)}
               </div>
             </div>
             <div className="amount-col amount-paid-col">
-              <div className="subtitle3">{t("Label:amountPaid")}</div>
+              <div className="subtitle3">{t("label:amountPaid")}</div>
               <div className="subtitle1">
                 NOK {ThousandSeparator(info.formattedAmount.amountPaid)}
               </div>
             </div>
             <div className="amount-col">
-              <div className="subtitle3">{t("Label:amountRefunded")}</div>
+              <div className="subtitle3">{t("label:amountRefunded")}</div>
               <div className="subtitle1">
                 NOK {ThousandSeparator(info.formattedAmount.amountRefunded)}
               </div>
             </div>
             <div className="amount-col">
-              <div className="subtitle3">{t("Label:amountInBank")}</div>
+              <div className="subtitle3">{t("label:amountInBank")}</div>
               <div className="subtitle1">
                 NOK {ThousandSeparator(info.formattedAmount.amountInBank)}
               </div>
@@ -131,6 +131,8 @@ const ReservationLog = ({
                         </TimelineDot>
                       ) : log.slug === "payment-failed" ||
                         log.slug === "order-cancelled" ||
+                        log.slug === "order-expired" ||
+                        log.slug === "payment-link-expired" ||
                         log.slug === "reservation-cancelled" ||
                         log.slug === "order-converted-to-invoice" ? (
                         <TimelineDot className="border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]">
@@ -151,6 +153,8 @@ const ReservationLog = ({
                             ? t("label:reservationResent")
                             : log.slug === "order-cancelled"
                             ? t("label:reservationCancelled")
+                            : log.slug === "order-expired"
+                            ? t("label:paymentLinkExpired")
                             : t(`label:${_.camelCase(log.slug)}`)}
                           {/* {t(`label:${log.translationKey}`)} */}
                         </div>

@@ -195,6 +195,9 @@
   .charge-modal .md\:min-w-lg {
     min-width: 1060px;
   }
+  .reservation-create-form .button-container-product {
+    display: flex;
+  }
 }
 @media only screen and (min-width: 960px) {
   .customer-info-section {

@@ -697,7 +697,7 @@ const ReservationCreate = () => {
                   <Button
                     color="secondary"
                     variant="outlined"
-                    className="button-outline-product"
+                    className="button-outline-product px-32"
                     onClick={() => setOpen(true)}
                   >
                     {t("label:discard")}
@@ -705,7 +705,7 @@ const ReservationCreate = () => {
                   <LoadingButton
                     color="secondary"
                     variant="contained"
-                    className="font-semibold rounded-4 w-full sm:w-auto"
+                    className="font-semibold rounded-4 w-full sm:w-auto px-40"
                     type="submit"
                     // disabled={!(isValid && customData.paymentMethod.length)}
                     disabled={
