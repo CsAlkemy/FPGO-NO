@@ -145,10 +145,9 @@ const paymentInformation = () => {
           ? orderDetails?.customerDetails?.uuid
           : null,
       };
-    console.log("DATA : ", data);
+
     OrdersService.subscriptionPayNow(data)
       .then((response) => {
-        console.log("Update Order RES : ",response);
         if (
           response?.status_code === 201 &&
           response?.is_data &&
@@ -192,7 +191,6 @@ const paymentInformation = () => {
           if (response?.status_code === 200 && response?.is_data) {
             // if (response?.data?.status !== "SENT") return navigate("404");
             setOrderDetails(response.data);
-            console.log("Res : ", response);
             PaymentDefaultValue.phone =
               response?.data?.customerDetails?.countryCode &&
               response?.data?.customerDetails?.msisdn

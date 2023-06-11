@@ -102,54 +102,54 @@ const orderReceipt = ({ info }) => {
               </div>
               <div className="text-MonochromeGray-700 body3 flex flex-col gap-10 md:gap-5">
                 <div>
-                  {info?.organizationDetails?.name
-                    ? info?.organizationDetails?.name
+                  {info?.organization?.name
+                    ? info?.organization?.name
                     : "-"}
                 </div>
                 <div>
-                  {info?.organizationDetails?.billingAddress &&
-                  info?.organizationDetails?.billingAddress?.street
-                    ? info?.organizationDetails?.billingAddress?.street
+                  {info?.organization?.address &&
+                  info?.organization?.address?.street
+                    ? info?.organization?.address?.street
                     : "-"}
                 </div>
                 <div>
-                  {info?.organizationDetails?.billingAddress &&
-                  info?.organizationDetails?.billingAddress.zip
-                    ? info?.organizationDetails?.billingAddress.zip
+                  {info?.organization?.address &&
+                  info?.organization?.address.zip
+                    ? info?.organization?.address.zip
                     : "-"}{" "}
-                  {info?.organizationDetails?.billingAddress &&
-                  info?.organizationDetails?.billingAddress?.city
-                    ? info?.organizationDetails?.billingAddress?.city + ", "
+                  {info?.organization?.address &&
+                  info?.organization?.address?.city
+                    ? info?.organization?.address?.city + ", "
                     : "-"}{" "}
-                  {info?.organizationDetails?.billingAddress &&
-                  info?.organizationDetails?.billingAddress?.country
-                    ? info?.organizationDetails?.billingAddress?.country
+                  {info?.organization?.address &&
+                  info?.organization?.address?.country
+                    ? info?.organization?.address?.country
                     : "-"}
                 </div>
                 <div>
                   {t("label:phoneNumber")} :{" "}
-                  {info?.organizationDetails?.billingAddress &&
-                  info?.organizationDetails?.billingAddress?.countryCode &&
-                  info?.organizationDetails?.billingAddress?.msisdn
-                    ? info?.organizationDetails?.billingAddress?.countryCode +
-                      info?.organizationDetails?.billingAddress?.msisdn
+                  {info?.organization?.address &&
+                  info?.organization?.address?.countryCode &&
+                  info?.organization?.address?.msisdn
+                    ? info?.organization?.address?.countryCode +
+                      info?.organization?.address?.msisdn
                     : "-, "}
                 </div>
                 <Hidden smUp>
                   <div>
                     {t("label:email")} :{" "}
-                    {info?.organizationDetails?.billingAddress &&
-                    info?.organizationDetails?.billingAddress?.email
-                        ? CharCont(info?.organizationDetails?.billingAddress?.email, 10)
+                    {info?.organization?.address &&
+                    info?.organization?.address?.email
+                        ? CharCont(info?.organization?.address?.email, 10)
                         : "-, "}
                   </div>
                 </Hidden>
                 <Hidden smDown>
                   <div>
                     {t("label:email")} :{" "}
-                    {info?.organizationDetails?.billingAddress &&
-                    info?.organizationDetails?.billingAddress?.email
-                        ? info?.organizationDetails?.billingAddress?.email
+                    {info?.organization?.address &&
+                    info?.organization?.address?.email
+                        ? info?.organization?.address?.email
                         : "-, "}
                   </div>
                 </Hidden>

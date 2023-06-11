@@ -185,8 +185,6 @@ const SubscriptionInformation = ({ info, customerInfo }) => {
     }
   };
 
-  console.log("Info : ",info);
-
   return (
     <div className="create-product-container">
       <div className="inside-div-product">

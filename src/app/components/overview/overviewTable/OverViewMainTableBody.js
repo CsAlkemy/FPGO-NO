@@ -81,7 +81,7 @@ export default function OverViewMainTableBody(props) {
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
-    if (decision === "subscriptionRefund") setHeaderTitle("subscriptionRefund");
+    // if (decision === "subscriptionRefund") setHeaderTitle("subscriptionRefund");
     if (decision === "subscriptionCancel") setHeaderTitle("Cancel Subscription");
   };
 
@@ -89,11 +89,9 @@ export default function OverViewMainTableBody(props) {
     if (props.tableName === subscriptionsListOverview && subscriptionUuid) {
       SubscriptionsService.getSubscriptionOrderCycle(subscriptionUuid)
         .then((res)=> {
-          console.log("RES : ", res);
           const serial = subscriptionsCycles.length
           const resData = res?.data;
           const data = {serial : {resData}};
-          console.log("subscriptionsCycles UE : ",subscriptionsCycles);
           if (res?.status_code === 200 && res?.is_data) setSubscriptionsCycles([res?.data])
           // subscriptionsCycles.push(res)
           // console.log("subscriptionsCycles 2 : ",subscriptionsCycles);
@@ -101,7 +99,7 @@ export default function OverViewMainTableBody(props) {
         .catch((e)=> console.log("E : ",e))
     }
   },[props.tableName, subscriptionUuid])
-  console.log("subscriptionsCycles : ",subscriptionsCycles);
+
   const handleSendInvoiceModalOpen = () => {
     setEditOpen(true);
   };

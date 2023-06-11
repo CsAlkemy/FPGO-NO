@@ -73,7 +73,8 @@ const OrderModal = (props) => {
     amountInBank = null,
     remainingAmount = null,
     tableName = null,
-    cycleData
+    cycleData,
+    refundCycle
   } = props;
   const [refundType, setRefundType] = React.useState("partial");
   const [checkEmail, setCheckEmail] = React.useState(false);
@@ -91,6 +92,7 @@ const OrderModal = (props) => {
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
+  const [selectedCycles, setSelectedCycles] = useState([])
 
   const newString = flagMessage.split(":");
 
@@ -308,14 +310,15 @@ const OrderModal = (props) => {
       ) && orderType === "SUBSCRIPTION"
     ) {
       setApiLoading(true);
-      refundSubscriptionOrder({ cycles : ["Cycle 1", "Cycle 2"], amount : 4900, uuid : subscriptionUuid }).then(
+      refundSubscriptionOrder({ cycles : selectedCycles, amount : parseInt(refundCycle.payablePerMonth) * parseInt(selectedCycles.length), uuid : subscriptionUuid }).then(
         (response) => {
-          if (response?.data?.status_code === 202) {
+          // if (response?.data?.status_code === 202) {
+          if (response?.data?.status_code === 201) {
             enqueueSnackbar(t(`message:${response?.data?.message}`), {
               variant: "success",
             });
             setOpen(false);
-            if (window.location.pathname === `/subscription/details/${orderId}`)
+            if (window.location.pathname === `/subscription/details/${subscriptionUuid}`)
               navigate(`/subscriptions/list`);
             // setApiLoading(false);
           } else if (response?.error) {
@@ -637,11 +640,18 @@ const OrderModal = (props) => {
                         render={({ field: { ref, onChange, ...field } }) => (
                           <Autocomplete
                             multiple
-                            options={mockCycleData}
+                            // options={mockCycleData}
+                            options={refundCycle.cycles}
                             // options={cycleData.length ? cycleData.0 : }
                             disableCloseOnSelect
-                            getOptionLabel={(option) => option.title}
-                            onChange={(_, data) => onChange(data)}
+                            // getOptionLabel={(option) => option.title}
+                            getOptionLabel={(option) => option.cycleName}
+                            onChange={(_, data) => {
+                              setSelectedCycles(data.map((cycle)=> {
+                                return cycle.cycleName
+                              }))
+                              return onChange(data);
+                            }}
                             renderOption={(props, option, { selected }) => (
                               <li {...props}>
                                 <Checkbox
@@ -650,7 +660,8 @@ const OrderModal = (props) => {
                                   style={{ marginRight: 8 }}
                                   checked={selected}
                                 />
-                                {`${option.title} ( ${option.date} )`}
+                                {/*{`${option.title} ( ${option.date} )`}*/}
+                                {`${option.cycleName} ( ${option.startDate} - ${option.endDate} )`}
                               </li>
                             )}
                             renderInput={(params) => (
@@ -668,12 +679,12 @@ const OrderModal = (props) => {
                         )}
                       />
                       <div className='flex justify-between items-center mt-5 text-MonochromeGray-500 body4 px-4'>
-                        Select up to 8 subscription cycles
+                        {t("label:selectUpToEightSubscriptionCycles")}
                         <span>{watch("subscriptionCycle")?.length || 0 }/8</span>
                       </div>
                       <div className="p-16 flex justify-between items-center subtitle1 mt-32 bg-MonochromeGray-25 rounded-6 text-MonochromeGray-700">
-                        Total Refund Amount
-                        <span>NOK 0</span>
+                        {t("label:totalRefundAmount")}
+                        <span>{t("label:nok")} {parseInt(refundCycle.payablePerMonth) * parseInt(selectedCycles.length)}</span>
                       </div>
                     </div>
                   )}

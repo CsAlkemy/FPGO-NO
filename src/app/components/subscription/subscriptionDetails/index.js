@@ -47,8 +47,8 @@ const subscriptionDetails = () => {
             info.subscription.status.toLowerCase() === "completed") ||
             (info.subscription.status &&
               info.subscription.status.toLowerCase() === "cancelled" &&
-              info?.subscription?.isPaid &&
-              "Refund Order")
+              info?.subscription?.isPaid)
+      ? "Send Refund" : ""
     );
   };
 
@@ -279,6 +279,7 @@ const subscriptionDetails = () => {
             subscriptionUuid={info?.subscription?.uuid}
             orderName={info.customer.customerName}
             orderAmount={info.subscription.subTotal}
+            refundCycle={info?.refundCycles}
             customerPhone={
               info.customer.countryCode && info.customer.msisdn
                 ? info.customer.countryCode + info.customer.msisdn
