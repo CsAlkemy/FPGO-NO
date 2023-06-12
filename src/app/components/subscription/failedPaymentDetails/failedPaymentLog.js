@@ -232,7 +232,7 @@ const orderLog = ({ logs, details }) => {
             <div className="subtitle3 text-MonochromeGray-700">
               {t("label:subscriptionCycle")}
             </div>
-            <div className="body3 text-MonochromeGray-700">7/12</div>
+            <div className="body3 text-MonochromeGray-700">{`${details.numberOfOrder} / ${details.repeats}`}</div>
           </div>
           <div className="mt-10 mb-20 body3 px-32">
             {t("label:orderSummaryDetails")}
