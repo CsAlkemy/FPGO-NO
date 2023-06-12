@@ -19,6 +19,7 @@ import { FiMinus } from "react-icons/fi";
 import CharCount from "../../common/charCount";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
+import utilsService from "../../../data-access/utils/UtilsServices";
 
 const FailedPaymentInformation = ({ info }) => {
   const { t } = useTranslation();
@@ -38,6 +39,8 @@ const FailedPaymentInformation = ({ info }) => {
 
   useEffect(() => {
     createSubscriptionDefaultValue.repeatsNoOfTimes = info.repeats || "";
+    createSubscriptionDefaultValue.orderDate = info.orderDate || "";
+    createSubscriptionDefaultValue.dueDatePaymentLink = info.dueDateForPaymentLink || "";
     if (info?.products && info?.products && info?.products.length >= 2) {
       setAddOrderIndex(
         addOrderIndex.filter((item, index) => item <= info?.products.length - 1)
@@ -50,6 +53,7 @@ const FailedPaymentInformation = ({ info }) => {
   const onSubmit = (values) => {
     //console.log(values);
   };
+  console.log(createSubscriptionDefaultValue);
 
   return (
     <div className="create-product-container">
@@ -98,12 +102,10 @@ const FailedPaymentInformation = ({ info }) => {
                       label={t("label:orderDate")}
                       mask=""
                       inputFormat="dd.MM.yyyy"
-                      value={!value ? new Date() : value}
+                      value={utilsService.prepareDotSeparatedDateDDMMYYYYFromMMDDYYYY(info?.orderDate)|| new Date()}
                       required
                       disabled
                       onChange={onChange}
-                      minDate={new Date().setDate(new Date().getDate() - 30)}
-                      maxDate={new Date().setDate(new Date().getDate() + 30)}
                       PopperProps={{
                         sx: {
                           "& .MuiCalendarPicker-root .MuiButtonBase-root.MuiPickersDay-root":
@@ -145,12 +147,7 @@ const FailedPaymentInformation = ({ info }) => {
                       mask=""
                       inputFormat="dd.MM.yyyy"
                       disabled
-                      value={
-                        !value
-                          ? new Date().setDate(new Date().getDate() + 2)
-                          : value
-                        // : value
-                      }
+                      value={value}
                       required
                       onChange={onChange}
                       disablePast={true}
