@@ -58,7 +58,6 @@ export default function OverViewMainTableBody(props) {
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
   const [amountBank, setAmountBank] = useState(null);
-  const [subscriptionUuid, setSubscriptionUuid] = useState(null);
   const [subscriptionsCycles, setSubscriptionsCycles] = useState([])
 
   const handleTooltipClose = () => {
@@ -73,32 +72,15 @@ export default function OverViewMainTableBody(props) {
     else if (tooltip === "low") setOpenLow(true);
   };
 
-  const handleModalOpen = (decision, subscriptionId = null) => {
+  const handleModalOpen = (decision) => {
     setOpen(true);
     setAmountBank(null);
-    if (subscriptionId) setSubscriptionUuid(subscriptionId)
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
-    // if (decision === "subscriptionRefund") setHeaderTitle("subscriptionRefund");
     if (decision === "subscriptionCancel") setHeaderTitle("Cancel Subscription");
   };
-
-  useEffect(()=> {
-    if (props.tableName === subscriptionsListOverview && subscriptionUuid) {
-      SubscriptionsService.getSubscriptionOrderCycle(subscriptionUuid)
-        .then((res)=> {
-          const serial = subscriptionsCycles.length
-          const resData = res?.data;
-          const data = {serial : {resData}};
-          if (res?.status_code === 200 && res?.is_data) setSubscriptionsCycles([res?.data])
-          // subscriptionsCycles.push(res)
-          // console.log("subscriptionsCycles 2 : ",subscriptionsCycles);
-        })
-        .catch((e)=> console.log("E : ",e))
-    }
-  },[props.tableName, subscriptionUuid])
 
   const handleSendInvoiceModalOpen = () => {
     setEditOpen(true);
@@ -2345,7 +2327,7 @@ export default function OverViewMainTableBody(props) {
                 headerTitle={headerTitle}
                 orderId={props.row.orderUuid}
                 subscriptionUuid={props.row.uuid}
-                cycleData={subscriptionsCycles}
+                refundCycle={props.row.refundCycles}
                 tableName={props.tableName}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}

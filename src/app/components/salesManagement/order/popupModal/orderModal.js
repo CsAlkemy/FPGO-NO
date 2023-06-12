@@ -641,11 +641,11 @@ const OrderModal = (props) => {
                           <Autocomplete
                             multiple
                             // options={mockCycleData}
-                            options={refundCycle.cycles}
+                            options={refundCycle?.cycles || mockCycleData}
                             // options={cycleData.length ? cycleData.0 : }
                             disableCloseOnSelect
                             // getOptionLabel={(option) => option.title}
-                            getOptionLabel={(option) => option.cycleName}
+                            getOptionLabel={(option) => option?.cycleName || option?.title}
                             onChange={(_, data) => {
                               setSelectedCycles(data.map((cycle)=> {
                                 return cycle.cycleName

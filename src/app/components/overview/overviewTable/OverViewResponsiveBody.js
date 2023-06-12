@@ -79,6 +79,7 @@ export default function OverViewResponsiveBody(props) {
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
+    if (decision === "subscriptionCancel") setHeaderTitle("Cancel Subscription");
   };
   const handleSendInvoiceModalOpen = () => {
     setOpen(true);
@@ -2875,11 +2876,13 @@ export default function OverViewResponsiveBody(props) {
                 open={open}
                 setOpen={setOpen}
                 headerTitle={headerTitle}
-                orderId={props.row.id}
+                orderId={props.row.orderUuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
                 customerEmail={props.row.email}
+                refundRequestsCount={props.refundRequestCount}
+                setRefundRequestsCount={props.setRefundRequestsCount}
               />
             </>
           ) : props.row.refundResend === "Refund" &&
@@ -2905,8 +2908,12 @@ export default function OverViewResponsiveBody(props) {
               <OrderModal
                 open={open}
                 setOpen={setOpen}
+                orderType={"SUBSCRIPTION"}
                 headerTitle={headerTitle}
-                orderId={props.row.id}
+                orderId={props.row.orderUuid}
+                subscriptionUuid={props.row.uuid}
+                refundCycle={props.row.refundCycles}
+                tableName={props.tableName}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
@@ -2963,7 +2970,7 @@ export default function OverViewResponsiveBody(props) {
                   color="secondary"
                   startIcon={<CancelIcon className="text-red-500" />}
                   className="rounded-4 button2 border-1 border-MonochromeGray-100 text-MonochromeGray-900"
-                  onClick={() => handleModalOpen("cancel")}
+                  onClick={() => handleModalOpen("subscriptionCancel")}
                 >
                   {t("label:cancelOrder")}
                 </Button>
@@ -2972,7 +2979,8 @@ export default function OverViewResponsiveBody(props) {
                 open={open}
                 setOpen={setOpen}
                 headerTitle={headerTitle}
-                orderId={props.row.id}
+                orderId={props.row.orderUuid}
+                subscriptionUuid={props.row.uuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
