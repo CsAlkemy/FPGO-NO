@@ -61,6 +61,7 @@ import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
 import _, { head } from "lodash";
+var productFetched = false;
 
 const OrderModal = (props) => {
   //console.log(props);
@@ -169,41 +170,48 @@ const OrderModal = (props) => {
     OrderModalDefaultValue.email = customerEmail ? customerEmail : "";
     reset({ ...OrderModalDefaultValue });
 
-    ProductService.productsList(true)
-      .then((res) => {
-        let data = [];
-        if (res?.status_code === 200 && res.length) {
-          res
-            .filter((r) => r.status === "Active")
-            .map((row) => {
-              return data.push({
-                uuid: row.uuid,
-                name: row.name,
-                id: row.id,
-                price: row.pricePerUnit,
-                tax: row.taxRate,
-              });
-            });
-        }
-        setProductsList(data);
-      })
-      .catch((e) => {
-        setProductsList([]);
-      });
-
-    if (userInfo?.user_data?.organization?.uuid) {
-      ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid, true)
+    if (!productFetched) {
+      ProductService.productsList(true)
         .then((res) => {
-          if (res?.status_code === 200) {
-            setTaxes(res?.data);
-          } else {
-            setTaxes([]);
+          console.log(productFetched);
+          let data = [];
+          if (res?.status_code === 200 && res.length) {
+            res
+              .filter((r) => r.status === "Active")
+              .map((row) => {
+                return data.push({
+                  uuid: row.uuid,
+                  name: row.name,
+                  id: row.id,
+                  price: row.pricePerUnit,
+                  tax: row.taxRate,
+                });
+              });
           }
+          setProductsList(data);
         })
         .catch((e) => {
-          setTaxes([]);
+          setProductsList([]);
         });
+
+      if (userInfo?.user_data?.organization?.uuid) {
+        ClientService.vateRatesList(
+          userInfo?.user_data?.organization?.uuid,
+          true
+        )
+          .then((res) => {
+            if (res?.status_code === 200) {
+              setTaxes(res?.data);
+            } else {
+              setTaxes([]);
+            }
+          })
+          .catch((e) => {
+            setTaxes([]);
+          });
+      }
     }
+    productFetched = true;
   }, []);
 
   const setFullAmount = () => {
@@ -669,7 +677,7 @@ const OrderModal = (props) => {
                 headerTitle !== "moreThanFiveThousand" &&
                 headerTitle !== "Charge Amount" &&
                 !flag && (
-                  <div className="order-amount-text flex justify-between items-center my-10 pb-10 border-b-1 border-MonochromeGray-25">
+                  <div className="order-amount-text flex justify-between items-center my-10 pb-10 border-b-1 gap-x-10 border-MonochromeGray-25">
                     <div className="body2">
                       <div className="text-MonochromeGray-700">
                         {orderName ? orderName : "-"}
@@ -695,7 +703,7 @@ const OrderModal = (props) => {
                 )}
 
               {headerTitle === "Complete Reservation" && (
-                <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
+                <div className="flex justify-between gap-x-10 items-center p-8 rounded-4 bg-MonochromeGray-25">
                   <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:amountInBank")}
                   </div>
@@ -709,7 +717,7 @@ const OrderModal = (props) => {
                 headerTitle
               ) && (
                 //{headerTitle === "Refund from Reservation" && (
-                <div className="flex justify-between items-center p-12 py-16 rounded-4 bg-MonochromeGray-25">
+                <div className="flex justify-between gap-x-10 items-center p-12 py-16 rounded-4 bg-MonochromeGray-25">
                   <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:refundableAmount")}
                   </div>
@@ -723,7 +731,7 @@ const OrderModal = (props) => {
               )}
 
               {headerTitle === "Capture Payment" && (
-                <div className="flex justify-between items-center p-8 rounded-4 bg-MonochromeGray-25">
+                <div className="flex justify-between gap-x-10 items-center p-8 rounded-4 bg-MonochromeGray-25">
                   <div className="text-MonochromeGray-700 font-semibold">
                     {t("label:remainingAmount")}
                   </div>
@@ -1467,7 +1475,7 @@ const OrderModal = (props) => {
                             <Button
                               variant="outlined"
                               color="error"
-                              className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                              className="w-1/2 mobile-btn text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
                               startIcon={
                                 <RemoveCircleOutlineIcon className="text-red-400" />
                               }

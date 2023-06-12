@@ -186,6 +186,9 @@
   border: 1px solid #e8e8e8;
   color: #464949;
 }
+.button-container-product-mobile {
+  z-index: 9;
+}
 
 @media only screen and (min-width: 600px) {
   .create-order-dialog .reservation-modal-inner {
@@ -215,11 +218,19 @@
     display: flex;
   }
 }
+@media only screen and (max-width: 480px) {
+  .amount-section {
+    padding: 6px 0px 6px 0;
+  }
+}
 @media only screen and (max-width: 440px) {
   .amount-section .amount-col {
     width: 100%;
   }
   .lg-dark-blue-btn {
     min-width: 120px;
+  }
+  .mobile-btn.w-1\/2 {
+    width: 100%;
   }
 }

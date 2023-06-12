@@ -302,7 +302,7 @@ const ReservationDetails = () => {
                   />
                 </TabList>
               </Box>
-              <TabPanel value="1">
+              <TabPanel value="1" className="px-0 md:px-24">
                 <ReservationLog
                   info={info}
                   logContent={logs}

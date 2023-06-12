@@ -1501,7 +1501,7 @@ const ReservationCreate = () => {
                         <Button
                           variant="outlined"
                           color="error"
-                          className="w-1/2 text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                          className="w-1/2 mobile-btn text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
                           startIcon={
                             <RemoveCircleOutlineIcon className="text-red-400" />
                           }

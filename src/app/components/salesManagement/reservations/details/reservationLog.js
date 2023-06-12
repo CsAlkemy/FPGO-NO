@@ -125,6 +125,7 @@ const ReservationLog = ({
                       log.slug === "amount-charged-from-card" ||
                       log.slug === "customer-information-updated" ||
                       log.slug === "payment-successful" ||
+                      log.slug === "amount-reserved" ||
                       log.slug === "reservation-completed" ? (
                         <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
                           <CheckIcon className="icon-size-16 text-white" />

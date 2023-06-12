@@ -41,7 +41,7 @@ import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const ReservationInformation = ({ info }) => {
   const { t } = useTranslation();
-  const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(false);
+  const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [customerAddress, setCustomerAddress] = useState("");
 
@@ -404,7 +404,7 @@ const ReservationInformation = ({ info }) => {
                           />
                         )}
                       />
-                      <div className="grid grid-cols-4 gap-20">
+                      <div className="grid grid-cols-2 gap-20">
                         <Controller
                           name={`order[${index}].reservationAmount`}
                           control={control}
@@ -466,10 +466,8 @@ const ReservationInformation = ({ info }) => {
                   ))}
                   <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
                     {/* {t("label:totalReservationAmount")} : {t("label:nok")} {grandTotal} */}
-                    {t("label:grandTotal")} : {t("label:nok")}{" "}
-                    {info.orderSummary
-                      ? ThousandSeparator(info.orderSummary.grandTotal)
-                      : 0}
+                    {t("label:totalReservationAmount")} : {t("label:nok")}{" "}
+                    {info.grandTotal ? ThousandSeparator(info.grandTotal) : 0}
                   </div>
                 </AccordionDetails>
               </Accordion>
