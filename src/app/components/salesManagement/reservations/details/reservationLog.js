@@ -121,6 +121,13 @@ const ReservationLog = ({
                       log.slug === "payment-link-opened" ||
                       log.slug === "partial-refunded" ||
                       log.slug === "refund-sent" ||
+                      log.slug === "refund-sent-from-captured" ||
+                      log.slug ===
+                        "refund-request-approved-and-refund-sent-fromcaptured" ||
+                      log.slug === "refund-request-pending-fromcaptured" ||
+                      log.slug ===
+                        "refund-request-approved-and-refund-sent-fromcharged" ||
+                      log.slug === "refund-request-pending-fromcharged" ||
                       log.slug === "amount-captured-from-reservation" ||
                       log.slug === "amount-charged-from-card" ||
                       log.slug === "customer-information-updated" ||
@@ -210,16 +217,18 @@ const ReservationLog = ({
                               </div>
                             </div>
                           )} */}
-                        {log?.note && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:note")}:
-                            </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.note}
-                            </div>
-                          </div>
-                        )}
+                        {log?.note &&
+                          log.slug !==
+                            "amount-charged-from-card"(
+                              <div className="flex gap-5">
+                                <div className="text-MonochromeGray-300 body4">
+                                  {t("label:note")}:
+                                </div>
+                                <div className="body4 text-MonochromeGray-700">
+                                  {log.note}
+                                </div>
+                              </div>
+                            )}
                         {log?.actionBy &&
                           ["order-cancelled", "order-completed"].includes(
                             log.slug

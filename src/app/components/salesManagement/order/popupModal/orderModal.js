@@ -175,7 +175,7 @@ const OrderModal = (props) => {
     if (!productFetched) {
       ProductService.productsList(true)
         .then((res) => {
-          console.log(productFetched);
+          //console.log(productFetched);
           let data = [];
           if (res?.status_code === 200 && res.length) {
             res
