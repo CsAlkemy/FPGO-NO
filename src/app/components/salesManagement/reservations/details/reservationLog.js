@@ -150,14 +150,14 @@ const ReservationLog = ({
                       <div className="ml-5 mt-10 mb-10">
                         <div className="subtitle3 text-MonochromeGray-700">
                           {/* {log.title} */}
-                          {log.slug === "order-resent"
+                          {/* {log.slug === "order-resent"
                             ? t("label:reservationResent")
                             : log.slug === "order-cancelled"
                             ? t("label:reservationCancelled")
                             : log.slug === "order-expired"
                             ? t("label:paymentLinkExpired")
-                            : t(`label:${_.camelCase(log.slug)}`)}
-                          {/* {t(`label:${log.translationKey}`)} */}
+                            : t(`label:${_.camelCase(log.slug)}`)} */}
+                          {t(`label:${log.translationKey}`)}
                         </div>
                         {log?.datetime && (
                           <div className="flex gap-5">
