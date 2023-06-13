@@ -256,6 +256,7 @@ const OrderModal = (props) => {
             : headerTitle === "Refund Transaction"
             ? "charged"
             : "",
+        reference: chargeKey ? chargeKey : null,
       };
       requestRefundApproval(payload).then((response) => {
         if (response?.data?.status_code === 201) {
