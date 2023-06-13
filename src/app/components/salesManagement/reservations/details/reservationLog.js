@@ -218,17 +218,16 @@ const ReservationLog = ({
                             </div>
                           )} */}
                         {log?.note &&
-                          log.slug !==
-                            "amount-charged-from-card"(
-                              <div className="flex gap-5">
-                                <div className="text-MonochromeGray-300 body4">
-                                  {t("label:note")}:
-                                </div>
-                                <div className="body4 text-MonochromeGray-700">
-                                  {log.note}
-                                </div>
+                          log.slug !== "amount-charged-from-card" && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:note")}:
                               </div>
-                            )}
+                              <div className="body4 text-MonochromeGray-700">
+                                {log.note}
+                              </div>
+                            </div>
+                          )}
                         {log?.actionBy &&
                           ["order-cancelled", "order-completed"].includes(
                             log.slug
