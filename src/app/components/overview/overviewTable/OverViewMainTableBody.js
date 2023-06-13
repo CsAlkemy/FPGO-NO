@@ -2312,7 +2312,7 @@ export default function OverViewMainTableBody(props) {
                   className="py-8 px-4"
                   // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
                   sx={resendRefundBoxSX}
-                  onClick={() => handleModalOpen("refund", props.row.uuid)}
+                  onClick={() => handleModalOpen("refund")}
                 >
                   <UndoIcon
                     style={{ paddingBottom: "3px" }}
@@ -2325,7 +2325,9 @@ export default function OverViewMainTableBody(props) {
                 setOpen={setOpen}
                 orderType={"SUBSCRIPTION"}
                 headerTitle={headerTitle}
-                orderId={props.row.orderUuid}
+                subStatus={props.row.stage}
+                // orderId={props.row.orderUuid}
+                orderId={"haga"}
                 subscriptionUuid={props.row.uuid}
                 refundCycle={props.row.refundCycles}
                 tableName={props.tableName}
@@ -2333,30 +2335,6 @@ export default function OverViewMainTableBody(props) {
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}
                 customerEmail={props.row.email}
-              />
-            </TableCell>
-          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <CustomTooltip
-                disableFocusListener
-                title="Send Invoice"
-                TransitionComponent={Zoom}
-                placement="bottom"
-                enterDelay={300}
-              >
-                <Box
-                  component="span"
-                  className="py-8 px-4"
-                  sx={quickOrderSendInvoiceSX}
-                  onClick={() => handleSendInvoiceModalOpen()}
-                >
-                  <ReceiptLongOutlinedIcon style={{ paddingBottom: "3px" }} />
-                </Box>
-              </CustomTooltip>
-              <SendInvoiceModal
-                editOpen={editOpen}
-                setEditOpen={setEditOpen}
-                customerInfo={props.row}
               />
             </TableCell>
           ) : (
@@ -2387,42 +2365,11 @@ export default function OverViewMainTableBody(props) {
               <OrderModal
                 open={open}
                 setOpen={setOpen}
+                orderType={"SUBSCRIPTION"}
+                refundCycle={props.row.refundCycles}
                 headerTitle={headerTitle}
                 orderId={props.row.orderUuid}
                 subscriptionUuid={props.row.uuid}
-                orderName={props.row.name}
-                orderAmount={props.row.amount}
-                customerPhone={props.row.phone}
-                customerEmail={props.row.email}
-              />
-            </TableCell>
-          ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <CustomTooltip
-                disableFocusListener
-                title={`${props.row.refundResend} Order`}
-                TransitionComponent={Zoom}
-                placement="bottom"
-                enterDelay={300}
-              >
-                <Box
-                  component="span"
-                  className="py-8 px-4"
-                  // sx={{border: "1px solid #838585", borderRadius: "10px", backgroundColor: "#F2FAFD" }}
-                  sx={resendRefundBoxSX}
-                  onClick={() => handleModalOpen("resend")}
-                >
-                  <RedoIcon
-                    style={{ paddingBottom: "3px" }}
-                    // onClick={() => }
-                  />
-                </Box>
-              </CustomTooltip>
-              <OrderModal
-                open={open}
-                setOpen={setOpen}
-                headerTitle={headerTitle}
-                orderId={props.row.orderUuid}
                 orderName={props.row.name}
                 orderAmount={props.row.amount}
                 customerPhone={props.row.phone}

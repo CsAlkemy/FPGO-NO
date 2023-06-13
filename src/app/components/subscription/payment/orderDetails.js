@@ -19,6 +19,7 @@ const orderDetails = () => {
   const [visible, setVisible] = React.useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState([]);
+  const [orderUuid, setOrderUuid] = useState(null);
 
   const toggleVisible = () => {
     const scrolled = document.documentElement.scrollTop;
@@ -38,62 +39,30 @@ const orderDetails = () => {
 
   window.addEventListener("scroll", toggleVisible);
 
-  useEffect(() => {
-    if (
-      !window.location.pathname.includes("/subscription/payment/details/SUB")
-    ) {
-      OrdersService.getPaymentLinkOpenStatus(param.uuid)
-        .then((response) => {
-          // if (response?.status_code === 202) {
-          //   console.log(response?.data);
-          // }
-          // setIsLoading(false);
-        })
-        .catch((e) => {});
-    } else {
-      OrdersService.getPaymentLinkOpenStatus(param.uuid)
-        .then((response) => {
-          // if (response?.status_code === 202) {
-          //   console.log(response?.data);
-          // }
-          // setIsLoading(false);
-        })
-        .catch((e) => {});
-    }
-  }, [isLoading]);
+  // useEffect(() => {
+  //
+  // }, [orderUuid]);
 
   useEffect(() => {
-    if (
-      window.location.pathname.includes("/subscription/payment/details/SUB")
-    ) {
-      SubscriptionsService.getSubscriptionDetailsByUUIDPayment(param.uuid)
-        .then((response) => {
-          if (response?.status_code === 200 && response?.is_data) {
-            // if (response?.data?.status !== "SENT") return navigate("404");
-            setOrderDetails(response.data);
-          }
-          setIsLoading(false);
-        })
-        .catch((e) => {
-          setIsLoading(false);
-          // enqueueSnackbar(e, { variant: "error" });
-          return navigate("404");
-        });
-    } else {
-      OrdersService.getOrdersDetailsByUUIDPayment(param.uuid)
-        .then((response) => {
-          if (response?.status_code === 200 && response?.is_data) {
-            if (response?.data?.status !== "SENT") return navigate("404");
-            setOrderDetails(response.data);
-          }
-          setIsLoading(false);
-        })
-        .catch((e) => {
-          setIsLoading(false);
-          // enqueueSnackbar(e, { variant: "error" });
-          return navigate("404");
-        });
+    if (orderUuid) {
+      OrdersService.getPaymentLinkOpenStatus(orderUuid)
+        .then((response) => {})
+        .catch((e) => {});
     }
+    SubscriptionsService.getSubscriptionDetailsByUUIDPayment(param.uuid)
+      .then((response) => {
+        if (response?.status_code === 200 && response?.is_data) {
+          // if (response?.data?.status.toLowerCase() !== "sent") return navigate("404");
+          setOrderDetails(response.data);
+          setOrderUuid(response.data.orderNo);
+          console.log("SubscriptionDetails : ",response.data.orderNo);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        return navigate("404");
+      });
   }, [isLoading]);
 
   return (
@@ -317,8 +286,8 @@ const orderDetails = () => {
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.subTotal
                         ? ThousandSeparator(
-                          orderDetails?.orderSummary?.subTotal
-                        )
+                            orderDetails?.orderSummary?.subTotal
+                          )
                         : 0}
                     </div>
                   </div>
@@ -328,8 +297,8 @@ const orderDetails = () => {
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.discount
                         ? ThousandSeparator(
-                          orderDetails?.orderSummary?.discount
-                        )
+                            orderDetails?.orderSummary?.discount
+                          )
                         : 0}
                     </div>
                   </div>
@@ -350,8 +319,8 @@ const orderDetails = () => {
                       {t("label:nok")}{" "}
                       {orderDetails?.orderSummary?.grandTotal
                         ? ThousandSeparator(
-                          orderDetails?.orderSummary?.grandTotal
-                        )
+                            orderDetails?.orderSummary?.grandTotal
+                          )
                         : ""}
                     </div>
                   </div>
@@ -371,8 +340,8 @@ const orderDetails = () => {
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.subTotal
                           ? ThousandSeparator(
-                            orderDetails?.orderSummary?.subTotal
-                          )
+                              orderDetails?.orderSummary?.subTotal
+                            )
                           : ""}
                       </div>
                     </div>
@@ -395,8 +364,8 @@ const orderDetails = () => {
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.discount
                           ? ThousandSeparator(
-                            orderDetails?.orderSummary?.discount
-                          )
+                              orderDetails?.orderSummary?.discount
+                            )
                           : 0}
                       </div>
                     </div>
@@ -410,8 +379,8 @@ const orderDetails = () => {
                         {t("label:nok")}{" "}
                         {orderDetails?.orderSummary?.grandTotal
                           ? ThousandSeparator(
-                            orderDetails?.orderSummary?.grandTotal
-                          )
+                              orderDetails?.orderSummary?.grandTotal
+                            )
                           : ""}
                       </div>
                     </div>
@@ -429,12 +398,14 @@ const orderDetails = () => {
                 onClick={() => {
                   // navigate('/payment/checkout')
                   if (
-                    window.location.pathname.includes("/subscription/payment/details/SUB")
+                    window.location.pathname.includes(
+                      "/subscription/payment/details/SUB"
+                    )
                   ) {
                     navigate(
                       `/subscription/payment/details/${param.uuid}/checkout`
                     );
-                  }else {
+                  } else {
                     navigate(
                       `/order/details/${orderDetails?.orderUuid}/checkout`
                     );

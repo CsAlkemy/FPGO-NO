@@ -33,13 +33,17 @@ class SubscriptionsService {
             : (row?.status && row?.status.toLowerCase() === "completed") ||
               (row?.status &&
                 row?.status.toLowerCase() === "cancelled" &&
-                row?.isPaid)
+                row?.isPaid) ||
+              (row?.status && row?.status.toLowerCase() === "ongoing")
             ? "Refund"
             : null,
-        isCancel: row?.status && row?.status.toLowerCase() === "sent",
+        isCancel:
+          row?.status &&
+          (row?.status.toLowerCase() === "sent" ||
+            row?.status.toLowerCase() === "ongoing"),
         // isCancel: (row.status && row.status.toLowerCase() === "sent") || false,
         translationKey: row.translationKey,
-        refundCycles : row?.refundCycles || []
+        refundCycles: row?.refundCycles || [],
       };
     });
     d.status_code = 200;

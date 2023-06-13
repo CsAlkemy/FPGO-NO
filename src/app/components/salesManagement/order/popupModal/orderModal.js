@@ -72,8 +72,6 @@ const OrderModal = (props) => {
     subscriptionUuid,
     amountInBank = null,
     remainingAmount = null,
-    tableName = null,
-    cycleData,
     refundCycle
   } = props;
   const [refundType, setRefundType] = React.useState("partial");

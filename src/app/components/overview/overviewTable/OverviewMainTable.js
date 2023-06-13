@@ -712,12 +712,12 @@ export default function OverviewMainTable(props) {
       case 2:
         setData(
           props.tableData.filter(
-            (row) => row.stage.toLowerCase() === "on going"
+            (row) => row.stage.toLowerCase() === "ongoing"
           )
         );
         setFilteredData(
           props.tableData.filter(
-            (row) => row.stage.toLowerCase() === "on going"
+            (row) => row.stage.toLowerCase() === "ongoing"
           )
         );
         break;
