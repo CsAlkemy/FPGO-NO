@@ -41,7 +41,7 @@ import { ThousandSeparator } from "../../../../utils/helperFunctions";
 
 const ReservationInformation = ({ info }) => {
   const { t } = useTranslation();
-  const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(false);
+  const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [customerAddress, setCustomerAddress] = useState("");
 
@@ -264,9 +264,7 @@ const ReservationInformation = ({ info }) => {
                     disabled
                     value={
                       field.value ||
-                      (info.invoiceReferences?.referenceNumber
-                        ? info.invoiceReferences?.referenceNumber
-                        : "")
+                      (info.referenceNumber ? info.referenceNumber : "")
                     }
                   />
                 )}
@@ -287,9 +285,7 @@ const ReservationInformation = ({ info }) => {
                     disabled
                     value={
                       field.value ||
-                      (info.invoiceReferences?.customerReference
-                        ? info.invoiceReferences?.customerReference
-                        : "")
+                      (info.customerReference ? info.customerReference : "")
                     }
                   />
                 )}
@@ -409,7 +405,7 @@ const ReservationInformation = ({ info }) => {
                           />
                         )}
                       />
-                      <div className="grid grid-cols-4 gap-20">
+                      <div className="grid grid-cols-2 gap-20">
                         <Controller
                           name={`order[${index}].reservationAmount`}
                           control={control}
@@ -473,10 +469,8 @@ const ReservationInformation = ({ info }) => {
                   ))}
                   <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
                     {/* {t("label:totalReservationAmount")} : {t("label:nok")} {grandTotal} */}
-                    {t("label:grandTotal")} : {t("label:nok")}{" "}
-                    {info.orderSummary
-                      ? ThousandSeparator(info.orderSummary.grandTotal)
-                      : 0}
+                    {t("label:totalReservationAmount")} : {t("label:nok")}{" "}
+                    {info.grandTotal ? ThousandSeparator(info.grandTotal) : 0}
                   </div>
                 </AccordionDetails>
               </Accordion>
@@ -647,15 +641,13 @@ const ReservationInformation = ({ info }) => {
                       disabled
                       value={
                         field.value ||
-                        (info.invoiceReferences?.customerNotes
-                          ? info.invoiceReferences?.customerNotes
-                          : "")
+                        (info.customerNotes ? info.customerNotes : "")
                       }
                     />
                   )}
                 />
                 <CharCount
-                  current={info.invoiceReferences?.customerNotes?.length || 0}
+                  current={info.customerNotes?.length || 0}
                   total={200}
                 />
               </div>
@@ -677,17 +669,13 @@ const ReservationInformation = ({ info }) => {
                       disabled
                       value={
                         field.value ||
-                        (info.invoiceReferences?.termsAndCondition
-                          ? info.invoiceReferences?.termsAndCondition
-                          : "")
+                        (info.termsAndCondition ? info.termsAndCondition : "")
                       }
                     />
                   )}
                 />
                 <CharCount
-                  current={
-                    info.invoiceReferences?.termsAndCondition?.length || 0
-                  }
+                  current={info.termsAndCondition?.length || 0}
                   total={200}
                 />
               </div>
@@ -705,8 +693,8 @@ const ReservationInformation = ({ info }) => {
                       <div className="body3 text-MonochromeGray-700">
                         {t("label:nok")}{" "}
                         {/* {ThousandSeparator(grandTotal.toFixed(2) / 2)} */}
-                        {info.orderSummary
-                          ? ThousandSeparator(info.orderSummary.grandTotal)
+                        {info.grandTotal
+                          ? ThousandSeparator(info.grandTotal)
                           : 0}
                       </div>
                     </div>

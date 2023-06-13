@@ -31,24 +31,38 @@ const paymentHeader = () => {
   const orderDetails = window.location.pathname.includes("/order/details");
   const orderReceipt = window.location.pathname.includes("/order/receipt");
   const checkOutOrder = window.location.pathname.includes("checkout");
-  const [defaultLang, setDefaultLang ] = React.useState( lang ==='en' ? "English" : "Norwegian")
+
+  const reservationDetails = window.location.pathname.includes(
+    "/reservations/details"
+  );
+  const reservationReceipt = window.location.pathname.includes("confirmation");
+
+  const [defaultLang, setDefaultLang] = React.useState(
+    lang === "en" ? "English" : "Norwegian"
+  );
 
   useEffect(() => {
     if (lang === "en") {
       dispatch(changeLanguage("en"));
-      setDefaultLang("English")
-    }
-    else if (orderDetails || orderReceipt || checkOutOrder) {
+      setDefaultLang("English");
+    } else if (
+      orderDetails ||
+      orderReceipt ||
+      checkOutOrder ||
+      reservationDetails ||
+      reservationReceipt
+    ) {
       dispatch(changeLanguage("no"));
-      setDefaultLang("Norwegian")
-    }
-    else if (!!localStorage.getItem("i18nextLng") && localStorage.getItem("i18nextLng")) {
-      dispatch(changeLanguage("en"))
-      setDefaultLang("English")
-    }
-    else {
-        dispatch(changeLanguage("no"));
-      setDefaultLang("Norwegian")
+      setDefaultLang("Norwegian");
+    } else if (
+      !!localStorage.getItem("i18nextLng") &&
+      localStorage.getItem("i18nextLng")
+    ) {
+      dispatch(changeLanguage("en"));
+      setDefaultLang("English");
+    } else {
+      dispatch(changeLanguage("no"));
+      setDefaultLang("Norwegian");
     }
   }, [lang]);
 

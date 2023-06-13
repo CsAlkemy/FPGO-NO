@@ -2,14 +2,19 @@ import { CheckCircle } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import PaymentHeader from "../../payment/paymentHeader";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const PaymentStatus = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
   const reservationUuid = useParams().uuid;
   const [isLoading, setIsLoading] = useState(true);
   const [sentBy, setSentBy] = useState("");
   const [phoneOrEmail, setPhoneOrEmail] = useState("");
+  const [amount, setAmount] = useState(searchParams.get("amount") || "");
+  const [currency, setCurrency] = useState(
+    searchParams.get("currency") || "NOK"
+  );
 
   useEffect(() => {
     const reservationConfirmationData = JSON.parse(
@@ -36,8 +41,8 @@ const PaymentStatus = () => {
               </div>
               <div className="body2 w-full md:w-3/4 mx-auto text-center">
                 {t("label:reservationPaymentSuccessfulMessage", {
-                  sentBy: sentBy,
-                  phoneOrEmail: phoneOrEmail,
+                  reservationAmount: amount,
+                  currencyCode: currency,
                 })}
               </div>
             </div>

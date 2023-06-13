@@ -66,7 +66,7 @@ export const overviewStatuses = [
   {
     id: 11,
     name: "Completed",
-    color: "bg-sent text-m-grey-700",
+    color: "bg-paid text-m-grey-700",
   },
   {
     id: 12,

@@ -21,6 +21,13 @@
 .reservation-create-form .product-list-grid-container {
   grid-template-columns: 26% 20% 20% 11% 15% 6%;
 }
+.charge-modal .product-list-grid-container {
+  grid-template-columns: 25% 20% 20% 11% 14% 6%;
+}
+.charge-modal .button-group {
+  border: none;
+  padding-top: 0;
+}
 .reservation-details-page .product-list-grid-container {
   grid-template-columns: 26% 20% 20% 11% 17%;
 }
@@ -51,6 +58,15 @@
 }
 .lg-blue-btn {
   color: #00617c;
+}
+.lg-dark-blue-btn {
+  background-color: #0088ae;
+  color: #ffffff;
+  min-width: 156px;
+}
+.lg-dark-blue-btn:hover {
+  color: #ffffff;
+  background-color: rgb(40, 128, 152);
 }
 .body-p {
   font-size: 15px;
@@ -139,6 +155,53 @@
   line-height: 28px;
 }
 
+.charge-modal .md\:min-w-lg {
+  max-width: 100%;
+}
+.charge-modal form[name="modalForm"] {
+  padding-top: 0;
+}
+.refund-modal form {
+  padding-top: 5px;
+}
+.refund-modal form .button-group {
+  margin-top: 0;
+  border: unset;
+}
+.refund-modal .order-amount-text {
+  border: unset;
+}
+.refund-trans-btn {
+  width: auto;
+  height: 36px;
+  background: #e6f3f7;
+  border: none;
+  color: #007c9e;
+}
+.Mui-disabled .MuiButton-startIcon {
+  opacity: 0.26;
+}
+.transparent-btn {
+  background-color: transparent;
+  border: 1px solid #e8e8e8;
+  color: #464949;
+}
+.button-container-product-mobile {
+  z-index: 9;
+}
+
+@media only screen and (min-width: 600px) {
+  .create-order-dialog .reservation-modal-inner {
+    min-width: 48rem;
+    max-width: 100%;
+  }
+  .charge-modal .md\:min-w-lg {
+    min-width: 1060px;
+  }
+  .reservation-create-form .button-container-product {
+    display: flex;
+  }
+}
 @media only screen and (min-width: 960px) {
   .customer-info-section {
     max-width: 532px;
@@ -155,8 +218,19 @@
     display: flex;
   }
 }
+@media only screen and (max-width: 480px) {
+  .amount-section {
+    padding: 6px 0px 6px 0;
+  }
+}
 @media only screen and (max-width: 440px) {
   .amount-section .amount-col {
+    width: 100%;
+  }
+  .lg-dark-blue-btn {
+    min-width: 120px;
+  }
+  .mobile-btn.w-1\/2 {
     width: 100%;
   }
 }

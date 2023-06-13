@@ -897,7 +897,6 @@ const ClientDetails = () => {
                             {t("label:clientDetails")}
                             {dirtyFields.organizationID &&
                             dirtyFields.clientName &&
-                            dirtyFields.partnerName &&
                             dirtyFields.organizationType ? (
                               <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                             ) : (
@@ -1194,13 +1193,9 @@ const ClientDetails = () => {
                         <div className="contract-details">
                           <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                             {t("label:contractDetails")}
-                            {dirtyFields.contactStartDate &&
-                            dirtyFields.planPrice &&
+                            {dirtyFields.planPrice &&
                             dirtyFields.commision &&
-                            dirtyFields.smsCost &&
-                            dirtyFields.emailCost &&
-                            dirtyFields.creditCheckCost &&
-                            dirtyFields.ehfCost ? (
+                            dirtyFields.smsCost ? (
                               <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                             ) : (
                               <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />

@@ -14,6 +14,11 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import UndoIcon from "@mui/icons-material/Undo";
 import OrderModal from "../order/popupModal/orderModal";
 
+import {
+  ThousandSeparator,
+  DayDiffFromToday,
+} from "../../../utils/helperFunctions";
+
 const ReservationDropdown = (props) => {
   const { data } = props;
   const { t } = useTranslation();
@@ -26,6 +31,15 @@ const ReservationDropdown = (props) => {
   const menuOpen = Boolean(anchorEl);
   const [amountBank, setAmountBank] = useState(null);
   const [remainingAmount, setRemainingAmount] = useState(null);
+
+  let refundableAmount = data.capturedAmount - data.amountRefunded;
+
+  //console.log(refundableAmount);
+  //console.log(data);
+  //data.isPaid = true;
+  //data.status = "sent";
+  // data.reservedAt = 1679476569;
+  // data.reservedAt = 1679735769;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -97,8 +111,9 @@ const ReservationDropdown = (props) => {
           setOpen={setOpen}
           headerTitle={headerTitle}
           orderId={data.id}
+          orderIdText={t("label:reservationId")}
           orderName={data.customer}
-          orderAmount={data.reservedAmount}
+          orderAmount={data.reservationAmount}
           customerPhone={data.phone}
           customerEmail={data.email}
         />
@@ -117,24 +132,32 @@ const ReservationDropdown = (props) => {
               "aria-labelledby": buttonId,
             }}
           >
-            <MenuItem onClick={() => handleModalOpen("chargeFromCard")}>
-              <ListItemIcon>
-                <CreditCardIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:chargeFromCard")}</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleModalOpen("capturePayments")}>
-              <ListItemIcon>
-                <PaymentsIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:capturePayments")}</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleModalOpen("refundReservation")}>
-              <ListItemIcon>
-                <UndoIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:refundFromReservations")}</ListItemText>
-            </MenuItem>
+            {data.reservedAt && DayDiffFromToday(data.reservedAt) <= 60 && (
+              <MenuItem onClick={() => handleModalOpen("chargeFromCard")}>
+                <ListItemIcon>
+                  <CreditCardIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:chargeFromCard")}</ListItemText>
+              </MenuItem>
+            )}
+            {data.reservedAt &&
+              DayDiffFromToday(data.reservedAt) <= 7 &&
+              data.reservationAmount > data.capturedAmount && (
+                <MenuItem onClick={() => handleModalOpen("capturePayments")}>
+                  <ListItemIcon>
+                    <PaymentsIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t("label:capturePayments")}</ListItemText>
+                </MenuItem>
+              )}
+            {refundableAmount > 0 && (
+              <MenuItem onClick={() => handleModalOpen("refundReservation")}>
+                <ListItemIcon>
+                  <UndoIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:refundFromReservations")}</ListItemText>
+              </MenuItem>
+            )}
             <MenuItem onClick={() => handleModalOpen("completeReservation")}>
               <ListItemIcon>
                 <DoneAllIcon fontSize="small" />
@@ -147,12 +170,15 @@ const ReservationDropdown = (props) => {
             setOpen={setOpen}
             headerTitle={headerTitle}
             orderId={data.id}
+            orderIdText={t("label:reservationId")}
             orderName={data.customer}
-            orderAmount={data.reservedAmount}
+            orderAmount={data.reservationAmount}
             customerPhone={data.phone}
             customerEmail={data.email}
-            amountInBank={amountBank}
-            remainingAmount={remainingAmount}
+            capturedAmount={data.capturedAmount}
+            amountInBank={data.amountInBank}
+            remainingAmount={data.reservationAmount - data.capturedAmount}
+            refundableAmount={refundableAmount}
           />
         </>
       );
@@ -168,18 +194,24 @@ const ReservationDropdown = (props) => {
               "aria-labelledby": buttonId,
             }}
           >
-            <MenuItem onClick={() => handleModalOpen("chargeFromCard")}>
-              <ListItemIcon>
-                <CreditCardIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:chargeFromCard")}</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleModalOpen("capturePayments")}>
-              <ListItemIcon>
-                <PaymentsIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>{t("label:capturePayments")}</ListItemText>
-            </MenuItem>
+            {data.reservedAt && DayDiffFromToday(data.reservedAt) <= 60 && (
+              <MenuItem onClick={() => handleModalOpen("chargeFromCard")}>
+                <ListItemIcon>
+                  <CreditCardIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{t("label:chargeFromCard")}</ListItemText>
+              </MenuItem>
+            )}
+            {data.reservedAt &&
+              DayDiffFromToday(data.reservedAt) <= 7 &&
+              data.reservationAmount > data.capturedAmount && (
+                <MenuItem onClick={() => handleModalOpen("capturePayments")}>
+                  <ListItemIcon>
+                    <PaymentsIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t("label:capturePayments")}</ListItemText>
+                </MenuItem>
+              )}
             <MenuItem onClick={() => handleModalOpen("cancelReservation")}>
               <ListItemIcon>
                 <CancelIcon fontSize="small" />
@@ -192,12 +224,13 @@ const ReservationDropdown = (props) => {
             setOpen={setOpen}
             headerTitle={headerTitle}
             orderId={data.id}
+            orderIdText={t("label:reservationId")}
             orderName={data.customer}
-            orderAmount={data.reservedAmount}
+            orderAmount={data.reservationAmount}
             customerPhone={data.phone}
             customerEmail={data.email}
             amountInBank={amountBank}
-            remainingAmount={remainingAmount}
+            remainingAmount={data.reservationAmount - data.capturedAmount}
           />
         </>
       );

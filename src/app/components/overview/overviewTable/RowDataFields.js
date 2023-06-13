@@ -186,7 +186,6 @@ export const reservationOverviewFPAdminRowDataFields = [
   "status",
   "options",
 ];
-
 export const payoutsListRowDataFields = [
   "name",
   // "orgId",
