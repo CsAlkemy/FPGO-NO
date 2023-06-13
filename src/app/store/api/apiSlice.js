@@ -113,8 +113,14 @@ export const apiSlice = createApi({
         url: `/orders/refund/${payload.uuid}`,
         method: "POST",
         body: {
-          isPartial: ["Send Refund", "Refund Order"].includes(payload.headerTitle) ? false : payload.isPartial,
-          amount: ["Send Refund", "Refund Order"].includes(payload.headerTitle) ? parseFloat(payload.fullRefundAmount) : parseFloat(payload.refundAmount),
+          isPartial: ["Send Refund", "Refund Order"].includes(
+            payload.headerTitle
+          )
+            ? false
+            : payload.isPartial,
+          amount: ["Send Refund", "Refund Order"].includes(payload.headerTitle)
+            ? parseFloat(payload.fullRefundAmount)
+            : parseFloat(payload.refundAmount),
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -142,7 +148,7 @@ export const apiSlice = createApi({
             : null,
         },
       }),
-      invalidatesTags: ["OrdersList", "ReservationList"],
+      invalidatesTags: ["OrdersList"],
     }),
     getCustomersList: builder.query({
       query: () => "/customers/list",
@@ -410,6 +416,16 @@ export const apiSlice = createApi({
       query: () => "/reservations/list",
       providesTags: ["ReservationList"],
     }),
+    cancelReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/cancel/${payload.uuid}`,
+        method: "PUT",
+        body: {
+          note: payload?.cancellationNote ? payload.cancellationNote : null,
+        },
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
     completeReservation: builder.mutation({
       query: (payload) => ({
         url: `/reservations/complete/${payload.uuid}`,
@@ -520,6 +536,7 @@ export const {
   useOrderExportToApticQuery,
   useCreateReservationMutation,
   useGetReservationListQuery,
+  useCancelReservationMutation,
   useCompleteReservationMutation,
   useCapturePaymentMutation,
   useChargeReservationMutation,

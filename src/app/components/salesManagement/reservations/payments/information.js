@@ -135,7 +135,15 @@ const PaymentConfirmation = () => {
         }
       })
       .catch((e) => {
-        enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        //enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        const isParam = e.includes("Param");
+        const message = isParam
+          ? `${t(`message:${e.split("Param")[0]}Param`)} ${e.split("Param")[1]}`
+          : t(`message:${e}`);
+        enqueueSnackbar(message, {
+          variant: "error",
+        });
+
         setOpen(false);
       });
   };

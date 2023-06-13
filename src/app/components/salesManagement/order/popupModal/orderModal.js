@@ -50,6 +50,7 @@ import {
   useRefundRequestDecisionMutation,
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
+  useCancelReservationMutation,
   useCompleteReservationMutation,
   useCapturePaymentMutation,
   useChargeReservationMutation,
@@ -96,6 +97,7 @@ const OrderModal = (props) => {
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
+  const [cancelReservation] = useCancelReservationMutation();
   const [completeReservation] = useCompleteReservationMutation();
   const [capturePayment] = useCapturePaymentMutation();
   const [chargeReservation] = useChargeReservationMutation();
@@ -291,7 +293,7 @@ const OrderModal = (props) => {
         }, 1000);
         setApiLoading(false);
       });
-    } else if (["Cancel Order", "Cancel Reservation"].includes(headerTitle)) {
+    } else if (["Cancel Order"].includes(headerTitle)) {
       setApiLoading(true);
       cancelOrder(data).then((res) => {
         if (res?.data?.status_code === 202) {
@@ -300,12 +302,7 @@ const OrderModal = (props) => {
           });
           // setApiLoading(false);
         }
-        if (window.location.pathname === `/create-order/details/${orderId}`)
-          navigate(`/sales/orders-list`);
-        else if (
-          window.location.pathname === `/reservations-view/details/${orderId}`
-        )
-          navigate("/reservations");
+        navigate(`/sales/orders-list`);
         // else window.location.reload();
         setTimeout(() => {
           setOpen(false);
@@ -376,6 +373,11 @@ const OrderModal = (props) => {
         setFlag(false);
         setApiLoading(false);
       });
+    } else if (["Cancel Reservation"].includes(headerTitle)) {
+      setApiLoading(true);
+      cancelReservation(data).then((res) => {
+        reservationRequestCompletedAction(res);
+      });
     } else if (["Complete Reservation"].includes(headerTitle)) {
       setApiLoading(true);
       completeReservation(data).then((res) => {
@@ -425,7 +427,9 @@ const OrderModal = (props) => {
             }
             setFlagMessage(response?.error?.data?.message);
             setFlag(true);
-          } else setOpen(false);
+          } else {
+            reservationRequestCompletedAction(res);
+          }
           setApiLoading(false);
         }
       });
@@ -453,7 +457,9 @@ const OrderModal = (props) => {
             }
             setFlagMessage(response?.error?.data?.message);
             setFlag(true);
-          } else setOpen(false);
+          } else {
+            reservationRequestCompletedAction(res);
+          }
           setApiLoading(false);
         }
       });
@@ -479,6 +485,16 @@ const OrderModal = (props) => {
         variant: "success",
       });
       // setApiLoading(false);
+    } else if (res?.error) {
+      const isParam = res?.error?.data?.message.includes("Param");
+      const message = isParam
+        ? `${t(
+            `message:${res?.error?.data?.message.split("Param")[0]}Param`
+          )} ${res?.error?.data?.message.split("Param")[1]}`
+        : t(`message:${res?.error?.data?.message}`);
+      enqueueSnackbar(message, {
+        variant: "error",
+      });
     } else
       enqueueSnackbar(t(`message:${res?.error?.data?.message}`), {
         variant: "error",
