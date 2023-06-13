@@ -16,7 +16,6 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
-  Hidden,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -31,7 +30,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import PhoneInput from "react-phone-input-2";
 import { useNavigate, useParams } from "react-router-dom";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import ConfirmModal from "../../common/confirmmationDialog";
@@ -68,9 +66,7 @@ const ClientDetails = () => {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const params = useParams();
-  const [plan, setPlan] = React.useState(1);
   const navigate = useNavigate();
-  const plansPrice = ["200", "350", "500"];
   const sameAddressRef = useRef(null);
   const [info, setInfo] = useState([]);
   const [tabValue, setTabValue] = React.useState("1");
@@ -158,22 +154,6 @@ const ClientDetails = () => {
         .then((res) => {
           setInfo(res.data);
           const info = res?.data;
-          const planValue = parseInt(
-            info?.contractDetails?.planTag?.split(" ")[1]
-          );
-          if (planValue) {
-            if (planValue === 1) {
-              setPlan(1);
-              // plan1.current.click();
-            } else if (planValue === 2) {
-              setPlan(2);
-              // plan2.current.click();
-            } else if (planValue === 3) {
-              setPlan(3);
-              // plan3.current.click();
-            }
-          }
-
           if (info?.apticInformation?.isPurchasable)
             setCustomApticInfoData("purchase");
           else setCustomApticInfoData("administration");
@@ -210,6 +190,9 @@ const ClientDetails = () => {
           defaultValue.clientName = info?.organizationDetails?.name
             ? info.organizationDetails.name
             : "";
+          defaultValue.partnerName = info?.organizationDetails?.partnerName
+            ? info.organizationDetails.partnerName
+            : "";
           defaultValue.organizationType = info?.organizationDetails?.type
             ? info.organizationDetails?.type
             : "";
@@ -234,8 +217,11 @@ const ClientDetails = () => {
           defaultValue.email = info?.primaryContactDetails?.email
             ? info.primaryContactDetails?.email
             : "";
-          defaultValue.contactEndDate = info?.contractDetails?.endDate
-            ? info.contractDetails.endDate
+          defaultValue.contactStartDate = info?.contractDetails?.startDate
+            ? info.contractDetails.startDate
+            : "";
+          defaultValue.planPrice = info?.contractDetails?.planPrice
+            ? info.contractDetails.planPrice
             : "";
           defaultValue.commision =
             info?.contractDetails?.commissionRate === 0
@@ -653,6 +639,7 @@ const ClientDetails = () => {
         type: values?.organizationType ? values?.organizationType : null,
         brandId: null,
         groupId: null,
+        partnerName: values?.partnerName ? values.partnerName : null,
       },
       primaryContactDetails: {
         uuid: info.primaryContactDetails.uuid,
@@ -663,8 +650,9 @@ const ClientDetails = () => {
         msisdn,
       },
       contractDetails: {
-        startDate: ClientService.prepareDate(new Date()),
-        endDate: ClientService.prepareDate(values.contactEndDate),
+        startDate: ClientService.prepareDate(values.contactStartDate),
+        endDate: ClientService.prepareDate(new Date()),
+        planPrice: parseFloat(values.planPrice),
         commissionRate: parseFloat(values.commision),
         smsCost: parseFloat(values.smsCost),
         emailCost: parseFloat(values.emailCost),
@@ -776,16 +764,6 @@ const ClientDetails = () => {
         city: values.shippingCity,
         country: values.shippingCountry,
       };
-    }
-    if (plan === 1) {
-      clientUpdatedData.contractDetails.planTag = "Plan 1";
-      clientUpdatedData.contractDetails.planPrice = parseFloat(plansPrice[0]);
-    } else if (plan === 2) {
-      clientUpdatedData.contractDetails.planTag = "Plan 2";
-      clientUpdatedData.contractDetails.planPrice = parseFloat(plansPrice[1]);
-    } else {
-      clientUpdatedData.contractDetails.planTag = "Plan 3";
-      clientUpdatedData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
     setLoading(true);
     updateClient(clientUpdatedData).then((response) => {
@@ -1062,6 +1040,29 @@ const ClientDetails = () => {
                                   )}
                                 />
                               )}
+                              <Controller
+                                name="partnerName"
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label={t("label:partnerName")}
+                                    type="text"
+                                    autoComplete="off"
+                                    error={!!errors.partnerName}
+                                    helperText={
+                                      errors?.partnerName?.message
+                                        ? t(
+                                            `validation:${errors?.partnerName?.message}`
+                                          )
+                                        : ""
+                                    }
+                                    variant="outlined"
+                                    fullWidth
+                                    value={field.value || ""}
+                                  />
+                                )}
+                              />
                             </div>
                           </div>
                         </div>
@@ -1202,65 +1203,24 @@ const ClientDetails = () => {
                         <div className="contract-details">
                           <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                             {t("label:contractDetails")}
-                            {dirtyFields.contactEndDate &&
+                            {dirtyFields.planPrice &&
                             dirtyFields.commision &&
-                            dirtyFields.smsCost &&
-                            dirtyFields.emailCost &&
-                            dirtyFields.creditCheckCost &&
-                            dirtyFields.ehfCost ? (
+                            dirtyFields.smsCost ? (
                               <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                             ) : (
                               <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
                             )}
                           </div>
                           <div className="px-16">
-                            <div className="create-user-roles caption2">
-                              {t("label:choosePlan")}
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
-                              <button
-                                type="button"
-                                className={
-                                  plan === 1
-                                    ? "create-user-role-button-active"
-                                    : "create-user-role-button"
-                                }
-                                onClick={() => setPlan(1)}
-                              >
-                                {t("label:plan1")}
-                              </button>
-                              <button
-                                type="button"
-                                className={
-                                  plan === 2
-                                    ? "create-user-role-button-active"
-                                    : "create-user-role-button"
-                                }
-                                onClick={() => setPlan(2)}
-                              >
-                                {t("label:plan2")}
-                              </button>
-                              <button
-                                type="button"
-                                className={
-                                  plan === 3
-                                    ? "create-user-role-button-active"
-                                    : "create-user-role-button"
-                                }
-                                onClick={() => setPlan(3)}
-                              >
-                                {t("label:plan3")}
-                              </button>
-                            </div>
                             <div className="contract-details-container w-full sm:w-11/12">
                               <Controller
-                                name="contactEndDate"
+                                name="contactStartDate"
                                 control={control}
                                 render={({
                                   field: { onChange, value, onBlur },
                                 }) => (
                                   <DesktopDatePicker
-                                    label={t("label:contractEndDate")}
+                                    label={t("label:contractStartDate")}
                                     mask=""
                                     inputFormat="dd.MM.yyyy"
                                     value={value}
@@ -1282,16 +1242,49 @@ const ClientDetails = () => {
                                         {...params}
                                         onBlur={onBlur}
                                         type="date"
-                                        error={!!errors.contactEndDate}
+                                        error={!!errors.contactStartDate}
                                         helperText={
-                                          errors?.contactEndDate?.message
+                                          errors?.contactStartDate?.message
                                             ? t(
-                                                `validation:${errors?.contactEndDate?.message}`
+                                                `validation:${errors?.contactStartDate?.message}`
                                               )
                                             : ""
                                         }
                                       />
                                     )}
+                                  />
+                                )}
+                              />
+                              <Controller
+                                name="planPrice"
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label={t("label:monthlyPlanFee")}
+                                    type="text"
+                                    required
+                                    autoComplete="off"
+                                    error={!!errors.planPrice}
+                                    helperText={
+                                      errors?.planPrice?.message
+                                        ? t(
+                                            `validation:${errors?.planPrice?.message}`
+                                          )
+                                        : ""
+                                    }
+                                    variant="outlined"
+                                    value={
+                                      field.value === 0 ? 0 : field.value || ""
+                                    }
+                                    fullWidth
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment position="start">
+                                          {t("label:kr")}
+                                        </InputAdornment>
+                                      ),
+                                    }}
                                   />
                                 )}
                               />

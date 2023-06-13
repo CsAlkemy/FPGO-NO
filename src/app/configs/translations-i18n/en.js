@@ -520,6 +520,7 @@ const en = {
     october: "October",
     november: "November",
     december: "December",
+    youMustEnterYourMonthlyPlanFee: "You must enter your monthly plan fee"
   },
   message: {
     clientNotFound: "Client not Found",

@@ -132,6 +132,21 @@ export default function OverviewHeader(props) {
         .catch((e) => {
           enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });
+    } else if (
+      [clientsListOverview, approvalListOverviewFPAdmin].includes(
+        props.tableRef
+      )
+    ) {
+      ClientService.exportClientLists()
+        .then((response) => {
+          let wb = utils.book_new(),
+            ws = utils.json_to_sheet(response);
+          utils.book_append_sheet(wb, ws, "client list");
+          writeFile(wb, `Front Payment AS_Klientliste.xlsx`);
+        })
+        .catch((e) => {
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        });
     }
   };
 
@@ -258,7 +273,9 @@ export default function OverviewHeader(props) {
               />
             </Paper>
             <div className="flex gap-10">
-              {props.tableRef === ordersListOverview && (
+              {[ordersListOverview, clientsListOverview].includes(
+                props.tableRef
+              ) && (
                 <div className="button2">
                   <Button
                     color="secondary"

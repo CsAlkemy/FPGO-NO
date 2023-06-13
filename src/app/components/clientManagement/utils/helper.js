@@ -10,6 +10,7 @@ export const validateSchema = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
+  partnerName: yup.string(),
   primaryPhoneNumber: yup
     .string()
     .required("youMustEnterYourPrimaryPhoneNumber")
@@ -22,7 +23,11 @@ export const validateSchema = yup.object().shape({
     .email("youMustEnterAValidEmail"),
   password: yup.string().required("youMustEnterPassword"),
 
-  // contactEndDate: yup.string().required('youMustEnterYourContactEndDate').typeError("pleaseEnterValidDate"),
+  contactStartDate: yup
+    .string()
+    .required("youMustEnterYourContactStartDate")
+    .typeError("pleaseEnterValidDate"),
+  planPrice: yup.string().required("youMustEnterYourMonthlyPlanFee"),
   commision: yup.string().required("youMustEnterYourCommission"),
   smsCost: yup.string().required("youMustEnterYourSmsCost"),
   // emailCost: yup.string().required('youMustEnterYourEmailCost'),
@@ -89,6 +94,7 @@ export const validateSchemaAdministration = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
+  partnerName: yup.string(),
   primaryPhoneNumber: yup
     .string()
     .required("youMustEnterYourPrimaryPhoneNumber")
@@ -101,7 +107,11 @@ export const validateSchemaAdministration = yup.object().shape({
     .email("youMustEnterAValidEmail"),
   password: yup.string().required("youMustEnterPassword"),
 
-  // contactEndDate: yup.string().required('youMustEnterYourContactEndDate').typeError("pleaseEnterValidDate"),
+  contactStartDate: yup
+    .string()
+    .required("youMustEnterYourContactStartDate")
+    .typeError("pleaseEnterValidDate"),
+  planPrice: yup.string().required("youMustEnterYourMonthlyPlanFee"),
   commision: yup.string().required("youMustEnterYourCommission"),
   smsCost: yup.string().required("youMustEnterYourSmsCost"),
   // emailCost: yup.string().required('youMustEnterYourEmailCost'),
@@ -166,6 +176,7 @@ export const validateSchemaOnBoard = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
+  partnerName: yup.string(),
   primaryPhoneNumber: yup
     .string()
     .required("youMustEnterYourPrimaryPhoneNumber")
@@ -178,7 +189,11 @@ export const validateSchemaOnBoard = yup.object().shape({
     .email("youMustEnterAValidEmail"),
   // password: yup.string().required('You must enter your password'),
 
-  // contactEndDate: yup.string().required('youMustEnterYourContactEndDate') .typeError('youMustEnterYourContactEndDate'),
+  contactStartDate: yup
+    .string()
+    .required("youMustEnterYourContactStartDate")
+    .typeError("pleaseEnterValidDate"),
+  planPrice: yup.string().required("youMustEnterYourMonthlyPlanFee"),
   commision: yup.string().required("youMustEnterYourCommission"),
   smsCost: yup.string().required("youMustEnterYourSmsCost"),
   // emailCost: yup.string().required('youMustEnterYourEmailCost'),
@@ -226,6 +241,7 @@ export const validateSchemaOnBoardAdministration = yup.object().shape({
   // organizationType: yup.string().required("You must select your organization type"),
   //parentClientName : yup.string().required("You must enter your parent client name"),
   fullName: yup.string().required("youMustEnterYourName"),
+  partnerName: yup.string(),
   primaryPhoneNumber: yup
     .string()
     .required("youMustEnterYourPrimaryPhoneNumber")
@@ -238,7 +254,11 @@ export const validateSchemaOnBoardAdministration = yup.object().shape({
     .email("youMustEnterAValidEmail"),
   // password: yup.string().required('You must enter your password'),
 
-  // contactEndDate: yup.string().required('youMustEnterYourContactEndDate') .typeError('youMustEnterYourContactEndDate'),
+  contactStartDate: yup
+    .string()
+    .required("youMustEnterYourContactStartDate")
+    .typeError("pleaseEnterValidDate"),
+  planPrice: yup.string().required("youMustEnterYourMonthlyPlanFee"),
   commision: yup.string().required("youMustEnterYourCommission"),
   smsCost: yup.string().required("youMustEnterYourSmsCost"),
   // emailCost: yup.string().required('youMustEnterYourEmailCost'),
@@ -282,6 +302,7 @@ export const validateSchemaCreateClient = yup.object().shape({
   clientName: yup.string().required("youMustEnterYourClientName"),
   organizationType: yup.string().required("youMustSelectOrganizationType"),
   fullName: yup.string().required("youMustEnterYourName"),
+  partnerName: yup.string(),
   primaryPhoneNumber: yup
     .string()
     .required("youMustEnterYourPrimaryPhoneNumber")
@@ -293,7 +314,11 @@ export const validateSchemaCreateClient = yup.object().shape({
     .required("youMustEnterAEmail")
     .email("youMustEnterAValidEmail"),
 
-  // contactEndDate: yup.string().required('youMustEnterYourContactEndDate').typeError("pleaseEnterValidDate"),
+  contactStartDate: yup
+    .string()
+    .required("youMustEnterYourContactStartDate")
+    .typeError("pleaseEnterValidDate"),
+  planPrice: yup.string().required("youMustEnterYourMonthlyPlanFee"),
   commision: yup.string().required("youMustEnterYourCommission"),
   smsCost: yup.string().required("youMustEnterYourSmsCost"),
   // emailCost: yup.string().required('youMustEnterYourEmailCost'),
@@ -344,6 +369,7 @@ export const validateSchemaCreateClientAdministration = yup.object().shape({
   clientName: yup.string().required("youMustEnterYourClientName"),
   organizationType: yup.string().required("youMustSelectOrganizationType"),
   fullName: yup.string().required("youMustEnterYourName"),
+  partnerName: yup.string(),
   primaryPhoneNumber: yup
     .string()
     .required("youMustEnterYourPrimaryPhoneNumber")
@@ -355,7 +381,11 @@ export const validateSchemaCreateClientAdministration = yup.object().shape({
     .required("youMustEnterAEmail")
     .email("youMustEnterAValidEmail"),
 
-  // contactEndDate: yup.string().required('youMustEnterYourContactEndDate').typeError("pleaseEnterValidDate"),
+  contactStartDate: yup
+    .string()
+    .required("youMustEnterYourContactStartDate")
+    .typeError("pleaseEnterValidDate"),
+  planPrice: yup.string().required("youMustEnterYourMonthlyPlanFee"),
   commision: yup.string().required("youMustEnterYourCommission"),
   smsCost: yup.string().required("youMustEnterYourSmsCost"),
   // emailCost: yup.string().required('youMustEnterYourEmailCost'),
@@ -398,6 +428,7 @@ export const validateSchemaCreateClientAdministration = yup.object().shape({
 export const defaultValue = {
   id: "",
   clientName: "",
+  partnerName: "",
   organizationType: "",
   parentClientName: "",
   fullName: "",
@@ -406,7 +437,8 @@ export const defaultValue = {
   email: "",
   password: "default",
 
-  contactEndDate: null,
+  contactStartDate: null,
+  planPrice: "",
   commision: "",
   smsCost: "",
   emailCost: "",
@@ -469,6 +501,7 @@ export const defaultValue = {
 export const defaultValueOnBoard = {
   id: "",
   clientName: "",
+  partnerName: "",
   organizationType: "",
   parentClientName: "",
   fullName: "",
@@ -477,7 +510,8 @@ export const defaultValueOnBoard = {
   email: "",
   password: "default",
 
-  contactEndDate: null,
+  contactStartDate: null,
+  planPrice: "",
   commision: "",
   smsCost: "",
   emailCost: "",
@@ -540,6 +574,7 @@ export const defaultValueOnBoard = {
 export const defaultValueCreateClient = {
   id: "",
   clientName: "",
+  partnerName: "",
   organizationType: "",
   parentClientName: "",
   fullName: "",
@@ -548,7 +583,8 @@ export const defaultValueCreateClient = {
   email: "",
   password: "default",
 
-  contactEndDate: null,
+  contactStartDate: null,
+  planPrice: "",
   commision: "",
   smsCost: "",
   emailCost: "",

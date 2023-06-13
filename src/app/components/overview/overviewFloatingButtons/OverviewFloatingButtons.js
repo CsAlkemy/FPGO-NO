@@ -40,6 +40,7 @@ import { t } from "i18next";
 import Select from "@mui/material/Select";
 import { writeFile, utils } from "xlsx";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import ClientService from "../../../data-access/services/clientsService/ClientService";
 
 export default function OverviewFloatingButtons(props) {
   const dispatch = useDispatch();
@@ -142,6 +143,21 @@ export default function OverviewFloatingButtons(props) {
         ws = utils.json_to_sheet(exportTableData);
       utils.book_append_sheet(wb, ws, "order list");
       writeFile(wb, `${user.user_data.organization.name}_Order List.xlsx`);
+    } else if (
+      [clientsListOverview, approvalListOverviewFPAdmin].includes(
+        props.tableRef
+      )
+    ) {
+      ClientService.exportClientLists()
+        .then((response) => {
+          let wb = utils.book_new(),
+            ws = utils.json_to_sheet(response);
+          utils.book_append_sheet(wb, ws, "client list");
+          writeFile(wb, `Front Payment AS_Klientliste.xlsx`);
+        })
+        .catch((e) => {
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        });
     }
   };
 
@@ -191,7 +207,7 @@ export default function OverviewFloatingButtons(props) {
       {/*  <MenuItem value={'Private'}>Private</MenuItem>*/}
       {/*  <MenuItem value={'Corporate'}>Corporate</MenuItem>*/}
       {/*</Select>*/}
-      {props.tableRef === ordersListOverview && (
+      {[ordersListOverview, clientsListOverview].includes(props.tableRef) && (
         <div className="button2">
           <Button
             color="secondary"
