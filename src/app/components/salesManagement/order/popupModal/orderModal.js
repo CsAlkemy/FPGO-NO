@@ -250,6 +250,12 @@ const OrderModal = (props) => {
           : values?.refundAmount,
         message: flagMessage,
         uuid: orderId,
+        source:
+          headerTitle === "Refund from Reservation"
+            ? "captured"
+            : headerTitle === "Refund Transaction"
+            ? "charged"
+            : "",
       };
       requestRefundApproval(payload).then((response) => {
         if (response?.data?.status_code === 201) {
