@@ -42,6 +42,7 @@ import {
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const detailCorporateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -720,6 +721,14 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                     trigger = {trigger}
                                     setValue = {setValue}
                                     setDialCode = {setDialCode}
+                                />
+                                <FrontPaymentLanguageSelect
+                                    error={errors.preferredLanguage}
+                                    control={control}
+                                    name="preferredLanguage"
+                                    label="preferredLanguage"
+                                    required={true}
+                                    disable={false}
                                 />
                                 {/*<Controller*/}
                                 {/*  name="primaryPhoneNumber"*/}

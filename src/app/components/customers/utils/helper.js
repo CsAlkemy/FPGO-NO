@@ -20,6 +20,7 @@ export const validateSchema = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustSelectYourCountry"),
+  preferredLanguage: yup.string().required("youMustSelectYourLanguage"),
 });
 export const validateSchema2 = yup.object().shape({
   organizationID: yup.string().required("youMustEnterYourOrganizationId"),
@@ -52,6 +53,7 @@ export const validateSchemaUpdatePrivateCustomer = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
 });
 
 export const validateSchemaPrivate = yup.object().shape({
@@ -80,6 +82,7 @@ export const validateSchemaPrivate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustSelectYourCountry"),
+  preferredLanguage: yup.string().required("youMustSelectYourLanguage"),
 });
 
 export const CreateCorporateDefaultValue = {
@@ -93,6 +96,7 @@ export const CreateCorporateDefaultValue = {
   billingZip: "",
   billingCity: "",
   billingCountry: "",
+  preferredLanguage:"",
 
   shippingPhoneNumber: "47",
   shippingEmail: "",
@@ -119,6 +123,7 @@ export const CorporateDetailsDefaultValue = {
   billingZip: "",
   billingCity: "",
   billingCountry: "",
+  preferredLanguage: "",
 
   shippingPhoneNumber: "47",
   shippingEmail: "",
@@ -141,6 +146,7 @@ export const PrivateDefaultValue = {
   customerName: "",
   customerEmail: "",
   pNumber: "",
+  preferredLanguage:"",
 
   billingAddress: "",
   billingZip: "",

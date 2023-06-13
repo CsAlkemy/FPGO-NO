@@ -32,6 +32,7 @@ import { LoadingButton } from '@mui/lab';
 import { useCreateCorporateCustomerMutation } from 'app/store/api/apiSlice';
 import CountrySelect from '../../common/countries';
 import FrontPaymentPhoneInput from '../../common/frontPaymentPhoneInput';
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 const createCorporateCustomer = () => {
   const { t } = useTranslation()
   const [sameAddress, setSameAddress] = React.useState(true);
@@ -190,6 +191,7 @@ const createCorporateCustomer = () => {
                   dirtyFields.orgEmail &&
                   watch("primaryPhoneNumber")?.length>0&&
                   dirtyFields.billingAddress &&
+                  dirtyFields.preferredLanguage &&
                   dirtyFields.billingZip &&
                   dirtyFields.billingCity &&
                   dirtyFields.billingCountry ? (
@@ -444,6 +446,16 @@ const createCorporateCustomer = () => {
                       </FormControl>
                     )}
                   /> */}
+                </div>
+                <div className='form-pair-input gap-x-20 px-10 md:px-16'>
+                  <FrontPaymentLanguageSelect
+                      error={errors.preferredLanguage}
+                      control={control}
+                      name="preferredLanguage"
+                      label="preferredLanguage"
+                      required={true}
+                      disable={false}
+                  />
                 </div>
                 <div className="my-20">
                   <Accordion className={`bg-primary-25 shadow-0 border-0 ${!expanded ? "bg-primary-25" : "bg-primary-700"}`}>

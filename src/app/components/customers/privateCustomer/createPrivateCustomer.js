@@ -34,6 +34,7 @@ import {
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 const createPrivateCustomer = () => {
   const { t } = useTranslation();
   const [sameAddress, setSameAddress] = React.useState(true);
@@ -55,6 +56,7 @@ const createPrivateCustomer = () => {
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = (values) => {
+    console.log(values);
     setLoading(true);
     const preparedPayload =
       CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress, dialCode);
@@ -129,6 +131,7 @@ const createPrivateCustomer = () => {
                   dirtyFields.billingAddress &&
                   dirtyFields.billingZip &&
                   dirtyFields.billingCity &&
+                  dirtyFields.preferredLanguage &&
                   dirtyFields.billingCountry ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
@@ -298,6 +301,16 @@ const createPrivateCustomer = () => {
                       placeholder={"country"}
                       required={true}
                       error={errors.billingCountry}
+                    />
+                  </div>
+                  <div className='form-pair-input gap-x-20'>
+                    <FrontPaymentLanguageSelect
+                      error={errors.preferredLanguage}
+                      control={control}
+                      name="preferredLanguage"
+                      label="preferredLanguage"
+                      required={true}
+                      disable={false}
                     />
                   </div>
                 </div>
