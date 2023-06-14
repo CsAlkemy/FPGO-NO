@@ -15,8 +15,8 @@ export default function FrontPaymentLanguageSelect({
   name,
   label,
   error,
-  defaultValue,
   disable,
+  value,
 }) {
   const { t } = useTranslation();
   const [languageList, setLanguageList] = useState([
@@ -29,7 +29,12 @@ export default function FrontPaymentLanguageSelect({
       name={name}
       control={control}
       render={({ field }) => (
-        <FormControl error={error} required={required} disabled={disable || false } fullWidth>
+        <FormControl
+          error={error}
+          required={required}
+          disabled={disable || false}
+          fullWidth
+        >
           <InputLabel id="demo-simple-select-label-role">
             {t(`label:${label}`)}
           </InputLabel>
@@ -38,6 +43,7 @@ export default function FrontPaymentLanguageSelect({
             labelId="demo-simple-select-label-role"
             id="demo-simple-select"
             label={t("label:preferredLanguage")}
+            value={value ? value : ""}
           >
             {languageList.map((item, index) => {
               return (

@@ -114,6 +114,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             ? info.organizationId
             : "";
           CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
+          CorporateDetailsDefaultValue.preferredLanguage = info.preferredLanguage ? info.preferredLanguage : "",
           CorporateDetailsDefaultValue.OrganizationName = info?.name
             ? info.name
             : "";
@@ -291,7 +292,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         ?.country
         ? info.addresses.billing.country
         : "";
-
+      CorporateDetailsDefaultValue.preferredLanguage = info.preferredLanguage ? info.preferredLanguage : "",
       CorporateDetailsDefaultValue.shippingAddress = info?.addresses?.shipping
         ?.street
         ? info.addresses.shipping?.street
@@ -729,6 +730,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                     label="preferredLanguage"
                                     required={true}
                                     disable={false}
+                                    value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                                 />
                                 {/*<Controller*/}
                                 {/*  name="primaryPhoneNumber"*/}

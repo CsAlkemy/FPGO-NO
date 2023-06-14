@@ -32,6 +32,8 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
+
   customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
     yup.object().shape({
@@ -109,6 +111,8 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
+
   customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
     yup.object().shape({
@@ -184,6 +188,7 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
   customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
     yup.object().shape({
@@ -260,6 +265,8 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
+
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -319,6 +326,7 @@ export const CreateOrderDefaultValue = {
   billingZip: "",
   billingCity: "",
   billingCountry: "",
+  preferredLanguage: "",
   referenceNumber: "",
   customerReference: "",
   receiptNo: "",
@@ -351,6 +359,7 @@ export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
 });
 export const validateSchemaPaymentCheckout = yup.object().shape({
   phone: yup
@@ -375,6 +384,7 @@ export const validateSchemaPaymentCheckout = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
 });
 export const validateSchemaCreditCheckForCheckout = yup.object().shape({
   orgIdCreditCheck: yup
@@ -399,6 +409,7 @@ export const PaymentDefaultValue = {
   billingZip: "",
   billingCity: "",
   billingCountry: "",
+  preferredLanguage: "",
   orgIdCreditCheck: "",
 };
 export const OrderModalDefaultValue = {
@@ -431,6 +442,7 @@ export const validateSchemaMoreThanFiveThousand = yup.object().shape({
 export const sendInvoiceValidation = yup.object().shape({
   city: yup.string().required("youMustEnterYourCity"),
   country: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
   customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup.string().required("youMustEnterAEmail").email("mustBeValidEmail"),
   pNumber: yup
@@ -451,6 +463,7 @@ export const sendInvoiceValidation = yup.object().shape({
 export const sendInvoiceValidationCorporate = yup.object().shape({
   city: yup.string().required("youMustEnterYourCity"),
   country: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
   customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup.string().required("youMustEnterAEmail").email("mustBeValidEmail"),
   orgID: yup
@@ -470,6 +483,7 @@ export const sendInvoiceValidationCorporate = yup.object().shape({
 export const sendInvoiceDefaultValue = {
   city: "",
   country: "",
+  preferredLanguage: "",
   customerName: "",
   email: "",
   orgIdOrPNumber: "",

@@ -265,6 +265,9 @@ class OrdersService {
             : null,
         email: params.email,
         name: params.customerName,
+        preferredLanguage: params.preferredLanguage
+            ? params.preferredLanguage
+            : null,
         personalNumber:
           params.customerType === "private"
             ? params?.pNumber
@@ -478,6 +481,7 @@ class OrdersService {
           : null,
         email: params.email,
         name: params.customerName,
+        preferredLanguage: params.preferredLanguage,
         personalNumber:
           params.customerType === "private" ? params.orgIdOrPNumber : null,
         organizationId:

@@ -49,6 +49,7 @@ import AuthService from "../../../../data-access/services/authService";
 import ClientService from "../../../../data-access/services/clientsService/ClientService";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
 import CountrySelect from "../../../common/countries";
+import FrontPaymentLanguageSelect from "../../../common/FPLanguageSelect";
 
 const OrderInformation = ({ info }) => {
   const { t } = useTranslation();
@@ -158,7 +159,6 @@ const OrderInformation = ({ info }) => {
   const watchAllFields = watch();
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
-
   const onSubmit = (values) => {
     // const data = {
     //   ...values,
@@ -239,10 +239,13 @@ const OrderInformation = ({ info }) => {
       info.customerDetails?.countryCode && info.customerDetails?.msisdn
         ? info.customerDetails?.countryCode + info.customerDetails?.msisdn
         : "+47";
-    CreateOrderDefaultValue.billingCountry = info?.customerDetails?.address
-      ?.country
-      ? info?.customerDetails?.address?.country
-      : "norway";
+    CreateOrderDefaultValue.preferredLanguage = info?.customerDetails?.preferredLanguage
+      ? info?.customerDetails?.preferredLanguage
+      : "en";
+      (CreateOrderDefaultValue.billingCountry = info?.customerDetails?.address
+        ?.country
+        ? info?.customerDetails?.address?.country
+        : "norway");
 
     if (
       info?.productList &&
@@ -258,7 +261,6 @@ const OrderInformation = ({ info }) => {
       setAddOrderIndex(addOrderIndex.filter((item, index) => item < 1));
     }
     reset({ ...CreateOrderDefaultValue });
-
     AuthService.axiosRequestHelper().then((isAuthenticated) => {
       ProductService.productsList(true)
         .then((res) => {
@@ -355,7 +357,6 @@ const OrderInformation = ({ info }) => {
     const changedDate = `${splitedDateArray[1]}.${splitedDateArray[0]}.${splitedDateArray[2]} ${splitedArray[0]}`;
     return changedDate;
   };
-
   return (
     <div>
       {!!info && (
@@ -1660,6 +1661,15 @@ const OrderInformation = ({ info }) => {
                                       )}
                                     /> */}
                                   </div>
+                                  <FrontPaymentLanguageSelect
+                                      error={!!errors.preferredLanguage}
+                                      control={control}
+                                      name="preferredLanguage"
+                                      label="preferredLanguage"
+                                      required={true}
+                                      disable={true}
+                                      value ={info?.customerDetails?.preferredLanguage ? info?.customerDetails?.preferredLanguage: ""}
+                                  />
                                 </div>
                               </div>
                             </div>

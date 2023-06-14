@@ -120,6 +120,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
         : "";
       PrivateDefaultValue.customerEmail = info?.email ? info.email : "";
       PrivateDefaultValue.customerName = info?.name ? info.name : "";
+      PrivateDefaultValue.preferredLanguage = info.preferredLanguage ? info.preferredLanguage : "",
       PrivateDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
       setDialCode(info.countryCode)
@@ -453,6 +454,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                   label="preferredLanguage"
                                   required={true}
                                   disable={false}
+                                  value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                               />
                             </div>
                           </div>
