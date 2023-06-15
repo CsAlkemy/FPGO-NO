@@ -287,6 +287,8 @@ const ReservationCreate = () => {
   };
 
   const onSubmit = (values) => {
+    // console.log(values);
+    // return;
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
@@ -553,9 +555,11 @@ const ReservationCreate = () => {
     const monthIndex = nextMonth ? date.getMonth() + 1 : date.getMonth();
     const monthName = monthNames[monthIndex];
     const year = date.getFullYear();
-    return new Date(
+    //return `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const modifiedDate = new Date(
       `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     );
+    return modifiedDate.toString();
   };
 
   const openCustomarModal = (customerType = "") => {
@@ -1030,6 +1034,7 @@ const ReservationCreate = () => {
                             <TextField
                               {...params}
                               onBlur={onBlur}
+                              //onChange={console.log(errors)}
                               type="date"
                               required
                               fullWidth

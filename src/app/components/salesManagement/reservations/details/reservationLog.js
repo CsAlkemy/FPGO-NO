@@ -124,10 +124,10 @@ const ReservationLog = ({
                       log.slug === "refund-sent-from-captured" ||
                       log.slug ===
                         "refund-request-approved-and-refund-sent-fromcaptured" ||
-                      log.slug === "refund-request-pending-fromcaptured" ||
+                      //log.slug === "refund-request-pending-fromcaptured" ||
                       log.slug ===
                         "refund-request-approved-and-refund-sent-fromcharged" ||
-                      log.slug === "refund-request-pending-fromcharged" ||
+                      //log.slug === "refund-request-pending-fromcharged" ||
                       log.slug === "amount-captured-from-reservation" ||
                       log.slug === "amount-charged-from-card" ||
                       log.slug === "customer-information-updated" ||
@@ -142,6 +142,7 @@ const ReservationLog = ({
                         log.slug === "order-expired" ||
                         log.slug === "payment-link-expired" ||
                         log.slug === "reservation-cancelled" ||
+                        log.slug === "refund-rejected" ||
                         log.slug === "order-converted-to-invoice" ? (
                         <TimelineDot className="border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]">
                           <PriorityHighIcon className="icon-size-16 text-white" />

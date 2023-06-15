@@ -601,13 +601,13 @@ export const validateSchemaCreateReservation = yup.object().shape({
     .required("youMustEnterReservationDate"),
   dueDatePaymentLink: yup
     .string()
-    // .matches(
-    //   /^([0-9]{2})\.([0-9]{2})\.([0-9]{4}) \.([0-9]{2}):\.([0-9]{2})$/,
-    //   "Date must be in format dd.MM.yyyy"
-    // )
-    .typeError("youMustEnterPaymentLinkDueDate")
-    .required("youMustEnterPaymentLinkDueDate"),
-  // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
+    .required("youMustEnterPaymentLinkDueDate")
+    .typeError("youMustEnterPaymentLinkDueDate"),
+
+  // .matches(
+  //   /^([0-9]{2})\.([0-9]{2})\.([0-9]{4}) \.([0-9]{2}):\.([0-9]{2})$/,
+  //   "Date must be in format dd.MM.yyyy"
+  // )
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),

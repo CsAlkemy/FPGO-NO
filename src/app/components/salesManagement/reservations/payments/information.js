@@ -29,6 +29,7 @@ import {
 } from "../../utils/helper";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
 import OrderService from "../../../../data-access/services/ordersService/OrdersService";
+import CountrySelect from "../../../common/countries";
 
 const PaymentConfirmation = () => {
   const { t } = useTranslation();
@@ -624,7 +625,15 @@ const PaymentConfirmation = () => {
                                 )}
                               />
 
-                              <Controller
+                              <CountrySelect
+                                control={control}
+                                name="billingCountry"
+                                label={"country"}
+                                // placeholder={"country"}
+                                required={true}
+                                error={errors.billingCountry}
+                              />
+                              {/* <Controller
                                 name="billingCountry"
                                 control={control}
                                 render={({ field }) => (
@@ -668,7 +677,7 @@ const PaymentConfirmation = () => {
                                     </FormHelperText>
                                   </FormControl>
                                 )}
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>
