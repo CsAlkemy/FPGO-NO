@@ -1860,7 +1860,7 @@ const ReservationCreate = () => {
               variant="contained"
               type="submit"
               className="rounded-full bg-primary-500 button2 py-5"
-              disabled={!isValid}
+              disabled={!isValid || !selectedCustomer || !watchFirstProductName}
               sx={{
                 "&.Mui-disabled": {
                   background: "#eaeaea",
@@ -1871,7 +1871,7 @@ const ReservationCreate = () => {
               loading={loading}
               loadingPosition="center"
             >
-              {t("label:sendOrder")}
+              {t("label:send")}
             </LoadingButton>
           </div>
         </Hidden>

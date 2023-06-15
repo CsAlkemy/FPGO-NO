@@ -718,11 +718,9 @@ const OrderModal = (props) => {
                       >
                         {orderName ? orderName : "-"}
                       </div>
-                      {headerTitle !== "Refund Transaction" && (
-                        <div className="text-MonochromeGray-300">
-                          {orderIdTextLabel}: {orderId ? orderId : "-"}
-                        </div>
-                      )}
+                      <div className="text-MonochromeGray-300">
+                        {orderIdTextLabel}: {orderId ? orderId : "-"}
+                      </div>
                     </div>
                     <div className="header6 text-MonochromeGray-700">
                       {t("label:nok")}{" "}
