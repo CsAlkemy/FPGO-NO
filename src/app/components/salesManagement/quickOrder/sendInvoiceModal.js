@@ -30,6 +30,7 @@ import OrdersService from "../../../data-access/services/ordersService/OrdersSer
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import CountrySelect from "../../common/countries";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const SendInvoiceModal = (props) => {
   const { t } = useTranslation();
@@ -490,6 +491,14 @@ const SendInvoiceModal = (props) => {
                       )}
                     /> */}
                   </div>
+                  <FrontPaymentLanguageSelect
+                      error={errors.preferredLanguage}
+                      control={control}
+                      name="preferredLanguage"
+                      label="preferredLanguage"
+                      required={true}
+                      disable={false}
+                  />
                 </div>
               </div>
               <div className="flex justify-between md:justify-end mt-40 px-10">

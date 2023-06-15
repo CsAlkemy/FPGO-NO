@@ -37,6 +37,7 @@ import Timeline from "./PrivateCustomerDetails/Timeline";
 import { useUpdatePrivateCustomerMutation } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const detailPrivateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -120,6 +121,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
         : "";
       PrivateDefaultValue.customerEmail = info?.email ? info.email : "";
       PrivateDefaultValue.customerName = info?.name ? info.name : "";
+      PrivateDefaultValue.preferredLanguage = info.preferredLanguage ? info.preferredLanguage : "",
       PrivateDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
       setDialCode(info.countryCode);
@@ -439,7 +441,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                 )}
                               />
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 mt-40">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 mt-40 gap-x-32 gap-y-32">
                               <Controller
                                 name="pNumber"
                                 control={control}
@@ -457,6 +459,15 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     value={field.value || ""}
                                   />
                                 )}
+                              />
+                              <FrontPaymentLanguageSelect
+                                  error={errors.preferredLanguage}
+                                  control={control}
+                                  name="preferredLanguage"
+                                  label="preferredLanguage"
+                                  required={true}
+                                  disable={false}
+                                  value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                               />
                             </div>
                           </div>

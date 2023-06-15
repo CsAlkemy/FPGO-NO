@@ -110,6 +110,9 @@ class CustomersService {
       msisdn: msisdn,
       email: params.customerEmail ? params.customerEmail : null,
       personalNumber: params.pNumber ? `${params.pNumber}` : "",
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : "no",
       addresses: mainAddress,
     };
   };
@@ -417,6 +420,9 @@ class CustomersService {
       countryCode: countryCode ? countryCode : null,
       msisdn: msisdn,
       email: params.orgEmail ? params.orgEmail : null,
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : null,
       organizationId: params.organizationID ? params.organizationID : null,
       addresses: mainAddress,
       additionalContact: additionalCDs,
@@ -678,6 +684,7 @@ class CustomersService {
                   zip: row?.billingAddress?.zip,
                   country: row?.billingAddress?.country,
                   countryCode: row?.countryCode,
+                  preferredLanguage: row?.preferredLanguage,
                 };
               });
               d.status_code = 200;
@@ -865,6 +872,9 @@ class CustomersService {
         : null,
       personalNumber: `${params.pNumber !== null ? params.pNumber : ""}`,
       email: params.customerEmail,
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : null,
       addresses: {
         billing: {
           uuid: billingUUID,
@@ -1088,6 +1098,9 @@ class CustomersService {
       countryCode: countryCode,
       msisdn: msisdn,
       email: params.orgEmail ? params.orgEmail : null,
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : null,
       organizationId: params.organizationID ? params.organizationID : null,
       addresses: {
         billing: {

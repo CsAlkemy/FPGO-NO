@@ -42,6 +42,7 @@ import {
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const detailCorporateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -114,6 +115,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             ? info.organizationId
             : "";
           CorporateDetailsDefaultValue.orgEmail = info?.email ? info.email : "";
+          CorporateDetailsDefaultValue.preferredLanguage = info.preferredLanguage ? info.preferredLanguage : "",
           CorporateDetailsDefaultValue.OrganizationName = info?.name
             ? info.name
             : "";
@@ -291,7 +293,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         ?.country
         ? info.addresses.billing.country
         : "";
-
+      CorporateDetailsDefaultValue.preferredLanguage = info.preferredLanguage ? info.preferredLanguage : "",
       CorporateDetailsDefaultValue.shippingAddress = info?.addresses?.shipping
         ?.street
         ? info.addresses.shipping?.street
@@ -722,6 +724,15 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                   trigger={trigger}
                                   setValue={setValue}
                                   setDialCode={setDialCode}
+                                />
+                                <FrontPaymentLanguageSelect
+                                    error={errors.preferredLanguage}
+                                    control={control}
+                                    name="preferredLanguage"
+                                    label="preferredLanguage"
+                                    required={true}
+                                    disable={false}
+                                    value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                                 />
                                 {/*<Controller*/}
                                 {/*  name="primaryPhoneNumber"*/}

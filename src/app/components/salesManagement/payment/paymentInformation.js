@@ -34,6 +34,7 @@ import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import CountrySelect from "../../common/countries";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -130,6 +131,7 @@ const paymentInformation = () => {
           ...updatedData,
           ...customData,
           orderUuid,
+          preferredLanguage: values.preferredLanguage,
           customerUuid: orderDetails?.customerDetails?.uuid
             ? orderDetails?.customerDetails?.uuid
             : null,
@@ -138,6 +140,7 @@ const paymentInformation = () => {
           ...values,
           ...customData,
           orderUuid,
+          preferredLanguage: values.preferredLanguage,
           customerUuid: orderDetails?.customerDetails?.uuid
             ? orderDetails?.customerDetails?.uuid
             : null,
@@ -230,6 +233,10 @@ const paymentInformation = () => {
             response?.data?.customerDetails?.address?.country
               ? response?.data?.customerDetails?.address?.country
               : "";
+          PaymentDefaultValue.preferredLanguage =
+              response?.data?.customerDetails?.preferredLanguage
+                  ? response?.data?.customerDetails?.preferredLanguage
+                  : "";
           setCustomData({
             ...customData,
             customerType:
@@ -746,6 +753,15 @@ const paymentInformation = () => {
                                 )}
                               /> */}
                             </div>
+                            <FrontPaymentLanguageSelect
+                                error={errors.preferredLanguage}
+                                control={control}
+                                name="preferredLanguage"
+                                label="preferredLanguage"
+                                required={true}
+                                disable={false}
+                                // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
+                            />
                           </div>
                         </div>
 

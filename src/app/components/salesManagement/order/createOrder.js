@@ -65,6 +65,7 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 const createOrder = () => {
   const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
@@ -207,7 +208,6 @@ const createOrder = () => {
   const watchAllFields = watch();
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
-
   const searchCustomerOnFocus = (e) => {
     const searchByPhone =
       customersList.filter((customer) =>
@@ -512,6 +512,7 @@ const createOrder = () => {
                   zip: row?.zip,
                   country: row?.country,
                   countryCode: row?.countryCode,
+                  preferredLanguage: row?.preferredLanguage,
                   searchString:
                     row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
@@ -988,10 +989,10 @@ const createOrder = () => {
                                 // helperText={errors?.order?.[index]?.rate?.message}
                                 variant="outlined"
                                 required
+                                type="number"
                                 onWheel={(event) => {
                                   event.target.blur();
                                 }}
-                                type="number"
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
@@ -2168,6 +2169,11 @@ const createOrder = () => {
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
                                     setValue("billingCountry", data.country);
+                                    setValue(
+                                      "preferredLanguage",
+                                      data?.preferredLanguage
+                                    );
+                                    CreateOrderDefaultValue.preferredLanguage = data?.preferredLanguage;
                                     data.type === "Corporate"
                                       ? setCustomData({
                                           ...customData,
@@ -2190,6 +2196,7 @@ const createOrder = () => {
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
                                     setValue("billingCountry", "");
+                                    setValue("preferredLanguage", "");
                                     // setSelectedFromList(null);
                                   }
                                   return onChange(data);
@@ -2322,39 +2329,39 @@ const createOrder = () => {
                               setValue={setValue}
                               setDialCode={setDialCode}
                             />
-                            {/* <Controller
-                              name="primaryPhoneNumber"
-                              control={control}
-                              render={({ field }) => (
-                                <FormControl
-                                  error={!!errors.primaryPhoneNumber}
-                                  fullWidth
-                                >
-                                  <PhoneInput
-                                    {...field}
-                                    className={
-                                      errors.primaryPhoneNumber
-                                        ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                        : "input-phone-number-field"
-                                    }
-                                    country="no"
-                                    enableSearch
-                                    autocompleteSearch
-                                    countryCodeEditable={false}
-                                    specialLabel={`${t("label:phone")}*`}
-                                    // onBlur={handleOnBlurGetDialCode}
-                                    value={field.value || ""}
-                                  />
-                                  <FormHelperText>
-                                    {errors?.primaryPhoneNumber?.message
-                                      ? t(
-                                          `validation:${errors?.primaryPhoneNumber?.message}`
-                                        )
-                                      : ""}
-                                  </FormHelperText>
-                                </FormControl>
-                              )}
-                            /> */}
+                            {/*<Controller*/}
+                            {/*  name="primaryPhoneNumber"*/}
+                            {/*  control={control}*/}
+                            {/*  render={({ field }) => (*/}
+                            {/*    <FormControl*/}
+                            {/*      error={!!errors.primaryPhoneNumber}*/}
+                            {/*      fullWidth*/}
+                            {/*    >*/}
+                            {/*      <PhoneInput*/}
+                            {/*        {...field}*/}
+                            {/*        className={*/}
+                            {/*          errors.primaryPhoneNumber*/}
+                            {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                            {/*            : "input-phone-number-field"*/}
+                            {/*        }*/}
+                            {/*        country="no"*/}
+                            {/*        enableSearch*/}
+                            {/*        autocompleteSearch*/}
+                            {/*        countryCodeEditable={false}*/}
+                            {/*        specialLabel={`${t("label:phone")}*`}*/}
+                            {/*        // onBlur={handleOnBlurGetDialCode}*/}
+                            {/*        value={field.value || ""}*/}
+                            {/*      />*/}
+                            {/*      <FormHelperText>*/}
+                            {/*        {errors?.primaryPhoneNumber?.message*/}
+                            {/*          ? t(*/}
+                            {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                            {/*            )*/}
+                            {/*          : ""}*/}
+                            {/*      </FormHelperText>*/}
+                            {/*    </FormControl>*/}
+                            {/*  )}*/}
+                            {/*/>*/}
                             <Controller
                               name="email"
                               control={control}
@@ -2446,6 +2453,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:pNumber")}
                                       type="number"
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.pNumber}
                                       helperText={
@@ -2624,6 +2634,20 @@ const createOrder = () => {
                                 )}
                               /> */}
                             </div>
+                            <FrontPaymentLanguageSelect
+                              error={errors.preferredLanguage}
+                              control={control}
+                              name="preferredLanguage"
+                              label="preferredLanguage"
+                              required={true}
+                              disable={false}
+                              value={
+                                watch("preferredLanguage")
+                                  ? watch("preferredLanguage")
+                                  : ""
+                              }
+                              isOrder = {true}
+                            />
                           </div>
                         </div>
                       </AccordionDetails>
