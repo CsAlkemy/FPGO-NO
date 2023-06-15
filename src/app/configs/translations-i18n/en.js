@@ -493,6 +493,8 @@ const en = {
     payouts: "Payouts",
     payoutsAllClients: "Payouts (All Clients)",
     selectAClientToViewPayouts: "Select a client to view payouts",
+    vatReportFilterGuidelineStart: " VAT report can be picked up for the last 30 days. If you wish to pick a specific period,",
+    vatReportFilterGuidelineEnd: "you can adjust the date setting, but it will still apply for 30 days.",
     dateAdded: "Date Added",
     fileName: "File Name",
     fileFormat: "File Format",

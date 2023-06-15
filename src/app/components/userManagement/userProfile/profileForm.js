@@ -1,20 +1,26 @@
-import React, {useEffect, useState} from "react";
-import {Controller, useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import PhoneInput from "react-phone-input-2";
-import {FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField,} from "@mui/material";
-import {useSnackbar} from "notistack";
-import {useNavigate} from "react-router-dom";
-import {schemaUserProfile, schemaUserProfileFpAdmin,} from "../utils/helper";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { schemaUserProfile, schemaUserProfileFpAdmin } from "../utils/helper";
 import UserService from "../../../data-access/services/userService/UserService";
-import {useSelector} from "react-redux";
-import {selectUser} from "app/store/userSlice";
-import {BUSINESS_ADMIN, FP_ADMIN,} from "../../../utils/user-roles/UserRoles";
-import {useTranslation} from "react-i18next";
-import {useUpdateUserMutation} from "app/store/api/apiSlice";
+import { useSelector } from "react-redux";
+import { selectUser } from "app/store/userSlice";
+import { BUSINESS_ADMIN, FP_ADMIN } from "../../../utils/user-roles/UserRoles";
+import { useTranslation } from "react-i18next";
+import { useUpdateUserMutation } from "app/store/api/apiSlice";
 import AuthService from "../../../data-access/services/authService";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
-
 
 const defaultValues = {
   email: "",
@@ -29,7 +35,13 @@ const defaultValues = {
   preferredLanguage: "",
 };
 
-const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsValid }) => {
+const fpAdminProfileForm = ({
+  submitRef,
+  role,
+  userProfile,
+  setIsDirty,
+  setIsValid,
+}) => {
   const { t } = useTranslation();
   const [roleList, setRoleList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -49,21 +61,22 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
   const schema =
     isUserID === true ? schemaUserProfile : schemaUserProfileFpAdmin;
 
-  const { control, formState, handleSubmit, reset, setValue, trigger, watch } = useForm({
-    mode: "onChange",
-    defaultValues,
-    resolver: yupResolver(schema),
-  });
+  const { control, formState, handleSubmit, reset, setValue, trigger, watch } =
+    useForm({
+      mode: "onChange",
+      defaultValues,
+      resolver: yupResolver(schema),
+    });
 
   const { isValid, dirtyFields, errors, isDirty } = formState;
 
-  useEffect(()=>{
-      setIsDirty(isDirty)
-  },[isDirty])
-  useEffect(()=>{
-    setIsValid(isValid)
-},[isValid])
+  useEffect(() => {
+    setIsDirty(isDirty);
+  }, [isDirty]);
 
+  useEffect(() => {
+    setIsValid(isValid);
+  }, [isValid]);
   function onSubmit(values) {
     const msisdn = values?.phoneNumber
       ? values?.phoneNumber.slice(dialCode?.length)
@@ -84,10 +97,14 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
     };
     updateUser(userData).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate(-1);
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
   }
@@ -99,7 +116,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
       userProfile?.countryCode && userProfile?.msisdn
         ? userProfile.countryCode + userProfile.msisdn
         : "47";
-      setValue("phoneNumber", userProfile.countryCode + userProfile.msisdn || "")
+    setValue("phoneNumber", userProfile.countryCode + userProfile.msisdn || "");
     defaultValues.designation = userProfile?.designation
       ? userProfile?.designation
       : "";
@@ -117,7 +134,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
       ? userProfile.preferredLanguage
       : "";
     // defaultValues.branch = userProfile['organizationDetails']?.name
-      setDialCode(userProfile?.countryCode || null)
+    setDialCode(userProfile?.countryCode || null);
     reset({ ...defaultValues });
 
     if (isLoading) {
@@ -142,7 +159,9 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
             } else if (response?.is_data === false) {
               setOrganizationsList([]);
             } else {
-              enqueueSnackbar(t(`message:noOrganizationFound`),{ variant: "warning" });
+              enqueueSnackbar(t(`message:noOrganizationFound`), {
+                variant: "warning",
+              });
             }
           })
           .catch((error) => {});
@@ -226,45 +245,45 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
                 />
               )}
             />
-              <FrontPaymentPhoneInput
-                  control={control}
-                  defaultValue="no"
-                  disable={false}
-                  error={errors.phoneNumber}
-                  label="phone"
-                  name="phoneNumber"
-                  required={true}
-                  trigger={trigger}
-                  setValue={setValue}
-                  setDialCode={setDialCode}
-              />
-            {/*<Controller*/}
-            {/*  name="phoneNumber"*/}
-            {/*  control={control}*/}
-            {/*  render={({ field }) => (*/}
-            {/*    <FormControl error={!!errors.phoneNumber} required fullWidth>*/}
-            {/*      <PhoneInput*/}
-            {/*        {...field}*/}
-            {/*        className={*/}
-            {/*          errors.phoneNumber*/}
-            {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
-            {/*            : "input-phone-number-field"*/}
-            {/*        }*/}
-            {/*        country="no"*/}
-            {/*        enableSearch*/}
-            {/*        autocompleteSearch*/}
-            {/*        countryCodeEditable={false}*/}
-            {/*        specialLabel={`${t("label:phone")}*`}*/}
-            {/*        onBlur={handleOnBlurGetDialCode}*/}
-            {/*      />*/}
-            {/*      <FormHelperText>*/}
-            {/*        {errors?.phoneNumber?.message*/}
-            {/*          ? t(`validation:${errors?.phoneNumber?.message}`)*/}
-            {/*          : ""}*/}
-            {/*      </FormHelperText>*/}
-            {/*    </FormControl>*/}
-            {/*  )}*/}
-            {/*/>*/}
+            <FrontPaymentPhoneInput
+              control={control}
+              defaultValue="no"
+              disable={false}
+              error={errors.phoneNumber}
+              label="phone"
+              name="phoneNumber"
+              required={true}
+              trigger={trigger}
+              setValue={setValue}
+              setDialCode={setDialCode}
+            />
+            {/* <Controller
+              name="phoneNumber"
+              control={control}
+              render={({ field }) => (
+                <FormControl error={!!errors.phoneNumber} required fullWidth>
+                  <PhoneInput
+                    {...field}
+                    className={
+                      errors.phoneNumber
+                        ? "input-phone-number-field border-1 rounded-md border-red-300"
+                        : "input-phone-number-field"
+                    }
+                    country="no"
+                    enableSearch
+                    autocompleteSearch
+                    countryCodeEditable={false}
+                    specialLabel={`${t("label:phone")}*`}
+                    onBlur={handleOnBlurGetDialCode}
+                  />
+                  <FormHelperText>
+                    {errors?.phoneNumber?.message
+                      ? t(`validation:${errors?.phoneNumber?.message}`)
+                      : ""}
+                  </FormHelperText>
+                </FormControl>
+              )}
+            /> */}
 
             {role === 0 &&
               userProfile["userRoleDetails"].slug !== FP_ADMIN &&
@@ -435,13 +454,15 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
                     {languageList.map((item, index) => {
                       return (
                         <MenuItem key={index} value={item.value}>
-                            {t(`label:${item?.title.toLowerCase()}`)}
+                          {t(`label:${item?.title.toLowerCase()}`)}
                         </MenuItem>
                       );
                     })}
                   </Select>
                   <FormHelperText>
-                    {errors.preferredLanguage?.message ? t(`validation:${errors.preferredLanguage?.message}`) : ""}
+                    {errors.preferredLanguage?.message
+                      ? t(`validation:${errors.preferredLanguage?.message}`)
+                      : ""}
                   </FormHelperText>
                 </FormControl>
               )}

@@ -34,8 +34,8 @@ const LoginPage = () => {
 
   const user = useSelector(selectUser);
   const { t } = useTranslation();
-  const inputRef = useRef();
   const dispatch = useDispatch();
+  const inputRef = useRef();
 
   const [resendClicked, setResendClicked] = React.useState(false);
 
@@ -63,6 +63,10 @@ const LoginPage = () => {
     password: "",
     remember: true,
   };
+  useEffect(() => {
+    dispatch(changeLanguage("no"));
+  }, []);
+
   useEffect(() => {
     dispatch(changeLanguage("no"));
   }, []);

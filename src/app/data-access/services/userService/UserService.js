@@ -468,15 +468,10 @@ class UserService {
   };
 
   prepareCreateUserByRolePayload = (params, role, dialCode) => {
-    const phoneNumber = params?.phoneNumber
-      ? params.phoneNumber.split("+")
-      : null;
     const msisdn = params?.phoneNumber
-        ? params?.phoneNumber.slice(dialCode.length)
-        : null;
-    const countryCode = dialCode
-        ? dialCode
-        : null;
+      ? params?.phoneNumber.slice(dialCode.length)
+      : null;
+    const countryCode = dialCode ? dialCode : null;
 
     return {
       role,

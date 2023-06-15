@@ -59,8 +59,9 @@ const createProducts = () => {
   const [searchCustomersList, setSearchCustomersList] = useState([]);
   const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [itemLoader, setItemLoader] = useState(false);
-  const [isAddCustomerButtonDisable, setIsAddCustomerButtonDisable] = useState(false)
-  const [ manualCustomerMsisdn, setManualCustomerMsisdn] = useState(null)
+  const [isAddCustomerButtonDisable, setIsAddCustomerButtonDisable] =
+    useState(false);
+  const [manualCustomerMsisdn, setManualCustomerMsisdn] = useState(null);
   const [searchCustomerPrefixCountryCode, setSearchCustomerPrefixCountryCode] =
     useState("+47");
   const [searchCustomerPrefixCountry, setSearchCustomerPrefixCountry] =
@@ -80,7 +81,6 @@ const createProducts = () => {
   let grandTotal = 0;
 
   let defaultTaxValue;
-
   const addNewOrder = () => {
     // setAddOrderIndex([...addOrderIndex, addOrderIndex.length]);
     setItemLoader(true);
@@ -179,7 +179,7 @@ const createProducts = () => {
                   zip: row?.zip,
                   country: row?.country,
                   searchString:
-                  // row?.name + " ( " + row?.phone + " )" + row.uuid,
+                    // row?.name + " ( " + row?.phone + " )" + row.uuid,
                     row?.phone + row.uuid,
                 });
               });
@@ -293,7 +293,9 @@ const createProducts = () => {
   const valHtml = val.map((option, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
     // const label = option.name || option.phone;
-    const label = option?.name ? option?.name : `${option?.phone.split("^")[0]}${option?.phone.split("^")[1]}`;
+    const label = option?.name
+      ? option?.name
+      : `${option?.phone.split("^")[0]}${option?.phone.split("^")[1]}`;
     const isExistingCustomer = option?.name || null;
     return isExistingCustomer ? (
       <Chip
@@ -615,9 +617,9 @@ const createProducts = () => {
                       }}
                       onInputChange={(event, value) => {
                         setNewCustomer(
-                          searchCustomerPrefixCountryCode+"^"+value
+                          searchCustomerPrefixCountryCode + "^" + value
                         );
-                        setManualCustomerMsisdn(value)
+                        setManualCustomerMsisdn(value);
                         if (value.length === 0) setCustomerSearchBy(undefined);
                         if (value.length < 8 || value.length > 15) {
                           setIsAddCustomerButtonDisable(true);
@@ -1198,6 +1200,10 @@ const createProducts = () => {
                                     event.target.blur();
                                   }}
                                   variant="outlined"
+                                  type="number"
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   required
                                   value={field.value || ""}
                                   fullWidth
@@ -1852,7 +1858,7 @@ const createProducts = () => {
                 <Button
                   color="secondary"
                   variant="contained"
-                  className="bg-white text-MonochromeGray-700 button2 shadow-1 "
+                  className="bg-white text-MonochromeGray-700 button2  shadow-1"
                   onClick={() => setOpen(true)}
                   startIcon={<Cancel className="text-red-500" />}
                 >
@@ -1862,7 +1868,7 @@ const createProducts = () => {
                   color="secondary"
                   variant="contained"
                   type="submit"
-                  className="rounded-full bg-primary-500 button2 py-5"
+                  className="rounded-full bg-primary-500 button2 py-5  shadow-1"
                   disabled={!isValid || val.length === 0 || !watchRate}
                   sx={{
                     "&.Mui-disabled": {

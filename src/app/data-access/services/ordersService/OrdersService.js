@@ -101,7 +101,7 @@ class OrdersService {
         name: row.name,
         dueDate: row.paymentLinkDueDate,
         phone: phone ? "+" + phone[phone.length - 1] : null,
-        msisdn: row?.msisdn || '',
+        msisdn: row?.msisdn || "",
         email: row?.email ? row?.email : null,
         amount: row.amount,
         stage: row?.status ? row.status.toLowerCase() : null,
@@ -257,12 +257,10 @@ class OrdersService {
       isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
         type: params.customerType,
-        countryCode: params.dialCode
-            ? params.dialCode
-            : null,
+        countryCode: params.dialCode ? params.dialCode : null,
         msisdn: params.primaryPhoneNumber
-            ? params.primaryPhoneNumber.slice(params?.dialCode?.length)
-            : null,
+          ? params.primaryPhoneNumber.slice(params?.dialCode?.length)
+          : null,
         email: params.email,
         name: params.customerName,
         preferredLanguage: params.preferredLanguage
@@ -1044,14 +1042,8 @@ class OrdersService {
       email: params?.email ? params?.email : null,
       name: params?.customerName ? params?.customerName : null,
       preferredLanguage: params?.preferredLanguage ? params?.preferredLanguage : null,
-      personalNumber:
-        params?.pNumber
-          ? `${params?.pNumber}`
-          : null,
-      organizationId:
-        params?.orgID
-          ? `${params?.orgID}`
-          : null,
+      personalNumber: params?.pNumber ? `${params?.pNumber}` : null,
+      organizationId: params?.orgID ? `${params?.orgID}` : null,
       // organizationId : "fu",
       address: {
         street: params?.streetAddress ? params?.streetAddress : null,

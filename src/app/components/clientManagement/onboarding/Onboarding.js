@@ -225,16 +225,6 @@ const Onboarding = () => {
   const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const onSubmit = (values) => {
-    const primaryPhoneNumber = values?.primaryPhoneNumber
-      ? values.primaryPhoneNumber.split("+")
-      : null;
-    const billingPhoneNumber = values?.billingPhoneNumber
-      ? values.billingPhoneNumber.split("+")
-      : null;
-    const shippingPhoneNumber = values?.shippingPhoneNumber
-      ? values.shippingPhoneNumber.split("+")
-      : null;
-
     const msisdn = values?.primaryPhoneNumber
       ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
@@ -2507,7 +2497,7 @@ const Onboarding = () => {
                                 }}
                                 autoComplete="off"
                                 error={!!errors.fakturaB2B}
-                                helperText={
+                                hhelperText={
                                   errors?.fakturaB2B?.message
                                     ? t(
                                         `validation:${errors?.fakturaB2B?.message}`

@@ -2,20 +2,28 @@ import history from "@history";
 import { yupResolver } from "@hookform/resolvers/yup";
 import _ from "@lodash";
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, Hidden, MenuItem, Select, SvgIcon, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Hidden,
+  MenuItem,
+  Select,
+  SvgIcon,
+  TextField,
+} from "@mui/material";
 import { useSnackbar } from "notistack";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
-import LanguageIcon from '@mui/icons-material/Language';
+import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
 import AuthService from "../../../data-access/services/authService";
 import AuthLayout from "../Layout/layout";
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import { useTranslation } from 'react-i18next';
-import {useEffect} from "react";
-import {changeLanguage} from "app/store/i18nSlice";
-import {useDispatch} from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { changeLanguage } from "app/store/i18nSlice";
+import { useDispatch } from "react-redux";
 /**
  * Form Validation Schema
  */
@@ -40,7 +48,7 @@ function ForgotPasswordPage() {
   });
   const { isValid, dirtyFields, errors } = formState;
   const { enqueueSnackbar } = useSnackbar();
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   // async (values)=>
   const onSubmit = async (values) => {
@@ -64,22 +72,28 @@ function ForgotPasswordPage() {
     dispatch(changeLanguage("no"));
   }, []);
 
+  useEffect(() => {
+    dispatch(changeLanguage("no"));
+  }, []);
+
   const languages = [
     {
       value: "English",
-      label: "en"
+      label: "en",
     },
     {
       value: "Norwegian",
-      label: "no"
+      label: "no",
     },
   ];
   return (
     <AuthLayout>
-      <AuthMobileHeader isShow = {true} />
+      <AuthMobileHeader isShow={true} />
       {!!isSend === false && (
         <div className="w-full px-0 sm:px-20 mx-auto">
-          <div className="text-left sm:text-center mb-5 header4 mt-40">{t("label:resetPassword")}</div>
+          <div className="text-left sm:text-center mb-5 header4 mt-40">
+            {t("label:resetPassword")}
+          </div>
           <div className=" text-left sm:text-center pb-7 body2">
             {t("label:pleaseTypeInYourEmailToHetPasswordResetLink")}
           </div>
@@ -99,7 +113,11 @@ function ForgotPasswordPage() {
                   label={t("label:email")}
                   type="email"
                   error={!!errors.email}
-                  helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
+                  helperText={
+                    errors?.email?.message
+                      ? t(`validation:${errors?.email?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth

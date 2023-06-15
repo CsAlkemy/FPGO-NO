@@ -1714,11 +1714,6 @@ const OrderInformation = ({ info }) => {
                                         <TextField
                                           {...field}
                                           label={t("label:referenceNo")}
-                                          type="number"
-                                          onWheel={(event) => {
-                                            event.target.blur();
-                                          }}
-                                          autoComplete="off"
                                           error={!!errors.referenceNumber}
                                           helperText={
                                             errors?.referenceNumber?.message
@@ -1726,17 +1721,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.referenceNumber,
-                                          }}
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.referenceNumber
                                               ? info.invoiceReferences
                                                   ?.referenceNumber
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1749,8 +1740,6 @@ const OrderInformation = ({ info }) => {
                                         <TextField
                                           {...field}
                                           label={t("label:customerReference")}
-                                          type="text"
-                                          autoComplete="off"
                                           error={!!errors.customerReference}
                                           helperText={
                                             errors?.customerReference?.message
@@ -1758,17 +1747,14 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.customerReference,
-                                          }}
-                                          defaultValue={
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences &&
                                             info.invoiceReferences
                                               ?.customerReference
                                               ? info.invoiceReferences
                                                   ?.customerReference
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1780,8 +1766,6 @@ const OrderInformation = ({ info }) => {
                                         <TextField
                                           {...field}
                                           label={t("label:receiptNo")}
-                                          type="text"
-                                          autoComplete="off"
                                           error={!!errors.receiptNo}
                                           helperText={
                                             errors?.receiptNo?.message
@@ -1789,17 +1773,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          inputlabelprops={{
-                                            shrink:
-                                              !!field.value ||
-                                              touchedFields.receiptNo,
-                                          }}
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.receiptNumber
                                               ? info.invoiceReferences
                                                   ?.receiptNumber
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1824,12 +1804,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.customerNotes
                                               ? info.invoiceReferences
                                                   ?.customerNotes
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}
@@ -1852,12 +1833,13 @@ const OrderInformation = ({ info }) => {
                                           variant="outlined"
                                           fullWidth
                                           disabled
-                                          defaultValue={
-                                            info.invoiceReferences
+                                          value={
+                                            field.value ||
+                                            (info.invoiceReferences
                                               ?.termsAndCondition
                                               ? info.invoiceReferences
                                                   ?.termsAndCondition
-                                              : ""
+                                              : "")
                                           }
                                         />
                                       )}

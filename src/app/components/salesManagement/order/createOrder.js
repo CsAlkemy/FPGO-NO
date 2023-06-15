@@ -247,7 +247,7 @@ const createOrder = () => {
         totalDiscount,
         grandTotal,
       },
-      dialCode
+      dialCode,
     });
     createOrder(data).then((response) => {
       setLoading(false);
@@ -505,7 +505,7 @@ const createOrder = () => {
                     ? row?.orgIdOrPNumber
                     : null,
                   email: row?.email ? row?.email : null,
-                  phone: row?.phone ? row.countryCode+row?.phone : null,
+                  phone: row?.phone ? row.countryCode + row?.phone : null,
                   type: row.type,
                   street: row?.street,
                   city: row?.city,
@@ -2388,7 +2388,9 @@ const createOrder = () => {
                             />
                           </div>
                           <div className="mt-32 sm:mt-0">
-                            <div className="form-pair-input gap-x-20">
+                            <div
+                              className="form-pair-input gap-x-20"
+                            >
                               <Controller
                                 name="customerName"
                                 control={control}
@@ -2442,7 +2444,7 @@ const createOrder = () => {
                                   )}
                                 />
                               )}
-                              {customData.customerType === "private" && (
+                              { customData.customerType === "private" && (
                                 <Controller
                                   name="pNumber"
                                   control={control}
@@ -2583,7 +2585,6 @@ const createOrder = () => {
                                 required={true}
                                 error={errors.billingCountry}
                               />
-
                               {/* <Controller
                                 name="billingCountry"
                                 control={control}

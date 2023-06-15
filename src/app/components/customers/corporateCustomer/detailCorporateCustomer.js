@@ -87,11 +87,12 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
   };
 
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch, trigger } = useForm({
-    mode: "onChange",
-    CorporateDetailsDefaultValue,
-    resolver: yupResolver(validateSchema),
-  });
+  const { control, formState, handleSubmit, reset, setValue, watch, trigger } =
+    useForm({
+      mode: "onChange",
+      CorporateDetailsDefaultValue,
+      resolver: yupResolver(validateSchema),
+    });
   const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const billingAddress = watch("billingAddress") || "";
@@ -122,8 +123,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
             info?.countryCode && info?.msisdn
               ? info.countryCode + info.msisdn
               : "";
-          setDialCode(info?.countryCode)
-          setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
+          setDialCode(info?.countryCode);
+          setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "");
 
           CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
             ?.street
@@ -275,8 +276,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         : "";
       CorporateDetailsDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
-      setDialCode(info?.countryCode)
-      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
+      setDialCode(info?.countryCode);
+      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "");
 
       CorporateDetailsDefaultValue.billingAddress = info?.addresses?.billing
         ?.street
@@ -427,7 +428,7 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
         values,
         sameAddress,
         info,
-          dialCode
+        dialCode
       );
     updateCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
@@ -547,7 +548,8 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                       loading={loading}
                       disabled={
                         user.role[0] === FP_ADMIN ||
-                        (!isDirty && sameAddress === initialSameAddressRef) || !isValid
+                        (!isDirty && sameAddress === initialSameAddressRef) ||
+                        !isValid
                       }
                       loadingPosition="center"
                     >
@@ -712,16 +714,16 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                   )}
                                 />
                                 <FrontPaymentPhoneInput
-                                    control={control}
-                                    defaultValue='no'
-                                    disable={false}
-                                    error={errors.primaryPhoneNumber}
-                                    label="phone"
-                                    name="primaryPhoneNumber"
-                                    required = {true}
-                                    trigger = {trigger}
-                                    setValue = {setValue}
-                                    setDialCode = {setDialCode}
+                                  control={control}
+                                  defaultValue="no"
+                                  disable={false}
+                                  error={errors.primaryPhoneNumber}
+                                  label="phone"
+                                  name="primaryPhoneNumber"
+                                  required={true}
+                                  trigger={trigger}
+                                  setValue={setValue}
+                                  setDialCode={setDialCode}
                                 />
                                 <FrontPaymentLanguageSelect
                                     error={errors.preferredLanguage}
@@ -1001,7 +1003,9 @@ const detailCorporateCustomer = (onSubmit = () => {}) => {
                                                 {...field}
                                                 label={t("label:zipCode")}
                                                 type="number"
-                                                onWheel={event => { event.target.blur()}}
+                                                onWheel={(event) => {
+                                                  event.target.blur();
+                                                }}
                                                 autoComplete="off"
                                                 disabled={sameAddress}
                                                 error={!!errors.shippingZip}

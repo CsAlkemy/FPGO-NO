@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
   Drawer,
@@ -10,31 +10,31 @@ import {
   Select,
   Switch,
   TextField,
-} from '@mui/material';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import { useSnackbar } from 'notistack';
-import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { BsFillCheckCircleFill, BsQuestionCircle } from 'react-icons/bs';
-import { FiMinus } from 'react-icons/fi';
-import { IoMdAdd } from 'react-icons/io';
-import { MdOutlineAdd, MdRemoveCircle } from 'react-icons/md';
-import PhoneInput from 'react-phone-input-2';
-import { useNavigate } from 'react-router-dom';
-import CustomersService from '../../../data-access/services/customersService/CustomersService';
-import DiscardConfirmModal from '../../common/confirmDiscard';
-import FAQs from '../../common/faqs';
-import { CreateCorporateDefaultValue, validateSchema } from '../utils/helper';
-import { useTranslation } from 'react-i18next';
-import { LoadingButton } from '@mui/lab';
-import { useCreateCorporateCustomerMutation } from 'app/store/api/apiSlice';
-import CountrySelect from '../../common/countries';
-import FrontPaymentPhoneInput from '../../common/frontPaymentPhoneInput';
+} from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { BsFillCheckCircleFill, BsQuestionCircle } from "react-icons/bs";
+import { FiMinus } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
+import { MdOutlineAdd, MdRemoveCircle } from "react-icons/md";
+import PhoneInput from "react-phone-input-2";
+import { useNavigate } from "react-router-dom";
+import CustomersService from "../../../data-access/services/customersService/CustomersService";
+import DiscardConfirmModal from "../../common/confirmDiscard";
+import FAQs from "../../common/faqs";
+import { CreateCorporateDefaultValue, validateSchema } from "../utils/helper";
+import { useTranslation } from "react-i18next";
+import { LoadingButton } from "@mui/lab";
+import { useCreateCorporateCustomerMutation } from "app/store/api/apiSlice";
+import CountrySelect from "../../common/countries";
+import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
 import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 const createCorporateCustomer = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [sameAddress, setSameAddress] = React.useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
@@ -44,7 +44,7 @@ const createCorporateCustomer = () => {
   const [loadingfind, setLoadingfind] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [createCorporateCustomer] = useCreateCorporateCustomerMutation();
-  const [dialCodePrimary, setDialCodePrimary ] = React.useState();
+  const [dialCodePrimary, setDialCodePrimary] = React.useState();
   const [dialCodePrimaryInfo, setDialCodePrimaryInfo] = React.useState();
 
   const [countries, setCountries] = React.useState([
@@ -64,12 +64,20 @@ const createCorporateCustomer = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   // form
-  const { control, formState, handleSubmit, reset, getValues, watch, setValue,trigger } =
-    useForm({
-      mode: "onChange",
-      CreateCorporateDefaultValue,
-      resolver: yupResolver(validateSchema),
-    });
+  const {
+    control,
+    formState,
+    handleSubmit,
+    reset,
+    getValues,
+    watch,
+    setValue,
+    trigger,
+  } = useForm({
+    mode: "onChange",
+    CreateCorporateDefaultValue,
+    resolver: yupResolver(validateSchema),
+  });
 
   const { isValid, dirtyFields, touchedFields, errors } = formState;
 
@@ -79,16 +87,25 @@ const createCorporateCustomer = () => {
   const watchCountry = watch("billingCountry");
 
   const onSubmit = (values) => {
-    setLoading(true)
+    setLoading(true);
     const preparedPayload =
-      CustomersService.prepareCreateCorporateCustomerPayload(values, sameAddress, dialCodePrimary, dialCodePrimaryInfo);
+      CustomersService.prepareCreateCorporateCustomerPayload(
+        values,
+        sameAddress,
+        dialCodePrimary,
+        dialCodePrimaryInfo
+      );
     createCorporateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
         setLoading(false);
       }
     });
@@ -112,7 +129,7 @@ const createCorporateCustomer = () => {
 
   const getOrganizationDetailsHanddler = (id) => {
     if (id.length > 0) {
-      setLoadingfind(true)
+      setLoadingfind(true);
       CustomersService.getOrganizationDetailsByUUID(id)
         .then((response) => {
           if (response?.status_code === 200) {
@@ -128,15 +145,19 @@ const createCorporateCustomer = () => {
                 : response.data.billingAddress.country;
             CreateCorporateDefaultValue.billingZip =
               response.data.billingAddress.zip;
-            reset({ ...CreateCorporateDefaultValue })
-            enqueueSnackbar(t(`message:${response?.message}`), { variant: "success" });
-            setLoadingfind(false)
+            reset({ ...CreateCorporateDefaultValue });
+            enqueueSnackbar(t(`message:${response?.message}`), {
+              variant: "success",
+            });
+            setLoadingfind(false);
           }
         })
         .catch((error) => {
-          enqueueSnackbar(t(`message:dataRetrieveFailed`), { variant: "error" });
+          enqueueSnackbar(t(`message:dataRetrieveFailed`), {
+            variant: "error",
+          });
           reset();
-          setLoadingfind(false)
+          setLoadingfind(false);
         });
     }
   };
@@ -155,7 +176,9 @@ const createCorporateCustomer = () => {
         <div className="rounded-sm bg-white p-0 md:px-20">
           <form name="loginForm" noValidate onSubmit={handleSubmit(onSubmit)}>
             <div className=" header-click-to-action">
-              <div className="header-text header6">{t("label:newCorporateCustomer")}</div>
+              <div className="header-text header6">
+                {t("label:newCorporateCustomer")}
+              </div>
               <div className="button-container-product">
                 <Button
                   color="secondary"
@@ -179,7 +202,6 @@ const createCorporateCustomer = () => {
                 >
                   {t("label:createCustomer")}
                 </LoadingButton>
-             
               </div>
             </div>
             <div className="main-layout-product">
@@ -189,7 +211,7 @@ const createCorporateCustomer = () => {
                   {dirtyFields.organizationID &&
                   dirtyFields.OrganizationName &&
                   dirtyFields.orgEmail &&
-                  watch("primaryPhoneNumber")?.length>0&&
+                  watch("primaryPhoneNumber")?.length > 0 &&
                   dirtyFields.billingAddress &&
                   dirtyFields.preferredLanguage &&
                   dirtyFields.billingZip &&
@@ -211,10 +233,18 @@ const createCorporateCustomer = () => {
                           label={t("label:organizationId")}
                           className="col-span-1 md:col-span-1"
                           type="number"
-                          onWheel={event => { event.target.blur()}}
+                          onWheel={(event) => {
+                            event.target.blur();
+                          }}
                           autoComplete="off"
                           error={!!errors.organizationID}
-                          helperText={errors?.organizationID?.message ? t(`validation:${errors?.organizationID?.message}`) : ""}
+                          helperText={
+                            errors?.organizationID?.message
+                              ? t(
+                                  `validation:${errors?.organizationID?.message}`
+                                )
+                              : ""
+                          }
                           variant="outlined"
                           required
                           fullWidth
@@ -239,7 +269,6 @@ const createCorporateCustomer = () => {
                     >
                       {t("label:findOrganization")}
                     </LoadingButton>
-                    
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 px-10 sm:px-16 mt-32 gap-20">
@@ -250,15 +279,21 @@ const createCorporateCustomer = () => {
                       <TextField
                         {...field}
                         label={t("label:organizationName")}
-                        className='bg-white'
-                        type='text'
-                        autoComplete='off'
+                        className="bg-white"
+                        type="text"
+                        autoComplete="off"
                         error={!!errors.OrganizationName}
-                        helperText={errors?.OrganizationName?.message ? t(`validation:${errors?.OrganizationName?.message}`) : ""}
-                        variant='outlined'
+                        helperText={
+                          errors?.OrganizationName?.message
+                            ? t(
+                                `validation:${errors?.OrganizationName?.message}`
+                              )
+                            : ""
+                        }
+                        variant="outlined"
                         fullWidth
                         required
-                        value={field.value || ''}
+                        value={field.value || ""}
                         // inputlabelprops={{
                         //   shrink:
                         //     !!field.value || touchedFields.OrganizationName,
@@ -277,27 +312,30 @@ const createCorporateCustomer = () => {
                         type={t("label:email")}
                         autoComplete="off"
                         error={!!errors.orgEmail}
-                        helperText={errors?.orgEmail?.message ? t(`validation:${errors?.orgEmail?.message}`) : ""}
+                        helperText={
+                          errors?.orgEmail?.message
+                            ? t(`validation:${errors?.orgEmail?.message}`)
+                            : ""
+                        }
                         variant="outlined"
                         required
-                        value={field.value || ''}
+                        value={field.value || ""}
                         fullWidth
-
                       />
                     )}
                   />
                   <div className="mt-10">
                     <FrontPaymentPhoneInput
-                        control={control}
-                        defaultValue='no'
-                        disable={false}
-                        error={errors.primaryPhoneNumber}
-                        label="phone"
-                        name="primaryPhoneNumber"
-                        required = {true}
-                        trigger = {trigger}
-                        setValue = {setValue}
-                        setDialCode = {setDialCodePrimary}
+                      control={control}
+                      defaultValue="no"
+                      disable={false}
+                      error={errors.primaryPhoneNumber}
+                      label="phone"
+                      name="primaryPhoneNumber"
+                      required={true}
+                      trigger={trigger}
+                      setValue={setValue}
+                      setDialCode={setDialCodePrimary}
                     />
                     {/*<Controller*/}
                     {/*  name="primaryPhoneNumber"*/}
@@ -340,15 +378,20 @@ const createCorporateCustomer = () => {
                         <TextField
                           {...field}
                           label={t("label:streetAddress")}
-                          type='text'
-                          autoComplete='off'
+                          type="text"
+                          autoComplete="off"
                           error={!!errors.billingAddress}
-                          helperText={errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""}
-                          variant='outlined'
+                          helperText={
+                            errors?.billingAddress?.message
+                              ? t(
+                                  `validation:${errors?.billingAddress?.message}`
+                                )
+                              : ""
+                          }
+                          variant="outlined"
                           fullWidth
                           required
-                          value={field.value || ''}
-
+                          value={field.value || ""}
                         />
                       )}
                     />
@@ -365,11 +408,15 @@ const createCorporateCustomer = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.billingZip}
-                          helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
+                          helperText={
+                            errors?.billingZip?.message
+                              ? t(`validation:${errors?.billingZip?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           fullWidth
                           required
-                          value={field.value || ''}
+                          value={field.value || ""}
                         />
                       )}
                     />
@@ -383,15 +430,18 @@ const createCorporateCustomer = () => {
                       <TextField
                         {...field}
                         label={t("label:city")}
-                        type='text'
-                        autoComplete='off'
+                        type="text"
+                        autoComplete="off"
                         error={!!errors.billingCity}
-                        helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
-                        variant='outlined'
+                        helperText={
+                          errors?.billingCity?.message
+                            ? t(`validation:${errors?.billingCity?.message}`)
+                            : ""
+                        }
+                        variant="outlined"
                         fullWidth
                         required
-                        value={field.value || ''}
-
+                        value={field.value || ""}
                       />
                     )}
                   />
@@ -458,24 +508,37 @@ const createCorporateCustomer = () => {
                   />
                 </div>
                 <div className="my-20">
-                  <Accordion className={`bg-primary-25 shadow-0 border-0 ${!expanded ? "bg-primary-25" : "bg-primary-700"}`}>
+                  <Accordion
+                    className={`bg-primary-25 shadow-0 border-0 ${
+                      !expanded ? "bg-primary-25" : "bg-primary-700"
+                    }`}
+                  >
                     <AccordionSummary
                       expandIcon={
                         !expanded ? (
                           <IoMdAdd className="icon-size-20" />
                         ) : (
-                          <FiMinus className={`icon-size-20 ${!expanded ? "" : "text-white"}`} />
+                          <FiMinus
+                            className={`icon-size-20 ${
+                              !expanded ? "" : "text-white"
+                            }`}
+                          />
                         )
                       }
                       onClick={() => setExpanded(!expanded)}
                       id="panel1a-header"
                     >
-                      <div className={`subtitle3 flex flex-row items-center gap-10 ${!expanded ? 'text-MonochromeGray-700' : 'text-white'}`}>
+                      <div
+                        className={`subtitle3 flex flex-row items-center gap-10 ${
+                          !expanded ? "text-MonochromeGray-700" : "text-white"
+                        }`}
+                      >
                         {t("label:shippingInformation")}
-                        {sameAddress === true || dirtyFields.shippingAddress &&
+                        {sameAddress === true ||
+                        (dirtyFields.shippingAddress &&
                           dirtyFields.shippingZip &&
                           dirtyFields.shippingCity &&
-                          dirtyFields.shippingCountry ? (
+                          dirtyFields.shippingCountry) ? (
                           <BsFillCheckCircleFill className="icon-size-16 text-teal-300" />
                         ) : (
                           <BsFillCheckCircleFill className="icon-size-16 text-MonochromeGray-50" />
@@ -520,7 +583,11 @@ const createCorporateCustomer = () => {
                                         disabled={sameAddress}
                                         error={!!errors.shippingAddress}
                                         helperText={
-                                            errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
+                                          errors?.shippingAddress?.message
+                                            ? t(
+                                                `validation:${errors?.shippingAddress?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -543,12 +610,18 @@ const createCorporateCustomer = () => {
                                         {...field}
                                         label={t("label:zipCode")}
                                         type="number"
-                                        onWheel={event => { event.target.blur()}}
+                                        onWheel={(event) => {
+                                          event.target.blur();
+                                        }}
                                         autoComplete="off"
                                         disabled={sameAddress}
                                         error={!!errors.shippingZip}
                                         helperText={
-                                            errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
+                                          errors?.shippingZip?.message
+                                            ? t(
+                                                `validation:${errors?.shippingZip?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth
@@ -575,7 +648,11 @@ const createCorporateCustomer = () => {
                                       disabled={sameAddress}
                                       error={!!errors.shippingCity}
                                       helperText={
-                                          errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
+                                        errors?.shippingCity?.message
+                                          ? t(
+                                              `validation:${errors?.shippingCity?.message}`
+                                            )
+                                          : ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -645,24 +722,34 @@ const createCorporateCustomer = () => {
                     </AccordionDetails>
                   </Accordion>
 
-                  <Accordion className={`${!expandedPanel2 ? "bg-primary-25" : "bg-primary-700"
-                    } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}>
+                  <Accordion
+                    className={`${
+                      !expandedPanel2 ? "bg-primary-25" : "bg-primary-700"
+                    } mt-20 bg-primary-25 shadow-0 border-0 custom-accordion`}
+                  >
                     <AccordionSummary
                       expandIcon={
                         !expandedPanel2 ? (
                           <IoMdAdd className="icon-size-20" />
                         ) : (
-                          <FiMinus className={`icon-size-20 ${!expandedPanel2 ? "" : "text-white"}`} />
+                          <FiMinus
+                            className={`icon-size-20 ${
+                              !expandedPanel2 ? "" : "text-white"
+                            }`}
+                          />
                         )
                       }
                       onClick={() => setExpandedPanel2(!expandedPanel2)}
                       id="panel2a-header"
                     >
-                      <div className={`subtitle3  flex gap-10 my-auto ${!expandedPanel2
+                      <div
+                        className={`subtitle3  flex gap-10 my-auto ${
+                          !expandedPanel2
                             ? "text-MonochromeGray-700"
                             : "text-white"
                         }`}
-                      >{t("label:additionalContacts")}
+                      >
+                        {t("label:additionalContacts")}
                         {dirtyFields.fullName &&
                         dirtyFields.designation &&
                         dirtyFields.phone &&
@@ -700,7 +787,13 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.fullName}
-                                  helperText={errors?.fullName?.message ? t(`validation:${errors?.fullName?.message}`) : ""}
+                                  helperText={
+                                    errors?.fullName?.message
+                                      ? t(
+                                          `validation:${errors?.fullName?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   fullWidth
                                   // inputlabelprops={{
@@ -720,7 +813,13 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.designation}
-                                  helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
+                                  helperText={
+                                    errors?.designation?.message
+                                      ? t(
+                                          `validation:${errors?.designation?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   fullWidth
                                   // inputlabelprops={{
@@ -733,6 +832,18 @@ const createCorporateCustomer = () => {
                             />
                           </div>
                           <div className="form-pair-input gap-x-20">
+                            {/* <FrontPaymentPhoneInput
+                              control={control}
+                              defaultValue='no'
+                              disable={false}
+                              error={errors.phone}
+                              label="phone"
+                              name="phone"
+                              required = {false}
+                              trigger = {trigger}
+                              setValue = {setValue}
+                              setDialCode = {setDialCodePrimaryInfo}
+                            /> */}
                             <Controller
                               name="phone"
                               control={control}
@@ -772,7 +883,13 @@ const createCorporateCustomer = () => {
                                   type="email"
                                   autoComplete="off"
                                   error={!!errors.email}
-                                  helperText={errors?.email?.message ? t(`validation:${errors?.email?.message}`) : ""}
+                                  helperText={
+                                    errors?.email?.message
+                                      ? t(
+                                          `validation:${errors?.email?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   fullWidth
                                   // inputlabelprops={{
@@ -796,7 +913,13 @@ const createCorporateCustomer = () => {
                                   type="text"
                                   autoComplete="off"
                                   error={!!errors.notes}
-                                  helperText={errors?.notes?.message ? t(`validation:${errors?.notes?.message}`) : ""}
+                                  helperText={
+                                    errors?.notes?.message
+                                      ? t(
+                                          `validation:${errors?.notes?.message}`
+                                        )
+                                      : ""
+                                  }
                                   variant="outlined"
                                   fullWidth
                                   // inputlabelprops={{
@@ -844,7 +967,11 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.fullName}
-                                      helperText={errors?.fullName ? t(`validation:${errors?.fullName}`) : ""}
+                                      helperText={
+                                        errors?.fullName
+                                          ? t(`validation:${errors?.fullName}`)
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       // inputlabelprops={{
@@ -865,7 +992,13 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.designation}
-                                      helperText={errors?.designation?.message ? t(`validation:${errors?.designation?.message}`) : ""}
+                                      helperText={
+                                        errors?.designation?.message
+                                          ? t(
+                                              `validation:${errors?.designation?.message}`
+                                            )
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       // inputlabelprops={{
@@ -947,7 +1080,11 @@ const createCorporateCustomer = () => {
                                       type="text"
                                       autoComplete="off"
                                       error={!!errors?.notes}
-                                      helperText={errors?.message ? t(`validation:${errors?.message}`) : ""}
+                                      helperText={
+                                        errors?.message
+                                          ? t(`validation:${errors?.message}`)
+                                          : ""
+                                      }
                                       variant="outlined"
                                       fullWidth
                                       // inputlabelprops={{
