@@ -233,6 +233,10 @@ const paymentInformation = () => {
             response?.data?.customerDetails?.address?.country
               ? response?.data?.customerDetails?.address?.country
               : "";
+          PaymentDefaultValue.preferredLanguage =
+              response?.data?.customerDetails?.preferredLanguage
+                  ? response?.data?.customerDetails?.preferredLanguage
+                  : "";
           setCustomData({
             ...customData,
             customerType:
@@ -755,6 +759,7 @@ const paymentInformation = () => {
                                 label="preferredLanguage"
                                 required={true}
                                 disable={false}
+                                // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                             />
                           </div>
                         </div>

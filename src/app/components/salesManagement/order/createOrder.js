@@ -2171,9 +2171,9 @@ const createOrder = () => {
                                     setValue("billingCountry", data.country);
                                     setValue(
                                       "preferredLanguage",
-                                      data.preferredLanguage
+                                      data?.preferredLanguage
                                     );
-                                    CreateOrderDefaultValue.preferredLanguage = data.preferredLanguage;
+                                    CreateOrderDefaultValue.preferredLanguage = data?.preferredLanguage;
                                     data.type === "Corporate"
                                       ? setCustomData({
                                           ...customData,
@@ -2196,6 +2196,7 @@ const createOrder = () => {
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
                                     setValue("billingCountry", "");
+                                    setValue("preferredLanguage", "");
                                     // setSelectedFromList(null);
                                   }
                                   return onChange(data);
@@ -2644,6 +2645,7 @@ const createOrder = () => {
                                   ? watch("preferredLanguage")
                                   : ""
                               }
+                              isOrder = {true}
                             />
                           </div>
                         </div>

@@ -56,7 +56,6 @@ const createPrivateCustomer = () => {
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = (values) => {
-    console.log(values);
     setLoading(true);
     const preparedPayload =
       CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress, dialCode);
