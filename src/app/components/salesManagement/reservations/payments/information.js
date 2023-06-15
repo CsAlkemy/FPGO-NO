@@ -100,6 +100,7 @@ const PaymentConfirmation = () => {
           customerUuid: reservationDetails?.customerDetails?.uuid
             ? reservationDetails?.customerDetails?.uuid
             : null,
+          preferredLanguage: "no",
         }
       : {
           ...values,
@@ -108,6 +109,7 @@ const PaymentConfirmation = () => {
           customerUuid: reservationDetails?.customerDetails?.uuid
             ? reservationDetails?.customerDetails?.uuid
             : null,
+          preferredLanguage: "no",
         };
 
     OrderService.updateOrder(data)
@@ -518,7 +520,9 @@ const PaymentConfirmation = () => {
                                             : t("label:organizationId")
                                         }
                                         type="number"
-                                        onWheel={event => { event.target.blur()}}
+                                        onWheel={(event) => {
+                                          event.target.blur();
+                                        }}
                                         autoComplete="off"
                                         error={!!errors.orgIdOrPNumber}
                                         required={
