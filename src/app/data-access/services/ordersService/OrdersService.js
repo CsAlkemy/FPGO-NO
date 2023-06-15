@@ -481,7 +481,6 @@ class OrdersService {
         organizationId:
           params.customerType === "corporate" ? params.orgIdOrPNumber : null,
         address: { ...billingAddress },
-        preferredLanguage: "no",
       },
       // billingAddress,
       submitPayment: {

@@ -101,6 +101,7 @@ const PaymentConfirmation = () => {
           customerUuid: reservationDetails?.customerDetails?.uuid
             ? reservationDetails?.customerDetails?.uuid
             : null,
+          preferredLanguage: "no",
         }
       : {
           ...values,
@@ -109,6 +110,7 @@ const PaymentConfirmation = () => {
           customerUuid: reservationDetails?.customerDetails?.uuid
             ? reservationDetails?.customerDetails?.uuid
             : null,
+          preferredLanguage: "no",
         };
 
     OrderService.updateOrder(data)
