@@ -32,7 +32,10 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
-  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
 
   customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
@@ -111,7 +114,10 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
-  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
 
   customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
@@ -188,7 +194,10 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
-  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
   customerName: yup.string().required("youMustEnterCustomerName"),
   order: yup.array().of(
     yup.object().shape({
@@ -265,7 +274,10 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
-  preferredLanguage: yup.string().required("youMustEnterYourLanguage").nullable(),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
 
   order: yup.array().of(
     yup.object().shape({
@@ -359,7 +371,7 @@ export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
-  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
+  //preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
 });
 export const validateSchemaPaymentCheckout = yup.object().shape({
   phone: yup
@@ -384,7 +396,7 @@ export const validateSchemaPaymentCheckout = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
-  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
+  //preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
 });
 export const validateSchemaCreditCheckForCheckout = yup.object().shape({
   orgIdCreditCheck: yup

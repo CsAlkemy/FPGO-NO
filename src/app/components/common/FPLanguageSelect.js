@@ -17,7 +17,7 @@ export default function FrontPaymentLanguageSelect({
   error,
   disable,
   value,
-    isOrder
+  isOrder,
 }) {
   const { t } = useTranslation();
   const [languageList, setLanguageList] = useState([
@@ -39,39 +39,39 @@ export default function FrontPaymentLanguageSelect({
           <InputLabel id="demo-simple-select-label-role">
             {t(`label:${label}`)}
           </InputLabel>
-          {!!isOrder &&(
-              <Select
-                  {...field}
-                  labelId="demo-simple-select-label-role"
-                  id="demo-simple-select"
-                  label={t("label:preferredLanguage")}
-                  value={value}
-              >
-                {languageList.map((item, index) => {
-                  return (
-                      <MenuItem key={index} value={item.value}>
-                        {t(`label:${item?.title.toLowerCase()}`)}
-                      </MenuItem>
-                  );
-                })}
-              </Select>
+          {!!isOrder && (
+            <Select
+              {...field}
+              labelId="demo-simple-select-label-role"
+              id="demo-simple-select"
+              label={t("label:preferredLanguage")}
+              value={value}
+            >
+              {languageList.map((item, index) => {
+                return (
+                  <MenuItem key={index} value={item.value}>
+                    {t(`label:${item?.title.toLowerCase()}`)}
+                  </MenuItem>
+                );
+              })}
+            </Select>
           )}
-          {!isOrder &&(
-              <Select
-                  {...field}
-                  labelId="demo-simple-select-label-role"
-                  id="demo-simple-select"
-                  label={t("label:preferredLanguage")}
-                  defaultValue={value}
-              >
-                {languageList.map((item, index) => {
-                  return (
-                      <MenuItem key={index} value={item.value}>
-                        {t(`label:${item?.title.toLowerCase()}`)}
-                      </MenuItem>
-                  );
-                })}
-              </Select>
+          {!isOrder && (
+            <Select
+              {...field}
+              labelId="demo-simple-select-label-role"
+              id="demo-simple-select"
+              label={t("label:preferredLanguage")}
+              defaultValue={value}
+            >
+              {languageList.map((item, index) => {
+                return (
+                  <MenuItem key={index} value={item.value}>
+                    {t(`label:${item?.title.toLowerCase()}`)}
+                  </MenuItem>
+                );
+              })}
+            </Select>
           )}
 
           <FormHelperText>
