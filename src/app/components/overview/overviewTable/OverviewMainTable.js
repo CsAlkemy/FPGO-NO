@@ -39,15 +39,17 @@ import {
   customersListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
-  organizationWiseUsersOverview, payoutReportsListOverview,
+  organizationWiseUsersOverview,
+  payoutReportsListOverview,
   productsListOverview,
   refundRequestsOverview,
   subClientAdminOverview,
-  userListOverview
+  userListOverview,
+  reservationListOverview,
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
-import UtilsService from '../../../utils/UtilsService';
-import moment from 'moment';
+import UtilsService from "../../../utils/UtilsService";
+import moment from "moment";
 
 export default function OverviewMainTable(props) {
   const { t } = useTranslation();
@@ -71,7 +73,9 @@ export default function OverviewMainTable(props) {
         )
       : props.tableData
   );
-  const [rowsPerPage, setRowsPerPage] = useState(!props?.isMobileScreen ? 10 : props.tableData.length);
+  const [rowsPerPage, setRowsPerPage] = useState(
+    !props?.isMobileScreen ? 10 : props.tableData.length
+  );
   const [filteredData, setFilteredData] = useState([]);
   const [item, setItems] = useState(0);
   const navigate = useNavigate();
@@ -89,9 +93,7 @@ export default function OverviewMainTable(props) {
       setData(
         FuseUtils.filterArrayByString(
           // (props.tableName === refundRequestsOverview   || props.tableName === ordersListOverview)
-          filteredData.length
-            ? filteredData
-            : props.tableData,
+          filteredData.length ? filteredData : props.tableData,
           searchText
         )
       );
@@ -130,21 +132,17 @@ export default function OverviewMainTable(props) {
         break;
       case 1:
         setData(
-          props.tableData.filter(
-            (row) => {
-              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-              return preparedDate.getDate() === new Date().getDate()
-            }
-          )
-        )
+          props.tableData.filter((row) => {
+            const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+            return preparedDate.getDate() === new Date().getDate();
+          })
+        );
         setFilteredData(
-          props.tableData.filter(
-            (row) => {
-              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-              return preparedDate.getDate() === new Date().getDate()
-            }
-          )
-        )
+          props.tableData.filter((row) => {
+            const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+            return preparedDate.getDate() === new Date().getDate();
+          })
+        );
         break;
       case 2:
         const currentDate = moment();
@@ -152,33 +150,33 @@ export default function OverviewMainTable(props) {
         // const filtered = allDates.filter(date => moment(date).isSame(currentDate, 'week');
         setData(
           props.tableData.filter((row) => {
-            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(currentDate, 'week')
+            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(
+              currentDate,
+              "week"
+            );
           })
         );
         setFilteredData(
           props.tableData.filter((row) => {
-            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(currentDate, 'week')
+            return moment(new Date(UtilsService.prepareDate(row.reqOn))).isSame(
+              currentDate,
+              "week"
+            );
           })
         );
         break;
       case 3:
         setData(
-          props.tableData.filter(
-            (row) =>{
-              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-              return preparedDate.getMonth() ===
-                new Date().getMonth()
-            }
-          )
+          props.tableData.filter((row) => {
+            const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+            return preparedDate.getMonth() === new Date().getMonth();
+          })
         );
         setFilteredData(
-          props.tableData.filter(
-            (row) =>{
-              const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
-              return preparedDate.getMonth() ===
-                new Date().getMonth()
-            }
-          )
+          props.tableData.filter((row) => {
+            const preparedDate = new Date(UtilsService.prepareDate(row.reqOn));
+            return preparedDate.getMonth() === new Date().getMonth();
+          })
         );
         break;
     }
@@ -192,12 +190,16 @@ export default function OverviewMainTable(props) {
       case 1:
         // setData(props.tableData.filter((row) => row.role === "client"));
         setData(props.tableData.filter((row) => row.status === "Active"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Active")
+        );
         break;
       case 2:
         // setData(props.tableData.filter((row) => row.role === "sub-client"));
         setData(props.tableData.filter((row) => row.status === "Inactive"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Inactive")
+        );
         break;
       // case 3:
       //   setData(props.tableData.filter((row) => row.status === "Active"));
@@ -265,11 +267,15 @@ export default function OverviewMainTable(props) {
         break;
       case 1:
         setData(props.tableData.filter((row) => row.status === "Active"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Active")
+        );
         break;
       case 2:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Inactive")
+        );
         break;
     }
   };
@@ -290,19 +296,27 @@ export default function OverviewMainTable(props) {
         break;
       case 1:
         setData(props.tableData.filter((row) => row.type === "Corporate"));
-        setFilteredData(props.tableData.filter((row) => row.type === "Corporate"));
+        setFilteredData(
+          props.tableData.filter((row) => row.type === "Corporate")
+        );
         break;
       case 2:
         setData(props.tableData.filter((row) => row.type === "Private"));
-        setFilteredData(props.tableData.filter((row) => row.type === "Private"));
+        setFilteredData(
+          props.tableData.filter((row) => row.type === "Private")
+        );
         break;
       case 3:
         setData(props.tableData.filter((row) => row.status === "Active"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Active")
+        );
         break;
       case 4:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Inactive")
+        );
         break;
     }
   };
@@ -323,11 +337,15 @@ export default function OverviewMainTable(props) {
         break;
       case 3:
         setData(props.tableData.filter((row) => row.stage === "invoiced"));
-        setFilteredData(props.tableData.filter((row) => row.stage === "invoiced"));
+        setFilteredData(
+          props.tableData.filter((row) => row.stage === "invoiced")
+        );
         break;
       case 4:
         setData(props.tableData.filter((row) => row.stage === "expired"));
-        setFilteredData(props.tableData.filter((row) => row.stage === "expired"));
+        setFilteredData(
+          props.tableData.filter((row) => row.stage === "expired")
+        );
         break;
     }
   };
@@ -340,11 +358,15 @@ export default function OverviewMainTable(props) {
         break;
       case 1:
         setData(props.tableData.filter((row) => row.type === "Private"));
-        setFilteredData(props.tableData.filter((row) => row.type === "Private"));
+        setFilteredData(
+          props.tableData.filter((row) => row.type === "Private")
+        );
         break;
       case 2:
         setData(props.tableData.filter((row) => row.type === "Corporate"));
-        setFilteredData(props.tableData.filter((row) => row.type === "Corporate"));
+        setFilteredData(
+          props.tableData.filter((row) => row.type === "Corporate")
+        );
         break;
     }
   };
@@ -357,11 +379,15 @@ export default function OverviewMainTable(props) {
         break;
       case 1:
         setData(props.tableData.filter((row) => row.status === "Active"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Active")
+        );
         break;
       case 2:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Inactive")
+        );
         break;
     }
   };
@@ -374,11 +400,15 @@ export default function OverviewMainTable(props) {
         break;
       case 1:
         setData(props.tableData.filter((row) => row.status === "Active"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Active")
+        );
         break;
       case 2:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Inactive")
+        );
         break;
     }
   };
@@ -391,11 +421,15 @@ export default function OverviewMainTable(props) {
         break;
       case 1:
         setData(props.tableData.filter((row) => row.status === "Active"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Active"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Active")
+        );
         break;
       case 2:
         setData(props.tableData.filter((row) => row.status === "Inactive"));
-        setFilteredData(props.tableData.filter((row) => row.status === "Inactive"));
+        setFilteredData(
+          props.tableData.filter((row) => row.status === "Inactive")
+        );
         break;
     }
   };
@@ -522,25 +556,100 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const reserveationListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "sent")
+        );
+        break;
+      case 2:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "reserved"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "reserved"
+          )
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "completed"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "completed"
+          )
+        );
+        break;
+      case 4:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "expired"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "expired"
+          )
+        );
+        break;
+      case 5:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "cancelled"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "cancelled"
+          )
+        );
+        break;
+    }
+  };
+
   const payoutListTableTabPanelsData = (event, newValue) => {
     switch (newValue) {
       case 0:
         setData(props.tableData);
         break;
       case 1:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "active"));
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "active")
+        );
         setFilteredData(
           props.tableData.filter((row) => row.status.toLowerCase() === "active")
         );
         break;
       case 2:
-        setData(props.tableData.filter((row) => row.status.toLowerCase() === "inactive"));
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "inactive"
+          )
+        );
         setFilteredData(
-          props.tableData.filter((row) => row.status.toLowerCase() === "inactive")
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "inactive"
+          )
         );
         break;
     }
   };
+
+  // const reserveationListTableTabPanelsData = (event, newValue) => {};
 
   const handleTabChange = (event, newValue) => {
     setPage(0);
@@ -596,6 +705,9 @@ export default function OverviewMainTable(props) {
         break;
       case refundRequestsOverview:
         refundRequestsListTableTabPanelsData(event, newValue);
+        break;
+      case reservationListOverview:
+        reserveationListTableTabPanelsData(event, newValue);
         break;
       case payoutReportsListOverview:
         payoutListTableTabPanelsData(event, newValue);
@@ -744,11 +856,14 @@ export default function OverviewMainTable(props) {
       case ordersListOverview:
         navigate(`/create-order/details/${info.uuid}`);
         break;
+      case reservationListOverview:
+        navigate(`/reservations-view/details/${info.uuid}`);
+        break;
       case payoutReportsListOverview:
         navigate(`/reports/payouts/${info.uuid}`, {
           state: {
             orgName: info.name,
-          }
+          },
         });
         break;
     }
@@ -858,7 +973,8 @@ export default function OverviewMainTable(props) {
                       onClick={() => {
                         if (
                           props.tableName !== ordersListOverview &&
-                          props.tableName !== customerOrdersListOverview
+                          props.tableName !== customerOrdersListOverview &&
+                          props.tableName !== reservationListOverview
                         )
                           handleTableRowClick(row);
                       }}
@@ -979,7 +1095,8 @@ export default function OverviewMainTable(props) {
                                   props.tableName !== ordersListOverview &&
                                   props.tableName !==
                                     customerOrdersListOverview &&
-                                  props.tableName !== refundRequestsOverview
+                                  props.tableName !== refundRequestsOverview &&
+                                  props.tableName !== reservationListOverview
                                 )
                                   handleTableRowClick(row);
                               }}

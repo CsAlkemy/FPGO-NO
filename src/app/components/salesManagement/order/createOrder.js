@@ -65,6 +65,7 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 const createOrder = () => {
   const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
@@ -207,7 +208,6 @@ const createOrder = () => {
   const watchAllFields = watch();
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
-
   const searchCustomerOnFocus = (e) => {
     const searchByPhone =
       customersList.filter((customer) =>
@@ -247,7 +247,7 @@ const createOrder = () => {
         totalDiscount,
         grandTotal,
       },
-      dialCode
+      dialCode,
     });
     createOrder(data).then((response) => {
       setLoading(false);
@@ -505,13 +505,14 @@ const createOrder = () => {
                     ? row?.orgIdOrPNumber
                     : null,
                   email: row?.email ? row?.email : null,
-                  phone: row?.phone ? row.countryCode+row?.phone : null,
+                  phone: row?.phone ? row.countryCode + row?.phone : null,
                   type: row.type,
                   street: row?.street,
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
                   countryCode: row?.countryCode,
+                  preferredLanguage: row?.preferredLanguage,
                   searchString:
                     row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
@@ -958,7 +959,9 @@ const createOrder = () => {
                                 label="Qty"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 required
                                 value={field.value || ""}
                                 autoComplete="off"
@@ -986,8 +989,10 @@ const createOrder = () => {
                                 // helperText={errors?.order?.[index]?.rate?.message}
                                 variant="outlined"
                                 required
-                                type='number'
-                                onWheel={event => { event.target.blur()}}
+                                type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
@@ -1005,7 +1010,9 @@ const createOrder = () => {
                                 label="Discount"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 value={field.value || ""}
                                 error={!!errors.discount}
@@ -1083,7 +1090,9 @@ const createOrder = () => {
                                   label="Tax"
                                   className="bg-white custom-input-height"
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -1328,7 +1337,9 @@ const createOrder = () => {
                             {...field}
                             className="bg-white custom-input-height"
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.quantity}
                             // helperText={
@@ -1352,8 +1363,10 @@ const createOrder = () => {
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
-                            type='number'
-                            onWheel={event => { event.target.blur()}}
+                            type="number"
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             variant="outlined"
                             required
                             fullWidth
@@ -1372,7 +1385,9 @@ const createOrder = () => {
                             //label="Discount"
                             className="bg-white custom-input-height"
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors.discount}
                             helperText={errors?.discount?.message}
@@ -1441,7 +1456,9 @@ const createOrder = () => {
                               className="bg-white custom-input-height"
                               // type="text"
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.tax}
                               helperText={errors?.order?.[index]?.tax?.message}
@@ -2100,7 +2117,7 @@ const createOrder = () => {
                           </div>
 
                           <span>
-                            {(watch("primaryPhoneNumber")?.length>0  &&
+                            {(watch("primaryPhoneNumber")?.length > 0 &&
                               dirtyFields.email &&
                               dirtyFields.customerName &&
                               dirtyFields.billingAddress &&
@@ -2152,6 +2169,11 @@ const createOrder = () => {
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
                                     setValue("billingCountry", data.country);
+                                    setValue(
+                                      "preferredLanguage",
+                                      data?.preferredLanguage
+                                    );
+                                    CreateOrderDefaultValue.preferredLanguage = data?.preferredLanguage;
                                     data.type === "Corporate"
                                       ? setCustomData({
                                           ...customData,
@@ -2174,6 +2196,7 @@ const createOrder = () => {
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
                                     setValue("billingCountry", "");
+                                    setValue("preferredLanguage", "");
                                     // setSelectedFromList(null);
                                   }
                                   return onChange(data);
@@ -2295,16 +2318,16 @@ const createOrder = () => {
                         <div className="w-full my-32">
                           <div className="form-pair-input gap-x-20">
                             <FrontPaymentPhoneInput
-                                control={control}
-                                defaultValue='no'
-                                disable={false}
-                                error={errors.primaryPhoneNumber}
-                                label="phone"
-                                name="primaryPhoneNumber"
-                                required = {true}
-                                trigger = {trigger}
-                                setValue = {setValue}
-                                setDialCode = {setDialCode}
+                              control={control}
+                              defaultValue="no"
+                              disable={false}
+                              error={errors.primaryPhoneNumber}
+                              label="phone"
+                              name="primaryPhoneNumber"
+                              required={true}
+                              trigger={trigger}
+                              setValue={setValue}
+                              setDialCode={setDialCode}
                             />
                             {/*<Controller*/}
                             {/*  name="primaryPhoneNumber"*/}
@@ -2365,7 +2388,9 @@ const createOrder = () => {
                             />
                           </div>
                           <div className="mt-32 sm:mt-0">
-                            <div className="form-pair-input gap-x-20">
+                            <div
+                              className="form-pair-input gap-x-20"
+                            >
                               <Controller
                                 name="customerName"
                                 control={control}
@@ -2399,7 +2424,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:organizationId")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.orgID}
                                       required
@@ -2417,7 +2444,7 @@ const createOrder = () => {
                                   )}
                                 />
                               )}
-                              {customData.customerType === "private" && (
+                              { customData.customerType === "private" && (
                                 <Controller
                                   name="pNumber"
                                   control={control}
@@ -2426,7 +2453,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:pNumber")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.pNumber}
                                       helperText={
@@ -2548,15 +2577,14 @@ const createOrder = () => {
                                   />
                                 )}
                               />
-                               <CountrySelect
-                                  control={control}
-                                  name={"billingCountry"}
-                                  label={"country"}
-                                  // placeholder={"country"}
-                                  required={true}
-                                  error={errors.billingCountry}
-                                />
-
+                              <CountrySelect
+                                control={control}
+                                name={"billingCountry"}
+                                label={"country"}
+                                // placeholder={"country"}
+                                required={true}
+                                error={errors.billingCountry}
+                              />
                               {/* <Controller
                                 name="billingCountry"
                                 control={control}
@@ -2606,6 +2634,20 @@ const createOrder = () => {
                                 )}
                               /> */}
                             </div>
+                            <FrontPaymentLanguageSelect
+                              error={errors.preferredLanguage}
+                              control={control}
+                              name="preferredLanguage"
+                              label="preferredLanguage"
+                              required={true}
+                              disable={false}
+                              value={
+                                watch("preferredLanguage")
+                                  ? watch("preferredLanguage")
+                                  : ""
+                              }
+                              isOrder = {true}
+                            />
                           </div>
                         </div>
                       </AccordionDetails>
@@ -2664,7 +2706,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:referenceNo")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.referenceNumber}
                                       helperText={
@@ -2846,7 +2890,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:internalReferenceNo")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.internalReferenceNo}
                                       helperText={

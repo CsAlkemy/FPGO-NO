@@ -264,6 +264,7 @@ function FuseSettings(props) {
                       {...field}
                       label={formControl.title}
                       type="number"
+                      onWheel={event => { event.target.blur()}}
                       InputLabelProps={{
                         shrink: true,
                       }}

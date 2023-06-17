@@ -587,16 +587,6 @@ const ClientDetails = () => {
   // TODO : turn on the flag based on the input field or we can omit that as it got validation
 
   const onSubmit = (values) => {
-    const primaryPhoneNumber = values?.primaryPhoneNumber
-      ? values.primaryPhoneNumber.split("+")
-      : null;
-    const billingPhoneNumber = values?.billingPhoneNumber
-      ? values.billingPhoneNumber.split("+")
-      : null;
-    const shippingPhoneNumber = values?.shippingPhoneNumber
-      ? values.shippingPhoneNumber.split("+")
-      : null;
-
     const msisdn = values?.primaryPhoneNumber
       ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
@@ -2416,7 +2406,6 @@ const ClientDetails = () => {
                                           event.target.blur();
                                         }}
                                         autoComplete="off"
-                                        value={field.value || ""}
                                         error={!!errors.costLimitforOrder}
                                         helperText={
                                           errors?.costLimitforOrder?.message
@@ -2449,12 +2438,11 @@ const ClientDetails = () => {
                                           event.target.blur();
                                         }}
                                         autoComplete="off"
-                                        value={field.value || ""}
-                                        error={!!errors.nvoicewithRegress}
+                                        error={!!errors.invoicewithRegress}
                                         helperText={
-                                          errors?.nvoicewithRegress?.message
+                                          errors?.invoicewithRegress?.message
                                             ? t(
-                                                `validation:${errors?.nvoicewithRegress?.message}`
+                                                `validation:${errors?.invoicewithRegress?.message}`
                                               )
                                             : ""
                                         }
@@ -2482,7 +2470,6 @@ const ClientDetails = () => {
                                           event.target.blur();
                                         }}
                                         autoComplete="off"
-                                        value={field.value || ""}
                                         error={!!errors.invoicewithoutRegress}
                                         helperText={
                                           errors?.invoicewithoutRegress?.message
@@ -2492,6 +2479,7 @@ const ClientDetails = () => {
                                             : ""
                                         }
                                         variant="outlined"
+                                        s
                                         fullWidth
                                         InputProps={{
                                           endAdornment: (
@@ -3118,9 +3106,8 @@ const ClientDetails = () => {
                                         event.target.blur();
                                       }}
                                       autoComplete="off"
-                                      value={field.value || ""}
                                       error={!!errors.fakturaB2B}
-                                      helperText={
+                                      hhelperText={
                                         errors?.fakturaB2B?.message
                                           ? t(
                                               `validation:${errors?.fakturaB2B?.message}`
@@ -3185,7 +3172,6 @@ const ClientDetails = () => {
                                       variant="outlined"
                                       required
                                       fullWidth
-                                      value={field.value || ""}
                                       InputProps={{
                                         endAdornment: (
                                           <InputAdornment position="start">

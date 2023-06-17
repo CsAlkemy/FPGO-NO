@@ -7,7 +7,8 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  FormControl, FormControlLabel,
+  FormControl,
+  FormControlLabel,
   FormHelperText,
   InputAdornment,
   InputLabel,
@@ -86,15 +87,20 @@ const createProducts = () => {
     setLoading(true);
     updateProduct(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate("/products/products-list");
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
       setLoading(false);
     });
   };
   // form end
+  console.log("isDifferentAccountNumber", isDifferentAccountNumber);
 
   useEffect(() => {
     if (isLoading) {
@@ -128,7 +134,10 @@ const createProducts = () => {
             setIsLoading(false);
           });
         if (userInfo?.user_data?.organization?.uuid) {
-          ClientService.vateRatesList(userInfo?.user_data?.organization?.uuid, true)
+          ClientService.vateRatesList(
+            userInfo?.user_data?.organization?.uuid,
+            true
+          )
             .then((res) => {
               if (res?.status_code === 200) {
                 setTaxes(res?.data);
@@ -192,10 +201,14 @@ const createProducts = () => {
   const changeProductStatus = async () => {
     updateProductStatus(info.uuid).then((response) => {
       if (response?.data?.status_code === 202) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate("/products/products-list");
       } else {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
       }
     });
   };
@@ -257,7 +270,9 @@ const createProducts = () => {
                       size="large"
                       type="submit"
                       loading={loading}
-                      disabled={user.role[0] === FP_ADMIN || !isDirty || !isValid }
+                      disabled={
+                        user.role[0] === FP_ADMIN || !isDirty || !isValid
+                      }
                       loadingPosition="center"
                     >
                       {t("label:updateProduct")}
@@ -458,8 +473,8 @@ const createProducts = () => {
                             helperText={
                               errors?.accountCode?.message
                                 ? t(
-                                  `validation:${errors?.accountCode?.message}`
-                                )
+                                    `validation:${errors?.accountCode?.message}`
+                                  )
                                 : ""
                             }
                             variant="outlined"
@@ -475,8 +490,8 @@ const createProducts = () => {
                         type="checkbox"
                         control={control}
                         render={({
-                                   field: { onChange, value, onBlur, ref },
-                                 }) => (
+                          field: { onChange, value, onBlur, ref },
+                        }) => (
                           <FormControl error={!!errors.differentAccountNumber}>
                             <FormControlLabel
                               // style={{ display: "table" }}
@@ -498,15 +513,15 @@ const createProducts = () => {
                               }
                               label={
                                 <div className="body3">
-                                  {t(
-                                    "label:differentAccountCode"
-                                  )}
+                                  {t("label:differentAccountCode")}
                                 </div>
                               }
                             />
                             <FormHelperText className="ml-32">
                               {errors?.differentAccountNumber?.message
-                                ? t(`validation:${errors?.differentAccountNumber?.message}`)
+                                ? t(
+                                    `validation:${errors?.differentAccountNumber?.message}`
+                                  )
                                 : ""}
                             </FormHelperText>
                           </FormControl>
@@ -695,7 +710,6 @@ const createProducts = () => {
                         {/*      label={t("label:costPerUnit")}*/}
                         {/*      className="bg-white"*/}
                         {/*      type="number"*/}
-                        {/*      onWheel={event => { event.target.blur()}}*/}
                         {/*      autoComplete="off"*/}
                         {/*      error={!!errors.cost}*/}
                         {/*      helperText={*/}

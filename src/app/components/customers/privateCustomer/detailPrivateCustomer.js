@@ -37,6 +37,7 @@ import Timeline from "./PrivateCustomerDetails/Timeline";
 import { useUpdatePrivateCustomerMutation } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const detailPrivateCustomer = (onSubmit = () => {}) => {
   const { t } = useTranslation();
@@ -63,11 +64,12 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
   const [updatePrivateCustomer] = useUpdatePrivateCustomerMutation();
 
   // form
-  const { control, formState, handleSubmit, reset, setValue, watch, trigger } = useForm({
-    mode: "onChange",
-    PrivateDefaultValue,
-    resolver: yupResolver(validateSchemaUpdatePrivateCustomer),
-  });
+  const { control, formState, handleSubmit, reset, setValue, watch, trigger } =
+    useForm({
+      mode: "onChange",
+      PrivateDefaultValue,
+      resolver: yupResolver(validateSchemaUpdatePrivateCustomer),
+    });
   const { isValid, dirtyFields, errors, isDirty } = formState;
 
   const billingAddress = watch("billingAddress") || "";
@@ -119,10 +121,11 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
         : "";
       PrivateDefaultValue.customerEmail = info?.email ? info.email : "";
       PrivateDefaultValue.customerName = info?.name ? info.name : "";
+      PrivateDefaultValue.preferredLanguage = info.preferredLanguage ? info.preferredLanguage : "",
       PrivateDefaultValue.primaryPhoneNumber =
         info?.countryCode && info?.msisdn ? info.countryCode + info.msisdn : "";
-      setDialCode(info.countryCode)
-      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "")
+      setDialCode(info.countryCode);
+      setValue("primaryPhoneNumber", info.countryCode + info.msisdn || "");
       PrivateDefaultValue.billingAddress = info?.addresses?.billing?.street
         ? info.addresses.billing.street
         : "";
@@ -171,7 +174,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
         sameAddress,
         billingUUID,
         shippingUUID,
-          dialCode
+        dialCode
       );
     updatePrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 202) {
@@ -262,7 +265,8 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                     type="submit"
                     disabled={
                       user.role[0] === FP_ADMIN ||
-                      (!isDirty && sameAddress === initialSameAddressRef) || !isValid
+                      (!isDirty && sameAddress === initialSameAddressRef) ||
+                      !isValid
                     }
                     loading={loading}
                     loadingPosition="center"
@@ -345,16 +349,16 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                 )}
                               />
                               <FrontPaymentPhoneInput
-                                  control={control}
-                                  defaultValue='no'
-                                  disable={false}
-                                  error={errors.primaryPhoneNumber}
-                                  label="phone"
-                                  name="primaryPhoneNumber"
-                                  required = {true}
-                                  trigger = {trigger}
-                                  setValue = {setValue}
-                                  setDialCode = {setDialCode}
+                                control={control}
+                                defaultValue="no"
+                                disable={false}
+                                error={errors.primaryPhoneNumber}
+                                label="phone"
+                                name="primaryPhoneNumber"
+                                required={true}
+                                trigger={trigger}
+                                setValue={setValue}
+                                setDialCode={setDialCode}
                               />
                               {/*<Controller*/}
                               {/*  name="primaryPhoneNumber"*/}
@@ -397,7 +401,13 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     type="text"
                                     autoComplete="off"
                                     error={!!errors.customerName}
-                                    helperText={errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""}
+                                    helperText={
+                                      errors?.customerName?.message
+                                        ? t(
+                                            `validation:${errors?.customerName?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     fullWidth
                                     required
@@ -416,7 +426,13 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     type="email"
                                     autoComplete="off"
                                     error={!!errors.customerEmail}
-                                    helperText={errors?.customerEmail?.message ? t(`validation:${errors?.customerEmail?.message}`) : ""}
+                                    helperText={
+                                      errors?.customerEmail?.message
+                                        ? t(
+                                            `validation:${errors?.customerEmail?.message}`
+                                          )
+                                        : ""
+                                    }
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -425,7 +441,7 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                 )}
                               />
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 mt-40">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 mt-40 gap-x-32 gap-y-32">
                               <Controller
                                 name="pNumber"
                                 control={control}
@@ -435,7 +451,6 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     label={t("label:pNumber")}
                                     className="bg-white"
                                     type="number"
-                                    onWheel={event => { event.target.blur()}}
                                     autoComplete="off"
                                     error={!!errors.pNumber}
                                     helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
@@ -444,6 +459,15 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                     value={field.value || ""}
                                   />
                                 )}
+                              />
+                              <FrontPaymentLanguageSelect
+                                  error={errors.preferredLanguage}
+                                  control={control}
+                                  name="preferredLanguage"
+                                  label="preferredLanguage"
+                                  required={true}
+                                  disable={false}
+                                  value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                               />
                             </div>
                           </div>
@@ -486,7 +510,13 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.billingAddress}
-                                          helperText={errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""}
+                                          helperText={
+                                            errors?.billingAddress?.message
+                                              ? t(
+                                                  `validation:${errors?.billingAddress?.message}`
+                                                )
+                                              : ""
+                                          }
                                           variant="outlined"
                                           required
                                           fullWidth
@@ -507,7 +537,13 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                           type="text"
                                           autoComplete="off"
                                           error={!!errors.billingZip}
-                                          helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
+                                          helperText={
+                                            errors?.billingZip?.message
+                                              ? t(
+                                                  `validation:${errors?.billingZip?.message}`
+                                                )
+                                              : ""
+                                          }
                                           variant="outlined"
                                           fullWidth
                                           required
@@ -528,7 +564,13 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                         type="text"
                                         autoComplete="off"
                                         error={!!errors.billingCity}
-                                        helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}                                      
+                                        helperText={
+                                          errors?.billingCity?.message
+                                            ? t(
+                                                `validation:${errors?.billingCity?.message}`
+                                              )
+                                            : ""
+                                        }
                                         variant="outlined"
                                         fullWidth
                                         required
@@ -536,19 +578,20 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                       />
                                     )}
                                   />
-                                    <CountrySelect
-                                      control={control}
-                                      name={"billingCountry"}
-                                      label= {'country'}
-                                      placeholder={"country"}
-                                      required = {true}
-                                      error = {errors.billingCountry}
-                                      defaultValue = {
-                                        info?.addresses &&
+                                  <CountrySelect
+                                    control={control}
+                                    name={"billingCountry"}
+                                    label={"country"}
+                                    placeholder={"country"}
+                                    required={true}
+                                    error={errors.billingCountry}
+                                    defaultValue={
+                                      (info?.addresses &&
                                         info?.addresses?.billing &&
-                                        info?.addresses?.billing?.country || 'Norway'
-                                      }
-                                    />
+                                        info?.addresses?.billing?.country) ||
+                                      "Norway"
+                                    }
+                                  />
                                   {/* <Controller
                                     name="billingCountry"
                                     control={control}
@@ -724,6 +767,9 @@ const detailPrivateCustomer = (onSubmit = () => {}) => {
                                                 {...field}
                                                 label={t("label:zipCode")}
                                                 type="number"
+                                                onWheel={(event) => {
+                                                  event.target.blur();
+                                                }}
                                                 autoComplete="off"
                                                 disabled={sameAddress}
                                                 error={!!errors.shippingZip}

@@ -34,6 +34,7 @@ import { usePaymentScreenCreditCheckMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import CountrySelect from "../../common/countries";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -130,6 +131,7 @@ const paymentInformation = () => {
           ...updatedData,
           ...customData,
           orderUuid,
+          preferredLanguage: values.preferredLanguage,
           customerUuid: orderDetails?.customerDetails?.uuid
             ? orderDetails?.customerDetails?.uuid
             : null,
@@ -138,6 +140,7 @@ const paymentInformation = () => {
           ...values,
           ...customData,
           orderUuid,
+          preferredLanguage: values.preferredLanguage,
           customerUuid: orderDetails?.customerDetails?.uuid
             ? orderDetails?.customerDetails?.uuid
             : null,
@@ -230,6 +233,10 @@ const paymentInformation = () => {
             response?.data?.customerDetails?.address?.country
               ? response?.data?.customerDetails?.address?.country
               : "";
+          PaymentDefaultValue.preferredLanguage =
+              response?.data?.customerDetails?.preferredLanguage
+                  ? response?.data?.customerDetails?.preferredLanguage
+                  : "";
           setCustomData({
             ...customData,
             customerType:
@@ -547,7 +554,9 @@ const paymentInformation = () => {
                                 />
                               </div>
                               <div className="">
-                                <div className="form-pair-input gap-x-20">
+                                <div
+                                  className="form-pair-input gap-x-20"
+                                >
                                   <Controller
                                     name="customerName"
                                     control={control}
@@ -573,35 +582,34 @@ const paymentInformation = () => {
                                     )}
                                   />
                                   <Controller
-                                    name="orgIdOrPNumber"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={
-                                          customData.customerType === "private"
-                                            ? t("label:pNumber")
-                                            : t("label:organizationId")
-                                        }
-                                        type="number"
-                                        onWheel={event => { event.target.blur()}}
-                                        autoComplete="off"
-                                        error={!!errors.orgIdOrPNumber}
-                                        required={
-                                          customData.customerType !== "private"
-                                        }
-                                        helperText={
-                                          errors?.orgIdOrPNumber?.message
-                                            ? t(
-                                                `validation:${errors?.orgIdOrPNumber?.message}`
-                                              )
-                                            : ""
-                                        }
-                                        variant="outlined"
-                                        fullWidth
-                                        value={field.value || ""}
-                                      />
-                                    )}
+                                      name="orgIdOrPNumber"
+                                      control={control}
+                                      render={({ field }) => (
+                                          <TextField
+                                              {...field}
+                                              label={
+                                                customData.customerType === "private"
+                                                    ? t("label:pNumber")
+                                                    : t("label:organizationId")
+                                              }
+                                              type="number"
+                                              autoComplete="off"
+                                              error={!!errors.orgIdOrPNumber}
+                                              required={
+                                                  customData.customerType !== "private"
+                                              }
+                                              helperText={
+                                                errors?.orgIdOrPNumber?.message
+                                                    ? t(
+                                                        `validation:${errors?.orgIdOrPNumber?.message}`
+                                                    )
+                                                    : ""
+                                              }
+                                              variant="outlined"
+                                              fullWidth
+                                              value={field.value || ""}
+                                          />
+                                      )}
                                   />
                                 </div>
                               </div>
@@ -745,6 +753,15 @@ const paymentInformation = () => {
                                 )}
                               /> */}
                             </div>
+                            <FrontPaymentLanguageSelect
+                                error={errors.preferredLanguage}
+                                control={control}
+                                name="preferredLanguage"
+                                label="preferredLanguage"
+                                required={true}
+                                disable={false}
+                                // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
+                            />
                           </div>
                         </div>
 
@@ -1051,8 +1068,8 @@ const paymentInformation = () => {
                   apiLoading ||
                   (customData.paymentMethod === "invoice" &&
                     ((orderDetails.type.toLowerCase() === "regular" &&
-                        orderDetails?.creditCheck &&
-                        !isCreditChecked) ||
+                      orderDetails?.creditCheck &&
+                      !isCreditChecked) ||
                       (orderDetails.type.toLowerCase() === "quick" &&
                         !Object.keys(updatedData).length &&
                         !orderDetails?.customerDetails?.address)))

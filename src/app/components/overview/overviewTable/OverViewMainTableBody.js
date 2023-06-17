@@ -11,10 +11,12 @@ import {
   customersListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
-  organizationWiseUsersOverview, payoutReportsListOverview,
+  organizationWiseUsersOverview,
+  payoutReportsListOverview,
   productsListOverview,
   refundRequestsOverview,
-  userListOverview
+  userListOverview,
+  reservationListOverview,
 } from "./TablesName";
 import Skeleton from "@mui/material/Skeleton";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -39,8 +41,10 @@ import DiscardConfirmModal from "../../common/confirmDiscard";
 import { useTranslation } from "react-i18next";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SendInvoiceModal from "../../salesManagement/quickOrder/sendInvoiceModal";
+import ReservationDropdown from "../../salesManagement/reservations/dropdown";
 
 export default function OverViewMainTableBody(props) {
+  //console.log(props);
   const { t } = useTranslation();
   const [openHigh, setOpenHigh] = useState(false);
   const [openModerate, setOpenModerate] = useState(false);
@@ -50,6 +54,7 @@ export default function OverViewMainTableBody(props) {
   const [openApprove, setOpenApprove] = useState(false);
   const [headerTitle, setHeaderTitle] = useState();
   const user = useSelector(selectUser);
+  const [amountBank, setAmountBank] = useState(null);
 
   const handleTooltipClose = () => {
     setOpenHigh(false);
@@ -65,10 +70,13 @@ export default function OverViewMainTableBody(props) {
 
   const handleModalOpen = (decision) => {
     setOpen(true);
+    setAmountBank(null);
     if (decision === "cancel") setHeaderTitle("Cancel Order");
     if (decision === "resend") setHeaderTitle("Resend Order");
     if (decision === "refund") setHeaderTitle("Send Refund");
     if (decision === "reject") setHeaderTitle("Reject Refund Request");
+    if (decision === "refundReservations")
+      setHeaderTitle("Refund from Reservation");
   };
   const handleSendInvoiceModalOpen = () => {
     setEditOpen(true);
@@ -126,11 +134,17 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+              <OverviewStatus
+                name="Active"
+                translationKey={props.row.translationKey || "active"}
+              />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+              <OverviewStatus
+                name="Inactive"
+                translationKey={props.row.translationKey || "inactive"}
+              />
             </TableCell>
           );
         } else {
@@ -146,11 +160,17 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+              <OverviewStatus
+                name="Active"
+                translationKey={props.row.translationKey || "active"}
+              />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+              <OverviewStatus
+                name="Inactive"
+                translationKey={props.row.translationKey || "inactive"}
+              />
             </TableCell>
           );
         } else {
@@ -174,11 +194,17 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+              <OverviewStatus
+                name="Active"
+                translationKey={props.row.translationKey || "active"}
+              />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+              <OverviewStatus
+                name="Inactive"
+                translationKey={props.row.translationKey || "inactive"}
+              />
             </TableCell>
           );
         } else if (rdt === "pricePerUnit") {
@@ -435,6 +461,111 @@ export default function OverViewMainTableBody(props) {
                   />
                 </TableCell>
               );
+            case "unpaid":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Unpaid"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "overdue":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Overdue"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "overpayment":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Overpayment"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "reminder":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Reminder"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "collection":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Collection"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "credited":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Credited"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "converted to account":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Converted to Account"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
           }
         } else if (rdt === "amount") {
           return (
@@ -455,7 +586,11 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "refundResend") {
           return props.row.refundResend === "Resend" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -489,7 +624,11 @@ export default function OverViewMainTableBody(props) {
             </TableCell>
           ) : props.row.refundResend === "Refund" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -522,7 +661,11 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title="Send Invoice"
@@ -552,7 +695,11 @@ export default function OverViewMainTableBody(props) {
           );
         } else if (rdt === "cancel") {
           return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title="Cancel Order"
@@ -582,7 +729,11 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title={`Resend Order`}
@@ -736,11 +887,17 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+              <OverviewStatus
+                name="Active"
+                translationKey={props.row.translationKey || "active"}
+              />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+              <OverviewStatus
+                name="Inactive"
+                translationKey={props.row.translationKey || "inactive"}
+              />
             </TableCell>
           );
         } else {
@@ -756,11 +913,17 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+              <OverviewStatus
+                name="Active"
+                translationKey={props.row.translationKey || "active"}
+              />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+              <OverviewStatus
+                name="Inactive"
+                translationKey={props.row.translationKey || "inactive"}
+              />
             </TableCell>
           );
         } else {
@@ -776,11 +939,17 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+              <OverviewStatus
+                name="Active"
+                translationKey={props.row.translationKey || "active"}
+              />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
-              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+              <OverviewStatus
+                name="Inactive"
+                translationKey={props.row.translationKey || "inactive"}
+              />
             </TableCell>
           );
         } else {
@@ -960,6 +1129,111 @@ export default function OverViewMainTableBody(props) {
                   />
                 </TableCell>
               );
+            case "unpaid":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Unpaid"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "overdue":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Overdue"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "overpayment":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Overpayment"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "reminder":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Reminder"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "collection":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Collection"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "credited":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Credited"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "converted to account":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Converted to Account"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
           }
           // return props.row.stage === "paid" ? (
           //   <TableCell
@@ -1041,7 +1315,11 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "refundResend") {
           return props.row.refundResend === "Resend" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -1077,7 +1355,11 @@ export default function OverViewMainTableBody(props) {
             </TableCell>
           ) : props.row.refundResend === "Refund" &&
             user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title={`${props.row.refundResend} Order`}
@@ -1110,7 +1392,11 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title="Send Invoice"
@@ -1140,7 +1426,11 @@ export default function OverViewMainTableBody(props) {
           );
         } else if (rdt === "cancel") {
           return props.row.isCancel && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title="Cancel Order"
@@ -1170,7 +1460,11 @@ export default function OverViewMainTableBody(props) {
               />
             </TableCell>
           ) : props.row.enableSendInvoice && user.role[0] !== FP_ADMIN ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              style={{ padding: "5px" }}
+            >
               <CustomTooltip
                 disableFocusListener
                 title={`Resend Order`}
@@ -1355,7 +1649,11 @@ export default function OverViewMainTableBody(props) {
         } else if (rdt === "cancel") {
           return (
             props.row.isCancel && (
-              <TableCell key={`${props.row.uuid}-${rdt}`} align="right" style={{padding: "5px"}}>
+              <TableCell
+                key={`${props.row.uuid}-${rdt}`}
+                align="right"
+                style={{ padding: "5px" }}
+              >
                 <CustomTooltip
                   disableFocusListener
                   title="Reject Refund Request"
@@ -1602,6 +1900,111 @@ export default function OverViewMainTableBody(props) {
                   />
                 </TableCell>
               );
+            case "unpaid":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Unpaid"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "overdue":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Overdue"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "overpayment":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Overpayment"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "reminder":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Reminder"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "collection":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Collection"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "credited":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Credited"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "converted to account":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Converted to Account"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
           }
         } else if (rdt === "amount") {
           return (
@@ -1638,16 +2041,207 @@ export default function OverViewMainTableBody(props) {
         if (rdt === "status") {
           return props.row.status === "Active" ? (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <OverviewStatus name="Active" translationKey={props.row.translationKey || 'active'} />
+              <OverviewStatus
+                name="Active"
+                translationKey={props.row.translationKey || "active"}
+              />
             </TableCell>
           ) : (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
-              <OverviewStatus name="Inactive" translationKey={props.row.translationKey || 'inactive'} />
+              <OverviewStatus
+                name="Inactive"
+                translationKey={props.row.translationKey || "inactive"}
+              />
             </TableCell>
           );
         } else {
           return (
             <TableCell key={`${props.row.uuid}-${rdt}`} align="left">
+              {props.row ? props.row[rdt] : <Skeleton variant="text" />}
+            </TableCell>
+          );
+        }
+      });
+
+    case reservationListOverview:
+      return props.rowDataFields.map((rdt) => {
+        if (rdt === "status") {
+          switch (props.row.status) {
+            case "sent":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Sent"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "expired":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Expired"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "cancelled":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Cancelled"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "completed":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Completed"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            case "reserved":
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Reserved"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+            default:
+              return (
+                <TableCell
+                  key={`${props.row.uuid}-${rdt}`}
+                  align="center"
+                  onClick={() => {
+                    props.rowClickAction(props.row);
+                  }}
+                >
+                  <OverviewStatus
+                    name="Reserved"
+                    translationKey={props.row.translationKey}
+                  />
+                </TableCell>
+              );
+          }
+        } else if (
+          rdt === "reservationAmount" ||
+          rdt === "reservedAmount" ||
+          rdt === "amountPaid" ||
+          rdt === "amountInBank"
+        ) {
+          // const rowVal =
+          //   rdt === "reservedAmount"
+          //     ? props.row["reservationAmount"]
+          //     : props.row[rdt];
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="right"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
+              {/* {JSON.stringify(props.row)} */}
+              {props.row ? (
+                `${t("label:nok")} ${ThousandSeparator(props.row[rdt])}`
+              ) : (
+                <Skeleton variant="text" />
+              )}
+            </TableCell>
+          );
+        } else if (rdt === "options") {
+          let refundableAmount =
+            props.row.capturedAmount - props.row.amountRefunded;
+          return user.role[0] === FP_ADMIN ? (
+            ""
+          ) : props.row.status.toLowerCase() === "completed" &&
+            refundableAmount > 0 ? (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+              <CustomTooltip
+                disableFocusListener
+                title={t("label:refundFromReservations")}
+                TransitionComponent={Zoom}
+                placement="bottom"
+                enterDelay={300}
+              >
+                <Box
+                  component="span"
+                  className="py-8 px-4 hover:border-primary-500"
+                  sx={resendRefundBoxSX}
+                  onClick={() => {
+                    handleModalOpen("refundReservations");
+                    setAmountBank(props.row.amountInBank);
+                  }}
+                >
+                  <UndoIcon style={{ paddingBottom: "3px" }} />
+                </Box>
+              </CustomTooltip>
+              <OrderModal
+                open={open}
+                setOpen={setOpen}
+                headerTitle={headerTitle}
+                orderId={props.row.id}
+                orderIdText={t("label:reservationId")}
+                orderName={props.row.customer}
+                orderAmount={props.row.reservedAmount}
+                customerPhone={props.row.phone}
+                customerEmail={props.row.email}
+                amountInBank={amountBank}
+                capturedAmount={props.row.capturedAmount}
+                refundableAmount={
+                  props.row.capturedAmount - props.row.amountRefunded
+                }
+              />
+            </TableCell>
+          ) : (
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="center">
+              <ReservationDropdown data={props.row} />
+            </TableCell>
+          );
+        } else {
+          return (
+            <TableCell
+              key={`${props.row.uuid}-${rdt}`}
+              align="left"
+              onClick={() => {
+                props.rowClickAction(props.row);
+              }}
+            >
               {props.row ? props.row[rdt] : <Skeleton variant="text" />}
             </TableCell>
           );

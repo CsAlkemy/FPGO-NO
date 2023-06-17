@@ -68,15 +68,14 @@ export default function CreateUsers() {
       ? validateSchemaCreateBusinessAdmin
       : validateSchemaGeneralAdmin;
 
-  const { control, formState, handleSubmit, reset, getValues, watch, trigger, setValue } = useForm(
-    {
+  const { control, formState, handleSubmit, reset, setValue, trigger, watch } =
+    useForm({
       mode: "onChange",
       defaultValues,
       resolver: yupResolver(schema),
-    }
-  );
-  const { isValid, dirtyFields, errors } = formState;
+    });
 
+  const { isValid, dirtyFields, errors } = formState;
   useEffect(() => {
     defaultValues.organization =
       info?.user_data?.user_role?.slug !== FP_ADMIN &&
@@ -126,7 +125,7 @@ export default function CreateUsers() {
     const preparedPayload = UserService.prepareCreateUserByRolePayload(
       values,
       type,
-        dialCode
+      dialCode
     );
     createUser(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
@@ -301,57 +300,18 @@ export default function CreateUsers() {
                           />
                         )}
                       />
-                        <FrontPaymentPhoneInput
-                            control={control}
-                            defaultValue='no'
-                            disable={false}
-                            error={errors.phoneNumber}
-                            label="phone"
-                            name="phoneNumber"
-                            required = {true}
-                            trigger = {trigger}
-                            setValue = {setValue}
-                            setDialCode = {setDialCode}
-                        />
-                      {/*<Controller*/}
-                      {/*  name="phoneNumber"*/}
-                      {/*  control={control}*/}
-                      {/*  render={({ field }) => (*/}
-                      {/*    <FormControl*/}
-                      {/*      error={!!errors.phoneNumber}*/}
-                      {/*      required*/}
-                      {/*      fullWidth*/}
-                      {/*    >*/}
-                      {/*      <PhoneInput*/}
-                      {/*        {...field}*/}
-                      {/*        className = {*/}
-                      {/*          !!errors.phoneNumber*/}
-                      {/*            ? "input-phone-number-field border-1 rounded-md border-[#f44336]"*/}
-                      {/*            : "input-phone-number-field"*/}
-                      {/*        }*/}
-                      {/*        country="no"*/}
-                      {/*        enableSearch*/}
-                      {/*        autocompleteSearch*/}
-                      {/*        countryCodeEditable={false}*/}
-                      {/*        specialLabel={`${t("label:phone")}*`}*/}
-                      {/*        onBlur={handleOnBlurGetDialCode}*/}
-                      {/*      />*/}
-                      {/*      <FormHelperText>*/}
-                      {/*        {errors?.phoneNumber?.message*/}
-                      {/*          ? t(*/}
-                      {/*              `validation:${errors?.phoneNumber?.message}`*/}
-                      {/*            )*/}
-                      {/*          : ""}*/}
-                      {/*        /!*{watch("phoneNumber").length === 2 && (*!/*/}
-                      {/*        /!*  <span className="text-red-500">*!/*/}
-                      {/*        /!*    {" "}*!/*/}
-                      {/*        /!*    {t("validation:youMustEnterYourPhoneNumber")}*!/*/}
-                      {/*        /!*  </span>*!/*/}
-                      {/*        /!*)}*!/*/}
-                      {/*      </FormHelperText>*/}
-                      {/*    </FormControl>*/}
-                      {/*  )}*/}
-                      {/*/>*/}
+                      <FrontPaymentPhoneInput
+                        control={control}
+                        defaultValue="no"
+                        disable={false}
+                        error={errors.phoneNumber}
+                        label="phone"
+                        name="phoneNumber"
+                        required={true}
+                        trigger={trigger}
+                        setValue={setValue}
+                        setDialCode={setDialCode}
+                      />
                       {(type === BUSINESS_ADMIN || type === GENERAL_USER) && (
                         <Controller
                           name="organization"

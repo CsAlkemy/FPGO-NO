@@ -1,0 +1,236 @@
+.reservation-create-form .header-click-to-action,
+.reservation-details-page .header-click-to-action {
+  @apply sm:px-20 px-0;
+}
+.reservation-create-form .create-order-date-container {
+  @apply grid grid-cols-1 md:grid-cols-4 px-0;
+  /* @apply grid grid-cols-1 md:grid-cols-3 gap-20 w-full my-20 px-10; */
+}
+.reservation-details-page .create-order-date-container {
+  @apply grid grid-cols-1 md:grid-cols-4 px-0;
+}
+.lg-blue-btn {
+  @apply rounded-4 min-w-120 border-2 border-none bg-primary-50 flex my-auto;
+}
+.reservation-create-form {
+  padding-bottom: 50px;
+}
+.create-customer-modal .MuiDialog-container {
+  display: block;
+}
+.reservation-create-form .product-list-grid-container {
+  grid-template-columns: 26% 20% 20% 11% 15% 6%;
+}
+.charge-modal .product-list-grid-container {
+  grid-template-columns: 25% 20% 20% 11% 14% 6%;
+}
+.charge-modal .button-group {
+  border: none;
+  padding-top: 0;
+}
+.reservation-details-page .product-list-grid-container {
+  grid-template-columns: 26% 20% 20% 11% 17%;
+}
+.reservation-create-form .customer-section {
+  max-width: 510px;
+}
+.box {
+  border: 1px solid #e8e8e8;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  padding: 16px 16px;
+}
+.customer-selection-box {
+  padding: 32px 16px;
+}
+.sec-sub-header {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.33;
+  padding-bottom: 6px;
+}
+.customer-selection-box h5 {
+  padding-bottom: 5px;
+}
+.body3x {
+  font-size: 14px !important;
+  font-weight: 600;
+}
+.lg-blue-btn {
+  color: #00617c;
+}
+.lg-dark-blue-btn {
+  background-color: #0088ae;
+  color: #ffffff;
+  min-width: 156px;
+}
+.lg-dark-blue-btn:hover {
+  color: #ffffff;
+  background-color: rgb(40, 128, 152);
+}
+.body-p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1d1f1f;
+  font-family: "LatoRegular";
+}
+.has-icon {
+  position: relative;
+}
+.has-icon .close-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 99;
+  display: inline-block;
+  cursor: pointer;
+}
+.dialogue-btn-container {
+  padding: 0 24px 20px 24px;
+}
+.search-customer-order-create {
+  position: relative;
+}
+.search-customer-order-create .search-icon {
+  display: inline-block;
+  position: absolute;
+  right: 17px;
+  top: 28%;
+  z-index: 98;
+  opacity: 0.5;
+}
+.search-customer-order-create .MuiAutocomplete-hasClearIcon + .search-icon {
+  display: none;
+}
+.reservation-details-page .create-order-send-order-conf {
+  padding-left: 0;
+  padding-right: 0;
+}
+.reserve-log-sidebar {
+  background: #f7f7f7;
+  padding: 12px;
+}
+.action-button {
+  -webkit-border-radius: 0.4rem;
+  border-radius: 0.4rem;
+  border-width: 1px;
+  border: 1px solid #e8e8e8;
+  width: 100%;
+  margin-top: 12px;
+  height: 56px;
+  max-height: unset;
+}
+.amount-section {
+  padding: 6px 16px 6px 0;
+}
+.amount-section-inner {
+  background: #f7f7f7;
+  padding: 8px;
+}
+.amount-section .amount-col {
+  padding: 12px;
+  background: #fff;
+  -webkit-box-shadow: inset 1px 0px 0px 0px #e9eaeb;
+  box-shadow: inset 1px 0px 0px 0px #e9eaeb;
+  width: 25%;
+}
+.amount-section .amount-reserved-col {
+  /* margin-right: 12px;
+    border: 1px solid #323434; */
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+.amount-section .amount-reserved-col {
+  -webkit-box-shadow: unset;
+  box-shadow: unset;
+}
+.amount-col .subtitle3 {
+  margin-bottom: 6px;
+  color: #838585;
+}
+.amount-col .subtitle1 {
+  color: #323434;
+  font-family: LatoRegular;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+.charge-modal .md\:min-w-lg {
+  max-width: 100%;
+}
+.charge-modal form[name="modalForm"] {
+  padding-top: 0;
+}
+.refund-modal form {
+  padding-top: 5px;
+}
+.refund-modal form .button-group {
+  margin-top: 0;
+  border: unset;
+}
+.refund-modal .order-amount-text {
+  border: unset;
+}
+.refund-trans-btn {
+  width: auto;
+  height: 36px;
+  background: #e6f3f7;
+  border: none;
+  color: #007c9e;
+}
+.Mui-disabled .MuiButton-startIcon {
+  opacity: 0.26;
+}
+.transparent-btn {
+  background-color: transparent;
+  border: 1px solid #e8e8e8;
+  color: #464949;
+}
+.button-container-product-mobile {
+  z-index: 9;
+}
+
+@media only screen and (min-width: 600px) {
+  .create-order-dialog .reservation-modal-inner {
+    min-width: 48rem;
+    max-width: 100%;
+  }
+  .charge-modal .md\:min-w-lg {
+    min-width: 1060px;
+  }
+  .reservation-create-form .button-container-product {
+    display: flex;
+  }
+}
+@media only screen and (min-width: 960px) {
+  .customer-info-section {
+    max-width: 532px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .amount-section .amount-col {
+    width: 50%;
+    margin-bottom: 8px;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .create-customer-modal .MuiDialog-container {
+    display: flex;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .amount-section {
+    padding: 6px 0px 6px 0;
+  }
+}
+@media only screen and (max-width: 440px) {
+  .amount-section .amount-col {
+    width: 100%;
+  }
+  .lg-dark-blue-btn {
+    min-width: 120px;
+  }
+  .mobile-btn.w-1\/2 {
+    width: 100%;
+  }
+}

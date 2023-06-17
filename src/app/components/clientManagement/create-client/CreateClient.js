@@ -258,11 +258,6 @@ const CreateClient = () => {
         password: values.APTICpassword,
         name: values.name,
         fpReference: values.fpReference,
-        // creditLimit: parseFloat(values.creditLimitCustomer),
-        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
-        // costLimitForOrder: parseFloat(values.costLimitforOrder),
-        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
-        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
         creditLimit:
           customApticInfoData === "purchase"
             ? parseFloat(values.creditLimitCustomer)
