@@ -208,7 +208,7 @@ export default function VatReports() {
       <div className="payouts-header">
         <div>
           <div className="header6">{t("label:vatReports")}</div>
-          <div className="subtitle3" style={{ color: "#838585" }}>
+          <div className="subtitle3 mt-5" style={{ color: "#838585" }}>
             {t("label:selectDateRangeToDownloadVatReport")}
           </div>
         </div>
