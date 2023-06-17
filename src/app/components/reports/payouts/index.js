@@ -254,7 +254,7 @@ export default function Payouts() {
           </div>
         )}
         {!isYearView && (
-          <div>
+          <div className="w-full md:w-auto">
             <Paper className="flex items-center px-10 space-x-8  rounded-md border-1 shadow-0 w-full">
               <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
               <InputBase
@@ -272,7 +272,7 @@ export default function Payouts() {
           <div className="w-1/4">
             <p className="subtitle3 pl-24 pt-24">{dirData.length} {t("label:folders")}</p>
           </div>
-          <div className="payouts-parent-container grid grid-cols-2 lg:grid-cols-8 md:grid-cols-8 justify-items-center">
+          <div className="payouts-parent-container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-32 justify-items-center">
             {dirData.map((data) => {
               return (
                 <div
