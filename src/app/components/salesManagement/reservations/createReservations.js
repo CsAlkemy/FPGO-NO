@@ -80,6 +80,7 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const ReservationCreate = () => {
   const { t } = useTranslation();
@@ -2157,6 +2158,7 @@ const ReservationCreate = () => {
                         required={true}
                         error={errorsCustomer.billingCountry}
                       />
+
                       {/* <Controller
                         name="billingCountry"
                         control={controlCustomer}
