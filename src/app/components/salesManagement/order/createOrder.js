@@ -21,9 +21,9 @@ import {
   AccordionSummary,
   Autocomplete,
   Backdrop,
-  Button,
+  Button, Checkbox,
   CircularProgress,
-  FormControl,
+  FormControl, FormControlLabel,
   FormHelperText,
   Hidden,
   IconButton,
@@ -272,6 +272,9 @@ const createOrder = () => {
     //   enqueueSnackbar(e, { variant: "error" });
     // });
   };
+  useEffect(()=>{
+    setValue("invoiceAsPaymentOption", true )
+  },[])
 
   let defaultTaxValue;
 
@@ -958,7 +961,9 @@ const createOrder = () => {
                                 label="Qty"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 required
                                 value={field.value || ""}
                                 autoComplete="off"
@@ -1838,6 +1843,7 @@ const createOrder = () => {
                               isCeditCheck: false,
                               paymentMethod: ["invoice"],
                             });
+                            setValue("invoiceAsPaymentOption", false )
                           }}
                         >
                           {t("label:invoice")}
@@ -2013,6 +2019,57 @@ const createOrder = () => {
                       </Button>
                     </div>
                   </div> */}
+
+                  <Controller
+                    name="invoiceAsPaymentOption"
+                    type="checkbox"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl
+                        error={!!errors.invoiceAsPaymentOption}
+                        required
+                      >
+                        <FormControlLabel
+                          control={
+                            <div>
+                              <Checkbox
+                                {...field}
+                                defaultChecked={
+                                  customData?.orderBy !== "invoice"
+                                }
+                                required
+                                onBlur={()=>
+                                    setCustomData({
+                                      ...customData,
+                                      isCeditCheck: false,
+                                    })
+                              }
+                                disabled={
+                                  !(
+                                    (customData.orderBy === "sms" ||
+                                      customData.orderBy === "email") &&
+                                    customData.paymentMethod.includes("invoice")
+                                  )
+                                }
+                              />
+                            </div>
+                          }
+                          label={
+                            <div className="body3">
+                              {t("label:invoiceAsPaymentOption")}
+                            </div>
+                          }
+                        />
+                        <FormHelperText className="ml-32">
+                          {errors?.invoiceAsPaymentOption?.message
+                            ? t(
+                                `validation:${errors?.invoiceAsPaymentOption?.message}`
+                              )
+                            : ""}
+                        </FormHelperText>
+                      </FormControl>
+                    )}
+                  />
                   <div className="send-order-by mt-20">
                     <div className="caption2 text-MonochromeGray-300">
                       {t("label:creditCheckLabel")}
@@ -2042,6 +2099,7 @@ const createOrder = () => {
                             !(
                               (customData.orderBy === "sms" ||
                                 customData.orderBy === "email") &&
+                              watch("invoiceAsPaymentOption") &&
                               customData.paymentMethod.includes("invoice")
                             )
                           }

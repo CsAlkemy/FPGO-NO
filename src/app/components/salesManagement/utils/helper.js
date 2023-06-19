@@ -33,6 +33,7 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
   customerName: yup.string().required("youMustEnterCustomerName"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -110,6 +111,7 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
   customerName: yup.string().required("youMustEnterCustomerName"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -185,6 +187,7 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
   customerName: yup.string().required("youMustEnterCustomerName"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -260,6 +263,7 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -312,6 +316,7 @@ export const CreateOrderDefaultValue = {
   primaryPhoneNumber: "",
   email: "",
   customerName: "",
+  invoiceAsPaymentOption: true,
   // orgorPID : "",
   orgID: "",
   pNumber: "",

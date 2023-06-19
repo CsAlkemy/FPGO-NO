@@ -82,6 +82,12 @@ const paymentInformation = () => {
       logo: "assets/images/payment/frontPayment.png",
     },
   ]);
+  useEffect(()=>{
+    if (orderDetails) {
+      setPaymentMethodList(orderDetails?.invoiceAsPaymentOption === 1? paymentMethodList.filter(obj => obj.name !== "Invoice"): paymentMethodList) ;
+    }
+  },[orderDetails])
+
   let schema =
     customData?.customerType === "private"
       ? validateSchemaPaymentCheckout
