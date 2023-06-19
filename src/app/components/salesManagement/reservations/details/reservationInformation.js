@@ -42,7 +42,7 @@ import { ThousandSeparator } from "../../../../utils/helperFunctions";
 const ReservationInformation = ({ info }) => {
   const { t } = useTranslation();
   const [expandedPanelOrder, setExpandedPanelOrder] = React.useState(true);
-  const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
+  //const [addOrderIndex, setAddOrderIndex] = React.useState([0, 1, 2]);
   const [customerAddress, setCustomerAddress] = useState("");
 
   const formattedAddress = (info) => {
@@ -99,6 +99,11 @@ const ReservationInformation = ({ info }) => {
       setCustomerAddress(address);
     }
   }, [info]);
+  const addOrderIndex = Array.from(
+    { length: info.productList.length },
+    (value, index) => 0 + index
+  );
+
   return (
     <div>
       {!!info && (

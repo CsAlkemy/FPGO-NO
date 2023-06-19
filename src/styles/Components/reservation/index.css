@@ -189,6 +189,13 @@
 .button-container-product-mobile {
   z-index: 9;
 }
+.details-top-buttons button {
+  min-width: 132px;
+}
+.details-top-buttons .complete-btn {
+  justify-content: left;
+  /* min-width: 148px; */
+}
 
 @media only screen and (min-width: 600px) {
   .create-order-dialog .reservation-modal-inner {

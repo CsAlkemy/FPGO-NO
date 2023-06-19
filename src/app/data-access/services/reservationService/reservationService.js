@@ -136,6 +136,7 @@ class ReservationService {
               : null
             : null,
         address: billingAddress,
+        preferredLanguage: params.preferredLanguage,
       },
       //invoiceReferences,
       //internalReferences,

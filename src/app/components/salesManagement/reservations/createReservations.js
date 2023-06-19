@@ -80,6 +80,7 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const ReservationCreate = () => {
   const { t } = useTranslation();
@@ -262,6 +263,7 @@ const ReservationCreate = () => {
       zip: values.billingZip,
       country: values.billingCountry,
       type: customData.customerType,
+      preferredLanguage: values.preferredLanguage,
     };
     //console.log(customerUpData);
     setSelectedCustomer(customerUpData);
@@ -287,6 +289,8 @@ const ReservationCreate = () => {
   };
 
   const onSubmit = (values) => {
+    // console.log(values);
+    // return;
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
@@ -478,6 +482,9 @@ const ReservationCreate = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
+                  preferredLanguage: row?.preferredLanguage
+                    ? row?.preferredLanguage
+                    : "no",
                   searchString:
                     row?.name +
                     " ( " +
@@ -553,9 +560,11 @@ const ReservationCreate = () => {
     const monthIndex = nextMonth ? date.getMonth() + 1 : date.getMonth();
     const monthName = monthNames[monthIndex];
     const year = date.getFullYear();
-    return new Date(
+    //return `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const modifiedDate = new Date(
       `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     );
+    return modifiedDate.toString();
   };
 
   const openCustomarModal = (customerType = "") => {
@@ -594,6 +603,7 @@ const ReservationCreate = () => {
       setValueCustomer("billingZip", customerData.zip);
       setValueCustomer("billingCity", customerData.city);
       setValueCustomer("billingCountry", customerData.country);
+      setValueCustomer("preferredLanguage", customerData.preferredLanguage);
       if (customerData.type === "Corporate") {
         setCustomData({
           ...customData,
@@ -1030,6 +1040,7 @@ const ReservationCreate = () => {
                             <TextField
                               {...params}
                               onBlur={onBlur}
+                              //onChange={console.log(errors)}
                               type="date"
                               required
                               fullWidth
@@ -1859,7 +1870,7 @@ const ReservationCreate = () => {
               variant="contained"
               type="submit"
               className="rounded-full bg-primary-500 button2 py-5"
-              disabled={!isValid}
+              disabled={!isValid || !selectedCustomer || !watchFirstProductName}
               sx={{
                 "&.Mui-disabled": {
                   background: "#eaeaea",
@@ -1870,7 +1881,7 @@ const ReservationCreate = () => {
               loading={loading}
               loadingPosition="center"
             >
-              {t("label:sendOrder")}
+              {t("label:send")}
             </LoadingButton>
           </div>
         </Hidden>
@@ -2157,6 +2168,15 @@ const ReservationCreate = () => {
                         // placeholder={"country"}
                         required={true}
                         error={errorsCustomer.billingCountry}
+                      />
+                      <FrontPaymentLanguageSelect
+                        error={errorsCustomer.preferredLanguage}
+                        control={controlCustomer}
+                        name="preferredLanguage"
+                        label="preferredLanguage"
+                        required={true}
+                        disable={false}
+                        // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                       />
                       {/* <Controller
                         name="billingCountry"
