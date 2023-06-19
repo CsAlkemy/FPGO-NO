@@ -29,7 +29,7 @@ const baseQueryWithoutToken = fetchBaseQuery({
 });
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
-  userInfo = UtilsServices.getFPUserData()
+  userInfo = UtilsServices.getFPUserData();
   let result =
     args?.url === `/credit/check/checkout/private` ||
     args?.url === `/credit/check/checkout/corporate`
@@ -92,7 +92,8 @@ export const apiSlice = createApi({
     "ClientOrganizationsSummaryList",
     "ApprovedClientsList",
     "ApprovalClientsList",
-    "RefundRequestsList"
+    "RefundRequestsList",
+    "ReservationList",
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -112,8 +113,14 @@ export const apiSlice = createApi({
         url: `/orders/refund/${payload.uuid}`,
         method: "POST",
         body: {
-          isPartial: ["Send Refund", "Refund Order"].includes(payload.headerTitle) ? false : payload.isPartial,
-          amount: ["Send Refund", "Refund Order"].includes(payload.headerTitle) ? parseFloat(payload.fullRefundAmount) : parseFloat(payload.refundAmount),
+          isPartial: ["Send Refund", "Refund Order"].includes(
+            payload.headerTitle
+          )
+            ? false
+            : payload.isPartial,
+          amount: ["Send Refund", "Refund Order"].includes(payload.headerTitle)
+            ? parseFloat(payload.fullRefundAmount)
+            : parseFloat(payload.refundAmount),
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -397,6 +404,89 @@ export const apiSlice = createApi({
       query: (uuid) => `/orders/export/aptic/${uuid}`,
       providesTags: ["OrdersList"],
     }),
+    createReservation: builder.mutation({
+      query: (payload) => ({
+        url: "/reservations/submit",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
+    getReservationList: builder.query({
+      query: () => "/reservations/list",
+      providesTags: ["ReservationList"],
+    }),
+    cancelReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/cancel/${payload.uuid}`,
+        method: "PUT",
+        body: {
+          note: payload?.cancellationNote ? payload.cancellationNote : null,
+        },
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
+    completeReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/complete/${payload.uuid}`,
+        method: "PUT",
+        body: {
+          note: payload?.cancellationNote ? payload.cancellationNote : null,
+        },
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
+    capturePayment: builder.mutation({
+      query: (payload) => ({
+        //url: `/payment/capture/${payload.uuid}`,
+        url: `/reservations/capture/${payload.uuid}`,
+        method: "POST",
+        body: {
+          isPartial: payload.isPartial,
+          amount: parseFloat(payload.captureAmount),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    chargeReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/charge/${payload.uuid}`,
+        method: "POST",
+        body: {
+          products: payload.products,
+          grandTotal: parseFloat(payload.grandTotal),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    refundFromReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          source: "captured",
+          amount: payload.refundableAmount,
+          reference: null,
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    refundChargedTransection: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          source: "charged",
+          amount: payload.refundableAmount,
+          reference: payload.chargeKey,
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
   }),
 });
 
@@ -444,4 +534,12 @@ export const {
   useCreateQuickOrderMutation,
   useUpdateQuickOrderCustomerMutation,
   useOrderExportToApticQuery,
+  useCreateReservationMutation,
+  useGetReservationListQuery,
+  useCancelReservationMutation,
+  useCompleteReservationMutation,
+  useCapturePaymentMutation,
+  useChargeReservationMutation,
+  useRefundFromReservationMutation,
+  useRefundChargedTransectionMutation,
 } = apiSlice;

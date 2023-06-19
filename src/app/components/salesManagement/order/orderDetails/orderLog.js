@@ -9,9 +9,9 @@ import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import OrdersService from "../../../../data-access/services/ordersService/OrdersService";
-import {Hidden, Skeleton} from "@mui/material";
+import { Hidden, Skeleton } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import {CharCont} from "../../../../utils/helperFunctions";
+import { CharCont } from "../../../../utils/helperFunctions";
 
 const orderLog = ({ info }) => {
   const { t } = useTranslation();
@@ -19,14 +19,16 @@ const orderLog = ({ info }) => {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    if (loading){
+    if (loading) {
       OrdersService.getOrdersLogByUUID(info.orderUuid)
         .then((res) => {
           let orderData = [];
           let data = res?.data;
-          let checkExpired = data.findIndex(item => item.slug === 'order-expired-and-was-not-paid');
+          let checkExpired = data.findIndex(
+            (item) => item.slug === "order-expired-and-was-not-paid"
+          );
 
-          if (info.status.toLowerCase() === 'expired' && checkExpired < 0) {
+          if (info.status.toLowerCase() === "expired" && checkExpired < 0) {
             orderData.push({
               title: "orderExpiredAndWasNotPaid",
               slug: "order-expired",
@@ -75,13 +77,16 @@ const orderLog = ({ info }) => {
                     log.slug === "refund-sent" ||
                     log.slug === "invoice-order-exported" ||
                     log.slug === "customer-information-updated" ||
+                    log.slug === "invoice-credited" ||
+                    log.slug === "invoice-converted-to-account" ||
                     log.slug === "payment-successful" ? (
                       <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
                         <CheckIcon className="icon-size-16 text-white" />
                       </TimelineDot>
                     ) : log.slug === "payment-failed" ||
+                      log.slug === "invoice-reminder" ||
                       log.slug === "order-converted-to-invoice" ? (
-                      <TimelineDot className=' bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0'>
+                      <TimelineDot className=" bg-[#E7AB52] border-4 border-[#FDF7EE] shadow-0">
                         <PriorityHighIcon className="icon-size-16 text-white" />
                       </TimelineDot>
                     ) : (
@@ -89,7 +94,7 @@ const orderLog = ({ info }) => {
                         <PriorityHighIcon className="icon-size-16 text-white" />
                       </TimelineDot>
                     )}
-                      {index + 1 < logs.length && <TimelineConnector />}
+                    {index + 1 < logs.length && <TimelineConnector />}
                   </TimelineSeparator>
                   <TimelineContent>
                     <div className="ml-5 mt-10 mb-10">

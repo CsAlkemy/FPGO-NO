@@ -5,16 +5,16 @@ import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { useSnackbar } from "notistack";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import AuthService from "../../../data-access/services/authService";
-import Contact from '../Layout/contact';
+import Contact from "../Layout/contact";
 import AuthLayout from "../Layout/layout";
 import AuthMobileHeader from "../Layout/authMobileHeader";
-import { useTranslation } from 'react-i18next';
-import {useDispatch} from "react-redux";
-import {useEffect} from "react";
-import {changeLanguage} from "app/store/i18nSlice";
+import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { changeLanguage } from "app/store/i18nSlice";
 /**
  * Form Validation Schema
  */
@@ -47,7 +47,7 @@ function ResetPasswordPage() {
   const accessToken = new URLSearchParams(location.search).get("accessToken");
   const dispatch = useDispatch();
   const urlParams = new URLSearchParams(window.location.search);
-  const lang = urlParams.get('lang');
+  const lang = urlParams.get("lang");
   const resetPassword = window.location.pathname.includes("/reset-password");
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
@@ -57,14 +57,14 @@ function ResetPasswordPage() {
   const { isValid, dirtyFields, errors } = formState;
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   const onSubmit = async (values) => {
     AuthService.resetPassword(values.confirmpassword, params.token)
       .then((response) => {
         if (response?.status_code === 202) {
-          setIsSend(true)
-          localStorage.clear()
+          setIsSend(true);
+          localStorage.clear();
         } else {
         }
       })
@@ -76,8 +76,8 @@ function ResetPasswordPage() {
   };
   useEffect(() => {
     lang === "no"
-        ? dispatch(changeLanguage("no"))
-        : dispatch(changeLanguage("en"));
+      ? dispatch(changeLanguage("no"))
+      : dispatch(changeLanguage("en"));
   }, [lang]);
 
   useEffect(() => {
@@ -92,10 +92,12 @@ function ResetPasswordPage() {
 
   return (
     <AuthLayout>
-    <AuthMobileHeader isShow = {true} />
+      <AuthMobileHeader isShow={true} />
       {!!isSend === false && (
         <div className="w-full px-0 sm:px-20 mx-auto mt-32">
-          <div className="header4 text-left sm:text-center mb-5">{t("label:setNewPassword")}</div>
+          <div className="header4 text-left sm:text-center mb-5">
+            {t("label:setNewPassword")}
+          </div>
           <div className="body2 text-left sm:text-center pb-7">
             {t("label:setNewPasswordValidationMessage")}
             {/*Your password must be between 8-15 digits and contain both*/}
@@ -117,7 +119,11 @@ function ResetPasswordPage() {
                   label={t("label:password")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.password}
-                  helperText={errors?.password?.message ? t(`validation:${errors?.password?.message}`) : ""}
+                  helperText={
+                    errors?.password?.message
+                      ? t(`validation:${errors?.password?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
@@ -147,7 +153,11 @@ function ResetPasswordPage() {
                   label={t("label:confirmPassword")}
                   type={!hide ? "text" : "password"}
                   error={!!errors.confirmpassword}
-                  helperText={errors?.confirmpassword?.message ? t(`validation:${errors?.confirmpassword?.message}`) : ""}
+                  helperText={
+                    errors?.confirmpassword?.message
+                      ? t(`validation:${errors?.confirmpassword?.message}`)
+                      : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
@@ -182,9 +192,7 @@ function ResetPasswordPage() {
           </form>
         </div>
       )}
-      {!isSend === true && (
-        <Contact />
-      )}
+      {!isSend === true && <Contact />}
       {!!isSend === true && (
         <div className="w-full max-w-320 sm:w-320 mx-auto  h-full bg-grey-50 rounded-md p-10 flex justify-end items-center">
           <div className="flex flex-col pb-92">
@@ -205,7 +213,6 @@ function ResetPasswordPage() {
           </div>
         </div>
       )}
-
     </AuthLayout>
   );
 }

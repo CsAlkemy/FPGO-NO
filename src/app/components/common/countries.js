@@ -16,11 +16,12 @@ export default function CountrySelect({
   disable,
 }) {
   const { t } = useTranslation();
+  ///console.log(name);
   return (
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, value, onBlur, ref } }) => (
+      render={({ field: { onChange, value, onBlur, ref, ...field } }) => (
         <Autocomplete
           id="country-select-demo"
           sx={{ width: "auto" }}
@@ -59,6 +60,7 @@ export default function CountrySelect({
           renderInput={(params) => (
             <TextField
               {...params}
+              {...field}
               label={t(`label:${label}`)}
               required={required}
               // placeholder={t(`label:${placeholder}`)}

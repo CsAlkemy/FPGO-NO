@@ -1,4 +1,4 @@
-import { organizationWiseUsersListOverviewHeaderRows } from './HeaderRows';
+import { organizationWiseUsersListOverviewHeaderRows } from "./HeaderRows";
 
 export const fpAdminRowDataFields = [
   "clientName",
@@ -58,8 +58,8 @@ export const productsListRowDataFields = [
 export const categoriesListRowDataFields = [
   "name",
   "description",
-  "noOfProducts"
-]
+  "noOfProducts",
+];
 
 export const customersListRowDataFields = [
   "name",
@@ -67,7 +67,7 @@ export const customersListRowDataFields = [
   "phone",
   "email",
   "lastInvoicedOn",
-  "lastOrderAmount"
+  "lastOrderAmount",
 ];
 
 export const customerOrdersListRowDataFields = [
@@ -87,7 +87,7 @@ export const clientOrdersListRowDataFields = [
   "paymentLinkDueDate",
   "phoneNo",
   "amount",
-  "status"
+  "status",
 ];
 
 export const creditChecksListRowDataFields = [
@@ -96,7 +96,7 @@ export const creditChecksListRowDataFields = [
   "orgIdOrPNumber",
   "phone",
   "defaultProbability",
-  "status"
+  "status",
 ];
 
 export const fpAdminUsersRowDataFields = [
@@ -162,6 +162,30 @@ export const refundRequestsOverviewRowDataFields = [
   "cancel",
 ];
 
+export const reservationOverviewRowDataFields = [
+  "date",
+  "id",
+  "customer",
+  "phone",
+  "reservedAmount",
+  "amountPaid",
+  "amountInBank",
+  "status",
+  "options",
+];
+
+export const reservationOverviewFPAdminRowDataFields = [
+  "date",
+  "id",
+  "clientName",
+  "customer",
+  "phone",
+  "reservedAmount",
+  "amountPaid",
+  "amountInBank",
+  "status",
+  "options",
+];
 export const payoutsListRowDataFields = [
   "name",
   // "orgId",
@@ -176,5 +200,5 @@ export const payoutsMonthViewRowDataFields = [
   "dateAdded",
   "fileName",
   "fileFormat",
-  "isDownload"
+  "isDownload",
 ];

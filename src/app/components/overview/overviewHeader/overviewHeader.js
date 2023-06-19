@@ -22,6 +22,7 @@ import {
   refundRequestsOverview,
   clientOrdersListOverview,
   payoutReportsListOverview,
+  reservationListOverview,
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -43,8 +44,10 @@ import { writeFile, utils } from "xlsx";
 import { DesktopDatePicker } from "@mui/lab";
 import ClientService from "../../../data-access/services/clientsService/ClientService";
 import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 export default function OverviewHeader(props) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -89,6 +92,9 @@ export default function OverviewHeader(props) {
       case ordersListOverview:
         navigate(`/create-order`);
         break;
+      case reservationListOverview:
+        navigate(`/create-reservations`);
+        break;
     }
     setAnchorEl(event.currentTarget);
   };
@@ -99,6 +105,7 @@ export default function OverviewHeader(props) {
 
   const header = [
     "Ordrenr",
+    "Client ID",
     "Client",
     "InvoiceNumber",
     "Kunde",
@@ -180,6 +187,8 @@ export default function OverviewHeader(props) {
         return t("label:searchByProductNameAndID");
       case categoriesListOverview:
         return t("label:searchByCategoryNameAndID");
+      case reservationListOverview:
+        return t("label:searchByReservationIDNameOrPhoneNo");
       default:
         return t("label:searchByNameEmailPhoneNo");
     }
