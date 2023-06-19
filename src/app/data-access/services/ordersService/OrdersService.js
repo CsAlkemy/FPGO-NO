@@ -258,7 +258,6 @@ class OrdersService {
       isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
         type: params.customerType,
-        preferredLanguage:'en', //TODO: remove when commit
         countryCode: params.dialCode
             ? params.dialCode
             : null,

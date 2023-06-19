@@ -84,7 +84,7 @@ const paymentInformation = () => {
   ]);
   useEffect(()=>{
     if (orderDetails) {
-      setPaymentMethodList(orderDetails?.invoiceAsPaymentOption === 1? paymentMethodList.filter(obj => obj.name !== "Invoice"): paymentMethodList) ;
+      setPaymentMethodList(orderDetails?.invoiceAsPaymentOption === 0? paymentMethodList.filter(obj => obj.name !== "Invoice"): paymentMethodList) ;
     }
   },[orderDetails])
 
