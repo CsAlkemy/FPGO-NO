@@ -94,7 +94,7 @@ export const apiSlice = createApi({
     "ApprovalClientsList",
     "RefundRequestsList",
     "SubscriptionsList",
-    "FailedSubscriptionsList"
+    "FailedSubscriptionsList",
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -472,12 +472,36 @@ export const apiSlice = createApi({
         url: `/subscription/cycles/refund/${payload.uuid}`,
         method: "POST",
         body: {
-          cycles : payload.cycles,
+          cycles: payload.cycles,
           amount: `${parseFloat(payload.amount)}`,
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
         result ? ["SubscriptionsList"] : [""],
+    }),
+
+    subscriptionRefundRequestDecision: builder.mutation({
+      query: (params) => ({
+        url: `/subscription/refund/decision/${params.orderUuid}`,
+        method: "POST",
+        body: {
+          isApproved: params.isApproved,
+          note: params?.note ? params?.note : null,
+        },
+      }),
+      invalidatesTags: ["RefundRequestsList"],
+    }),
+    subscriptionRequestRefundApproval: builder.mutation({
+      query: (params) => ({
+        url: `/subscription/refund/request/approval/${params.uuid}`,
+        method: "POST",
+        body: {
+          cycles: params.cycles,
+          amount: params.amount,
+          message: params.message,
+        },
+      }),
+      invalidatesTags: ["RefundRequestsList"],
     }),
   }),
 });
@@ -535,4 +559,6 @@ export const {
   useCreateSubscriptionMutation,
   useCancelSubscriptionMutation,
   useRefundSubscriptionOrderMutation,
+  useSubscriptionRefundRequestDecisionMutation,
+  useSubscriptionRequestRefundApprovalMutation,
 } = apiSlice;

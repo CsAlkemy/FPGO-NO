@@ -262,6 +262,7 @@ class OrdersService {
           ? params.primaryPhoneNumber.slice(params?.dialCode?.length)
           : null,
         email: params.email,
+        preferredLanguage: "en",
         name: params.customerName,
         personalNumber:
           params.customerType === "private"
@@ -406,6 +407,7 @@ class OrdersService {
           ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
           : null,
         email: params.email,
+        preferredLanguage: "en",
         name: params.customerName,
         personalNumber:
           params.customerType === "private"
@@ -477,6 +479,7 @@ class OrdersService {
           ? primaryPhoneNumber[primaryPhoneNumber.length - 1].slice(2)
           : null,
         email: params.email,
+        preferredLanguage: "en",
         name: params.customerName,
         personalNumber:
           params.customerType === "private" ? params.orgIdOrPNumber : null,

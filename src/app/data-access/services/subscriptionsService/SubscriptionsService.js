@@ -34,7 +34,7 @@ class SubscriptionsService {
               (row?.status &&
                 row?.status.toLowerCase() === "cancelled" &&
                 row?.isPaid) ||
-              (row?.status && row?.status.toLowerCase() === "ongoing")
+              (row?.status && row?.status.toLowerCase() === "ongoing" && row?.isRefundable)
             ? "Refund"
             : null,
         isCancel:

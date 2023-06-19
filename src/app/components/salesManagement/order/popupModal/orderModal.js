@@ -34,7 +34,10 @@ import {
   useRequestRefundApprovalMutation,
   useResendOrderMutation,
   useCompleteReservationMutation,
-  useCapturePaymentMutation, useCancelSubscriptionMutation, useRefundSubscriptionOrderMutation
+  useCapturePaymentMutation,
+  useCancelSubscriptionMutation,
+  useRefundSubscriptionOrderMutation,
+  useSubscriptionRequestRefundApprovalMutation
 } from "app/store/api/apiSlice";
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
@@ -89,6 +92,7 @@ const OrderModal = (props) => {
   const [cancelSubscription] = useCancelSubscriptionMutation();
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
+  const [subscriptionRequestRefundApproval] = useSubscriptionRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
   const [selectedCycles, setSelectedCycles] = useState([])
 
@@ -173,22 +177,41 @@ const OrderModal = (props) => {
         message: flagMessage,
         uuid: orderId,
       };
-      requestRefundApproval(payload).then((response) => {
-        if (response?.data?.status_code === 201) {
-          enqueueSnackbar(t(`message:${response?.data?.message}`), {
-            variant: "success",
-          });
-          // setApiLoading(false);
-        } else if (response?.error) {
-          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
-            variant: "error",
-          });
-          // setApiLoading(false);
-        }
-        setOpen(false);
-        setFlag(false);
-        setApiLoading(false);
-      });
+      if (orderType === "SUBSCRIPTION") {
+        subscriptionRequestRefundApproval({cycles : selectedCycles, amount : parseInt(refundCycle.payablePerMonth), message: flagMessage, uuid: subscriptionUuid}).then((response) => {
+          if (response?.data?.status_code === 201) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            // setApiLoading(false);
+          } else if (response?.error) {
+            enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+              variant: "error",
+            });
+            // setApiLoading(false);
+          }
+          setOpen(false);
+          setFlag(false);
+          setApiLoading(false);
+        });
+      } else {
+        requestRefundApproval(payload).then((response) => {
+          if (response?.data?.status_code === 201) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            // setApiLoading(false);
+          } else if (response?.error) {
+            enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+              variant: "error",
+            });
+            // setApiLoading(false);
+          }
+          setOpen(false);
+          setFlag(false);
+          setApiLoading(false);
+        });
+      }
     } else if (headerTitle === "Resend Order") {
       setApiLoading(true);
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
@@ -325,14 +348,16 @@ const OrderModal = (props) => {
                 // !response?.error?.data?.message.toLowerCase().includes("admin")
                 !(
                   response?.error?.data?.message ===
+                    "someCyclesFailedToPassValidation" &&
+                  (response?.error?.data?.errors[0].message ===
                     "refundRejectionForWeeklyThresholdExceed" ||
-                  response?.error?.data?.message ===
-                    "refundRejectionForRequestAmountThresholdExceed"
+                  response?.error?.data?.errors[0].message ===
+                    "refundRejectionForRequestAmountThresholdExceed")
                 )
               ) {
                 setIsDisableRefundRequest(true);
               }
-              setFlagMessage(response?.error?.data?.message);
+              setFlagMessage(response?.error?.data?.errors[0].message);
               setFlag(true);
               // enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
               //   variant: "error",
@@ -630,7 +655,8 @@ const OrderModal = (props) => {
                     </div>
                   )}
                 {headerTitle === "Send Refund" &&
-                  orderType === "SUBSCRIPTION" && (
+                  orderType === "SUBSCRIPTION" &&
+                  !flag && (
                     <div>
                       <Controller
                         control={control}

@@ -266,7 +266,7 @@ const CreateSubscription = () => {
         enqueueSnackbar(t(`message:${response?.data?.message}`), {
           variant: "success",
         });
-        navigate(`/sales/orders-list`);
+        navigate(`/subscriptions/list`);
       } else {
         enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
           variant: "error",

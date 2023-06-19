@@ -44,7 +44,7 @@ const subscriptionDetails = () => {
         info.subscription.status.toLowerCase() === "sent"
         ? "Resend Order"
         : (info.subscription.status &&
-            info.subscription.status.toLowerCase() === "completed" || info.subscription.status.toLowerCase() === "ongoing") ||
+            info.subscription.status.toLowerCase() === "completed" || (info.subscription.status.toLowerCase() === "ongoing" && info?.subscription?.isRefundable)) ||
             (info.subscription.status &&
               info.subscription.status.toLowerCase() === "cancelled" &&
               info?.subscription?.isPaid)
@@ -161,8 +161,8 @@ const subscriptionDetails = () => {
                           ? t("label:resendOrder")
                           : (info.subscription.status &&
                               (info.subscription.status.toLowerCase() ===
-                                "completed" || info.subscription.status.toLowerCase() ===
-                                "ongoing")) ||
+                                "completed" || ( info.subscription.status.toLowerCase() ===
+                                "ongoing" && info?.subscription?.isRefundable))) ||
                             (info.subscription.status &&
                               info.subscription.status.toLowerCase() ===
                                 "cancelled" &&
@@ -239,9 +239,11 @@ const subscriptionDetails = () => {
               {((info.subscription.status &&
                 info.subscription.status.toLowerCase() === "sent") ||
                 (info.subscription.status &&
-                  info.subscription.status.toLowerCase() === "paid") ||
+                  info.subscription.status.toLowerCase() === "ongoing") ||
                 (info.subscription.status &&
-                  info.subscription.status.toLowerCase() === "invoiced")) && (
+                  info.subscription.status.toLowerCase() === "completed") ||
+                (info.subscription.status &&
+                  info.subscription.status.toLowerCase() === "cancelled")) && (
                 <Button
                   color="secondary"
                   variant="contained"
@@ -261,12 +263,19 @@ const subscriptionDetails = () => {
                   }
                   onClick={() => handleResendRefundOrder()}
                 >
-                  {(info.subscription.status &&
-                    info.subscription.status.toLowerCase() === "paid") ||
-                  (info.subscription.status &&
-                    info.subscription.status.toLowerCase() === "invoiced")
-                    ? t("label:refundOrder")
-                    : t("label:resendOrder")}
+                  {info.subscription.status &&
+                  info.subscription.status.toLowerCase() === "sent"
+                    ? t("label:resendOrder")
+                    : (info.subscription.status &&
+                      (info.subscription.status.toLowerCase() ===
+                        "completed" || ( info.subscription.status.toLowerCase() ===
+                          "ongoing" && info?.subscription?.isRefundable))) ||
+                    (info.subscription.status &&
+                      info.subscription.status.toLowerCase() ===
+                      "cancelled" &&
+                      info?.subscription?.isPaid)
+                      ? t("label:refundOrder")
+                      : ""}
                 </Button>
               )}
             </div>

@@ -55,7 +55,6 @@ const orderDetails = () => {
           // if (response?.data?.status.toLowerCase() !== "sent") return navigate("404");
           setOrderDetails(response.data);
           setOrderUuid(response.data.orderNo);
-          console.log("SubscriptionDetails : ",response.data.orderNo);
         }
         setIsLoading(false);
       })

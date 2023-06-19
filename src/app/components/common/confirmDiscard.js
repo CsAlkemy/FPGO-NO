@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
-import { useRefundRequestDecisionMutation } from "app/store/api/apiSlice";
+import { useRefundRequestDecisionMutation, useSubscriptionRefundRequestDecisionMutation } from "app/store/api/apiSlice";
 import { LoadingButton } from "@mui/lab";
 import _ from "lodash";
 
@@ -19,9 +19,10 @@ const confirmDiscard = (props) => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
+  const [subscriptionRefundRequestDecision] = useSubscriptionRefundRequestDecisionMutation();
   const [apiLoading, setApiLoading] = React.useState(false);
 
-  const { title, open, setOpen, subTitle, route, modalRef, values } = props;
+  const { title, open, setOpen, subTitle, route, modalRef, values, orderType } = props;
   const handleClose = () => {
     setTimeout(() => {
       !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";
@@ -40,29 +41,55 @@ const confirmDiscard = (props) => {
         note: null,
       };
 
-      refundRequestDecision(params).then((response) => {
-        if (response?.data?.status_code === 202) {
-          enqueueSnackbar(t(`message:${response?.data?.message}`), {
-            variant: "success",
-          });
-          setApiLoading(false);
-        } else if (response?.error) {
-          const isParam = response?.error?.data?.message.includes("Param");
-          // const message = `${response?.error?.data?.message.split("Param")[0]}${response?.error?.data?.message.split("Param")[1]}`
-          const message = isParam
-            ? `${t(
+      if (orderType === "SUBSCRIPTION") {
+        subscriptionRefundRequestDecision(params).then((response) => {
+          if (response?.data?.status_code === 202) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            setApiLoading(false);
+          } else if (response?.error) {
+            const isParam = response?.error?.data?.message.includes("Param");
+            // const message = `${response?.error?.data?.message.split("Param")[0]}${response?.error?.data?.message.split("Param")[1]}`
+            const message = isParam
+              ? `${t(
                 `message:${
                   response?.error?.data?.message.split("Param")[0]
                 }Param`
               )} ${response?.error?.data?.message.split("Param")[1]}`
-            : t(`message:${response?.error?.data?.message}`);
-          enqueueSnackbar(message, {
-            variant: "error",
-          });
-          setApiLoading(false);
-        }
-        setOpen(false);
-      });
+              : t(`message:${response?.error?.data?.message}`);
+            enqueueSnackbar(message, {
+              variant: "error",
+            });
+            setApiLoading(false);
+          }
+          setOpen(false);
+        });
+      } else {
+        refundRequestDecision(params).then((response) => {
+          if (response?.data?.status_code === 202) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            setApiLoading(false);
+          } else if (response?.error) {
+            const isParam = response?.error?.data?.message.includes("Param");
+            // const message = `${response?.error?.data?.message.split("Param")[0]}${response?.error?.data?.message.split("Param")[1]}`
+            const message = isParam
+              ? `${t(
+                `message:${
+                  response?.error?.data?.message.split("Param")[0]
+                }Param`
+              )} ${response?.error?.data?.message.split("Param")[1]}`
+              : t(`message:${response?.error?.data?.message}`);
+            enqueueSnackbar(message, {
+              variant: "error",
+            });
+            setApiLoading(false);
+          }
+          setOpen(false);
+        });
+      }
     }
     setTimeout(() => {
       !(modalRef === "confirmRefundRequestApprove") ? navigate(route) : "";

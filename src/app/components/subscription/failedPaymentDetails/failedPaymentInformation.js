@@ -53,7 +53,6 @@ const FailedPaymentInformation = ({ info }) => {
   const onSubmit = (values) => {
     //console.log(values);
   };
-  console.log(createSubscriptionDefaultValue);
 
   return (
     <div className="create-product-container">
