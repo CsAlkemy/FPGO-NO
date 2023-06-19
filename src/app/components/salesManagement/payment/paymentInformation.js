@@ -1037,12 +1037,15 @@ const paymentInformation = () => {
                   variant="contained"
                   type="submit"
                   className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40 "
-                  onClick={() =>
+                  onClick={() => {
                     setCustomData({
                       ...customData,
                       isCeditCheck: false,
-                    })
-                  }
+                    });
+                    if (!orderDetails?.customerDetails?.preferredLanguage) {
+                      enqueueSnackbar("Please add language", { variant: "error" });
+                    }
+                  }}
                   disabled={
                     apiLoading ||
                     (customData.paymentMethod === "invoice" &&
