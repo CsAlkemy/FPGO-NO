@@ -254,6 +254,7 @@ class OrdersService {
         email: params.orderBy === "email",
         invoice: params.orderBy === "invoice",
       },
+      invoiceAsPaymentOption:params.invoiceAsPaymentOption === "true" ? true : false,
       isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
         type: params.customerType,
