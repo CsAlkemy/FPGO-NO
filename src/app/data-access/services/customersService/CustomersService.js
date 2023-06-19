@@ -23,9 +23,7 @@ class CustomersService {
     const msisdn = params?.primaryPhoneNumber
       ? params?.primaryPhoneNumber.slice(dialCode?.length)
       : null;
-    const countryCode = dialCode
-      ? dialCode
-      : null;
+    const countryCode = dialCode ? dialCode : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
@@ -113,6 +111,9 @@ class CustomersService {
       preferredLanguage: "en",
       email: params.customerEmail ? params.customerEmail : null,
       personalNumber: params.pNumber ? `${params.pNumber}` : "",
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : "no",
       addresses: mainAddress,
     };
   };
@@ -260,8 +261,12 @@ class CustomersService {
     });
   };
 
-  prepareCreateCorporateCustomerPayload = (params, sameAddress, dialCodePrimary, dialCodePrimaryInfo) => {
-    console.log("Dail Code primay",dialCodePrimary);
+  prepareCreateCorporateCustomerPayload = (
+    params,
+    sameAddress,
+    dialCodePrimary,
+    dialCodePrimaryInfo
+  ) => {
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
       : null;
@@ -275,9 +280,7 @@ class CustomersService {
     const msisdn = params?.primaryPhoneNumber
       ? params?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
-    const countryCode = dialCodePrimary
-      ? dialCodePrimary
-      : null;
+    const countryCode = dialCodePrimary ? dialCodePrimary : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
@@ -418,6 +421,9 @@ class CustomersService {
       countryCode: countryCode ? countryCode : null,
       msisdn: msisdn,
       email: params.orgEmail ? params.orgEmail : null,
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : null,
       organizationId: params.organizationID ? params.organizationID : null,
       addresses: mainAddress,
       additionalContact: additionalCDs,
@@ -628,7 +634,7 @@ class CustomersService {
           ? row.organizationId
           : row.personalNumber,
         phone: phone ? "+" + phone[phone.length - 1] : null,
-        msisdn: row?.msisdn || '',
+        msisdn: row?.msisdn || "",
         email: row.email,
         lastInvoicedOn: row.lastOrderOn,
         lastOrderAmount: row.lastOrderAmount,
@@ -678,7 +684,8 @@ class CustomersService {
                   city: row?.billingAddress?.city,
                   zip: row?.billingAddress?.zip,
                   country: row?.billingAddress?.country,
-                  countryCode : row?.countryCode,
+                  countryCode: row?.countryCode,
+                  preferredLanguage: row?.preferredLanguage,
                 };
               });
               d.status_code = 200;
@@ -860,14 +867,15 @@ class CustomersService {
     const data = {
       customerID: params.customerID,
       name: params.customerName,
-      countryCode: dialCode
-        ? dialCode
-        : null,
+      countryCode: dialCode ? dialCode : null,
       msisdn: params?.primaryPhoneNumber
         ? params?.primaryPhoneNumber.slice(dialCode?.length)
         : null,
       personalNumber: `${params.pNumber !== null ? params.pNumber : ""}`,
       email: params.customerEmail,
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : null,
       addresses: {
         billing: {
           uuid: billingUUID,
@@ -1002,9 +1010,7 @@ class CustomersService {
     const msisdn = params?.primaryPhoneNumber
       ? params?.primaryPhoneNumber.slice(dialCode?.length)
       : null;
-    const countryCode = dialCode
-      ? dialCode
-      : null;
+    const countryCode = dialCode ? dialCode : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
@@ -1093,6 +1099,9 @@ class CustomersService {
       countryCode: countryCode,
       msisdn: msisdn,
       email: params.orgEmail ? params.orgEmail : null,
+      preferredLanguage: params.preferredLanguage
+        ? params.preferredLanguage
+        : null,
       organizationId: params.organizationID ? params.organizationID : null,
       addresses: {
         billing: {
@@ -1356,7 +1365,9 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = endTime ? `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}/${endTime}` : `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
+            const URL = endTime
+              ? `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}/${endTime}`
+              : `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {

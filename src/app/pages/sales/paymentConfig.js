@@ -1,9 +1,15 @@
-import { lazy } from 'react';
-import authRoles from '../../data-access/utils/AuthRoles';
-const CustomerInfo = lazy(() => import('../../components/salesManagement/payment/paymentInformation'));
+import { lazy } from "react";
+import authRoles from "../../data-access/utils/AuthRoles";
+const CustomerInfo = lazy(() =>
+  import("../../components/salesManagement/payment/paymentInformation")
+);
 import PaymentDetails from "../../components/salesManagement/payment/orderDetails";
-const PaymentStatus = lazy(() => import('../../components/salesManagement/payment/paymentStatus'));
-const OrderReceipt = lazy(() => import('../../components/salesManagement/order/orderReceipt'));
+const PaymentStatus = lazy(() =>
+  import("../../components/salesManagement/payment/paymentStatus")
+);
+const OrderReceipt = lazy(() =>
+  import("../../components/salesManagement/order/orderReceipt")
+);
 
 const PaymentConfig = {
   settings: {
@@ -33,25 +39,24 @@ const PaymentConfig = {
   routes: [
     {
       // path: '/payment/order-details',
-      path: '/order/details/:uuid',
+      path: "/order/details/:uuid",
       element: <PaymentDetails />,
     },
     {
-        // path: '/payment/checkout',
-        path: '/order/details/:uuid/checkout',
-        element: <CustomerInfo />,
+      // path: '/payment/checkout',
+      path: "/order/details/:uuid/checkout",
+      element: <CustomerInfo />,
     },
     {
-        // path: 'payment/checkout/status',
-        path: '/order/details/:uuid/confirmation',
-        element: <PaymentStatus />,
+      // path: 'payment/checkout/status',
+      path: "/order/details/:uuid/confirmation",
+      element: <PaymentStatus />,
     },
     {
-      path: '/order/receipt/:uuid',
+      path: "/order/receipt/:uuid",
       element: <OrderReceipt />,
     },
   ],
 };
 
 export default PaymentConfig;
-

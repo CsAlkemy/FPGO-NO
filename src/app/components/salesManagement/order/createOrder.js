@@ -21,9 +21,9 @@ import {
   AccordionSummary,
   Autocomplete,
   Backdrop,
-  Button,
+  Button, Checkbox,
   CircularProgress,
-  FormControl,
+  FormControl, FormControlLabel,
   FormHelperText,
   Hidden,
   IconButton,
@@ -65,7 +65,7 @@ import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
-
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 const createOrder = () => {
   const { t } = useTranslation();
   const userInfo = UtilsServices.getFPUserData();
@@ -208,7 +208,6 @@ const createOrder = () => {
   const watchAllFields = watch();
 
   const { isValid, dirtyFields, errors, touchedFields } = formState;
-
   const searchCustomerOnFocus = (e) => {
     const searchByPhone =
       customersList.filter((customer) =>
@@ -248,7 +247,7 @@ const createOrder = () => {
         totalDiscount,
         grandTotal,
       },
-      dialCode
+      dialCode,
     });
     createOrder(data).then((response) => {
       setLoading(false);
@@ -273,6 +272,9 @@ const createOrder = () => {
     //   enqueueSnackbar(e, { variant: "error" });
     // });
   };
+  useEffect(()=>{
+    setValue("invoiceAsPaymentOption", true )
+  },[])
 
   let defaultTaxValue;
 
@@ -506,13 +508,14 @@ const createOrder = () => {
                     ? row?.orgIdOrPNumber
                     : null,
                   email: row?.email ? row?.email : null,
-                  phone: row?.phone ? row.countryCode+row?.phone : null,
+                  phone: row?.phone ? row.countryCode + row?.phone : null,
                   type: row.type,
                   street: row?.street,
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
                   countryCode: row?.countryCode,
+                  preferredLanguage: row?.preferredLanguage,
                   searchString:
                     row?.name + " ( " + row?.phone + ` - ${row.type} )`,
                 });
@@ -678,7 +681,6 @@ const createOrder = () => {
       `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     );
   };
-
 
   return (
     <div className="create-product-container">
@@ -960,7 +962,9 @@ const createOrder = () => {
                                 label="Qty"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 required
                                 value={field.value || ""}
                                 autoComplete="off"
@@ -988,8 +992,10 @@ const createOrder = () => {
                                 // helperText={errors?.order?.[index]?.rate?.message}
                                 variant="outlined"
                                 required
-                                onWheel={event => { event.target.blur()}}
-                                type='number'
+                                type="number"
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 value={field.value || ""}
                                 fullWidth
                                 disabled={disableRowIndexes.includes(index)}
@@ -1007,7 +1013,9 @@ const createOrder = () => {
                                 label="Discount"
                                 className="bg-white custom-input-height col-span-2"
                                 type="number"
-                                onWheel={event => { event.target.blur()}}
+                                onWheel={(event) => {
+                                  event.target.blur();
+                                }}
                                 autoComplete="off"
                                 value={field.value || ""}
                                 error={!!errors.discount}
@@ -1085,7 +1093,9 @@ const createOrder = () => {
                                   label="Tax"
                                   className="bg-white custom-input-height"
                                   type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  onWheel={(event) => {
+                                    event.target.blur();
+                                  }}
                                   autoComplete="off"
                                   error={!!errors?.order?.[index]?.tax}
                                   helperText={
@@ -1330,7 +1340,9 @@ const createOrder = () => {
                             {...field}
                             className="bg-white custom-input-height"
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.quantity}
                             // helperText={
@@ -1354,8 +1366,10 @@ const createOrder = () => {
                             autoComplete="off"
                             error={!!errors?.order?.[index]?.rate}
                             // helperText={errors?.order?.[index]?.rate?.message}
-                            type='number'
-                            onWheel={event => { event.target.blur()}}
+                            type="number"
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             variant="outlined"
                             required
                             fullWidth
@@ -1374,7 +1388,9 @@ const createOrder = () => {
                             //label="Discount"
                             className="bg-white custom-input-height"
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors.discount}
                             helperText={errors?.discount?.message}
@@ -1443,7 +1459,9 @@ const createOrder = () => {
                               className="bg-white custom-input-height"
                               // type="text"
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.tax}
                               helperText={errors?.order?.[index]?.tax?.message}
@@ -1840,6 +1858,7 @@ const createOrder = () => {
                               isCeditCheck: false,
                               paymentMethod: ["invoice"],
                             });
+                            setValue("invoiceAsPaymentOption", false )
                           }}
                         >
                           {t("label:invoice")}
@@ -2015,6 +2034,57 @@ const createOrder = () => {
                       </Button>
                     </div>
                   </div> */}
+
+                  <Controller
+                    name="invoiceAsPaymentOption"
+                    type="checkbox"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl
+                        error={!!errors.invoiceAsPaymentOption}
+                        required
+                      >
+                        <FormControlLabel
+                          control={
+                            <div>
+                              <Checkbox
+                                {...field}
+                                defaultChecked={
+                                  customData?.orderBy !== "invoice"
+                                }
+                                required
+                                onBlur={()=>
+                                    setCustomData({
+                                      ...customData,
+                                      isCeditCheck: false,
+                                    })
+                              }
+                                disabled={
+                                  !(
+                                    (customData.orderBy === "sms" ||
+                                      customData.orderBy === "email") &&
+                                    customData.paymentMethod.includes("invoice")
+                                  )
+                                }
+                              />
+                            </div>
+                          }
+                          label={
+                            <div className="body3">
+                              {t("label:invoiceAsPaymentOption")}
+                            </div>
+                          }
+                        />
+                        <FormHelperText className="ml-32">
+                          {errors?.invoiceAsPaymentOption?.message
+                            ? t(
+                                `validation:${errors?.invoiceAsPaymentOption?.message}`
+                              )
+                            : ""}
+                        </FormHelperText>
+                      </FormControl>
+                    )}
+                  />
                   <div className="send-order-by mt-20">
                     <div className="caption2 text-MonochromeGray-300">
                       {t("label:creditCheckLabel")}
@@ -2044,6 +2114,7 @@ const createOrder = () => {
                             !(
                               (customData.orderBy === "sms" ||
                                 customData.orderBy === "email") &&
+                              watch("invoiceAsPaymentOption") &&
                               customData.paymentMethod.includes("invoice")
                             )
                           }
@@ -2102,7 +2173,7 @@ const createOrder = () => {
                           </div>
 
                           <span>
-                            {(watch("primaryPhoneNumber")?.length>0 &&
+                            {(watch("primaryPhoneNumber")?.length > 0 &&
                               dirtyFields.email &&
                               dirtyFields.customerName &&
                               dirtyFields.billingAddress &&
@@ -2149,12 +2220,16 @@ const createOrder = () => {
                                     setValue("customerName", data.name);
                                     data.type === "Corporate"
                                       ? setValue("orgID", data.orgOrPNumber)
-                                      : '';
-                                      // : setValue("pNumber", data.orgOrPNumber);
+                                      : setValue("pNumber", data.orgOrPNumber);
                                     setValue("billingAddress", data.street);
                                     setValue("billingZip", data.zip);
                                     setValue("billingCity", data.city);
                                     setValue("billingCountry", data.country);
+                                    setValue(
+                                      "preferredLanguage",
+                                      data?.preferredLanguage
+                                    );
+                                    CreateOrderDefaultValue.preferredLanguage = data?.preferredLanguage;
                                     data.type === "Corporate"
                                       ? setCustomData({
                                           ...customData,
@@ -2172,11 +2247,12 @@ const createOrder = () => {
                                     setValue("email", "");
                                     setValue("customerName", "");
                                     setValue("orgID", "");
-                                    // setValue("pNumber", "");
+                                    setValue("pNumber", "");
                                     setValue("billingAddress", "");
                                     setValue("billingZip", "");
                                     setValue("billingCity", "");
                                     setValue("billingCountry", "");
+                                    setValue("preferredLanguage", "");
                                     // setSelectedFromList(null);
                                   }
                                   return onChange(data);
@@ -2297,51 +2373,51 @@ const createOrder = () => {
                         </div>
                         <div className="w-full my-32">
                           <div className="form-pair-input gap-x-20">
-                          <FrontPaymentPhoneInput
-                                control={control}
-                                defaultValue='no'
-                                disable={false}
-                                error={errors.primaryPhoneNumber}
-                                label="phone"
-                                name="primaryPhoneNumber"
-                                required = {true}
-                                trigger = {trigger}
-                                setValue = {setValue}
-                                setDialCode = {setDialCode}
-                              />
-                            {/* <Controller
-                              name="primaryPhoneNumber"
+                            <FrontPaymentPhoneInput
                               control={control}
-                              render={({ field }) => (
-                                <FormControl
-                                  error={!!errors.primaryPhoneNumber}
-                                  fullWidth
-                                >
-                                  <PhoneInput
-                                    {...field}
-                                    className={
-                                      errors.primaryPhoneNumber
-                                        ? "input-phone-number-field border-1 rounded-md border-red-300"
-                                        : "input-phone-number-field"
-                                    }
-                                    country="no"
-                                    enableSearch
-                                    autocompleteSearch
-                                    countryCodeEditable={false}
-                                    specialLabel={`${t("label:phone")}*`}
-                                    // onBlur={handleOnBlurGetDialCode}
-                                    value={field.value || ""}
-                                  />
-                                  <FormHelperText>
-                                    {errors?.primaryPhoneNumber?.message
-                                      ? t(
-                                          `validation:${errors?.primaryPhoneNumber?.message}`
-                                        )
-                                      : ""}
-                                  </FormHelperText>
-                                </FormControl>
-                              )}
-                            /> */}
+                              defaultValue="no"
+                              disable={false}
+                              error={errors.primaryPhoneNumber}
+                              label="phone"
+                              name="primaryPhoneNumber"
+                              required={true}
+                              trigger={trigger}
+                              setValue={setValue}
+                              setDialCode={setDialCode}
+                            />
+                            {/*<Controller*/}
+                            {/*  name="primaryPhoneNumber"*/}
+                            {/*  control={control}*/}
+                            {/*  render={({ field }) => (*/}
+                            {/*    <FormControl*/}
+                            {/*      error={!!errors.primaryPhoneNumber}*/}
+                            {/*      fullWidth*/}
+                            {/*    >*/}
+                            {/*      <PhoneInput*/}
+                            {/*        {...field}*/}
+                            {/*        className={*/}
+                            {/*          errors.primaryPhoneNumber*/}
+                            {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                            {/*            : "input-phone-number-field"*/}
+                            {/*        }*/}
+                            {/*        country="no"*/}
+                            {/*        enableSearch*/}
+                            {/*        autocompleteSearch*/}
+                            {/*        countryCodeEditable={false}*/}
+                            {/*        specialLabel={`${t("label:phone")}*`}*/}
+                            {/*        // onBlur={handleOnBlurGetDialCode}*/}
+                            {/*        value={field.value || ""}*/}
+                            {/*      />*/}
+                            {/*      <FormHelperText>*/}
+                            {/*        {errors?.primaryPhoneNumber?.message*/}
+                            {/*          ? t(*/}
+                            {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                            {/*            )*/}
+                            {/*          : ""}*/}
+                            {/*      </FormHelperText>*/}
+                            {/*    </FormControl>*/}
+                            {/*  )}*/}
+                            {/*/>*/}
                             <Controller
                               name="email"
                               control={control}
@@ -2368,7 +2444,9 @@ const createOrder = () => {
                             />
                           </div>
                           <div className="mt-32 sm:mt-0">
-                            <div className={`${customData.customerType === "corporate" ? 'form-pair-input': ''} gap-x-20 `}>
+                            <div
+                              className="form-pair-input gap-x-20"
+                            >
                               <Controller
                                 name="customerName"
                                 control={control}
@@ -2402,7 +2480,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:organizationId")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.orgID}
                                       required
@@ -2420,32 +2500,35 @@ const createOrder = () => {
                                   )}
                                 />
                               )}
-                              {/*{customData.customerType === "private" && (*/}
-                              {/*  <Controller*/}
-                              {/*    name="pNumber"*/}
-                              {/*    control={control}*/}
-                              {/*    render={({ field }) => (*/}
-                              {/*      <TextField*/}
-                              {/*        {...field}*/}
-                              {/*        label={t("label:pNumber")}*/}
-                              {/*        type="number"*/}
-                              {/*        autoComplete="off"*/}
-                              {/*        error={!!errors.pNumber}*/}
-                              {/*        helperText={*/}
-                              {/*          errors?.pNumber?.message*/}
-                              {/*            ? t(*/}
-                              {/*                `validation:${errors?.pNumber?.message}`*/}
-                              {/*              )*/}
-                              {/*            : ""*/}
-                              {/*        }*/}
-                              {/*        // ref={orgOrPNumberRef}*/}
-                              {/*        variant="outlined"*/}
-                              {/*        fullWidth*/}
-                              {/*        value={field.value || ""}*/}
-                              {/*      />*/}
-                              {/*    )}*/}
-                              {/*  />*/}
-                              {/*)}*/}
+                              { customData.customerType === "private" && (
+                                <Controller
+                                  name="pNumber"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label={t("label:pNumber")}
+                                      type="number"
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
+                                      autoComplete="off"
+                                      error={!!errors.pNumber}
+                                      helperText={
+                                        errors?.pNumber?.message
+                                          ? t(
+                                              `validation:${errors?.pNumber?.message}`
+                                            )
+                                          : ""
+                                      }
+                                      // ref={orgOrPNumberRef}
+                                      variant="outlined"
+                                      fullWidth
+                                      value={field.value || ""}
+                                    />
+                                  )}
+                                />
+                              )}
                             </div>
                           </div>
                           <div className="">
@@ -2550,14 +2633,14 @@ const createOrder = () => {
                                   />
                                 )}
                               />
-                               <CountrySelect
-                                  control={control}
-                                  name={"billingCountry"}
-                                  label={"country"}
-                                  // placeholder={"country"}
-                                  required={true}
-                                  error={errors.billingCountry}
-                                />
+                              <CountrySelect
+                                control={control}
+                                name={"billingCountry"}
+                                label={"country"}
+                                // placeholder={"country"}
+                                required={true}
+                                error={errors.billingCountry}
+                              />
                               {/* <Controller
                                 name="billingCountry"
                                 control={control}
@@ -2607,6 +2690,20 @@ const createOrder = () => {
                                 )}
                               /> */}
                             </div>
+                            <FrontPaymentLanguageSelect
+                              error={errors.preferredLanguage}
+                              control={control}
+                              name="preferredLanguage"
+                              label="preferredLanguage"
+                              required={true}
+                              disable={false}
+                              value={
+                                watch("preferredLanguage")
+                                  ? watch("preferredLanguage")
+                                  : ""
+                              }
+                              isOrder = {true}
+                            />
                           </div>
                         </div>
                       </AccordionDetails>
@@ -2665,7 +2762,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:referenceNo")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.referenceNumber}
                                       helperText={
@@ -2847,7 +2946,9 @@ const createOrder = () => {
                                       {...field}
                                       label={t("label:internalReferenceNo")}
                                       type="number"
-                                      onWheel={event => { event.target.blur()}}
+                                      onWheel={(event) => {
+                                        event.target.blur();
+                                      }}
                                       autoComplete="off"
                                       error={!!errors.internalReferenceNo}
                                       helperText={

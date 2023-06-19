@@ -35,6 +35,7 @@ import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import CountrySelect from "../../common/countries";
 import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -83,6 +84,12 @@ const paymentInformation = () => {
       logo: "assets/images/payment/frontPayment.png",
     },
   ]);
+  useEffect(()=>{
+    if (orderDetails) {
+      setPaymentMethodList(orderDetails?.invoiceAsPaymentOption === 0? paymentMethodList.filter(obj => obj.name !== "Invoice"): paymentMethodList) ;
+    }
+  },[orderDetails])
+
   let schema =
     customData?.customerType === "private"
       ? validateSchemaPaymentCheckout
@@ -131,6 +138,7 @@ const paymentInformation = () => {
           ...updatedData,
           ...customData,
           orderUuid,
+          preferredLanguage: values.preferredLanguage,
           customerUuid: orderDetails?.customerDetails?.uuid
             ? orderDetails?.customerDetails?.uuid
             : null,
@@ -139,6 +147,7 @@ const paymentInformation = () => {
           ...values,
           ...customData,
           orderUuid,
+          preferredLanguage: values.preferredLanguage,
           customerUuid: orderDetails?.customerDetails?.uuid
             ? orderDetails?.customerDetails?.uuid
             : null,
@@ -283,45 +292,49 @@ const paymentInformation = () => {
                 ? response?.data?.customerDetails?.organizationId
                 : "";
 
-            PaymentDefaultValue.billingAddress =
-              response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.street
-                ? response?.data?.customerDetails?.address?.street
-                : "";
-            PaymentDefaultValue.billingZip =
-              response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.zip
-                ? response?.data?.customerDetails?.address?.zip
-                : "";
-            PaymentDefaultValue.billingCity =
-              response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.city
-                ? response?.data?.customerDetails?.address?.city
-                : "";
-            PaymentDefaultValue.billingCountry =
-              response?.data?.customerDetails?.address &&
-              response?.data?.customerDetails?.address?.country
-                ? response?.data?.customerDetails?.address?.country
-                : "";
-            setCustomData({
-              ...customData,
-              customerType:
-                response?.data?.customerDetails?.type === "Private"
-                  ? "private"
-                  : "corporate",
-              isCeditCheck: response?.data?.creditCheck
-                ? response?.data?.creditCheck
-                : false,
-            });
-            reset({ ...PaymentDefaultValue });
-          }
-          setIsLoading(false);
-        })
-        .catch((e) => {
-          setIsLoading(false);
-          // enqueueSnackbar(e, { variant: "error" });
-          return navigate("404");
-        });
+          PaymentDefaultValue.billingAddress =
+            response?.data?.customerDetails?.address &&
+            response?.data?.customerDetails?.address?.street
+              ? response?.data?.customerDetails?.address?.street
+              : "";
+          PaymentDefaultValue.billingZip =
+            response?.data?.customerDetails?.address &&
+            response?.data?.customerDetails?.address?.zip
+              ? response?.data?.customerDetails?.address?.zip
+              : "";
+          PaymentDefaultValue.billingCity =
+            response?.data?.customerDetails?.address &&
+            response?.data?.customerDetails?.address?.city
+              ? response?.data?.customerDetails?.address?.city
+              : "";
+          PaymentDefaultValue.billingCountry =
+            response?.data?.customerDetails?.address &&
+            response?.data?.customerDetails?.address?.country
+              ? response?.data?.customerDetails?.address?.country
+              : "";
+          PaymentDefaultValue.preferredLanguage = response?.data
+            ?.customerDetails?.preferredLanguage
+            ? response?.data?.customerDetails?.preferredLanguage
+            : "";
+          setCustomData({
+            ...customData,
+            customerType:
+              response?.data?.customerDetails?.type === "Private"
+                ? "private"
+                : "corporate",
+            isCeditCheck: response?.data?.creditCheck
+              ? response?.data?.creditCheck
+              : false,
+          });
+          reset({ ...PaymentDefaultValue });
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        // enqueueSnackbar(e, { variant: "error" });
+        return navigate("404");
+      });
     }
   }, [isLoading]);
 
@@ -336,10 +349,12 @@ const paymentInformation = () => {
     const creditCheckPrivateData = {
       personalId: params.creditCheckId,
       type: params.type,
+      orderUuid: orderUuid,
     };
     const creditCheckCorporateData = {
       organizationId: params.creditCheckId,
       type: params.type,
+      orderUuid: orderUuid,
     };
     const preparedPayload =
       params.type === "private"
@@ -621,7 +636,7 @@ const paymentInformation = () => {
                                 />
                               </div>
                               <div className="">
-                                <div className={`${customData.customerType === "corporate" ? 'form-pair-input': ''} gap-x-20 `}>
+                                <div className="form-pair-input gap-x-20">
                                   <Controller
                                     name="customerName"
                                     control={control}
@@ -646,43 +661,36 @@ const paymentInformation = () => {
                                       />
                                     )}
                                   />
-                                  {
-                                      customData.customerType === "corporate" && (
-                                          <Controller
-                                              name="orgIdOrPNumber"
-                                              control={control}
-                                              render={({ field }) => (
-                                                  <TextField
-                                                      {...field}
-                                                      label={
-                                                        t("label:organizationId")
-                                                        // customData.customerType === "private"
-                                                        //     ? t("label:pNumber")
-                                                        //     : t("label:organizationId")
-                                                      }
-                                                      type="number"
-                                                      onWheel={event => { event.target.blur()}}
-                                                      autoComplete="off"
-                                                      error={!!errors.orgIdOrPNumber}
-                                                      required={
-                                                          customData.customerType !== "private"
-                                                      }
-                                                      helperText={
-                                                        errors?.orgIdOrPNumber?.message
-                                                            ? t(
-                                                                `validation:${errors?.orgIdOrPNumber?.message}`
-                                                            )
-                                                            : ""
-                                                      }
-                                                      variant="outlined"
-                                                      fullWidth
-                                                      value={field.value || ""}
-                                                  />
-                                              )}
-                                          />
-                                      )
-                                  }
-
+                                  <Controller
+                                    name="orgIdOrPNumber"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={
+                                          customData.customerType === "private"
+                                            ? t("label:pNumber")
+                                            : t("label:organizationId")
+                                        }
+                                        type="number"
+                                        autoComplete="off"
+                                        error={!!errors.orgIdOrPNumber}
+                                        required={
+                                          customData.customerType !== "private"
+                                        }
+                                        helperText={
+                                          errors?.orgIdOrPNumber?.message
+                                            ? t(
+                                                `validation:${errors?.orgIdOrPNumber?.message}`
+                                              )
+                                            : ""
+                                        }
+                                        variant="outlined"
+                                        fullWidth
+                                        value={field.value || ""}
+                                      />
+                                    )}
+                                  />
                                 </div>
                               </div>
                             </div>
@@ -825,6 +833,15 @@ const paymentInformation = () => {
                                 )}
                               /> */}
                             </div>
+                            <FrontPaymentLanguageSelect
+                              error={errors.preferredLanguage}
+                              control={control}
+                              name="preferredLanguage"
+                              label="preferredLanguage"
+                              required={true}
+                              disable={false}
+                              // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
+                            />
                           </div>
                         </div>
 
@@ -896,47 +913,59 @@ const paymentInformation = () => {
                             <div className="caption2 text-MonochromeGray-300 mb-20">
                               {t("label:informationForCreditCheck")}
                             </div>
-                            <div className="flex gap-10 justify-start items-center flex-col md:flex-row gap-y-10 w-full md:w-3/4">
-                              <Controller
-                                name="orgIdCreditCheck"
-                                control={control}
-                                render={({ field }) => (
-                                  <TextField
-                                    {...field}
-                                    label={t("label:orgIdPNumber")}
-                                    type="text"
-                                    autoComplete="off"
-                                    error={!!errors.orgIdCreditCheck}
-                                    // helperText={
-                                    //   errors?.orgIdCreditCheck?.message
-                                    // }
-                                    variant="outlined"
-                                    fullWidth
-                                    value={field.value || ""}
+
+                            {orderDetails.creditCheckHistory &&
+                            orderDetails.creditCheckHistory.status ? (
+                              <div className="text-green-600">
+                                {t("message:CreditCheckAlreadyDone")}
+                              </div>
+                            ) : (
+                              <>
+                                <div className="flex gap-10 justify-start items-center flex-col md:flex-row gap-y-10 w-full md:w-3/4">
+                                  <Controller
+                                    name="orgIdCreditCheck"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextField
+                                        {...field}
+                                        label={t("label:orgIdPNumber")}
+                                        type="text"
+                                        autoComplete="off"
+                                        error={!!errors.orgIdCreditCheck}
+                                        // helperText={
+                                        //   errors?.orgIdCreditCheck?.message
+                                        // }
+                                        variant="outlined"
+                                        fullWidth
+                                        value={field.value || ""}
+                                      />
+                                    )}
                                   />
-                                )}
-                              />
-                              <LoadingButton
-                                variant="contained"
-                                color="secondary"
-                                className="w-full md:w-auto font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800"
-                                aria-label="Confirm"
-                                size="large"
-                                type="button"
-                                loading={apiLoading}
-                                loadingPosition="center"
-                                onClick={() => handleCreditCheck()}
-                              >
-                                {t("label:check")}
-                              </LoadingButton>
-                            </div>
-                            <div
-                              className={`${
-                                !!isApproved ? "text-green-600" : "text-red-500"
-                              } text-MonochromeGray-300 my-8 mx-8`}
-                            >
-                              {creditCheckMessage}
-                            </div>
+                                  <LoadingButton
+                                    variant="contained"
+                                    color="secondary"
+                                    className="w-full md:w-auto font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800"
+                                    aria-label="Confirm"
+                                    size="large"
+                                    type="button"
+                                    loading={apiLoading}
+                                    loadingPosition="center"
+                                    onClick={() => handleCreditCheck()}
+                                  >
+                                    {t("label:check")}
+                                  </LoadingButton>
+                                </div>
+                                <div
+                                  className={`${
+                                    !!isApproved
+                                      ? "text-green-600"
+                                      : "text-red-500"
+                                  } text-MonochromeGray-300 my-8 mx-8`}
+                                >
+                                  {creditCheckMessage}
+                                </div>
+                              </>
+                            )}
                           </div>
                         )}
                     </div>
@@ -1082,18 +1111,21 @@ const paymentInformation = () => {
                   variant="contained"
                   type="submit"
                   className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40 "
-                  onClick={() =>
+                  onClick={() => {
                     setCustomData({
                       ...customData,
                       isCeditCheck: false,
-                    })
-                  }
+                    });
+                    if (!orderDetails?.customerDetails?.preferredLanguage) {
+                      enqueueSnackbar("Please add language", { variant: "error" });
+                    }
+                  }}
                   disabled={
                     apiLoading ||
                     (customData.paymentMethod === "invoice" &&
                       ((orderDetails.type.toLowerCase() === "regular" &&
-                          orderDetails?.creditCheck &&
-                          !isCreditChecked) ||
+                        orderDetails?.creditCheck &&
+                        !isCreditChecked) ||
                         (orderDetails.type.toLowerCase() === "quick" &&
                           !Object.keys(updatedData).length &&
                           !orderDetails?.customerDetails?.address)))

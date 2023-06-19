@@ -54,6 +54,8 @@ const no = {
     name: "Navn",
     createNewClient: "Opprett ny Klient",
     organizationId: "Organisasjons ID",
+    vatReportFilterGuidelineStart: "Mva rapport kan hentes ut for de siste 30 dager. Ønsker en å hente ut en bestemt periode så",
+    vatReportFilterGuidelineEnd: "justeres det på datofeltet men fremdeles kun 30 dagers periode",
     clientName: "Klientens navn",
     contractDetails: "Kontraktdetaljer",
     primaryContactDetails: "Primær kontaktinformasjon",
@@ -515,6 +517,7 @@ const no = {
     october: "Oktober",
     november: "November",
     december: "Desember",
+    youMustEnterYourMonthlyPlanFee: "Du må oppgi den månedlige abonnementsavgiften"
   },
   message: {
     clientNotFound: "Klient ikke funnet",

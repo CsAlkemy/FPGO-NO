@@ -95,6 +95,7 @@ export const apiSlice = createApi({
     "RefundRequestsList",
     "SubscriptionsList",
     "FailedSubscriptionsList",
+    "ReservationList",
   ],
   endpoints: (builder) => ({
     getOrdersList: builder.query({
@@ -417,6 +418,16 @@ export const apiSlice = createApi({
       query: () => "/reservations/list",
       providesTags: ["ReservationList"],
     }),
+    cancelReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/cancel/${payload.uuid}`,
+        method: "PUT",
+        body: {
+          note: payload?.cancellationNote ? payload.cancellationNote : null,
+        },
+      }),
+      invalidatesTags: ["ReservationList"],
+    }),
     completeReservation: builder.mutation({
       query: (payload) => ({
         url: `/reservations/complete/${payload.uuid}`,
@@ -429,11 +440,50 @@ export const apiSlice = createApi({
     }),
     capturePayment: builder.mutation({
       query: (payload) => ({
-        url: `/payment/capture/${payload.uuid}`,
+        //url: `/payment/capture/${payload.uuid}`,
+        url: `/reservations/capture/${payload.uuid}`,
         method: "POST",
         body: {
           isPartial: payload.isPartial,
-          amount: parseFloat(payload.refundAmount),
+          amount: parseFloat(payload.captureAmount),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    chargeReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/charge/${payload.uuid}`,
+        method: "POST",
+        body: {
+          products: payload.products,
+          grandTotal: parseFloat(payload.grandTotal),
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    refundFromReservation: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          source: "captured",
+          amount: payload.refundableAmount,
+          reference: null,
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["ReservationList"] : [""],
+    }),
+    refundChargedTransection: builder.mutation({
+      query: (payload) => ({
+        url: `/reservations/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          source: "charged",
+          amount: payload.refundableAmount,
+          reference: payload.chargeKey,
         },
       }),
       invalidatesTags: (result, error, arg, meta) =>
@@ -552,6 +602,7 @@ export const {
   useOrderExportToApticQuery,
   useCreateReservationMutation,
   useGetReservationListQuery,
+  useCancelReservationMutation,
   useCompleteReservationMutation,
   useCapturePaymentMutation,
   useGetSubscriptionsListQuery,
@@ -561,4 +612,7 @@ export const {
   useRefundSubscriptionOrderMutation,
   useSubscriptionRefundRequestDecisionMutation,
   useSubscriptionRequestRefundApprovalMutation,
+  useChargeReservationMutation,
+  useRefundFromReservationMutation,
+  useRefundChargedTransectionMutation,
 } = apiSlice;

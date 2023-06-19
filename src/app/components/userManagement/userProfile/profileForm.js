@@ -35,7 +35,13 @@ const defaultValues = {
   preferredLanguage: "",
 };
 
-const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsValid  }) => {
+const fpAdminProfileForm = ({
+  submitRef,
+  role,
+  userProfile,
+  setIsDirty,
+  setIsValid,
+}) => {
   const { t } = useTranslation();
   const [roleList, setRoleList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -55,28 +61,27 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
   const schema =
     isUserID === true ? schemaUserProfile : schemaUserProfileFpAdmin;
 
-  const { control, formState, handleSubmit, reset, setValue, trigger, watch } = useForm({
-    mode: "onChange",
-    defaultValues,
-    resolver: yupResolver(schema),
-  });
+  const { control, formState, handleSubmit, reset, setValue, trigger, watch } =
+    useForm({
+      mode: "onChange",
+      defaultValues,
+      resolver: yupResolver(schema),
+    });
 
   const { isValid, dirtyFields, errors, isDirty } = formState;
 
-  useEffect(()=>{
-      setIsDirty(isDirty)
-  },[isDirty])
-  
-  useEffect(()=>{
-    setIsValid(isValid)
-},[isValid])
+  useEffect(() => {
+    setIsDirty(isDirty);
+  }, [isDirty]);
+
+  useEffect(() => {
+    setIsValid(isValid);
+  }, [isValid]);
   function onSubmit(values) {
     const msisdn = values?.phoneNumber
-      ? values?.phoneNumber.slice(dialCode.length)
+      ? values?.phoneNumber.slice(dialCode?.length)
       : null;
-    const countryCode = dialCode
-      ? dialCode
-      : null;
+    const countryCode = dialCode ? dialCode : null;
     const userData = {
       uuid: userProfile?.uuid,
       name: values?.fullName,
@@ -111,7 +116,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
       userProfile?.countryCode && userProfile?.msisdn
         ? userProfile.countryCode + userProfile.msisdn
         : "47";
-    setValue("phoneNumber", userProfile.countryCode + userProfile.msisdn || "")
+    setValue("phoneNumber", userProfile.countryCode + userProfile.msisdn || "");
     defaultValues.designation = userProfile?.designation
       ? userProfile?.designation
       : "";
@@ -129,7 +134,7 @@ const fpAdminProfileForm = ({ submitRef, role, userProfile, setIsDirty, setIsVal
       ? userProfile.preferredLanguage
       : "";
     // defaultValues.branch = userProfile['organizationDetails']?.name
-    setDialCode(userProfile?.countryCode || null)
+    setDialCode(userProfile?.countryCode || null);
     reset({ ...defaultValues });
 
     if (isLoading) {

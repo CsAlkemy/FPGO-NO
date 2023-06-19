@@ -32,6 +32,15 @@ import SubscriptionPaymentConfig from "../pages/subscriptions/subscriptionPaymen
 import {SubscriptionsConfig, SubscriptionsConfigRBAC} from "../pages/subscriptions/subscriptionsConfig";
 import { ReservationsConfig, ReservationsConfEx, ReservationCart } from "../pages/sales/reservationsConfig";
 import { ReportsConfig, ReportsConfigRBAC } from "../pages/reports/reportsConfig";
+import {
+  ReservationsConfig,
+  ReservationsConfEx,
+  ReservationCart,
+} from "../pages/sales/reservationsConfig";
+import {
+  ReportsConfig,
+  ReportsConfigRBAC,
+} from "../pages/reports/reportsConfig";
 
 const routeConfigs = [
   DashboardConfig,
@@ -62,7 +71,7 @@ const routeConfigs = [
   ReservationsConfEx,
   ReservationCart,
   ReportsConfig,
-  ReportsConfigRBAC
+  ReportsConfigRBAC,
 ];
 
 const routes = [

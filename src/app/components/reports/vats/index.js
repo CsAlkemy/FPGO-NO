@@ -208,7 +208,7 @@ export default function VatReports() {
       <div className="payouts-header">
         <div>
           <div className="header6">{t("label:vatReports")}</div>
-          <div className="subtitle3" style={{ color: "#838585" }}>
+          <div className="subtitle3 mt-5" style={{ color: "#838585" }}>
             {t("label:selectDateRangeToDownloadVatReport")}
           </div>
         </div>
@@ -416,7 +416,7 @@ export default function VatReports() {
           <div className="flex px-10 w-full justify-start items-center mb-10">
             <div className="flex gap-5 body4 cursor-pointer">
               <ErrorIcon className="icon-size-14 mt-4" />
-              {t("label:vatReportFilterGuideline")}
+              {t("label:vatReportFilterGuidelineStart")} <br/> {t("label:vatReportFilterGuidelineEnd")}
             </div>
           </div>
           <div className="w-full px-10">

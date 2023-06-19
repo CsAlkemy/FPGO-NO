@@ -1,19 +1,16 @@
 import LanguageIcon from "@mui/icons-material/Language";
-import {Hidden, MenuItem, Select, SvgIcon} from "@mui/material";
+import { Hidden, MenuItem, Select, SvgIcon } from "@mui/material";
 import Box from "@mui/material/Box";
-import {changeLanguage} from "app/store/i18nSlice";
-import {useDispatch} from "react-redux";
-import {useTranslation} from "react-i18next";
-import {useEffect} from "react";
-
+import { changeLanguage } from "app/store/i18nSlice";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 const AuthLayout = ({ children }) => {
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const lang = urlParams.get('lang');
-  const resetPassword = window.location.pathname.includes("/reset-password");
-  
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const urlParams = new URLSearchParams(window.location.search);
+  const lang = urlParams.get("lang");
+  const resetPassword = window.location.pathname.includes("/reset-password");
   const languages = [
     {
       label: "Norwegian",
@@ -23,7 +20,6 @@ const AuthLayout = ({ children }) => {
       label: "English",
       value: "en",
     },
-
   ];
   useEffect(() => {
     if (!resetPassword) {
@@ -66,7 +62,7 @@ const AuthLayout = ({ children }) => {
               <div>
                 <Select
                   sx={{ height: 36, backgroundColor: "#fff" }}
-                  defaultValue={lang === "en" ? "English": "Norwegian"}
+                  defaultValue={lang === "en" ? "English" : "Norwegian"}
                   displayEmpty
                   renderValue={(value) => {
                     return (
@@ -77,7 +73,9 @@ const AuthLayout = ({ children }) => {
                         <SvgIcon color="primary">
                           <LanguageIcon className="text-MonochromeGray-300" />
                         </SvgIcon>
-                        <div className="my-auto">{t(`label:${value?.toLowerCase()}`)}</div>
+                        <div className="my-auto">
+                          {t(`label:${value?.toLowerCase()}`)}
+                        </div>
                       </Box>
                     );
                   }}

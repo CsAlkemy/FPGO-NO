@@ -97,9 +97,11 @@ export default function Payouts() {
         })
           .then((response) => {
             setIsLoading(false);
-            setDirData(response.sort((a, b)=> {
-              return a.folder- b.folder;
-            }));
+            setDirData(
+              response.sort((a, b) => {
+                return a.folder - b.folder;
+              })
+            );
           })
           .catch((e) => {
             enqueueSnackbar(t(`message:${e}`), {
@@ -109,12 +111,12 @@ export default function Payouts() {
             setIsLoading(false);
             setDirData([]);
           });
-      }else {
+      } else {
         if (isLoading) {
           ReportService.getPayoutsListByMonth({
             orgId: orgUuid,
             year: selectedDate.getFullYear(),
-            month: selectedMonth
+            month: selectedMonth,
           })
             .then((response) => {
               setIsLoading(false);
@@ -168,15 +170,12 @@ export default function Payouts() {
     }
   };
 
-  const handleDirectoryClick = (data)=> {
-    setIsLoading(true)
+  const handleDirectoryClick = (data) => {
+    setIsLoading(true);
     setBreadCumb([
       {
         title: orgName,
-        navigate:
-          user?.role[0] === FP_ADMIN
-            ? "/reports/payouts-list"
-            : null,
+        navigate: user?.role[0] === FP_ADMIN ? "/reports/payouts-list" : null,
         val: "name",
       },
       {
@@ -193,7 +192,7 @@ export default function Payouts() {
     ]);
     setIsYearView(false);
     setSelectedMonth(data.folder);
-  }
+  };
 
   return (
     <div>
@@ -218,7 +217,10 @@ export default function Payouts() {
             {/*{breadcrumbs}*/}
             {breadCumb.map((cumb) => {
               return (
-                <span onClick={() => handleCumbCustomConfig(cumb.navigate)}  className="cursor-pointer">
+                <span
+                  onClick={() => handleCumbCustomConfig(cumb.navigate)}
+                  className="cursor-pointer"
+                >
                   <p
                     className={`${
                       cumb.val === "name" ||
@@ -254,7 +256,7 @@ export default function Payouts() {
           </div>
         )}
         {!isYearView && (
-          <div>
+          <div className="w-full md:w-auto">
             <Paper className="flex items-center px-10 space-x-8  rounded-md border-1 shadow-0 w-full">
               <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
               <InputBase
@@ -270,15 +272,17 @@ export default function Payouts() {
       {isYearView && (
         <div className="payouts-bg-container m-16 max-w-7xl">
           <div className="w-1/4">
-            <p className="subtitle3 pl-24 pt-24">{dirData.length} {t("label:folders")}</p>
+            <p className="subtitle3 pl-24 pt-24">
+              {dirData.length} {t("label:folders")}
+            </p>
           </div>
-          <div className="payouts-parent-container grid grid-cols-2 lg:grid-cols-8 md:grid-cols-8 justify-items-center">
+          <div className="payouts-parent-container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-32 justify-items-center">
             {dirData.map((data) => {
               return (
                 <div
                   className="payouts-container cursor-pointer"
                   onClick={() => {
-                    handleDirectoryClick(data)
+                    handleDirectoryClick(data);
                   }}
                 >
                   <div className="flex flex-col justify-around items-center">
@@ -301,11 +305,16 @@ export default function Payouts() {
           </div>
         </div>
       )}
-      {!isYearView && <PayoutReports urlData={{
-        orgId: orgUuid,
-        year: selectedDate.getFullYear(),
-        month: selectedMonth,
-      }} data={monthViewData}/>}
+      {!isYearView && (
+        <PayoutReports
+          urlData={{
+            orgId: orgUuid,
+            year: selectedDate.getFullYear(),
+            month: selectedMonth,
+          }}
+          data={monthViewData}
+        />
+      )}
     </div>
   );
 }

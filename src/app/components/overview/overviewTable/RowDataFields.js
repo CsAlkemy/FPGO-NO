@@ -193,7 +193,7 @@ export const reservationOverviewRowDataFields = [
   "amountPaid",
   "amountInBank",
   "status",
-  "options"
+  "options",
 ];
 
 export const reservationOverviewFPAdminRowDataFields = [
@@ -206,9 +206,8 @@ export const reservationOverviewFPAdminRowDataFields = [
   "amountPaid",
   "amountInBank",
   "status",
-  "options"
+  "options",
 ];
-
 export const payoutsListRowDataFields = [
   "name",
   // "orgId",
@@ -223,5 +222,5 @@ export const payoutsMonthViewRowDataFields = [
   "dateAdded",
   "fileName",
   "fileFormat",
-  "isDownload"
+  "isDownload",
 ];

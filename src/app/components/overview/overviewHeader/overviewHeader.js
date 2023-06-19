@@ -140,6 +140,21 @@ export default function OverviewHeader(props) {
         .catch((e) => {
           enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         });
+    } else if (
+      [clientsListOverview, approvalListOverviewFPAdmin].includes(
+        props.tableRef
+      )
+    ) {
+      ClientService.exportClientLists()
+        .then((response) => {
+          let wb = utils.book_new(),
+            ws = utils.json_to_sheet(response);
+          utils.book_append_sheet(wb, ws, "client list");
+          writeFile(wb, `Front Payment AS_Klientliste.xlsx`);
+        })
+        .catch((e) => {
+          enqueueSnackbar(t(`message:${e}`), { variant: "error" });
+        });
     }
   };
 
@@ -211,13 +226,14 @@ export default function OverviewHeader(props) {
       </Hidden>
       <Hidden smDown>
         <div className="grid grid-cols-1 md:grid-cols-6 py-12 px-0 sm:px-20">
-          {props.tableRef !== clientOrdersListOverview && props.tableRef !== payoutReportsListOverview && (
-            <Typography className="flex header6 col-span-2 my-14 md:my-0">
-              {props.tableRef === customerOrdersListOverview
-                ? ""
-                : props.headerSubtitle}
-            </Typography>
-          )}
+          {props.tableRef !== clientOrdersListOverview &&
+            props.tableRef !== payoutReportsListOverview && (
+              <Typography className="flex header6 col-span-2 my-14 md:my-0">
+                {props.tableRef === customerOrdersListOverview
+                  ? ""
+                  : props.headerSubtitle}
+              </Typography>
+            )}
           {props.tableRef === payoutReportsListOverview && (
             <div className="flex flex-col col-span-2 my-14 md:my-0">
               <Typography className="header6">
@@ -225,7 +241,7 @@ export default function OverviewHeader(props) {
                   ? ""
                   : props.headerSubtitle}
               </Typography>
-              <Typography className="subtitle3" style={{color: "#838585"}}>
+              <Typography className="subtitle3" style={{ color: "#838585" }}>
                 {t("label:selectAClientToViewPayouts")}
               </Typography>
             </div>
@@ -265,7 +281,9 @@ export default function OverviewHeader(props) {
               />
             </Paper>
             <div className="flex gap-10">
-              {props.tableRef === ordersListOverview && (
+              {[ordersListOverview, clientsListOverview].includes(
+                props.tableRef
+              ) && (
                 <div className="button2">
                   <Button
                     color="secondary"
@@ -315,7 +333,8 @@ export default function OverviewHeader(props) {
                   </Menu>
                 </div>
               ) : props.tableRef === customerOrdersListOverview ||
-                props.tableRef === clientOrdersListOverview || props.tableRef === payoutReportsListOverview ? (
+                props.tableRef === clientOrdersListOverview ||
+                props.tableRef === payoutReportsListOverview ? (
                 ""
               ) : props.tableRef === creditChecksListOverview ? (
                 <div>

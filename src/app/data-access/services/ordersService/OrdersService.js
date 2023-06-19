@@ -254,6 +254,7 @@ class OrdersService {
         email: params.orderBy === "email",
         invoice: params.orderBy === "invoice",
       },
+      invoiceAsPaymentOption:params.invoiceAsPaymentOption === "true" ? true : false,
       isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
         type: params.customerType,
@@ -264,6 +265,9 @@ class OrdersService {
         email: params.email,
         preferredLanguage: "en",
         name: params.customerName,
+        preferredLanguage: params.preferredLanguage
+          ? params.preferredLanguage
+          : null,
         personalNumber:
           params.customerType === "private"
             ? params?.pNumber
@@ -546,6 +550,7 @@ class OrdersService {
           : null,
         email: params.email,
         name: params.customerName,
+        preferredLanguage: params.preferredLanguage,
         personalNumber:
           params.customerType === "private" ? params.orgIdOrPNumber : null,
         organizationId:
@@ -1107,6 +1112,9 @@ class OrdersService {
       msisdn,
       email: params?.email ? params?.email : null,
       name: params?.customerName ? params?.customerName : null,
+      preferredLanguage: params?.preferredLanguage
+        ? params?.preferredLanguage
+        : null,
       personalNumber: params?.pNumber ? `${params?.pNumber}` : null,
       organizationId: params?.orgID ? `${params?.orgID}` : null,
       // organizationId : "fu",

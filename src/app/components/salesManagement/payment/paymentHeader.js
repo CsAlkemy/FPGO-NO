@@ -26,28 +26,43 @@ const paymentHeader = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const urlParams = new URLSearchParams(window.location.search);
-  const lang = urlParams.get('lang');
+  const lang = urlParams.get("lang");
   const checkout = window.location.pathname.includes("/checkout");
   const orderDetails = window.location.pathname.includes("/order/details");
   const orderReceipt = window.location.pathname.includes("/order/receipt");
   const checkOutOrder = window.location.pathname.includes("checkout");
-  const [defaultLang, setDefaultLang ] = React.useState( lang ==='en' ? "English" : "Norwegian")
+
+  const reservationDetails = window.location.pathname.includes(
+    "/reservations/details"
+  );
+  const reservationReceipt = window.location.pathname.includes("confirmation");
+
+  const [defaultLang, setDefaultLang] = React.useState(
+    lang === "en" ? "English" : "Norwegian"
+  );
+
   useEffect(() => {
     if (lang === "en") {
       dispatch(changeLanguage("en"));
-      setDefaultLang("English")
-    }
-    else if (orderDetails || orderReceipt || checkOutOrder) {
+      setDefaultLang("English");
+    } else if (
+      orderDetails ||
+      orderReceipt ||
+      checkOutOrder ||
+      reservationDetails ||
+      reservationReceipt
+    ) {
       dispatch(changeLanguage("no"));
-      setDefaultLang("Norwegian")
-    }
-    else if (!!localStorage.getItem("i18nextLng") && localStorage.getItem("i18nextLng")) {
-      dispatch(changeLanguage("en"))
-      setDefaultLang("English")
-    }
-    else {
+      setDefaultLang("Norwegian");
+    } else if (
+      !!localStorage.getItem("i18nextLng") &&
+      localStorage.getItem("i18nextLng")
+    ) {
+      dispatch(changeLanguage("en"));
+      setDefaultLang("English");
+    } else {
       dispatch(changeLanguage("no"));
-      setDefaultLang("Norwegian")
+      setDefaultLang("Norwegian");
     }
   }, [lang]);
 
@@ -65,6 +80,13 @@ const paymentHeader = () => {
       <div>
         <Select
           sx={{ height: 36 }}
+          // defaultValue={
+          //   lang === "en" ||
+          //   (!!localStorage.getItem("i18nextLng") &&
+          //     localStorage.getItem("i18nextLng") === "en") && !orderDetails
+          //     ? "English"
+          //     : "Norwegian"
+          // }
           defaultValue={defaultLang}
           displayEmpty
           renderValue={(value) => {
@@ -76,7 +98,9 @@ const paymentHeader = () => {
                 <SvgIcon color="primary">
                   <LanguageIcon className="text-MonochromeGray-300" />
                 </SvgIcon>
-                <div className="my-auto">{t(`label:${value.toLowerCase()}`)}</div>
+                <div className="my-auto">
+                  {t(`label:${value.toLowerCase()}`)}
+                </div>
               </Box>
             );
           }}

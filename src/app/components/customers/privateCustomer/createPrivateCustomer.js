@@ -35,7 +35,7 @@ import {
 } from "app/store/api/apiSlice";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
-
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 const createPrivateCustomer = () => {
   const { t } = useTranslation();
   const [sameAddress, setSameAddress] = React.useState(true);
@@ -49,24 +49,33 @@ const createPrivateCustomer = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   // form
-  const { control, formState, handleSubmit, reset, setValue, trigger, watch} = useForm({
-    mode: "onChange",
-    PrivateDefaultValue,
-    resolver: yupResolver(validateSchemaPrivate),
-  });
+  const { control, formState, handleSubmit, reset, setValue, trigger, watch } =
+    useForm({
+      mode: "onChange",
+      PrivateDefaultValue,
+      resolver: yupResolver(validateSchemaPrivate),
+    });
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = (values) => {
     setLoading(true);
     const preparedPayload =
-      CustomersService.prepareCreatePrivateCustomerPayload(values, sameAddress, dialCode);
+      CustomersService.prepareCreatePrivateCustomerPayload(
+        values,
+        sameAddress,
+        dialCode
+      );
     createPrivateCustomer(preparedPayload).then((response) => {
       if (response?.data?.status_code === 201) {
-        enqueueSnackbar(t(`message:${response?.data?.message}`), { variant: "success" });
+        enqueueSnackbar(t(`message:${response?.data?.message}`), {
+          variant: "success",
+        });
         navigate("/customers/customers-list");
         setLoading(false);
       } else if (response?.error?.data?.status_code === 417) {
-        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), { variant: "error" });
+        enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+          variant: "error",
+        });
         setLoading(false);
       }
     });
@@ -125,12 +134,13 @@ const createPrivateCustomer = () => {
               <div className="col-span-1 md:col-span-4 bg-white">
                 <div className="  subtitle3 header-bg-900-product flex flex-row items-center gap-10">
                   {t("label:primaryInformation")}
-                  {watch("primaryPhoneNumber")?.length>0 &&
+                  {watch("primaryPhoneNumber")?.length > 0 &&
                   dirtyFields.customerEmail &&
                   dirtyFields.customerName &&
                   dirtyFields.billingAddress &&
                   dirtyFields.billingZip &&
                   dirtyFields.billingCity &&
+                  dirtyFields.preferredLanguage &&
                   dirtyFields.billingCountry ? (
                     <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                   ) : (
@@ -140,44 +150,44 @@ const createPrivateCustomer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-32 px-10 md:px-16">
                   <FrontPaymentPhoneInput
                     control={control}
-                    defaultValue='no'
+                    defaultValue="no"
                     disable={false}
                     error={errors.primaryPhoneNumber}
                     label="phone"
                     name="primaryPhoneNumber"
-                    required = {true}
-                    trigger = {trigger}
-                    setValue = {setValue}
-                    setDialCode = {setDialCode}
+                    required={true}
+                    trigger={trigger}
+                    setValue={setValue}
+                    setDialCode={setDialCode}
                   />
-                  {/* <Controller
-                    name="primaryPhoneNumber"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControl
-                        error={!!errors.primaryPhoneNumber}
-                        fullWidth
-                      >
-                        <PhoneInput
-                          {...field}
-                          className={
-                            errors.primaryPhoneNumber
-                              ? "input-phone-number-field border-1 rounded-md border-red-300"
-                              : "input-phone-number-field"
-                          }
-                          country="no"
-                          enableSearch
-                          autocompleteSearch
-                          countryCodeEditable={false}
-                          specialLabel={`${t("label:phone")}*`}
-                          // onBlur={handleOnBlurGetDialCode}
-                        />
-                        <FormHelperText>
-                          {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}
-                        </FormHelperText>
-                      </FormControl>
-                    )}
-                  /> */}
+                  {/*<Controller*/}
+                  {/*  name="primaryPhoneNumber"*/}
+                  {/*  control={control}*/}
+                  {/*  render={({ field }) => (*/}
+                  {/*    <FormControl*/}
+                  {/*      error={!!errors.primaryPhoneNumber}*/}
+                  {/*      fullWidth*/}
+                  {/*    >*/}
+                  {/*      <PhoneInput*/}
+                  {/*        {...field}*/}
+                  {/*        className={*/}
+                  {/*          errors.primaryPhoneNumber*/}
+                  {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                  {/*            : "input-phone-number-field"*/}
+                  {/*        }*/}
+                  {/*        country="no"*/}
+                  {/*        enableSearch*/}
+                  {/*        autocompleteSearch*/}
+                  {/*        countryCodeEditable={false}*/}
+                  {/*        specialLabel={`${t("label:phone")}*`}*/}
+                  {/*        // onBlur={handleOnBlurGetDialCode}*/}
+                  {/*      />*/}
+                  {/*      <FormHelperText>*/}
+                  {/*        {errors?.primaryPhoneNumber?.message ? t(`validation:${errors?.primaryPhoneNumber?.message}`) : ""}*/}
+                  {/*      </FormHelperText>*/}
+                  {/*    </FormControl>*/}
+                  {/*  )}*/}
+                  {/*/>*/}
                   <Controller
                     name="customerEmail"
                     control={control}
@@ -189,7 +199,11 @@ const createPrivateCustomer = () => {
                         type="email"
                         autoComplete="off"
                         error={!!errors.customerEmail}
-                        helperText={errors?.customerEmail?.message ? t(`validation:${errors?.customerEmail?.message}`) : ""}
+                        helperText={
+                          errors?.customerEmail?.message
+                            ? t(`validation:${errors?.customerEmail?.message}`)
+                            : ""
+                        }
                         variant="outlined"
                         fullWidth
                         required
@@ -207,30 +221,34 @@ const createPrivateCustomer = () => {
                         type="text"
                         autoComplete="off"
                         error={!!errors.customerName}
-                        helperText={errors?.customerName?.message ? t(`validation:${errors?.customerName?.message}`) : ""}
+                        helperText={
+                          errors?.customerName?.message
+                            ? t(`validation:${errors?.customerName?.message}`)
+                            : ""
+                        }
                         variant="outlined"
                         fullWidth
                         required
                       />
                     )}
                   />
-                  {/*<Controller*/}
-                  {/*  name="pNumber"*/}
-                  {/*  control={control}*/}
-                  {/*  render={({ field }) => (*/}
-                  {/*    <TextField*/}
-                  {/*      {...field}*/}
-                  {/*      label={t("label:pNumber")}*/}
-                  {/*      className="w-full md:w-3/5"*/}
-                  {/*      type="number"*/}
-                  {/*      autoComplete="off"*/}
-                  {/*      error={!!errors.pNumber}*/}
-                  {/*      helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}*/}
-                  {/*      variant="outlined"*/}
-                  {/*      //fullWidth*/}
-                  {/*    />*/}
-                  {/*  )}*/}
-                  {/*/>*/}
+                  <Controller
+                    name="pNumber"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label={t("label:pNumber")}
+                        className="w-full md:w-3/5"
+                        type="number"
+                        autoComplete="off"
+                        error={!!errors.pNumber}
+                        helperText={errors?.pNumber?.message ? t(`validation:${errors?.pNumber?.message}`) : ""}
+                        variant="outlined"
+                        //fullWidth
+                      />
+                    )}
+                  />
                 </div>
                 <div className="px-10 md:px-16">
                   <div className="form-pair-three-by-one">
@@ -245,7 +263,13 @@ const createPrivateCustomer = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.billingAddress}
-                            helperText={errors?.billingAddress?.message ? t(`validation:${errors?.billingAddress?.message}`) : ""}
+                            helperText={
+                              errors?.billingAddress?.message
+                                ? t(
+                                    `validation:${errors?.billingAddress?.message}`
+                                  )
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -265,7 +289,11 @@ const createPrivateCustomer = () => {
                             type="text"
                             autoComplete="off"
                             error={!!errors.billingZip}
-                            helperText={errors?.billingZip?.message ? t(`validation:${errors?.billingZip?.message}`) : ""}
+                            helperText={
+                              errors?.billingZip?.message
+                                ? t(`validation:${errors?.billingZip?.message}`)
+                                : ""
+                            }
                             variant="outlined"
                             fullWidth
                             required
@@ -285,7 +313,11 @@ const createPrivateCustomer = () => {
                           type="text"
                           autoComplete="off"
                           error={!!errors.billingCity}
-                          helperText={errors?.billingCity?.message ? t(`validation:${errors?.billingCity?.message}`) : ""}
+                          helperText={
+                            errors?.billingCity?.message
+                              ? t(`validation:${errors?.billingCity?.message}`)
+                              : ""
+                          }
                           variant="outlined"
                           fullWidth
                           required
@@ -299,6 +331,16 @@ const createPrivateCustomer = () => {
                       placeholder={"country"}
                       required={true}
                       error={errors.billingCountry}
+                    />
+                  </div>
+                  <div className='form-pair-input gap-x-20'>
+                    <FrontPaymentLanguageSelect
+                      error={errors.preferredLanguage}
+                      control={control}
+                      name="preferredLanguage"
+                      label="preferredLanguage"
+                      required={true}
+                      disable={false}
                     />
                   </div>
                 </div>
@@ -390,7 +432,11 @@ const createPrivateCustomer = () => {
                                           disabled={sameAddress}
                                           error={!!errors.shippingAddress}
                                           helperText={
-                                            errors?.shippingAddress?.message ? t(`validation:${errors?.shippingAddress?.message}`) : ""
+                                            errors?.shippingAddress?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingAddress?.message}`
+                                                )
+                                              : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -408,12 +454,18 @@ const createPrivateCustomer = () => {
                                           {...field}
                                           label={t("label:zipCode")}
                                           type="number"
-                                          onWheel={event => { event.target.blur()}}
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
                                           autoComplete="off"
                                           disabled={sameAddress}
                                           error={!!errors.shippingZip}
                                           helperText={
-                                            errors?.shippingZip?.message ? t(`validation:${errors?.shippingZip?.message}`) : ""
+                                            errors?.shippingZip?.message
+                                              ? t(
+                                                  `validation:${errors?.shippingZip?.message}`
+                                                )
+                                              : ""
                                           }
                                           variant="outlined"
                                           fullWidth
@@ -435,7 +487,11 @@ const createPrivateCustomer = () => {
                                         disabled={sameAddress}
                                         error={!!errors.shippingCity}
                                         helperText={
-                                          errors?.shippingCity?.message ? t(`validation:${errors?.shippingCity?.message}`) : ""
+                                          errors?.shippingCity?.message
+                                            ? t(
+                                                `validation:${errors?.shippingCity?.message}`
+                                              )
+                                            : ""
                                         }
                                         variant="outlined"
                                         fullWidth

@@ -41,7 +41,6 @@ import {
 } from "../utils/helper";
 import { useOnboardClientMutation } from "app/store/api/apiSlice";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
-
 const Onboarding = () => {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
@@ -59,7 +58,6 @@ const Onboarding = () => {
   const [ownerRef, setOwnerRef] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const params = useParams();
-  const [plan, setPlan] = React.useState(1);
   const [currency, setCurrency] = React.useState({
     currency: "Norwegian Krone",
     code: "NOK",
@@ -68,7 +66,6 @@ const Onboarding = () => {
   const [isVatIconGreen, setIsVatIconGreen] = useState(false);
 
   const navigate = useNavigate();
-  const plansPrice = ["200", "350", "500"];
   const [orgTypeList, setOrgTypeList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [onboardClient] = useOnboardClientMutation();
@@ -103,7 +100,7 @@ const Onboarding = () => {
     watch,
     clearErrors,
     setError,
-    trigger
+    trigger,
   } = useForm({
     mode: "onChange",
     defaultValueOnBoard,
@@ -168,6 +165,9 @@ const Onboarding = () => {
       defaultValueOnBoard.organizationType = info?.organizationDetails?.type
         ? info?.organizationDetails?.type
         : "";
+      defaultValueOnBoard.partnerName = info?.organizationDetails?.partnerName
+        ? info.ganizationDetails.partnerName
+        : "";
       defaultValueOnBoard.email = info?.primaryContactDetails?.email
         ? info?.primaryContactDetails?.email
         : "";
@@ -183,12 +183,15 @@ const Onboarding = () => {
           ? info?.primaryContactDetails?.countryCode +
             info?.primaryContactDetails?.msisdn
           : "";
-      setDialCodePrimary(info?.primaryContactDetails?.countryCode)
+      setDialCodePrimary(info?.primaryContactDetails?.countryCode);
       setValue(
         "primaryPhoneNumber",
         info?.primaryContactDetails?.countryCode +
           info?.primaryContactDetails?.msisdn || ""
-      );    
+      );
+      defaultValueOnBoard.contactStartDate = info?.contractDetails?.startDate
+        ? info.contractDetails.startDate
+        : new Date();
       reset({ ...defaultValueOnBoard });
     }
   }, [info]);
@@ -225,21 +228,15 @@ const Onboarding = () => {
     const msisdn = values?.primaryPhoneNumber
       ? values?.primaryPhoneNumber.slice(dialCodePrimary?.length)
       : null;
-    const countryCode = dialCodePrimary
-      ? dialCodePrimary
-      : null;
+    const countryCode = dialCodePrimary ? dialCodePrimary : null;
     const bl_msisdn = values?.billingPhoneNumber
       ? values?.billingPhoneNumber.slice(dialCodeBilling?.length)
       : null;
-    const bl_countryCode = dialCodeBilling
-      ? dialCodeBilling
-      : null;
+    const bl_countryCode = dialCodeBilling ? dialCodeBilling : null;
     const sh_msisdn = values?.shippingPhoneNumber
       ? values?.shippingPhoneNumber.slice(dialCodeShipping?.length)
       : null;
-    const sh_countryCode = dialCodeShipping
-      ? dialCodeShipping
-      : null;
+    const sh_countryCode = dialCodeShipping ? dialCodeShipping : null;
 
     const vatRates = values.vat.length
       ? values.vat
@@ -266,6 +263,7 @@ const Onboarding = () => {
         type: values?.organizationType ? values?.organizationType : null,
         brandId: null,
         groupId: null,
+        partnerName: values?.partnerName ? values.partnerName : null,
       },
       primaryContactDetails: {
         uuid: info.primaryContactDetails.uuid,
@@ -278,8 +276,9 @@ const Onboarding = () => {
       contractDetails: {
         // startDate: new Date(),
         // endDate: values.contactEndDate,
-        startDate: ClientService.prepareDate(new Date()),
-        endDate: ClientService.prepareDate(values.contactEndDate),
+        startDate: ClientService.prepareDate(values.contactStartDate),
+        endDate: ClientService.prepareDate(new Date()),
+        planPrice: parseFloat(values.planPrice),
         commissionRate: parseFloat(values.commision),
         smsCost: parseFloat(values.smsCost),
         emailCost: parseFloat(values.emailCost),
@@ -338,6 +337,11 @@ const Onboarding = () => {
           customApticInfoData === "purchase"
             ? parseFloat(values.invoicewithoutRegress)
             : null,
+        // creditLimit: parseFloat(values.creditLimitCustomer),
+        // costLimitForCustomer: parseFloat(values.costLimitforCustomer),
+        // costLimitForOrder: parseFloat(values.costLimitforOrder),
+        // invoiceWithRegress: parseFloat(values.invoicewithRegress),
+        // invoiceWithoutRegress: parseFloat(values.invoicewithoutRegress),
         accountCode: values?.accountCode || null,
         refundReference: values?.refundReference || null,
         backOfficeUsername: values.APTIEngineCuserName,
@@ -391,16 +395,6 @@ const Onboarding = () => {
         city: values.shippingCity,
         country: values.shippingCountry,
       };
-    }
-    if (plan === 1) {
-      onBoardingData.contractDetails.planTag = "Plan 1";
-      onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[0]);
-    } else if (plan === 2) {
-      onBoardingData.contractDetails.planTag = "Plan 2";
-      onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[1]);
-    } else {
-      onBoardingData.contractDetails.planTag = "Plan 3";
-      onBoardingData.contractDetails.planPrice = parseFloat(plansPrice[2]);
     }
     setLoading(true);
 
@@ -681,6 +675,28 @@ const Onboarding = () => {
                             )}
                           />
                         )}
+                        <Controller
+                          name="partnerName"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:partnerName")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.partnerName}
+                              helperText={
+                                errors?.partnerName?.message
+                                  ? t(
+                                      `validation:${errors?.partnerName?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              fullWidth
+                            />
+                          )}
+                        />
                       </div>
                     </div>
                   </div>
@@ -689,7 +705,7 @@ const Onboarding = () => {
                       <div className="flex gap-10 items-center">
                         {t("label:primaryContactDetails")}
                         {dirtyFields.fullName &&
-                        watch("primaryPhoneNumber")?.length>0 &&
+                        watch("primaryPhoneNumber")?.length > 0 &&
                         dirtyFields.email ? (
                           <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                         ) : (
@@ -720,18 +736,51 @@ const Onboarding = () => {
                             />
                           )}
                         />
-                         <FrontPaymentPhoneInput
-                                control={control}
-                                defaultValue='no'
-                                disable={false}
-                                error={errors.primaryPhoneNumber}
-                                label="phone"
-                                name="primaryPhoneNumber"
-                                required = {true}
-                                trigger = {trigger}
-                                setValue = {setValue}
-                                setDialCode = {setDialCodePrimary}
-                              />
+                        <FrontPaymentPhoneInput
+                          control={control}
+                          defaultValue="no"
+                          disable={false}
+                          error={errors.primaryPhoneNumber}
+                          label="phone"
+                          name="primaryPhoneNumber"
+                          required={true}
+                          trigger={trigger}
+                          setValue={setValue}
+                          setDialCode={setDialCodePrimary}
+                        />
+                        {/*<Controller*/}
+                        {/*  name="primaryPhoneNumber"*/}
+                        {/*  control={control}*/}
+                        {/*  render={({ field }) => (*/}
+                        {/*    <FormControl*/}
+                        {/*      error={!!errors.primaryPhoneNumber}*/}
+                        {/*      required*/}
+                        {/*      fullWidth*/}
+                        {/*    >*/}
+                        {/*      <PhoneInput*/}
+                        {/*        {...field}*/}
+                        {/*        className={*/}
+                        {/*          errors.primaryPhoneNumber*/}
+                        {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                        {/*            : "input-phone-number-field"*/}
+                        {/*        }*/}
+                        {/*        country="no"*/}
+                        {/*        enableSearch*/}
+                        {/*        autocompleteSearch*/}
+                        {/*        countryCodeEditable={false}*/}
+                        {/*        specialLabel={`${t("label:phone")}*`}*/}
+                        {/*        onBlur={handleOnBlurGetDialCode}*/}
+                        {/*      />*/}
+                        {/*      <FormHelperText>*/}
+                        {/*        {errors?.primaryPhoneNumber?.message*/}
+                        {/*          ? t(*/}
+                        {/*              `validation:${errors?.primaryPhoneNumber?.message}`*/}
+                        {/*            )*/}
+                        {/*          : ""}*/}
+                        {/*      </FormHelperText>*/}
+                        {/*    </FormControl>*/}
+                        {/*  )}*/}
+                        {/*/>*/}
                         <Controller
                           name="designation"
                           control={control}
@@ -781,63 +830,22 @@ const Onboarding = () => {
                   <div className="contract-details">
                     <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                       {t("label:contractDetails")}
-                      {dirtyFields.contactEndDate &&
+                      {dirtyFields.planPrice &&
                       dirtyFields.commision &&
-                      dirtyFields.smsCost &&
-                      dirtyFields.emailCost &&
-                      dirtyFields.creditCheckCost &&
-                      dirtyFields.ehfCost ? (
+                      dirtyFields.smsCost ? (
                         <BsFillCheckCircleFill className="icon-size-20 text-teal-300" />
                       ) : (
                         <BsFillCheckCircleFill className="icon-size-20 text-MonochromeGray-50" />
                       )}
                     </div>
                     <div className="px-16">
-                      <div className="create-user-roles caption2">
-                        {t("label:choosePlan")}
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-6 gap-x-10 gap-y-7 mt-10">
-                        <button
-                          type="button"
-                          className={
-                            plan === 1
-                              ? "create-user-role-button-active"
-                              : "create-user-role-button"
-                          }
-                          onClick={() => setPlan(1)}
-                        >
-                          {t("label:plan1")}
-                        </button>
-                        <button
-                          type="button"
-                          className={
-                            plan === 2
-                              ? "create-user-role-button-active"
-                              : "create-user-role-button"
-                          }
-                          onClick={() => setPlan(2)}
-                        >
-                          {t("label:plan2")}
-                        </button>
-                        <button
-                          type="button"
-                          className={
-                            plan === 3
-                              ? "create-user-role-button-active"
-                              : "create-user-role-button"
-                          }
-                          onClick={() => setPlan(3)}
-                        >
-                          {t("label:plan3")}
-                        </button>
-                      </div>
                       <div className="contract-details-container w-full sm:w-11/12">
                         <Controller
-                          name="contactEndDate"
+                          name="contactStartDate"
                           control={control}
                           render={({ field: { onChange, value, onBlur } }) => (
                             <DesktopDatePicker
-                              label={t("label:contractEndDate")}
+                              label={t("label:contractStartDate")}
                               mask=""
                               inputFormat="dd.MM.yyyy"
                               value={value}
@@ -859,16 +867,46 @@ const Onboarding = () => {
                                   {...params}
                                   onBlur={onBlur}
                                   type="date"
-                                  error={!!errors.contactEndDate}
+                                  error={!!errors.contactStartDate}
                                   helperText={
-                                    errors?.contactEndDate?.message
+                                    errors?.contactStartDate?.message
                                       ? t(
-                                          `validation:${errors?.contactEndDate?.message}`
+                                          `validation:${errors?.contactStartDate?.message}`
                                         )
                                       : ""
                                   }
                                 />
                               )}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="planPrice"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label={t("label:monthlyPlanFee")}
+                              type="text"
+                              autoComplete="off"
+                              error={!!errors.planPrice}
+                              helperText={
+                                errors?.planPrice?.message
+                                  ? t(
+                                      `validation:${errors?.planPrice?.message}`
+                                    )
+                                  : ""
+                              }
+                              variant="outlined"
+                              required
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    {t("label:kr")}
+                                  </InputAdornment>
+                                ),
+                              }}
                             />
                           )}
                         />
@@ -1021,7 +1059,7 @@ const Onboarding = () => {
                   <div className="billing-information">
                     <div className="create-user-form-header subtitle3 bg-m-grey-25 text-MonochromeGray-700 tracking-wide flex gap-10 items-center">
                       {t("label:billingAndShippingInfo")}
-                      {dirtyFields.billingPhoneNumber &&
+                      {watch("billingPhoneNumber")?.length > 0 &&
                       dirtyFields.billingEmail &&
                       dirtyFields.billingAddress &&
                       dirtyFields.zip &&
@@ -1035,7 +1073,7 @@ const Onboarding = () => {
                     <div className="p-10 w-full md:w-3/4">
                       <div className="billing-address-head mt-10">
                         {t("label:billingAddress")}
-                        {watch("billingPhoneNumber")?.length>0 &&
+                        {watch("billingPhoneNumber")?.length > 0 &&
                         dirtyFields.billingEmail &&
                         dirtyFields.billingAddress &&
                         dirtyFields.zip &&
@@ -1048,18 +1086,51 @@ const Onboarding = () => {
                       </div>
                       <div className="px-16">
                         <div className="form-pair-input gap-x-20">
-                        <FrontPaymentPhoneInput
-                                control={control}
-                                defaultValue='no'
-                                disable={false}
-                                error={errors.billingPhoneNumber}
-                                label="phone"
-                                name="billingPhoneNumber"
-                                required = {true}
-                                trigger = {trigger}
-                                setValue = {setValue}
-                                setDialCode = {setDialCodeBilling}
-                              />
+                          <FrontPaymentPhoneInput
+                            control={control}
+                            defaultValue="no"
+                            disable={false}
+                            error={errors.billingPhoneNumber}
+                            label="phone"
+                            name="billingPhoneNumber"
+                            required={true}
+                            trigger={trigger}
+                            setValue={setValue}
+                            setDialCode={setDialCodeBilling}
+                          />
+                          {/*<Controller*/}
+                          {/*  name="billingPhoneNumber"*/}
+                          {/*  control={control}*/}
+                          {/*  render={({ field }) => (*/}
+                          {/*    <FormControl*/}
+                          {/*      error={!!errors.billingPhoneNumber}*/}
+                          {/*      required*/}
+                          {/*      fullWidth*/}
+                          {/*    >*/}
+                          {/*      <PhoneInput*/}
+                          {/*        {...field}*/}
+                          {/*        className={*/}
+                          {/*          errors.billingPhoneNumber*/}
+                          {/*            ? "input-phone-number-field border-1 rounded-md border-red-400"*/}
+                          {/*            : "input-phone-number-field"*/}
+                          {/*        }*/}
+                          {/*        country="no"*/}
+                          {/*        enableSearch*/}
+                          {/*        autocompleteSearch*/}
+                          {/*        countryCodeEditable={false}*/}
+                          {/*        specialLabel={`${t("label:phone")}*`}*/}
+                          {/*        onBlur={handleOnBlurGetDialCode}*/}
+                          {/*      />*/}
+                          {/*      <FormHelperText>*/}
+                          {/*        {errors?.billingPhoneNumber?.message*/}
+                          {/*          ? t(*/}
+                          {/*              `validation:${errors?.billingPhoneNumber?.message}`*/}
+                          {/*            )*/}
+                          {/*          : ""}*/}
+                          {/*      </FormHelperText>*/}
+                          {/*    </FormControl>*/}
+                          {/*  )}*/}
+                          {/*/>*/}
                           <Controller
                             name="billingEmail"
                             control={control}
@@ -1202,7 +1273,7 @@ const Onboarding = () => {
                       <div className="flex justify-between items-center billing-address-head">
                         <div className="billing-address-head">
                           {t("label:shippingAddress")}
-                          {(watch("shippingPhoneNumber")?.length>0 &&
+                          {(watch("shippingPhoneNumber")?.length > 0 &&
                             dirtyFields.shippingEmail &&
                             dirtyFields.shippingAddress &&
                             dirtyFields.shippingZip &&
@@ -1228,38 +1299,77 @@ const Onboarding = () => {
                             labelPlacement="start"
                             disabled={
                               !(
-                                watch("billingPhoneNumber")?.length>0 &&
-                                watch("billingEmail")?.length>0 &&
-                                watch("billingAddress")?.length>0 &&
-                                watch("zip")?.length>0 &&
-                                watch("city")?.length>0 &&
-                                watch("country")?.length>0
+                                watch("billingPhoneNumber")?.length > 0 &&
+                                watch("billingEmail")?.length > 0 &&
+                                watch("billingAddress")?.length > 0 &&
+                                watch("zip")?.length > 0 &&
+                                watch("city")?.length > 0 &&
+                                watch("country")?.length > 0
                               )
                             }
                           />
                         </div>
                       </div>
                       {!sameAddress &&
-                         (watch("billingPhoneNumber")?.length>0 &&
-                         watch("billingEmail")?.length>0 &&
-                         watch("billingAddress")?.length>0 &&
-                         watch("zip")?.length>0 &&
-                         watch("city")?.length>0 &&
-                         watch("country")?.length>0) && (
+                        watch("billingPhoneNumber")?.length > 0 &&
+                        watch("billingEmail")?.length > 0 &&
+                        watch("billingAddress")?.length > 0 &&
+                        watch("zip")?.length > 0 &&
+                        watch("city")?.length > 0 &&
+                        watch("country")?.length > 0 && (
                           <div className="px-16">
                             <div className="form-pair-input gap-x-20">
-                            <FrontPaymentPhoneInput
+                              <FrontPaymentPhoneInput
                                 control={control}
-                                defaultValue='no'
+                                defaultValue="no"
                                 disable={false}
                                 error={errors.shippingPhoneNumber}
                                 label="phone"
                                 name="shippingPhoneNumber"
-                                required = {false}
-                                trigger = {trigger}
-                                setValue = {setValue}
-                                setDialCode = {setDialCodeShipping}
+                                required={false}
+                                trigger={trigger}
+                                setValue={setValue}
+                                setDialCode={setDialCodeShipping}
                               />
+                              {/*<Controller*/}
+                              {/*  // name={*/}
+                              {/*  //   sameAddress === true*/}
+                              {/*  //     ? "billingPhoneNumber"*/}
+                              {/*  //     : "shippingPhoneNumber"*/}
+                              {/*  // }*/}
+                              {/*  name="shippingPhoneNumber"*/}
+                              {/*  control={control}*/}
+                              {/*  render={({ field }) => (*/}
+                              {/*    <FormControl*/}
+                              {/*      error={!!errors.shippingPhoneNumber}*/}
+                              {/*      // required*/}
+                              {/*      fullWidth*/}
+                              {/*    >*/}
+                              {/*      <PhoneInput*/}
+                              {/*        {...field}*/}
+                              {/*        className={*/}
+                              {/*          errors.shippingPhoneNumber*/}
+                              {/*            ? "input-phone-number-field border-1 rounded-md border-red-300"*/}
+                              {/*            : "input-phone-number-field"*/}
+                              {/*        }*/}
+                              {/*        country="no"*/}
+                              {/*        enableSearch*/}
+                              {/*        disabled={sameAddress}*/}
+                              {/*        autocompleteSearch*/}
+                              {/*        countryCodeEditable={false}*/}
+                              {/*        specialLabel={t("label:phone")}*/}
+                              {/*        onBlur={handleOnBlurGetDialCode}*/}
+                              {/*      />*/}
+                              {/*      <FormHelperText>*/}
+                              {/*        {errors?.shippingPhoneNumber?.message*/}
+                              {/*          ? t(*/}
+                              {/*              `validation:${errors?.shippingPhoneNumber?.message}`*/}
+                              {/*            )*/}
+                              {/*          : ""}*/}
+                              {/*      </FormHelperText>*/}
+                              {/*    </FormControl>*/}
+                              {/*  )}*/}
+                              {/*/>*/}
                               <Controller
                                 name="shippingEmail"
                                 control={control}
@@ -1535,8 +1645,8 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.bankAccountCode?.message
                                     ? t(
-                                      `validation:${errors?.bankAccountCode?.message}`
-                                    )
+                                        `validation:${errors?.bankAccountCode?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"
@@ -1720,8 +1830,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.accountCode?.message
                                       ? t(
-                                        `validation:${errors?.accountCode?.message}`
-                                      )
+                                          `validation:${errors?.accountCode?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1742,8 +1852,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.refundReference?.message
                                       ? t(
-                                        `validation:${errors?.refundReference?.message}`
-                                      )
+                                          `validation:${errors?.refundReference?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1768,8 +1878,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.accountCode?.message
                                       ? t(
-                                        `validation:${errors?.accountCode?.message}`
-                                      )
+                                          `validation:${errors?.accountCode?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1793,8 +1903,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.creditLimitCustomer?.message
                                       ? t(
-                                        `validation:${errors?.creditLimitCustomer?.message}`
-                                      )
+                                          `validation:${errors?.creditLimitCustomer?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1826,8 +1936,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.costLimitforCustomer?.message
                                       ? t(
-                                        `validation:${errors?.costLimitforCustomer?.message}`
-                                      )
+                                          `validation:${errors?.costLimitforCustomer?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1858,8 +1968,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.costLimitforOrder?.message
                                       ? t(
-                                        `validation:${errors?.costLimitforOrder?.message}`
-                                      )
+                                          `validation:${errors?.costLimitforOrder?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1890,8 +2000,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.invoicewithRegress?.message
                                       ? t(
-                                        `validation:${errors?.invoicewithRegress?.message}`
-                                      )
+                                          `validation:${errors?.invoicewithRegress?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1922,8 +2032,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.invoicewithoutRegress?.message
                                       ? t(
-                                        `validation:${errors?.invoicewithoutRegress?.message}`
-                                      )
+                                          `validation:${errors?.invoicewithoutRegress?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -1952,8 +2062,8 @@ const Onboarding = () => {
                                   helperText={
                                     errors?.refundReference?.message
                                       ? t(
-                                        `validation:${errors?.refundReference?.message}`
-                                      )
+                                          `validation:${errors?.refundReference?.message}`
+                                        )
                                       : ""
                                   }
                                   variant="outlined"
@@ -2365,8 +2475,8 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.b2bAccountCode?.message
                                     ? t(
-                                      `validation:${errors?.b2bAccountCode?.message}`
-                                    )
+                                        `validation:${errors?.b2bAccountCode?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"
@@ -2389,7 +2499,9 @@ const Onboarding = () => {
                                 error={!!errors.fakturaB2B}
                                 hhelperText={
                                   errors?.fakturaB2B?.message
-                                    ? t(`validation:${errors?.fakturaB2B?.message}`)
+                                    ? t(
+                                        `validation:${errors?.fakturaB2B?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"
@@ -2418,8 +2530,8 @@ const Onboarding = () => {
                                 helperText={
                                   errors?.b2cAccountCode?.message
                                     ? t(
-                                      `validation:${errors?.b2cAccountCode?.message}`
-                                    )
+                                        `validation:${errors?.b2cAccountCode?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"
@@ -2442,7 +2554,9 @@ const Onboarding = () => {
                                 error={!!errors.fakturaB2C}
                                 helperText={
                                   errors?.fakturaB2C?.message
-                                    ? t(`validation:${errors?.fakturaB2C?.message}`)
+                                    ? t(
+                                        `validation:${errors?.fakturaB2C?.message}`
+                                      )
                                     : ""
                                 }
                                 variant="outlined"

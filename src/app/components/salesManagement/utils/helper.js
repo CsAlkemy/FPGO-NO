@@ -32,7 +32,13 @@ export const validateSchemaCreateOrderPrivate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
+
   customerName: yup.string().required("youMustEnterCustomerName"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -109,7 +115,13 @@ export const validateSchemaCreateOrderPrivateOrderByEmail = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
+
   customerName: yup.string().required("youMustEnterCustomerName"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -184,7 +196,12 @@ export const validateSchemaCreateOrderCorporate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
   customerName: yup.string().required("youMustEnterCustomerName"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -260,6 +277,12 @@ export const validateSchemaCreateOrderCorporateOrderBySms = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+    invoiceAsPaymentOption: yup.string().notRequired(),
+  preferredLanguage: yup
+    .string()
+    .required("youMustEnterYourLanguage")
+    .nullable(),
+
   order: yup.array().of(
     yup.object().shape({
       // productName: yup.string().required('name'),
@@ -312,6 +335,7 @@ export const CreateOrderDefaultValue = {
   primaryPhoneNumber: "",
   email: "",
   customerName: "",
+  invoiceAsPaymentOption: true,
   // orgorPID : "",
   orgID: "",
   pNumber: "",
@@ -319,6 +343,7 @@ export const CreateOrderDefaultValue = {
   billingZip: "",
   billingCity: "",
   billingCountry: "",
+  preferredLanguage: "",
   referenceNumber: "",
   customerReference: "",
   receiptNo: "",
@@ -351,6 +376,7 @@ export const validateSchemaPaymentCheckoutCorporate = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  //preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
 });
 export const validateSchemaPaymentCheckout = yup.object().shape({
   phone: yup
@@ -375,6 +401,7 @@ export const validateSchemaPaymentCheckout = yup.object().shape({
   billingZip: yup.string().required("enterZIP"),
   billingCity: yup.string().required("youMustEnterYourCity"),
   billingCountry: yup.string().required("youMustEnterYourCountry"),
+  //preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
 });
 export const validateSchemaCreditCheckForCheckout = yup.object().shape({
   orgIdCreditCheck: yup
@@ -399,6 +426,7 @@ export const PaymentDefaultValue = {
   billingZip: "",
   billingCity: "",
   billingCountry: "",
+  preferredLanguage: "",
   orgIdCreditCheck: "",
 };
 export const OrderModalDefaultValue = {
@@ -406,6 +434,9 @@ export const OrderModalDefaultValue = {
   email: "",
   cancellationNote: "",
   refundAmount: "",
+  chargeAmount: "",
+  captureAmount: "",
+  order: [],
 };
 
 export const validateSchemaOrderResendModal = yup.object().shape({
@@ -424,6 +455,10 @@ export const validateSchemaOrderCancelModal = yup.object().shape({
 export const validateSchemaOrderRefundModal = yup.object().shape({
   // refundAmount: yup.string().required("youMustEnterTheRefundAmount"),
 });
+export const validateSchemaReservationCaptureModal = yup.object().shape({
+  captureAmount: yup.string().required("youMustEnterTheCaptureAmount"),
+});
+export const validateSchemaReservationRefundModal = yup.object().shape({});
 export const validateSchemaMoreThanFiveThousand = yup.object().shape({
   cancellationNote: yup.string().notRequired(),
 });
@@ -431,6 +466,7 @@ export const validateSchemaMoreThanFiveThousand = yup.object().shape({
 export const sendInvoiceValidation = yup.object().shape({
   city: yup.string().required("youMustEnterYourCity"),
   country: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
   customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup.string().required("youMustEnterAEmail").email("mustBeValidEmail"),
   pNumber: yup
@@ -451,6 +487,7 @@ export const sendInvoiceValidation = yup.object().shape({
 export const sendInvoiceValidationCorporate = yup.object().shape({
   city: yup.string().required("youMustEnterYourCity"),
   country: yup.string().required("youMustEnterYourCountry"),
+  preferredLanguage: yup.string().required("youMustEnterYourLanguage"),
   customerName: yup.string().required("youMustEnterCustomerName"),
   email: yup.string().required("youMustEnterAEmail").email("mustBeValidEmail"),
   orgID: yup
@@ -470,6 +507,7 @@ export const sendInvoiceValidationCorporate = yup.object().shape({
 export const sendInvoiceDefaultValue = {
   city: "",
   country: "",
+  preferredLanguage: "",
   customerName: "",
   email: "",
   orgIdOrPNumber: "",
@@ -549,17 +587,57 @@ export const validateSchemaCompleteReservationModal = yup.object().shape({
     .max(200, "completionNoteRules")
     .required("youMustEnterTheCompletionNote"),
 });
-export const validateSchemaReservationCaptureCardModal = yup.object().shape({
-  chargeAmount: yup.string().required("youMustEnterTheChargeAmount"),
+export const validateSchemaReservationChargeCardModal = yup.object().shape({
+  //chargeAmount: yup.string().required("youMustEnterTheChargeAmount"),
+  order: yup.array().of(
+    yup.object().shape({
+      // productName: yup.string().required('name'),
+      productName: yup.lazy(() =>
+        yup.string().when(["reservationAmount", "tax"], {
+          is: (reservationAmount, tax) => reservationAmount || tax,
+          // is: "",
+          then: yup.string().required(""),
+          // otherwise: yup.string()
+        })
+      ),
+      reservationAmount: yup.lazy(() =>
+        yup.string().when(["productName", "tax"], {
+          is: (productName, tax) => productName || tax,
+          // is: "",
+          then: yup
+            .string()
+            .required("")
+            .matches(/^[0-9,]+$/),
+          // otherwise: yup.string()
+        })
+      ),
+      tax: yup.lazy(() =>
+        yup.string().when(["productName", "reservationAmount"], {
+          is: (productName, reservationAmount) =>
+            productName || reservationAmount,
+          // is:"",
+          then: yup.string().required(""),
+          // otherwise: yup.string()
+        })
+      ),
+    })
+  ),
 });
 
 /************* For reservation create *********************/
 export const validateSchemaCreateReservation = yup.object().shape({
   orderDate: yup
     .string()
-    .typeError("youMustEnterOrderDate")
-    .required("youMustEnterOrderDate"),
-  dueDatePaymentLink: yup.string().required("youMustEnterPaymentLinkDueDate"),
+    .typeError("youMustEnterReservationDate")
+    .required("youMustEnterReservationDate"),
+  dueDatePaymentLink: yup
+    .string()
+    // .matches(
+    //   /^([0-9]{2})\.([0-9]{2})\.([0-9]{4}) \.([0-9]{2}):\.([0-9]{2})$/,
+    //   "Date must be in format dd.MM.yyyy"
+    // )
+    .typeError("youMustEnterPaymentLinkDueDate")
+    .required("youMustEnterPaymentLinkDueDate"),
   // dueDateInvoice: yup.string().required("You must enter Invoice due date"),
   order: yup.array().of(
     yup.object().shape({
@@ -585,7 +663,8 @@ export const validateSchemaCreateReservation = yup.object().shape({
       ),
       tax: yup.lazy(() =>
         yup.string().when(["productName", "reservationAmount"], {
-          is: (productName, reservationAmount) => productName || reservationAmount,
+          is: (productName, reservationAmount) =>
+            productName || reservationAmount,
           // is:"",
           then: yup.string().required(""),
           // otherwise: yup.string()
@@ -593,6 +672,8 @@ export const validateSchemaCreateReservation = yup.object().shape({
       ),
     })
   ),
+  customerNotes: yup.string().max(200, ""),
+  termsConditions: yup.string().max(200, ""),
 });
 
 export const CreateReservationDefaultValue = {

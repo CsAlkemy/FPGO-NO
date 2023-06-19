@@ -21,38 +21,79 @@ import RedoIcon from "@mui/icons-material/Redo";
 import UndoIcon from "@mui/icons-material/Undo";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { CharCont } from "../../../../utils/helperFunctions";
+import {
+  CharCont,
+  ThousandSeparator,
+  DayDiffFromToday,
+} from "../../../../utils/helperFunctions";
+//import {ThousandSeparator} from "../../../../utils/helperFunctions";
 
-const ReservationLog = ({ info, logContent, handleModalOpen }) => {
+import { selectUser } from "app/store/userSlice";
+import { useSelector } from "react-redux";
+import { FP_ADMIN } from "../../../../utils/user-roles/UserRoles";
+
+const ReservationLog = ({
+  info,
+  logContent,
+  amountRefunded,
+  handleModalOpen,
+}) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState([]);
 
+  const [hasSidebar, setHasSidebar] = useState(true);
+
+  const user = useSelector(selectUser);
+
   useEffect(() => {
     setLogs(logContent);
     //info.status = "reserved";
+
+    if (
+      !(
+        user.role[0] !== FP_ADMIN &&
+        (info.status.toLowerCase() == "reserved" ||
+          (info.status.toLowerCase() == "completed" &&
+            info.paymentDetails.capturedAmount > 0))
+      )
+    ) {
+      setHasSidebar(false);
+    }
   }, []);
 
   return (
     <div className="reservation-log-content pb-32 px-0 grid grid-cols-1 md:grid-cols-6">
-      <div className="mb-32 md:mb-0 col-span-1 md:col-span-4">
+      <div
+        className={`mb-32 md:mb-0 col-span-1 ${
+          hasSidebar ? "md:col-span-4" : "md:col-span-6"
+        }`}
+      >
         <div className="amount-section">
           <div className="amount-section-inner flex flex-wrap">
             <div className="amount-col amount-reserved-col">
-              <div className="subtitle3">{t("Label:amountReserved")}</div>
-              <div className="subtitle1">NOK 26,000</div>
+              <div className="subtitle3">{t("label:amountReserved")}</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.paymentDetails.reservedAmount)}
+              </div>
             </div>
             <div className="amount-col amount-paid-col">
-              <div className="subtitle3">{t("Label:amountPaid")}</div>
-              <div className="subtitle1">NOK 24,000</div>
+              <div className="subtitle3">{t("label:amountPaid")}</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.formattedAmount.amountPaid)}
+              </div>
             </div>
             <div className="amount-col">
-              <div className="subtitle3">{t("Label:amountRefunded")}</div>
-              <div className="subtitle1">NOK 3,000</div>
+              <div className="subtitle3">{t("label:amountRefunded")}</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.formattedAmount.amountRefunded)}
+              </div>
             </div>
             <div className="amount-col">
-              <div className="subtitle3">{t("Label:amountInBank")}</div>
-              <div className="subtitle1">NOK 21,000</div>
+              <div className="subtitle3">{t("label:amountInBank")}</div>
+              <div className="subtitle1">
+                NOK {ThousandSeparator(info.formattedAmount.amountInBank)}
+              </div>
             </div>
           </div>
         </div>
@@ -67,24 +108,39 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
           >
             {logs &&
               logs.map((log, index) => {
+                log.isRefundable =
+                  "isRefundable" in log ? log.isRefundable : true;
                 return (
                   <TimelineItem key={index}>
                     {/* {log.slug} */}
                     <TimelineSeparator>
                       {log.slug === "order-created" ||
                       log.slug === "order-sent" ||
+                      log.slug === "payment-link-sent-to-customer" ||
                       log.slug === "order-resent" ||
                       log.slug === "payment-link-opened" ||
                       log.slug === "partial-refunded" ||
                       log.slug === "refund-sent" ||
-                      log.slug === "invoice-order-exported" ||
+                      log.slug === "refund-sent-from-captured" ||
+                      log.slug ===
+                        "refund-request-approved-and-refund-sent-fromcaptured" ||
+                      log.slug === "refund-request-pending-fromcaptured" ||
+                      log.slug ===
+                        "refund-request-approved-and-refund-sent-fromcharged" ||
+                      log.slug === "refund-request-pending-fromcharged" ||
+                      log.slug === "amount-captured-from-reservation" ||
+                      log.slug === "amount-charged-from-card" ||
                       log.slug === "customer-information-updated" ||
-                      log.slug === "payment-successful" ? (
+                      log.slug === "payment-successful" ||
+                      log.slug === "amount-reserved" ||
+                      log.slug === "reservation-completed" ? (
                         <TimelineDot className="bg-orderLog-success border-4 border-[#F0F9F2] shadow-0">
                           <CheckIcon className="icon-size-16 text-white" />
                         </TimelineDot>
                       ) : log.slug === "payment-failed" ||
                         log.slug === "order-cancelled" ||
+                        log.slug === "order-expired" ||
+                        log.slug === "payment-link-expired" ||
                         log.slug === "reservation-cancelled" ||
                         log.slug === "order-converted-to-invoice" ? (
                         <TimelineDot className="border-4 border-[#FEF0EF] shadow-0 bg-[#F36562]">
@@ -100,7 +156,14 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                     <TimelineContent>
                       <div className="ml-5 mt-10 mb-10">
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {/*{log.title}*/}
+                          {/* {log.title} */}
+                          {/* {log.slug === "order-resent"
+                            ? t("label:reservationResent")
+                            : log.slug === "order-cancelled"
+                            ? t("label:reservationCancelled")
+                            : log.slug === "order-expired"
+                            ? t("label:paymentLinkExpired")
+                            : t(`label:${_.camelCase(log.slug)}`)} */}
                           {t(`label:${log.translationKey}`)}
                         </div>
                         {log?.datetime && (
@@ -113,60 +176,89 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
                             </div>
                           </div>
                         )}
-                        {log?.sentTo && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:sentTo")}:
+                        {log?.sentTo &&
+                          (log.slug === "payment-link-sent-to-customer" ||
+                            log.slug === "order-resent") && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:sentTo")}:
+                              </div>
+                              <div className="body4 text-MonochromeGray-700">
+                                <Hidden smUp>
+                                  <Tooltip title={log.sentTo}>
+                                    <div>{CharCont(log.sentTo, 20)}</div>
+                                  </Tooltip>
+                                </Hidden>
+                                <Hidden smDown>{log.sentTo}</Hidden>
+                              </div>
                             </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              <Hidden smUp>
-                                <Tooltip title={log.sentTo}>
-                                  <div>{CharCont(log.sentTo, 20)}</div>
-                                </Tooltip>
-                              </Hidden>
-                              <Hidden smDown>{log.sentTo}</Hidden>
-                            </div>
-                          </div>
-                        )}
+                          )}
                         {log?.refundAmount && (
                           <div className="flex gap-5">
                             <div className="text-MonochromeGray-300 body4">
-                              {t("label:refundAmount")}:
+                              {log.slug === "refund-sent"
+                                ? t("label:refundAmount")
+                                : t("label:amount")}
+                              :{/* {t("label:refundAmount")}: */}
                             </div>
                             <div className="body4 text-MonochromeGray-700">
-                              {log.refundAmount}
+                              NOK {log.refundAmount}
                             </div>
                           </div>
                         )}
-                        {log?.actionBy && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:actionBy")}:
+                        {/* {log?.paymentMethod &&
+                          log.slug != "amount-captured-from-reservation" && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:paymentMethod")}:
+                              </div>
+                              <div className="body4 text-MonochromeGray-700">
+                                {log.paymentMethod}
+                              </div>
                             </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.actionBy}
+                          )} */}
+                        {log?.note &&
+                          log.slug !== "amount-charged-from-card" && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:note")}:
+                              </div>
+                              <div className="body4 text-MonochromeGray-700">
+                                {log.note}
+                              </div>
                             </div>
-                          </div>
-                        )}
-                        {log?.paymentMethod && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:paymentMethod")}:
+                          )}
+                        {log?.actionBy &&
+                          ["order-cancelled", "order-completed"].includes(
+                            log.slug
+                          ) && (
+                            <div className="flex gap-5">
+                              <div className="text-MonochromeGray-300 body4">
+                                {t("label:actionBy")}:
+                              </div>
+                              <div className="body4 text-MonochromeGray-700">
+                                {log.actionBy}
+                              </div>
                             </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.paymentMethod}
-                            </div>
-                          </div>
-                        )}
-                        {log?.note && (
-                          <div className="flex gap-5">
-                            <div className="text-MonochromeGray-300 body4">
-                              {t("label:note")}:
-                            </div>
-                            <div className="body4 text-MonochromeGray-700">
-                              {log.note}
-                            </div>
-                          </div>
+                          )}
+                        {log.slug === "amount-charged-from-card" && (
+                          <Button
+                            variant="outlined"
+                            className="body2 action-button button2 refund-trans-btn"
+                            startIcon={
+                              <UndoIcon style={{ color: "#0088AE" }} />
+                            }
+                            disabled={!log.isRefundable}
+                            onClick={() =>
+                              handleModalOpen(
+                                "refundChargeTransection",
+                                log.refundAmount,
+                                log.note
+                              )
+                            }
+                          >
+                            {t("label:refundTransaction")}
+                          </Button>
                         )}
                       </div>
                     </TimelineContent>
@@ -219,47 +311,68 @@ const ReservationLog = ({ info, logContent, handleModalOpen }) => {
           </div>
         )}
       </div>
-      <div className="col-span-2 reserve-log-sidebar">
-        <div className="border-1 border-MonochromeGray-25">
-          <div className="py-16 px-10 bg-primary-25 subtitle2 ">
-            {t("label:actions")}
-          </div>
-          <div className="px-12 bg-white pb-20">
-            {/* {info.status} */}
-            {info.status == "reserved" && (
-              <>
-                <Button
-                  //color="secondary"
-                  variant="outlined"
-                  className="body2 action-button button2"
-                  startIcon={<CreditCardIcon style={{ color: "#50C9B1" }} />}
-                  onClick={() => handleModalOpen("chargeFromCard")}
-                >
-                  {t("label:chargeFromCard")}
-                </Button>
-                <Button
-                  variant="outlined"
-                  className="body2 action-button button2"
-                  startIcon={<PaymentsIcon style={{ color: "#68C7E7" }} />}
-                  onClick={() => handleModalOpen("capturePayments")}
-                >
-                  {t("label:capturePayment")}
-                </Button>
-              </>
-            )}
-            {(info.status == "reserved" || info.status == "completed") && (
-              <Button
-                variant="outlined"
-                className="body2 action-button button2"
-                startIcon={<UndoIcon style={{ color: "#0088AE" }} />}
-                onClick={() => handleModalOpen("refundReservation")}
-              >
-                {t("label:refundFromReservation")}
-              </Button>
+      {hasSidebar && (
+        <div className="col-span-2 reserve-log-sidebar">
+          <div className="border-1 border-MonochromeGray-25">
+            <div className="py-16 px-10 bg-primary-25 subtitle2 ">
+              {t("label:actions")}
+            </div>
+            {user.role[0] !== FP_ADMIN && (
+              <div className="px-12 bg-white pb-20">
+                {/* {info.status} */}
+                {info.status.toLowerCase() == "reserved" && (
+                  <>
+                    <Button
+                      //color="secondary"
+                      variant="outlined"
+                      className="body2 action-button button2"
+                      startIcon={
+                        <CreditCardIcon style={{ color: "#50C9B1" }} />
+                      }
+                      onClick={() => handleModalOpen("chargeFromCard")}
+                      disabled={
+                        !info.paymentDetails.reservedAt ||
+                        DayDiffFromToday(info.paymentDetails.reservedAt) > 60
+                      }
+                    >
+                      {t("label:chargeFromCard")}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      className="body2 action-button button2"
+                      startIcon={<PaymentsIcon style={{ color: "#68C7E7" }} />}
+                      onClick={() => handleModalOpen("capturePayments")}
+                      disabled={
+                        !info.paymentDetails.reservedAt ||
+                        DayDiffFromToday(info.paymentDetails.reservedAt) > 7 ||
+                        info.paymentDetails.capturedAmount >=
+                          info.paymentDetails.reservedAmount
+                      }
+                    >
+                      {t("label:capturePayment")}
+                    </Button>
+                  </>
+                )}
+                {(info.status.toLowerCase() == "reserved" ||
+                  info.status.toLowerCase() == "completed") &&
+                  info.paymentDetails.capturedAmount > 0 && (
+                    <Button
+                      variant="outlined"
+                      className="body2 action-button button2"
+                      startIcon={<UndoIcon style={{ color: "#0088AE" }} />}
+                      onClick={() => handleModalOpen("refundReservation")}
+                      disabled={
+                        amountRefunded >= info.paymentDetails.capturedAmount
+                      }
+                    >
+                      {t("label:refundFromReservation")}
+                    </Button>
+                  )}
+              </div>
             )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
