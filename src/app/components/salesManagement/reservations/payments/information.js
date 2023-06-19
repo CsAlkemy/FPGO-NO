@@ -30,6 +30,7 @@ import {
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
 import OrderService from "../../../../data-access/services/ordersService/OrdersService";
 import CountrySelect from "../../../common/countries";
+import FrontPaymentLanguageSelect from "../../../common/FPLanguageSelect";
 
 const PaymentConfirmation = () => {
   const { t } = useTranslation();
@@ -101,7 +102,9 @@ const PaymentConfirmation = () => {
           customerUuid: reservationDetails?.customerDetails?.uuid
             ? reservationDetails?.customerDetails?.uuid
             : null,
-          preferredLanguage: "no",
+          // preferredLanguage: values?.preferredLanguage
+          //   ? values?.preferredLanguage
+          //   : "no",
         }
       : {
           ...values,
@@ -110,7 +113,9 @@ const PaymentConfirmation = () => {
           customerUuid: reservationDetails?.customerDetails?.uuid
             ? reservationDetails?.customerDetails?.uuid
             : null,
-          preferredLanguage: "no",
+          // preferredLanguage: values?.preferredLanguage
+          //   ? values?.preferredLanguage
+          //   : "no",
         };
 
     OrderService.updateOrder(data)
@@ -634,6 +639,15 @@ const PaymentConfirmation = () => {
                                 // placeholder={"country"}
                                 required={true}
                                 error={errors.billingCountry}
+                              />
+                              <FrontPaymentLanguageSelect
+                                error={errors.preferredLanguage}
+                                control={control}
+                                name="preferredLanguage"
+                                label="preferredLanguage"
+                                required={true}
+                                disable={false}
+                                // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                               />
                               {/* <Controller
                                 name="billingCountry"

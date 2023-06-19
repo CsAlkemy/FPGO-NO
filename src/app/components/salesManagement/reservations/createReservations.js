@@ -263,6 +263,7 @@ const ReservationCreate = () => {
       zip: values.billingZip,
       country: values.billingCountry,
       type: customData.customerType,
+      preferredLanguage: values.preferredLanguage,
     };
     //console.log(customerUpData);
     setSelectedCustomer(customerUpData);
@@ -481,6 +482,9 @@ const ReservationCreate = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
+                  preferredLanguage: row?.preferredLanguage
+                    ? row?.preferredLanguage
+                    : "no",
                   searchString:
                     row?.name +
                     " ( " +
@@ -599,6 +603,7 @@ const ReservationCreate = () => {
       setValueCustomer("billingZip", customerData.zip);
       setValueCustomer("billingCity", customerData.city);
       setValueCustomer("billingCountry", customerData.country);
+      setValueCustomer("preferredLanguage", customerData.preferredLanguage);
       if (customerData.type === "Corporate") {
         setCustomData({
           ...customData,
@@ -2158,7 +2163,15 @@ const ReservationCreate = () => {
                         required={true}
                         error={errorsCustomer.billingCountry}
                       />
-
+                      <FrontPaymentLanguageSelect
+                        error={errorsCustomer.preferredLanguage}
+                        control={controlCustomer}
+                        name="preferredLanguage"
+                        label="preferredLanguage"
+                        required={true}
+                        disable={false}
+                        // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
+                      />
                       {/* <Controller
                         name="billingCountry"
                         control={controlCustomer}

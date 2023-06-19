@@ -20,12 +20,10 @@ class CustomersService {
     // const countryCode = params.primaryPhoneNumber
     //   ? "+" + params.primaryPhoneNumber.slice(0, 2)
     //   : null;
-      const msisdn = params?.primaryPhoneNumber
-          ? params?.primaryPhoneNumber.slice(dialCode?.length)
-          : null;
-      const countryCode = dialCode
-          ? dialCode
-          : null;
+    const msisdn = params?.primaryPhoneNumber
+      ? params?.primaryPhoneNumber.slice(dialCode?.length)
+      : null;
+    const countryCode = dialCode ? dialCode : null;
     const bl_msisdn = billingPhoneNumber
       ? billingPhoneNumber[billingPhoneNumber.length - 1].slice(2)
       : null;
@@ -259,7 +257,12 @@ class CustomersService {
     });
   };
 
-  prepareCreateCorporateCustomerPayload = (params, sameAddress, dialCodePrimary, dialCodePrimaryInfo) => {
+  prepareCreateCorporateCustomerPayload = (
+    params,
+    sameAddress,
+    dialCodePrimary,
+    dialCodePrimaryInfo
+  ) => {
     const primaryPhoneNumber = params?.primaryPhoneNumber
       ? params.primaryPhoneNumber.split("+")
       : null;
@@ -676,6 +679,7 @@ class CustomersService {
                   zip: row?.billingAddress?.zip,
                   country: row?.billingAddress?.country,
                   countryCode: row?.countryCode,
+                  preferredLanguage: row?.preferredLanguage,
                 };
               });
               d.status_code = 200;
@@ -1349,7 +1353,9 @@ class CustomersService {
       return AuthService.axiosRequestHelper()
         .then((status) => {
           if (status) {
-            const URL = endTime ? `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}/${endTime}` : `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
+            const URL = endTime
+              ? `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}/${endTime}`
+              : `${EnvVariable.BASEURL}/customers/${uuid}/timeline/${startTime}`;
             return axios
               .get(URL)
               .then((response) => {
