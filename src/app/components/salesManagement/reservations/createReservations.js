@@ -366,6 +366,8 @@ const ReservationCreate = () => {
     if (total) grandTotal = grandTotal + total;
     if (total > 0) {
       return ` ${total}`;
+    } else {
+      return 0;
     }
   };
 
@@ -1215,10 +1217,10 @@ const ReservationCreate = () => {
             <div className="create-order-send-order-conf">
               <div className="send-order-by">
                 <div className="caption2 text-MonochromeGray-300">
-                  {t("label:sendOrderBy")}
+                  {t("label:sendBy")}
                 </div>
                 <div className="create-order-radio">
-                  <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-20 w-full md:w-3/4 my-32 mt-10">
+                  <div className="grid grid-cols-2 md:grid-cols-3 justify-between items-center gap-20 w-full md:w-3/4 my-32 mt-10">
                     <Button
                       variant="outlined"
                       className={`body2 ${
@@ -1302,17 +1304,6 @@ const ReservationCreate = () => {
                     </div>
                   </AccordionSummary>
                   <AccordionDetails className="bg-white px-0">
-                    <div className="sticky top-28 z-40">
-                      <Button
-                        className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
-                        startIcon={<AddIcon className="text-main" />}
-                        variant="contained"
-                        onClick={() => addNewOrder()}
-                        disabled={addOrderIndex.length >= 20 ? true : false}
-                      >
-                        {t(`label:addItem`)}
-                      </Button>
-                    </div>
                     {addOrderIndex.map((index) => (
                       <div
                         className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
@@ -1395,7 +1386,7 @@ const ReservationCreate = () => {
                             />
                           )}
                         />
-                        <div className="grid grid-cols-4 gap-20">
+                        <div className="grid grid-cols-5 gap-20">
                           <Controller
                             name={`order[${index}].reservationAmount`}
                             control={control}
@@ -1403,7 +1394,7 @@ const ReservationCreate = () => {
                               <TextField
                                 {...field}
                                 label={t("label:reservationAmount")}
-                                className="bg-white custom-input-height col-span-2"
+                                className="bg-white custom-input-height col-span-3"
                                 autoComplete="off"
                                 error={
                                   !!errors?.order?.[index]?.reservationAmount
@@ -1504,7 +1495,7 @@ const ReservationCreate = () => {
                         </div>
                         <div className="grid grid-cols-3 gap-20"></div>
                         <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
-                          <div>{t("label:totalReservation")}</div>
+                          <div>{t("label:total")}</div>
                           <div>
                             {t("label:nok")} {productWiseTotal(index)}
                           </div>
@@ -1512,7 +1503,7 @@ const ReservationCreate = () => {
                         <Button
                           variant="outlined"
                           color="error"
-                          className="w-1/2 mobile-btn text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                          className="w-1/2 mobile-btn-fit text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
                           startIcon={
                             <RemoveCircleOutlineIcon className="text-red-400" />
                           }
@@ -1522,6 +1513,17 @@ const ReservationCreate = () => {
                         </Button>
                       </div>
                     ))}
+                    <div className="mb-20">
+                      <Button
+                        className="mt-0 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1 custom-box-shadow1"
+                        startIcon={<AddIcon className="text-main" />}
+                        variant="contained"
+                        onClick={() => addNewOrder()}
+                        disabled={addOrderIndex.length >= 20 ? true : false}
+                      >
+                        {t(`label:addItem`)}
+                      </Button>
+                    </div>
                     <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
                       {/*TODO: joni vai please add grandtotal here*/}
                       {t("label:totalReservationAmount")} : {t("label:nok")}{" "}
@@ -1764,7 +1766,9 @@ const ReservationCreate = () => {
               </div>
             </Hidden>
 
-            <hr className="mt-20 border-half-bottom" />
+            <Hidden smDown>
+              <hr className="mt-20 border-half-bottom" />
+            </Hidden>
 
             <div className="grid grid-cols-1 md:grid-cols-6 my-20">
               <div className="customer-section col-span-1 md:col-span-3 mt-20 flex flex-col gap-y-20 pb-20 sm:pb-0">
@@ -1848,6 +1852,28 @@ const ReservationCreate = () => {
                 </div>
               </Hidden>
             </div>
+            <Hidden smUp>
+              <LoadingButton
+                color="secondary"
+                variant="contained"
+                type="submit"
+                className="bg-primary-500 button2 py-5 mt-0 mb-40 rounded-4 button2 bg-white w-full border-1 border-MonochromeGray-50"
+                disabled={
+                  !isValid || !selectedCustomer || !watchFirstProductName
+                }
+                sx={{
+                  "&.Mui-disabled": {
+                    background: "#eaeaea",
+                    color: "#c0c0c0",
+                  },
+                }}
+                startIcon={<SendIcon />}
+                loading={loading}
+                loadingPosition="center"
+              >
+                {t("label:send")}
+              </LoadingButton>
+            </Hidden>
           </div>
         </div>
         <Hidden mdUp>
@@ -1873,7 +1899,7 @@ const ReservationCreate = () => {
                   color: "#c0c0c0",
                 },
               }}
-              startIcon={<RedoIcon />}
+              startIcon={<SendIcon />}
               loading={loading}
               loadingPosition="center"
             >
