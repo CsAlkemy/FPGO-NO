@@ -48,7 +48,6 @@ import {
   userListOverview,
   reservationListOverview,
   subscriptionsListOverview,
-  payoutReportsListOverview,
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from "../../../utils/UtilsService";
