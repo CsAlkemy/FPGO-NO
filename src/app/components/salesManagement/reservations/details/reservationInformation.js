@@ -262,7 +262,9 @@ const ReservationInformation = ({ info }) => {
                     {...field}
                     label={t("label:referenceNo")}
                     type="number"
-                    onWheel={event => { event.target.blur()}}
+                    onWheel={(event) => {
+                      event.target.blur();
+                    }}
                     autoComplete="off"
                     variant="outlined"
                     fullWidth
@@ -305,7 +307,7 @@ const ReservationInformation = ({ info }) => {
                 {t("label:sendBy")}*
               </div>
               <div className="create-order-radio">
-                <div className="grid grid-cols-1 md:grid-cols-4 justify-between items-center gap-20 w-full md:w-3/4 my-32 mt-10">
+                <div className="grid grid-cols-2 md:grid-cols-4 justify-between items-center gap-20 w-full md:w-3/4 my-32 mt-10">
                   <Button
                     variant="outlined"
                     className="body2 create-order-capsule-button-active-details"
@@ -357,122 +359,127 @@ const ReservationInformation = ({ info }) => {
                     {t("label:orderDetails")}
                   </div>
                 </AccordionSummary>
-                <AccordionDetails className="bg-white px-0">
-                  {addOrderIndex.map((index) => (
-                    <div
-                      className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
-                      key={`order:${index}`}
-                    >
-                      <Controller
-                        control={control}
-                        required
-                        name={`order[${index}].productName`}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            //label="Product ID"
-                            className="bg-white custom-input-height"
-                            type="text"
-                            autoComplete="off"
-                            variant="outlined"
-                            fullWidth
-                            disabled
-                            value={
-                              info.productList &&
-                              info.productList?.[index]?.name
-                                ? info.productList[index].name
-                                : ""
-                            }
-                          />
-                        )}
-                      />
-                      <Controller
-                        name={`order[${index}].productID`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            //label="Product ID"
-                            className="bg-white custom-input-height"
-                            type="text"
-                            autoComplete="off"
-                            //error={!!errors.productID}
-                            //helperText={errors?.productID?.message}
-                            variant="outlined"
-                            fullWidth
-                            disabled
-                            value={
-                              info.productList &&
-                              info.productList?.[index]?.productId
-                                ? info.productList[index].productId
-                                : ""
-                            }
-                          />
-                        )}
-                      />
-                      <div className="grid grid-cols-2 gap-20">
+                <AccordionDetails className="bg-white px-0 py-0">
+                  <div className="mob-order-product-group">
+                    {addOrderIndex.map((index) => (
+                      <div
+                        className="border-gray p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
+                        key={`order:${index}`}
+                      >
                         <Controller
-                          name={`order[${index}].reservationAmount`}
                           control={control}
+                          required
+                          name={`order[${index}].productName`}
                           render={({ field }) => (
                             <TextField
                               {...field}
+                              //label="Product ID"
                               className="bg-white custom-input-height"
-                              type="number"
-                              onWheel={event => { event.target.blur()}}
+                              type="text"
                               autoComplete="off"
                               variant="outlined"
                               fullWidth
                               disabled
                               value={
                                 info.productList &&
-                                info.productList?.[index]?.rate
-                                  ? info.productList[index].rate
+                                info.productList?.[index]?.name
+                                  ? info.productList[index].name
                                   : ""
                               }
                             />
                           )}
                         />
                         <Controller
-                          name={`order[${index}].tax`}
+                          name={`order[${index}].productID`}
                           control={control}
                           render={({ field }) => (
                             <TextField
                               {...field}
-                              //label="Discount"
+                              //label="Product ID"
                               className="bg-white custom-input-height"
-                              // type="text"
-                              type="number"
-                              onWheel={event => { event.target.blur()}}
+                              type="text"
                               autoComplete="off"
-                              error={!!errors?.order?.[index]?.tax}
-                              helperText={errors?.order?.[index]?.tax?.message}
+                              //error={!!errors.productID}
+                              //helperText={errors?.productID?.message}
                               variant="outlined"
-                              required
                               fullWidth
                               disabled
                               value={
                                 info.productList &&
-                                info.productList?.[index]?.tax !== 0
-                                  ? info.productList[index]?.tax
-                                  : 0
+                                info.productList?.[index]?.productId
+                                  ? info.productList[index].productId
+                                  : ""
                               }
                             />
                           )}
                         />
-                      </div>
-                      <div className="grid grid-cols-3 gap-20"></div>
-                      <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
-                        <div>{t("label:totalReservation")}</div>
-                        <div>
-                          {info.productList && info.productList?.[index]?.amount
-                            ? ThousandSeparator(info.productList[index].amount)
-                            : ""}
+                        <div className="grid grid-cols-5 gap-20">
+                          <Controller
+                            name={`order[${index}].reservationAmount`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                className="bg-white custom-input-height col-span-3"
+                                type="number"
+                                autoComplete="off"
+                                variant="outlined"
+                                fullWidth
+                                disabled
+                                value={
+                                  info.productList &&
+                                  info.productList?.[index]?.rate
+                                    ? info.productList[index].rate
+                                    : ""
+                                }
+                              />
+                            )}
+                          />
+                          <Controller
+                            name={`order[${index}].tax`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                //label="Discount"
+                                className="bg-white custom-input-height col-span-2"
+                                // type="text"
+                                type="number"
+                                autoComplete="off"
+                                error={!!errors?.order?.[index]?.tax}
+                                helperText={
+                                  errors?.order?.[index]?.tax?.message
+                                }
+                                variant="outlined"
+                                required
+                                fullWidth
+                                disabled
+                                value={
+                                  info.productList &&
+                                  info.productList?.[index]?.tax !== 0
+                                    ? info.productList[index]?.tax
+                                    : 0
+                                }
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 gap-20"></div>
+                        <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
+                          <div>{t("label:total")}</div>
+                          <div>
+                            {info.productList &&
+                            info.productList?.[index]?.amount
+                              ? ThousandSeparator(
+                                  info.productList[index].amount
+                                )
+                              : ""}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                  <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                    ))}
+                  </div>
+                  <div className="bg-MonochromeGray-50 p-20 py-12 subtitle2 text-MonochromeGray-700">
                     {/* {t("label:totalReservationAmount")} : {t("label:nok")} {grandTotal} */}
                     {t("label:totalReservationAmount")} : {t("label:nok")}{" "}
                     {info.grandTotal ? ThousandSeparator(info.grandTotal) : 0}
@@ -568,7 +575,9 @@ const ReservationInformation = ({ info }) => {
                           //label="Discount"
                           className="bg-white custom-input-height"
                           type="number"
-                          onWheel={event => { event.target.blur()}}
+                          onWheel={(event) => {
+                            event.target.blur();
+                          }}
                           autoComplete="off"
                           //error={!!errors.reservationAmount}
                           //helperText={errors?.reservationAmount?.message}
@@ -595,7 +604,9 @@ const ReservationInformation = ({ info }) => {
                           className="bg-white custom-input-height"
                           // type="text"
                           type="number"
-                          onWheel={event => { event.target.blur()}}
+                          onWheel={(event) => {
+                            event.target.blur();
+                          }}
                           autoComplete="off"
                           error={!!errors?.order?.[index]?.tax}
                           helperText={errors?.order?.[index]?.tax?.message}
