@@ -203,6 +203,16 @@
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px rgba(0, 0, 0, 0.12),
     0px 1px 5px rgba(0, 0, 0, 0.2);
 }
+.mobile-send-btn {
+  min-width: 170px;
+}
+.border-gray {
+  border: 1px solid #c6c7c7 !important;
+}
+.mob-order-product-group {
+  background: #f7f7f7;
+  padding: 1px 10px 16px 10px;
+}
 
 @media only screen and (min-width: 600px) {
   .create-order-dialog .reservation-modal-inner {

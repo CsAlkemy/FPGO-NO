@@ -135,19 +135,22 @@ const ReservationDetails = () => {
           let data = res?.data.log;
           setAmountRefunded(res?.data.statistics.amountRefunded.fromCaptured);
           let checkExpired = data.findIndex(
-            (item) => item.slug === "order-expired-and-was-not-paid"
+            (item) =>
+              item.slug === "order-expired-and-was-not-paid" ||
+              item.slug === "payment-link-expired"
           );
 
           if (info.status.toLowerCase() === "expired" && checkExpired < 0) {
             orderData.push({
-              title: "orderExpiredAndWasNotPaid",
-              slug: "order-expired",
+              title: "Payment Link Expired And Not Paid",
+              slug: "payment-link-expired",
               datetime: info.paymentLinkDueDate,
               sentTo: null,
               actionBy: null,
               note: null,
               paymentMethod: null,
               refundAmount: null,
+              translationKey: "reservationLogPaymentLinkExpired",
             });
           }
           orderData.push(...data);
