@@ -895,6 +895,7 @@ class OrdersService {
         refundAmount: row.refundAmount,
         stage: row?.status ? row?.status.toLowerCase() : null,
         approveAction: row?.status ? row?.status.toLowerCase() : null,
+        isSubscription : row.isSubscription,
         isCancel: row?.status.toLowerCase() === "refund pending",
         translationKey: row?.translationKey ? row?.translationKey : null,
       };
@@ -930,6 +931,7 @@ class OrdersService {
                       approveAction: row?.status
                         ? row?.status.toLowerCase()
                         : null,
+                      isSubscription : row.isSubscription,
                       isCancel: row?.status.toLowerCase() === "pending",
                       translationKey: row?.translationKey
                         ? row?.translationKey
