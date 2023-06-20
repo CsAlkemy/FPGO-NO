@@ -588,6 +588,8 @@ const OrderModal = (props) => {
   const headerTitleText =
     headerTitle === "moreThanThreeRefundAttempts" || flag
       ? "requestForRefundApproval"
+      : headerTitle === "Resend Reservation"
+      ? "resend"
       : headerTitle;
   const orderIdTextLabel = orderIdText ? orderIdText : t("label:orderId");
 
@@ -629,7 +631,7 @@ const OrderModal = (props) => {
     setTimeout(() => {
       setOpen(false);
       window.location.reload();
-    }, 1000);
+    }, 2000);
     setApiLoading(false);
   };
 
@@ -815,7 +817,14 @@ const OrderModal = (props) => {
                 !flag && (
                   <div className="order-amount-text flex justify-between items-center my-10 pb-10 border-b-1 gap-x-10 border-MonochromeGray-25">
                     <div className="body2">
-                      <div className="text-MonochromeGray-700">
+                      {/* <div className="text-MonochromeGray-700"> */}
+                      <div
+                        className={`text-MonochromeGray-700 ${
+                          headerTitle == "Resend Reservation"
+                            ? "font-semibold"
+                            : ""
+                        }`}
+                      >
                         {orderName ? orderName : "-"}
                       </div>
                       <div className="text-MonochromeGray-300">

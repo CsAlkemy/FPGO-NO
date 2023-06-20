@@ -135,19 +135,22 @@ const ReservationDetails = () => {
           let data = res?.data.log;
           setAmountRefunded(res?.data.statistics.amountRefunded.fromCaptured);
           let checkExpired = data.findIndex(
-            (item) => item.slug === "order-expired-and-was-not-paid"
+            (item) =>
+              item.slug === "order-expired-and-was-not-paid" ||
+              item.slug === "payment-link-expired"
           );
 
           if (info.status.toLowerCase() === "expired" && checkExpired < 0) {
             orderData.push({
-              title: "orderExpiredAndWasNotPaid",
-              slug: "order-expired",
+              title: "Payment Link Expired And Not Paid",
+              slug: "payment-link-expired",
               datetime: info.paymentLinkDueDate,
               sentTo: null,
               actionBy: null,
               note: null,
               paymentMethod: null,
               refundAmount: null,
+              translationKey: "reservationLogPaymentLinkExpired",
             });
           }
           orderData.push(...data);
@@ -209,14 +212,14 @@ const ReservationDetails = () => {
               </div>
               <Hidden smDown>
                 {user.role[0] !== FP_ADMIN && (
-                  <div className="button-container-product">
+                  <div className="button-container-product1 details-top-buttons flex gap-x-10">
                     {(info.status.toLowerCase() === "sent" ||
                       (info.status.toLowerCase() === "reserved" &&
                         info?.isPaid == false)) && (
                       <Button
                         color="secondary"
                         variant="outlined"
-                        className="button-outline-product text-MonochromeGray-700"
+                        className="cancel-btn button-outline-product text-MonochromeGray-700"
                         startIcon={<CancelIcon style={{ fill: "#F36562" }} />}
                         onClick={() => handleModalOpen("cancelReservation")}
                       >
@@ -227,7 +230,7 @@ const ReservationDetails = () => {
                       <LoadingButton
                         color="secondary"
                         variant="contained"
-                        className="font-semibold rounded-4 w-full sm:w-auto"
+                        className="resend-btn font-semibold rounded-4 w-full sm:w-auto"
                         // disabled={!(isValid && customData.paymentMethod.length)}
                         //disabled="disabled"
                         startIcon={<RedoIcon />}
@@ -245,7 +248,7 @@ const ReservationDetails = () => {
                         <Button
                           // color="secondary"
                           variant="contained"
-                          className="font-semibold rounded-4 w-full sm:w-auto transparent-btn"
+                          className="complete-btn font-semibold rounded-4 w-full sm:w-auto transparent-btn"
                           disabled={user.role[0] === FP_ADMIN}
                           startIcon={
                             <DoneAllIcon

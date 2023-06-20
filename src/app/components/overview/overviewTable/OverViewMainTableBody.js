@@ -2198,7 +2198,7 @@ export default function OverViewMainTableBody(props) {
             ""
           ) : props.row.status.toLowerCase() === "completed" &&
             refundableAmount > 0 ? (
-            <TableCell key={`${props.row.uuid}-${rdt}`} align="right">
+            <TableCell key={`${props.row.uuid}-${rdt}`} align="center">
               <CustomTooltip
                 disableFocusListener
                 title={t("label:refundFromReservations")}

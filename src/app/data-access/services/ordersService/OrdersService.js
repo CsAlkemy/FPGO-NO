@@ -254,7 +254,8 @@ class OrdersService {
         email: params.orderBy === "email",
         invoice: params.orderBy === "invoice",
       },
-      invoiceAsPaymentOption:params.invoiceAsPaymentOption === "true" ? true : false,
+      invoiceAsPaymentOption:
+        params.invoiceAsPaymentOption === "true" ? true : false,
       isCreditCheckAvailable: params.isCeditCheck,
       customerDetails: {
         type: params.customerType,
@@ -556,6 +557,9 @@ class OrdersService {
         organizationId:
           params.customerType === "corporate" ? params.orgIdOrPNumber : null,
         address: { ...billingAddress },
+        preferredLanguage: params?.preferredLanguage
+          ? params?.preferredLanguage
+          : "no",
       },
       // billingAddress,
       submitPayment: {

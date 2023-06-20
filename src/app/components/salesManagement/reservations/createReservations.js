@@ -78,8 +78,10 @@ import CharCount from "../../common/charCount";
 // import { es, nn, nb } from "date-fns/locale";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CountrySelect from "../../common/countries";
 import FrontPaymentPhoneInput from "../../common/frontPaymentPhoneInput";
+import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const ReservationCreate = () => {
   const { t } = useTranslation();
@@ -262,6 +264,7 @@ const ReservationCreate = () => {
       zip: values.billingZip,
       country: values.billingCountry,
       type: customData.customerType,
+      preferredLanguage: values.preferredLanguage,
     };
     //console.log(customerUpData);
     setSelectedCustomer(customerUpData);
@@ -287,6 +290,8 @@ const ReservationCreate = () => {
   };
 
   const onSubmit = (values) => {
+    // console.log(values);
+    // return;
     setLoading(true);
     subTotal = (subTotal / 2).toFixed(2);
     totalTax = (totalTax / 2).toFixed(2);
@@ -362,6 +367,8 @@ const ReservationCreate = () => {
     if (total) grandTotal = grandTotal + total;
     if (total > 0) {
       return ` ${total}`;
+    } else {
+      return 0;
     }
   };
 
@@ -478,6 +485,9 @@ const ReservationCreate = () => {
                   city: row?.city,
                   zip: row?.zip,
                   country: row?.country,
+                  preferredLanguage: row?.preferredLanguage
+                    ? row?.preferredLanguage
+                    : "no",
                   searchString:
                     row?.name +
                     " ( " +
@@ -553,9 +563,11 @@ const ReservationCreate = () => {
     const monthIndex = nextMonth ? date.getMonth() + 1 : date.getMonth();
     const monthName = monthNames[monthIndex];
     const year = date.getFullYear();
-    return new Date(
+    //return `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const modifiedDate = new Date(
       `${updatedDay}. ${monthName}.${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     );
+    return modifiedDate.toString();
   };
 
   const openCustomarModal = (customerType = "") => {
@@ -594,6 +606,7 @@ const ReservationCreate = () => {
       setValueCustomer("billingZip", customerData.zip);
       setValueCustomer("billingCity", customerData.city);
       setValueCustomer("billingCountry", customerData.country);
+      setValueCustomer("preferredLanguage", customerData.preferredLanguage);
       if (customerData.type === "Corporate") {
         setCustomData({
           ...customData,
@@ -678,6 +691,13 @@ const ReservationCreate = () => {
   };
 
   const watchFirstProductName = watch(`order[0].productName`);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <>
@@ -1030,6 +1050,7 @@ const ReservationCreate = () => {
                             <TextField
                               {...params}
                               onBlur={onBlur}
+                              //onChange={console.log(errors)}
                               type="date"
                               required
                               fullWidth
@@ -1154,7 +1175,9 @@ const ReservationCreate = () => {
                       {...field}
                       label={t("label:referenceNo")}
                       type="number"
-                      onWheel={event => { event.target.blur()}}
+                      onWheel={(event) => {
+                        event.target.blur();
+                      }}
                       autoComplete="off"
                       error={!!errors.referenceNumber}
                       helperText={
@@ -1205,10 +1228,10 @@ const ReservationCreate = () => {
             <div className="create-order-send-order-conf">
               <div className="send-order-by">
                 <div className="caption2 text-MonochromeGray-300">
-                  {t("label:sendOrderBy")}
+                  {t("label:sendBy")}
                 </div>
                 <div className="create-order-radio">
-                  <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-20 w-full md:w-3/4 my-32 mt-10">
+                  <div className="grid grid-cols-2 md:grid-cols-3 justify-between items-center gap-20 w-full md:w-3/4 my-32 mt-10">
                     <Button
                       variant="outlined"
                       className={`body2 ${
@@ -1291,229 +1314,235 @@ const ReservationCreate = () => {
                       {t("label:orderDetails")}
                     </div>
                   </AccordionSummary>
-                  <AccordionDetails className="bg-white px-0">
-                    <div className="sticky top-28 z-40">
-                      <Button
-                        className="mt-20 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1"
-                        startIcon={<AddIcon className="text-main" />}
-                        variant="contained"
-                        onClick={() => addNewOrder()}
-                        disabled={addOrderIndex.length >= 20 ? true : false}
-                      >
-                        {t(`label:addItem`)}
-                      </Button>
-                    </div>
-                    {addOrderIndex.map((index) => (
-                      <div
-                        className=" p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
-                        key={`order:${index}`}
-                      >
-                        <Controller
-                          control={control}
-                          required
-                          name={`order[${index}].productName`}
-                          render={({ field: { ref, onChange, ...field } }) => (
-                            <Autocomplete
-                              disabled={
-                                index === 0 ||
-                                index === Math.min(...addOrderIndex)
-                                  ? false
-                                  : !watch(
-                                      `order[${
-                                        index -
-                                        (addOrderIndex[
-                                          addOrderIndex.indexOf(index)
-                                        ] -
-                                          addOrderIndex[
-                                            addOrderIndex.indexOf(index) - 1
-                                          ])
-                                      }].productName`
-                                    )
-                              }
-                              freeSolo
-                              autoSelect
-                              onBlur={pnameOnBlur}
-                              options={productsList}
-                              // forcePopupIcon={<Search />}
-                              getOptionLabel={(option) =>
-                                option?.name
-                                  ? option.name
-                                  : option
-                                  ? option
-                                  : ""
-                              }
-                              size="small"
-                              //className="custom-input-height"
-                              onChange={(_, data) => {
-                                triggerProductSelected(index, data);
-                                return onChange(data);
-                              }}
-                              renderOption={(props, option, { selected }) => (
-                                <MenuItem
-                                  {...props}
-                                  key={option.uuid}
-                                >{`${option.name}`}</MenuItem>
-                              )}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  placeholder={t("label:productName")}
-                                  {...field}
-                                  className="custom-input-height"
-                                  inputRef={ref}
-                                />
-                              )}
-                            />
-                          )}
-                        />
-                        <Controller
-                          name={`order[${index}].productID`}
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              label="Product ID"
-                              className="bg-white custom-input-height"
-                              type="text"
-                              autoComplete="off"
-                              error={!!errors.productID}
-                              helperText={errors?.productID?.message}
-                              variant="outlined"
-                              fullWidth
-                              value={field.value || ""}
-                              disabled={disableRowIndexes.includes(index)}
-                            />
-                          )}
-                        />
-                        <div className="grid grid-cols-4 gap-20">
+                  <AccordionDetails className="bg-white px-0 py-0">
+                    <div className="mob-order-product-group">
+                      {addOrderIndex.map((index) => (
+                        <div
+                          className="border-gray p-20 rounded-6 bg-white border-2 border-MonochromeGray-25 my-20 flex flex-col gap-20"
+                          key={`order:${index}`}
+                        >
                           <Controller
-                            name={`order[${index}].reservationAmount`}
+                            control={control}
+                            required
+                            name={`order[${index}].productName`}
+                            render={({
+                              field: { ref, onChange, ...field },
+                            }) => (
+                              <Autocomplete
+                                disabled={
+                                  index === 0 ||
+                                  index === Math.min(...addOrderIndex)
+                                    ? false
+                                    : !watch(
+                                        `order[${
+                                          index -
+                                          (addOrderIndex[
+                                            addOrderIndex.indexOf(index)
+                                          ] -
+                                            addOrderIndex[
+                                              addOrderIndex.indexOf(index) - 1
+                                            ])
+                                        }].productName`
+                                      )
+                                }
+                                freeSolo
+                                autoSelect
+                                onBlur={pnameOnBlur}
+                                options={productsList}
+                                // forcePopupIcon={<Search />}
+                                getOptionLabel={(option) =>
+                                  option?.name
+                                    ? option.name
+                                    : option
+                                    ? option
+                                    : ""
+                                }
+                                size="small"
+                                //className="custom-input-height"
+                                onChange={(_, data) => {
+                                  triggerProductSelected(index, data);
+                                  return onChange(data);
+                                }}
+                                renderOption={(props, option, { selected }) => (
+                                  <MenuItem
+                                    {...props}
+                                    key={option.uuid}
+                                  >{`${option.name}`}</MenuItem>
+                                )}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    placeholder={t("label:productName")}
+                                    {...field}
+                                    className="custom-input-height"
+                                    inputRef={ref}
+                                  />
+                                )}
+                              />
+                            )}
+                          />
+                          <Controller
+                            name={`order[${index}].productID`}
                             control={control}
                             render={({ field }) => (
                               <TextField
                                 {...field}
-                                label={t("label:reservationAmount")}
-                                className="bg-white custom-input-height col-span-2"
+                                label="Product ID"
+                                className="bg-white custom-input-height"
+                                type="text"
                                 autoComplete="off"
-                                error={
-                                  !!errors?.order?.[index]?.reservationAmount
-                                }
-                                // helperText={errors?.order?.[index]?.rate?.message}
+                                error={!!errors.productID}
+                                helperText={errors?.productID?.message}
                                 variant="outlined"
-                                required
-                                value={field.value || ""}
                                 fullWidth
+                                value={field.value || ""}
                                 disabled={disableRowIndexes.includes(index)}
                               />
                             )}
                           />
-
-                          {!disableRowIndexes.includes(index) ? (
+                          <div className="grid grid-cols-5 gap-20">
                             <Controller
-                              name={`order[${index}].tax`}
-                              control={control}
-                              render={({ field }) => (
-                                <FormControl
-                                  error={!!errors?.order?.[index]?.tax}
-                                  required
-                                  fullWidth
-                                  className="col-span-2"
-                                >
-                                  <InputLabel id="demo-simple-select-outlined-label-type">
-                                    {t(`label:tax`)}
-                                  </InputLabel>
-                                  <Select
-                                    {...field}
-                                    labelId="demo-simple-select-outlined-label-type"
-                                    id="demo-simple-select-outlined"
-                                    label="Tax"
-                                    value={field.value || ""}
-                                    defaultValue={defaultTaxValue}
-                                    className="col-span-2"
-                                    disabled={disableRowIndexes.includes(index)}
-                                    inputlabelprops={{
-                                      shrink:
-                                        !!field.value || touchedFields.tax,
-                                    }}
-                                  >
-                                    {!!taxes && taxes.length ? (
-                                      taxes.map((tax, index) =>
-                                        tax.status === "Active" ? (
-                                          <MenuItem
-                                            key={index}
-                                            value={tax.value}
-                                          >
-                                            {tax.value}
-                                          </MenuItem>
-                                        ) : (
-                                          <MenuItem
-                                            key={index}
-                                            value={tax.value}
-                                            disabled
-                                          >
-                                            {tax.value}
-                                          </MenuItem>
-                                        )
-                                      )
-                                    ) : (
-                                      <MenuItem key={0} value={0}>
-                                        0
-                                      </MenuItem>
-                                    )}
-                                  </Select>
-                                  <FormHelperText>
-                                    {errors?.order?.[index]?.tax?.message}
-                                  </FormHelperText>
-                                </FormControl>
-                              )}
-                            />
-                          ) : (
-                            <Controller
-                              name={`order[${index}].tax`}
+                              name={`order[${index}].reservationAmount`}
                               control={control}
                               render={({ field }) => (
                                 <TextField
                                   {...field}
-                                  label="Tax"
-                                  className="bg-white custom-input-height col-span-2"
-                                  type="number"
-                                  onWheel={event => { event.target.blur()}}
+                                  label={t("label:reservationAmount")}
+                                  className="bg-white custom-input-height col-span-3"
                                   autoComplete="off"
-                                  error={!!errors?.order?.[index]?.tax}
-                                  helperText={
-                                    errors?.order?.[index]?.tax?.message
+                                  error={
+                                    !!errors?.order?.[index]?.reservationAmount
                                   }
+                                  // helperText={errors?.order?.[index]?.rate?.message}
                                   variant="outlined"
                                   required
-                                  placeholder="Tax"
-                                  disabled={disableRowIndexes.includes(index)}
+                                  value={field.value || ""}
                                   fullWidth
+                                  disabled={disableRowIndexes.includes(index)}
                                 />
                               )}
                             />
-                          )}
-                        </div>
-                        <div className="grid grid-cols-3 gap-20"></div>
-                        <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
-                          <div>{t("label:totalReservation")}</div>
-                          <div>
-                            {t("label:nok")} {productWiseTotal(index)}
+
+                            {!disableRowIndexes.includes(index) ? (
+                              <Controller
+                                name={`order[${index}].tax`}
+                                control={control}
+                                render={({ field }) => (
+                                  <FormControl
+                                    error={!!errors?.order?.[index]?.tax}
+                                    required
+                                    fullWidth
+                                    className="col-span-2"
+                                  >
+                                    <InputLabel id="demo-simple-select-outlined-label-type">
+                                      {t(`label:tax`)}
+                                    </InputLabel>
+                                    <Select
+                                      {...field}
+                                      labelId="demo-simple-select-outlined-label-type"
+                                      id="demo-simple-select-outlined"
+                                      label="Tax"
+                                      value={field.value || ""}
+                                      defaultValue={defaultTaxValue}
+                                      className="col-span-2"
+                                      disabled={disableRowIndexes.includes(
+                                        index
+                                      )}
+                                      inputlabelprops={{
+                                        shrink:
+                                          !!field.value || touchedFields.tax,
+                                      }}
+                                    >
+                                      {!!taxes && taxes.length ? (
+                                        taxes.map((tax, index) =>
+                                          tax.status === "Active" ? (
+                                            <MenuItem
+                                              key={index}
+                                              value={tax.value}
+                                            >
+                                              {tax.value}
+                                            </MenuItem>
+                                          ) : (
+                                            <MenuItem
+                                              key={index}
+                                              value={tax.value}
+                                              disabled
+                                            >
+                                              {tax.value}
+                                            </MenuItem>
+                                          )
+                                        )
+                                      ) : (
+                                        <MenuItem key={0} value={0}>
+                                          0
+                                        </MenuItem>
+                                      )}
+                                    </Select>
+                                    <FormHelperText>
+                                      {errors?.order?.[index]?.tax?.message}
+                                    </FormHelperText>
+                                  </FormControl>
+                                )}
+                              />
+                            ) : (
+                              <Controller
+                                name={`order[${index}].tax`}
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label="Tax"
+                                    className="bg-white custom-input-height col-span-2"
+                                    type="number"
+                                    autoComplete="off"
+                                    error={!!errors?.order?.[index]?.tax}
+                                    helperText={
+                                      errors?.order?.[index]?.tax?.message
+                                    }
+                                    variant="outlined"
+                                    required
+                                    placeholder="Tax"
+                                    disabled={disableRowIndexes.includes(index)}
+                                    fullWidth
+                                  />
+                                )}
+                              />
+                            )}
                           </div>
+                          <div className="grid grid-cols-3 gap-20"></div>
+                          <div className="flex justify-between subtitle1 pt-20 border-t-1 border-MonochromeGray-50">
+                            <div>{t("label:total")}</div>
+                            <div>
+                              {t("label:nok")} {productWiseTotal(index)}
+                            </div>
+                          </div>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            className="w-1/2 mobile-btn-fit text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
+                            startIcon={
+                              <RemoveCircleOutlineIcon className="text-red-400" />
+                            }
+                            onClick={() => onDelete(index)}
+                          >
+                            {t(`label:removeItem`)}
+                          </Button>
                         </div>
+                      ))}
+                      <div className="mb-20">
                         <Button
-                          variant="outlined"
-                          color="error"
-                          className="w-1/2 mobile-btn text-primary-900 rounded-4 border-1 border-MonochromeGray-50"
-                          startIcon={
-                            <RemoveCircleOutlineIcon className="text-red-400" />
-                          }
-                          onClick={() => onDelete(index)}
+                          className="mt-0 rounded-4 button2 text-MonochromeGray-700 bg-white w-full border-1 border-MonochromeGray-50 shadow-1 custom-box-shadow1"
+                          startIcon={<AddIcon className="text-main" />}
+                          variant="contained"
+                          onClick={() => addNewOrder()}
+                          disabled={addOrderIndex.length >= 20 ? true : false}
                         >
-                          {t(`label:removeItem`)}
+                          {t(`label:addItem`)}
                         </Button>
                       </div>
-                    ))}
-                    <div className="bg-MonochromeGray-50 p-20 subtitle2 text-MonochromeGray-700">
+                    </div>
+
+                    <div className="bg-MonochromeGray-50 p-20 py-12 subtitle2 text-MonochromeGray-700">
                       {/*TODO: joni vai please add grandtotal here*/}
                       {t("label:totalReservationAmount")} : {t("label:nok")}{" "}
                       {grandTotal}
@@ -1636,7 +1665,9 @@ const ReservationCreate = () => {
                             //label="Discount"
                             className="bg-white custom-input-height"
                             type="number"
-                            onWheel={event => { event.target.blur()}}
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
                             autoComplete="off"
                             error={!!errors.reservationAmount}
                             helperText={errors?.reservationAmount?.message}
@@ -1705,7 +1736,9 @@ const ReservationCreate = () => {
                               className="bg-white custom-input-height"
                               // type="text"
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errors?.order?.[index]?.tax}
                               helperText={errors?.order?.[index]?.tax?.message}
@@ -1757,7 +1790,9 @@ const ReservationCreate = () => {
               </div>
             </Hidden>
 
-            <hr className="mt-20 border-half-bottom" />
+            <Hidden smDown>
+              <hr className="mt-20 border-half-bottom" />
+            </Hidden>
 
             <div className="grid grid-cols-1 md:grid-cols-6 my-20">
               <div className="customer-section col-span-1 md:col-span-3 mt-20 flex flex-col gap-y-20 pb-20 sm:pb-0">
@@ -1841,11 +1876,33 @@ const ReservationCreate = () => {
                 </div>
               </Hidden>
             </div>
+            <Hidden smUp>
+              <LoadingButton
+                color="secondary"
+                variant="contained"
+                type="submit"
+                className="bg-primary-500 button2 py-5 mt-0 mb-40 rounded-4 button2 bg-white w-full border-1 border-MonochromeGray-50"
+                disabled={
+                  !isValid || !selectedCustomer || !watchFirstProductName
+                }
+                sx={{
+                  "&.Mui-disabled": {
+                    background: "#eaeaea",
+                    color: "#c0c0c0",
+                  },
+                }}
+                startIcon={<SendIcon />}
+                loading={loading}
+                loadingPosition="center"
+              >
+                {t("label:send")}
+              </LoadingButton>
+            </Hidden>
           </div>
         </div>
         <Hidden mdUp>
-          <div className="fixed bottom-0 grid grid-cols-2 justify-center items-center gap-20 w-full mb-20 px-20 z-50">
-            <Button
+          <div className="fixed bottom-0 flex grid-cols-2 justify-center items-center gap-20 w-full mb-20 px-20 z-50">
+            {/* <Button
               color="secondary"
               variant="contained"
               className="bg-white text-MonochromeGray-700 button2 shadow-5 "
@@ -1853,25 +1910,32 @@ const ReservationCreate = () => {
               startIcon={<Cancel className="text-red-500" />}
             >
               {t("label:discard")}
-            </Button>
+            </Button> */}
             <LoadingButton
               color="secondary"
               variant="contained"
               type="submit"
-              className="rounded-full bg-primary-500 button2 py-5"
-              disabled={!isValid}
+              className="rounded-full bg-primary-500 button2 py-5 mobile-send-btn"
+              disabled={!isValid || !selectedCustomer || !watchFirstProductName}
               sx={{
                 "&.Mui-disabled": {
                   background: "#eaeaea",
                   color: "#c0c0c0",
                 },
               }}
-              startIcon={<RedoIcon />}
+              startIcon={<SendIcon />}
               loading={loading}
               loadingPosition="center"
             >
-              {t("label:sendOrder")}
+              {t("label:send")}
             </LoadingButton>
+            <IconButton
+              color="secondary"
+              className="bg-primary-50 custom-button-shadow focus:bg-blue-200"
+              onClick={scrollToTop}
+            >
+              <KeyboardArrowUpIcon />
+            </IconButton>
           </div>
         </Hidden>
       </form>
@@ -2004,7 +2068,9 @@ const ReservationCreate = () => {
                               {...field}
                               label={t("label:organizationId")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errorsCustomer.orgID}
                               required
@@ -2031,7 +2097,9 @@ const ReservationCreate = () => {
                               {...field}
                               label={t("label:pNumber")}
                               type="number"
-                              onWheel={event => { event.target.blur()}}
+                              onWheel={(event) => {
+                                event.target.blur();
+                              }}
                               autoComplete="off"
                               error={!!errorsCustomer.pNumber}
                               helperText={
@@ -2157,6 +2225,15 @@ const ReservationCreate = () => {
                         // placeholder={"country"}
                         required={true}
                         error={errorsCustomer.billingCountry}
+                      />
+                      <FrontPaymentLanguageSelect
+                        error={errorsCustomer.preferredLanguage}
+                        control={controlCustomer}
+                        name="preferredLanguage"
+                        label="preferredLanguage"
+                        required={true}
+                        disable={false}
+                        // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
                       />
                       {/* <Controller
                         name="billingCountry"
