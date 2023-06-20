@@ -57,6 +57,31 @@ export const setUser = createAsyncThunk(
               ]
             },
             {
+              id: "subscriptions",
+              title: "Subscriptions",
+              translate: 'subscriptions',
+              type: "collapse",
+              icon: "material-outline:bookmarks",
+              children: [
+                {
+                  id: "allSubscriptions",
+                  title: "All Subscriptions",
+                  translate: 'allSubscriptions',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/subscriptions/list",
+                },
+                {
+                  id: "failedPayments",
+                  title: "Failed Payments",
+                  translate: 'failedPayments',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/subscriptions/failed-payments-list",
+                },
+              ],
+            },
+            {
               id: "clients",
               title: "Clients",
               translate: 'clients',
@@ -237,6 +262,31 @@ export const setUser = createAsyncThunk(
               ],
             },
             {
+              id: "subscriptions",
+              title: "Subscriptions",
+              translate: 'subscriptions',
+              type: "collapse",
+              icon: "material-outline:bookmarks",
+              children: [
+                {
+                  id: "allSubscriptions",
+                  title: "All Subscriptions",
+                  translate: 'allSubscriptions',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/subscriptions/list",
+                },
+                {
+                  id: "failedPayments",
+                  title: "Failed Payments",
+                  translate: 'failedPayments',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/subscriptions/failed-payments-list",
+                }
+              ]
+            },
+            {
               id: "reports",
               title: "Reports",
               translate: 'reports',
@@ -374,6 +424,31 @@ export const setUser = createAsyncThunk(
                   url: "/reports/vats",
                 },
               ],
+            },
+            {
+              id: "subscriptions",
+              title: "Subscriptions",
+              translate: 'subscriptions',
+              type: "collapse",
+              icon: "material-outline:bookmarks",
+              children: [
+                {
+                  id: "allSubscriptions",
+                  title: "All Subscriptions",
+                  translate: 'allSubscriptions',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/subscriptions/subscription-list",
+                },
+                {
+                  id: "failedPayments",
+                  title: "Failed Payments",
+                  translate: 'failedPayments',
+                  type: "item",
+                  icon: "material-solid:fiber_manual_record",
+                  url: "/subscriptions/failed-payments",
+                }
+              ]
             },
             {
               id: "reports",

@@ -53,7 +53,6 @@ class ReportService {
             return axios
               .get(URL)
               .then((response) => {
-                console.log("RES : ", response);
                 if (
                   response?.data?.status_code === 200 &&
                   response?.data?.is_data

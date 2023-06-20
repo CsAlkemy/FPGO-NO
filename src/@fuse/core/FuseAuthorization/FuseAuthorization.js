@@ -72,6 +72,7 @@ class FuseAuthorization extends Component {
       if (
         pathname.includes("/order/details/") ||
         pathname.includes("/reservations/details/") ||
+        pathname.includes("/subscription/payment/details") ||
         pathname.includes("/order/receipt/")
       )
         setTimeout(() => history.push(pathname), 0);
@@ -89,6 +90,7 @@ class FuseAuthorization extends Component {
       if (
         pathname.includes("/order/details/") ||
         pathname.includes("/reservations/details/") ||
+        pathname.includes("/subscription/payment/details")||
         pathname.includes("/order/receipt/")
       )
         setTimeout(() => history.push(pathname), 0);
@@ -105,7 +107,8 @@ class FuseAuthorization extends Component {
     return this.state.accessGranted ||
       window.location.pathname.includes("/reservations/details/") ||
       window.location.pathname.includes("/order/details/") ||
-      window.location.pathname.includes("/order/receipt/") ? (
+      window.location.pathname.includes("/order/receipt/") ||
+      pathname.includes("/subscription/payment/details") ? (
       <>{this.props.children}</>
     ) : null;
   }

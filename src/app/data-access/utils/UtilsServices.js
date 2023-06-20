@@ -37,6 +37,45 @@ class UtilsServices {
       return `+${phone}`
     }
   }
+
+  prepareDate = (paramDate) => {
+    //TODO: Set date ex: 12 Sep, 2022
+    const date = new Date(paramDate);
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const monthName = monthNames[monthIndex];
+    const year = date.getFullYear();
+
+    return `${day} ${monthName}, ${year}`;
+  };
+
+  prepareDotSeparatedDateDDMMYYYYFromMMDDYYYY = (param) => {
+    const splitedArray = param.split(".");
+    const changedDate = `${splitedArray[1]}.${splitedArray[0]}.${splitedArray[2]}`;
+    return changedDate;
+  };
+
+  prepareDotSeparatedDateHavingHourMinutes = (param) => {
+    //ex: 11:23, 21.06.1970 -> 06.21.1970 11:23
+    const splitedArray = param.split(", ");
+    const splitedDateArray = splitedArray[1].split(".");
+    const changedDate = `${splitedDateArray[1]}.${splitedDateArray[0]}.${splitedDateArray[2]} ${splitedArray[0]}`;
+    return changedDate;
+  };
 }
 
 const instance = new UtilsServices();

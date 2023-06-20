@@ -100,7 +100,6 @@ const createProducts = () => {
     });
   };
   // form end
-  console.log("isDifferentAccountNumber", isDifferentAccountNumber);
 
   useEffect(() => {
     if (isLoading) {

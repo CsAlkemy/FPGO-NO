@@ -19,6 +19,7 @@ const orderDetails = () => {
   const [visible, setVisible] = React.useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState([]);
+  const [orderUuid, setOrderUuid] = useState(null);
 
   const toggleVisible = () => {
     const scrolled = document.documentElement.scrollTop;
@@ -38,53 +39,29 @@ const orderDetails = () => {
 
   window.addEventListener("scroll", toggleVisible);
 
-  useEffect(() => {
-    if (
-      !window.location.pathname.includes("/subscription/payment/details/SUB")
-    ) {
-      OrdersService.getPaymentLinkOpenStatus(param.uuid)
-        .then((response) => {
-          // if (response?.status_code === 202) {
-          //   console.log(response?.data);
-          // }
-          // setIsLoading(false);
-        })
-        .catch((e) => {});
-    }
-  }, [isLoading]);
+  // useEffect(() => {
+  //
+  // }, [orderUuid]);
 
   useEffect(() => {
-    if (
-      window.location.pathname.includes("/subscription/payment/details/SUB")
-    ) {
-      SubscriptionsService.getSubscriptionDetailsByUUIDPayment(param.uuid)
-        .then((response) => {
-          if (response?.status_code === 200 && response?.is_data) {
-            // if (response?.data?.status !== "SENT") return navigate("404");
-            setOrderDetails(response.data);
-          }
-          setIsLoading(false);
-        })
-        .catch((e) => {
-          setIsLoading(false);
-          // enqueueSnackbar(e, { variant: "error" });
-          return navigate("404");
-        });
-    } else {
-      OrdersService.getOrdersDetailsByUUIDPayment(param.uuid)
-        .then((response) => {
-          if (response?.status_code === 200 && response?.is_data) {
-            if (response?.data?.status !== "SENT") return navigate("404");
-            setOrderDetails(response.data);
-          }
-          setIsLoading(false);
-        })
-        .catch((e) => {
-          setIsLoading(false);
-          // enqueueSnackbar(e, { variant: "error" });
-          return navigate("404");
-        });
+    if (orderUuid) {
+      OrdersService.getPaymentLinkOpenStatus(orderUuid)
+        .then((response) => {})
+        .catch((e) => {});
     }
+    SubscriptionsService.getSubscriptionDetailsByUUIDPayment(param.uuid)
+      .then((response) => {
+        if (response?.status_code === 200 && response?.is_data) {
+          // if (response?.data?.status.toLowerCase() !== "sent") return navigate("404");
+          setOrderDetails(response.data);
+          setOrderUuid(response.data.orderNo);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        return navigate("404");
+      });
   }, [isLoading]);
 
   return (
@@ -96,13 +73,8 @@ const orderDetails = () => {
             <div className="subtitle1 text-MonochromeGray-700 ">
               {t("label:orderDetails")}
             </div>
-            <div>
-              <div className="subtitle3 text-MonochromeGray-700 ">
-                {orderDetails?.organizationDetails?.name || "_"}
-              </div>
-              <div className="subtitle3 text-MonochromeGray-300 my-10">
-                {t("label:orderNo")}. {param.uuid}
-              </div>
+            <div className="subtitle3 text-MonochromeGray-300 my-10">
+              {t("label:orderNo")}. {param.uuid}
             </div>
           </div>
           <Hidden mdDown>
@@ -425,12 +397,14 @@ const orderDetails = () => {
                 onClick={() => {
                   // navigate('/payment/checkout')
                   if (
-                    window.location.pathname.includes("/subscription/payment/details/SUB")
+                    window.location.pathname.includes(
+                      "/subscription/payment/details/SUB"
+                    )
                   ) {
                     navigate(
                       `/subscription/payment/details/${param.uuid}/checkout`
                     );
-                  }else {
+                  } else {
                     navigate(
                       `/order/details/${orderDetails?.orderUuid}/checkout`
                     );

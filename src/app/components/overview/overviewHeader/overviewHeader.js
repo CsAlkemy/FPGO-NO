@@ -21,8 +21,7 @@ import {
   customerOrdersListOverview,
   refundRequestsOverview,
   clientOrdersListOverview,
-  payoutReportsListOverview,
-  reservationListOverview,
+  reservationListOverview, subscriptionsListOverview, payoutReportsListOverview, failedPaymentsListOverview
 } from "../overviewTable/TablesName";
 import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -92,8 +91,14 @@ export default function OverviewHeader(props) {
       case ordersListOverview:
         navigate(`/create-order`);
         break;
+      case failedPaymentsListOverview:
+        navigate(`/subscription/create`);
+        break;
       case reservationListOverview:
         navigate(`/create-reservations`);
+        break;
+      case subscriptionsListOverview:
+        navigate(`/subscription/create`);
         break;
     }
     setAnchorEl(event.currentTarget);
@@ -385,7 +390,9 @@ export default function OverviewHeader(props) {
                           user.role[0] === GENERAL_USER) ||
                         ((props.tableRef === ordersListOverview ||
                           props.tableRef === productsListOverview ||
-                          props.tableRef === categoriesListOverview) &&
+                          props.tableRef === categoriesListOverview ||
+                          props.tableRef === subscriptionsListOverview ||
+                          props.tableRef === failedPaymentsListOverview) &&
                           user.role[0] === FP_ADMIN) ||
                         (props.tableRef === clientsListOverview &&
                           user.role[0] !== FP_ADMIN)

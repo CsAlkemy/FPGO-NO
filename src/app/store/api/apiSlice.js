@@ -93,6 +93,8 @@ export const apiSlice = createApi({
     "ApprovedClientsList",
     "ApprovalClientsList",
     "RefundRequestsList",
+    "SubscriptionsList",
+    "FailedSubscriptionsList",
     "ReservationList",
   ],
   endpoints: (builder) => ({
@@ -487,6 +489,71 @@ export const apiSlice = createApi({
       invalidatesTags: (result, error, arg, meta) =>
         result ? ["ReservationList"] : [""],
     }),
+    getSubscriptionsList: builder.query({
+      query: () => "/subscription/list",
+      providesTags: ["SubscriptionsList"],
+    }),
+    createSubscription: builder.mutation({
+      query: (payload) => ({
+        url: "/subscription/create",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["SubscriptionsList"],
+    }),
+    getFailedSubscriptionsList: builder.query({
+      query: () => "/subscription/failed/list",
+      providesTags: ["FailedSubscriptionsList"],
+    }),
+    cancelSubscription: builder.mutation({
+      query: (payload) => ({
+        url: `/subscription/cancel/${payload.uuid}`,
+        method: "POST",
+        body: {
+          cancellationNote: payload?.cancellationNote
+            ? payload.cancellationNote
+            : null,
+        },
+      }),
+      invalidatesTags: ["SubscriptionsList"],
+    }),
+    refundSubscriptionOrder: builder.mutation({
+      query: (payload) => ({
+        url: `/subscription/cycles/refund/${payload.uuid}`,
+        method: "POST",
+        body: {
+          cycles: payload.cycles,
+          amount: `${parseFloat(payload.amount)}`,
+        },
+      }),
+      invalidatesTags: (result, error, arg, meta) =>
+        result ? ["SubscriptionsList"] : [""],
+    }),
+
+    subscriptionRefundRequestDecision: builder.mutation({
+      query: (params) => ({
+        url: `/subscription/refund/decision/${params.orderUuid}`,
+        method: "POST",
+        body: {
+          isApproved: params.isApproved,
+          note: params?.note ? params?.note : null,
+          amount: params?.amount
+        },
+      }),
+      invalidatesTags: ["RefundRequestsList"],
+    }),
+    subscriptionRequestRefundApproval: builder.mutation({
+      query: (params) => ({
+        url: `/subscription/refund/request/approval/${params.uuid}`,
+        method: "POST",
+        body: {
+          cycles: params.cycles,
+          amount: params.amount,
+          message: params.message,
+        },
+      }),
+      invalidatesTags: ["RefundRequestsList"],
+    }),
   }),
 });
 
@@ -539,6 +606,13 @@ export const {
   useCancelReservationMutation,
   useCompleteReservationMutation,
   useCapturePaymentMutation,
+  useGetSubscriptionsListQuery,
+  useGetFailedSubscriptionsListQuery,
+  useCreateSubscriptionMutation,
+  useCancelSubscriptionMutation,
+  useRefundSubscriptionOrderMutation,
+  useSubscriptionRefundRequestDecisionMutation,
+  useSubscriptionRequestRefundApprovalMutation,
   useChargeReservationMutation,
   useRefundFromReservationMutation,
   useRefundChargedTransectionMutation,

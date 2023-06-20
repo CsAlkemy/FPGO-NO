@@ -56,12 +56,29 @@ import {
   useChargeReservationMutation,
   useRefundFromReservationMutation,
   useRefundChargedTransectionMutation,
+  useCancelSubscriptionMutation,
+  useRefundSubscriptionOrderMutation,
+  useSubscriptionRequestRefundApprovalMutation
 } from "app/store/api/apiSlice";
 import CharCount from "../../../common/charCount";
 import { value } from "lodash/seq";
 import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../../utils/helperFunctions";
 import _ from "lodash";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+const mockCycleData = [
+  { title: "Cycle 1", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 2", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 3", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 4", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 5", date: "01.08.22- 30.08.22" },
+  { title: "Cycle 6", date: "01.08.22- 30.08.22" },
+];
 var productFetched = false;
 
 const OrderModal = (props) => {
@@ -77,8 +94,11 @@ const OrderModal = (props) => {
     orderAmount,
     customerPhone,
     customerEmail,
+    orderType,
+    subscriptionUuid,
     amountInBank = null,
     remainingAmount = null,
+    refundCycle,
     capturedAmount = 0,
     refundableAmount = 0,
     refundableChargeAmount = 0,
@@ -92,11 +112,16 @@ const OrderModal = (props) => {
   const [isDisableRefundRequest, setIsDisableRefundRequest] =
     React.useState(false);
   const [flagMessage, setFlagMessage] = useState("");
+  const [categoriesList, setCategoriesList] = useState([]);
   const [refundOrder] = useRefundOrderMutation();
+  const [refundSubscriptionOrder] = useRefundSubscriptionOrderMutation();
   const [cancelOrder] = useCancelOrderMutation();
+  const [cancelSubscription] = useCancelSubscriptionMutation();
   const [resendOrder] = useResendOrderMutation();
   const [requestRefundApproval] = useRequestRefundApprovalMutation();
+  const [subscriptionRequestRefundApproval] = useSubscriptionRequestRefundApprovalMutation();
   const [refundRequestDecision] = useRefundRequestDecisionMutation();
+  const [selectedCycles, setSelectedCycles] = useState([])
   const [cancelReservation] = useCancelReservationMutation();
   const [completeReservation] = useCompleteReservationMutation();
   const [capturePayment] = useCapturePaymentMutation();
@@ -155,6 +180,7 @@ const OrderModal = (props) => {
         ? validateSchemaReservationRefundModal
         : [
             "Cancel Order",
+            "Cancel Subscription",
             "Reject Refund Request",
             "Cancel Reservation",
           ].includes(headerTitle)
@@ -258,28 +284,42 @@ const OrderModal = (props) => {
             : "",
         reference: chargeKey ? chargeKey : null,
       };
-      requestRefundApproval(payload).then((response) => {
-        if (response?.data?.status_code === 201) {
-          enqueueSnackbar(t(`message:${response?.data?.message}`), {
-            variant: "success",
-          });
-          // setApiLoading(false);
-        } else if (response?.error) {
-          enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
-            variant: "error",
-          });
-          // setApiLoading(false);
-        }
-        setOpen(false);
-        setFlag(false);
-        setApiLoading(false);
-        setTimeout(() => {
+      if (orderType === "SUBSCRIPTION") {
+        subscriptionRequestRefundApproval({cycles : selectedCycles, amount : parseInt(refundCycle.payablePerMonth), message: flagMessage, uuid: subscriptionUuid}).then((response) => {
+          if (response?.data?.status_code === 201) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            // setApiLoading(false);
+          } else if (response?.error) {
+            enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+              variant: "error",
+            });
+            // setApiLoading(false);
+          }
           setOpen(false);
-          window.location.reload();
-        }, 2000);
-      });
-    } else if (["Resend Order", "Resend Reservation"].includes(headerTitle)) {
-      //console.log('hello');
+          setFlag(false);
+          setApiLoading(false);
+        });
+      } else {
+        requestRefundApproval(payload).then((response) => {
+          if (response?.data?.status_code === 201) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            // setApiLoading(false);
+          } else if (response?.error) {
+            enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+              variant: "error",
+            });
+            // setApiLoading(false);
+          }
+          setOpen(false);
+          setFlag(false);
+          setApiLoading(false);
+        });
+      }
+    } else if (headerTitle === "Resend Order") {
       setApiLoading(true);
       const preparedPayload = OrdersService.prepareResendOrderPayload(data);
       resendOrder(preparedPayload).then((res) => {
@@ -320,7 +360,32 @@ const OrderModal = (props) => {
         }, 1000);
         setApiLoading(false);
       });
-    } else if (["Send Refund", "Refund Order"].includes(headerTitle)) {
+    } else if (headerTitle === "Cancel Subscription") {
+      setApiLoading(true);
+      cancelSubscription({uuid : subscriptionUuid, cancellationNote : values?.cancellationNote}).then((res) => {
+        if (res?.data?.status_code === 202) {
+          enqueueSnackbar(t(`message:${res?.data?.message}`), {
+            variant: "success",
+          });
+          // setApiLoading(false);
+        }
+        if (window.location.pathname === `/subscription/details/${subscriptionUuid}`)
+          navigate(`/subscriptions/list`);
+        else if (
+          window.location.pathname === `/reservations-view/details/${orderId}`
+        )
+          navigate("/reservations");
+        // else window.location.reload();
+        setTimeout(() => {
+          setOpen(false);
+        }, 1000);
+        setApiLoading(false);
+      });
+    } else if (
+      ["Send Refund", "Refund Order", "Refund from Reservation"].includes(
+        headerTitle
+      ) && !orderType
+    ) {
       setApiLoading(true);
       refundOrder({ ...data, isPartial: refundType === "partial" }).then(
         (response) => {
@@ -351,6 +416,50 @@ const OrderModal = (props) => {
                 setIsDisableRefundRequest(true);
               }
               setFlagMessage(response?.error?.data?.message);
+              setFlag(true);
+              // enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
+              //   variant: "error",
+              // });
+            } else setOpen(false);
+            // setApiLoading(false);
+          }
+          setApiLoading(false);
+          // setOpen(false);
+        }
+      );
+    } else if (
+      ["Send Refund"].includes(
+        headerTitle
+      ) && orderType === "SUBSCRIPTION"
+    ) {
+      setApiLoading(true);
+      refundSubscriptionOrder({ cycles : selectedCycles, amount : parseInt(refundCycle.payablePerMonth) * parseInt(selectedCycles.length), uuid : subscriptionUuid }).then(
+        (response) => {
+          // if (response?.data?.status_code === 202) {
+          if (response?.data?.status_code === 201) {
+            enqueueSnackbar(t(`message:${response?.data?.message}`), {
+              variant: "success",
+            });
+            setOpen(false);
+            if (window.location.pathname === `/subscription/details/${subscriptionUuid}`)
+              navigate(`/subscriptions/list`);
+            // setApiLoading(false);
+          } else if (response?.error) {
+            if (response?.error?.data?.status_code === 400) {
+              if (
+                // !response?.error?.data?.message.toLowerCase().includes("admin")
+                !(
+                  response?.error?.data?.message ===
+                    "someCyclesFailedToPassValidation" &&
+                  (response?.error?.data?.errors[0].message ===
+                    "refundRejectionForWeeklyThresholdExceed" ||
+                  response?.error?.data?.errors[0].message ===
+                    "refundRejectionForRequestAmountThresholdExceed")
+                )
+              ) {
+                setIsDisableRefundRequest(true);
+              }
+              setFlagMessage(response?.error?.data?.errors[0].message);
               setFlag(true);
               // enqueueSnackbar(t(`message:${response?.error?.data?.message}`), {
               //   variant: "error",
@@ -719,7 +828,7 @@ const OrderModal = (props) => {
                         {orderName ? orderName : "-"}
                       </div>
                       <div className="text-MonochromeGray-300">
-                        {orderIdTextLabel}: {orderId ? orderId : "-"}
+                        {orderIdTextLabel}: {["Cancel Subscription"].includes(headerTitle) && subscriptionUuid ? subscriptionUuid :  orderId ? orderId : "-"}
                       </div>
                     </div>
                     <div className="header6 text-MonochromeGray-700">
@@ -799,6 +908,7 @@ const OrderModal = (props) => {
               >
                 {[
                   "Cancel Order",
+                  "Cancel Subscription",
                   "Reject Refund Request",
                   "Cancel Reservation",
                   "Complete Reservation",
@@ -894,6 +1004,140 @@ const OrderModal = (props) => {
                     </div>
                   </div>
                 )}
+                {[
+                  // "Send Refund",
+                  // "Refund Order",
+                  "Capture Payment",
+                  "Refund from Reservation",
+                ].includes(headerTitle) &&
+                  !flag && (
+                    <div>
+                      <div className="caption2">{t("label:refundType")}</div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-20 mt-20 mb-36">
+                        <Button
+                          variant="outlined"
+                          className={`body2 ${
+                            refundType === "full"
+                              ? "create-order-capsule-button-active"
+                              : "create-order-capsule-button"
+                          }`}
+                          onClick={setFullAmount}
+                        >
+                          {headerTitle === "Capture Payment"
+                            ? t("label:fullPayment")
+                            : t("label:fullRefund")}
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          className={`body2 ${
+                            refundType === "partial"
+                              ? "create-order-capsule-button-active"
+                              : "create-order-capsule-button"
+                          }`}
+                          onClick={() => {
+                            setRefundType("partial");
+                            setValue("refundAmount", "");
+                          }}
+                        >
+                          {headerTitle === "Capture Payment"
+                            ? t("label:partialPayment")
+                            : t("label:partialRefund")}
+                        </Button>
+                      </div>
+                      <Controller
+                        name="refundAmount"
+                        className="mt-32"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label={
+                              headerTitle === "Capture Payment"
+                                ? t("label:amount")
+                                : t("label:refundAmount")
+                            }
+                            type="number"
+                            onWheel={(event) => {
+                              event.target.blur();
+                            }}
+                            autoComplete="off"
+                            variant="outlined"
+                            error={!!errors.refundAmount}
+                            helperText={errors?.refundAmount?.message}
+                            fullWidth
+                            required
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="start">
+                                  {t("label:nok")}
+                                </InputAdornment>
+                              ),
+                            }}
+                            disabled={refundType === "full"}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+                {headerTitle === "Send Refund" &&
+                  orderType === "SUBSCRIPTION" &&
+                  !flag && (
+                    <div>
+                      <Controller
+                        control={control}
+                        name="subscriptionCycle"
+                        render={({ field: { ref, onChange, ...field } }) => (
+                          <Autocomplete
+                            multiple
+                            // options={mockCycleData}
+                            options={refundCycle?.cycles || mockCycleData}
+                            // options={cycleData.length ? cycleData.0 : }
+                            disableCloseOnSelect
+                            // getOptionLabel={(option) => option.title}
+                            getOptionLabel={(option) => option?.cycleName || option?.title}
+                            onChange={(_, data) => {
+                              setSelectedCycles(data.map((cycle)=> {
+                                return cycle.cycleName
+                              }))
+                              return onChange(data);
+                            }}
+                            renderOption={(props, option, { selected }) => (
+                              <li {...props}>
+                                <Checkbox
+                                  icon={icon}
+                                  checkedIcon={checkedIcon}
+                                  style={{ marginRight: 8 }}
+                                  checked={selected}
+                                />
+                                {/*{`${option.title} ( ${option.date} )`}*/}
+                                {`${option.cycleName} ( ${option.startDate} - ${option.endDate} )`}
+                              </li>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                {...field}
+                                inputRef={ref}
+                                required
+                                placeholder={t(
+                                  "label:subscriptionCycle*"
+                                )}
+                              />
+                            )}
+                          />
+                        )}
+                      />
+                      <div className='flex justify-between items-center mt-5 text-MonochromeGray-500 body4 px-4'>
+                        {t("label:selectUpToEightSubscriptionCycles")}
+                        <span>{watch("subscriptionCycle")?.length || 0 }/8</span>
+                      </div>
+                      <div className="p-16 flex justify-between items-center subtitle1 mt-32 bg-MonochromeGray-25 rounded-6 text-MonochromeGray-700">
+                        {t("label:totalRefundAmount")}
+                        <span>{t("label:nok")} {parseInt(refundCycle.payablePerMonth) * parseInt(selectedCycles.length)}</span>
+                      </div>
+                    </div>
+                  )}
+                {/* {["Send Refund", "Refund Order"].includes(headerTitle) && !orderType && ( */}
                 {/*{(headerTitle === "Send Refund" ||*/}
                 {/*  headerTitle === "Refund Order") &&*/}
                 {/*  !flag && (*/}

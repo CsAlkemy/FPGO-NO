@@ -108,6 +108,7 @@ class CustomersService {
       name: params.customerName ? params.customerName : null,
       countryCode: countryCode,
       msisdn: msisdn,
+      preferredLanguage: "en",
       email: params.customerEmail ? params.customerEmail : null,
       personalNumber: params.pNumber ? `${params.pNumber}` : "",
       preferredLanguage: params.preferredLanguage

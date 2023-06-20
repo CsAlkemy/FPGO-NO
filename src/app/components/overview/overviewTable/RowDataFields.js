@@ -162,6 +162,28 @@ export const refundRequestsOverviewRowDataFields = [
   "cancel",
 ];
 
+export const subscriptionsListOverviewRowDataFields = [
+  "date",
+  "id",
+  "name",
+  "phone",
+  "paymentsMade",
+  "amount",
+  "stage",
+  "refundResend",
+  "cancel",
+];
+
+export const failedPaymentsListOverviewRowDataFields = [
+  "date",
+  "orderId",
+  "name",
+  "phone",
+  "subscriptionId",
+  "amount",
+  "status",
+];
+
 export const reservationOverviewRowDataFields = [
   "date",
   "id",

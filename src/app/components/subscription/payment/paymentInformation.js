@@ -35,7 +35,6 @@ import { LoadingButton } from "@mui/lab";
 import { ThousandSeparator } from "../../../utils/helperFunctions";
 import CountrySelect from "../../common/countries";
 import SubscriptionsService from "../../../data-access/services/subscriptionsService/SubscriptionsService";
-import FrontPaymentLanguageSelect from "../../common/FPLanguageSelect";
 
 const paymentInformation = () => {
   const { t } = useTranslation();
@@ -84,12 +83,6 @@ const paymentInformation = () => {
       logo: "assets/images/payment/frontPayment.png",
     },
   ]);
-  useEffect(()=>{
-    if (orderDetails) {
-      setPaymentMethodList(orderDetails?.invoiceAsPaymentOption === 0? paymentMethodList.filter(obj => obj.name !== "Invoice"): paymentMethodList) ;
-    }
-  },[orderDetails])
-
   let schema =
     customData?.customerType === "private"
       ? validateSchemaPaymentCheckout
@@ -135,29 +128,30 @@ const paymentInformation = () => {
     setOpen(true);
     const data = isUpdateData
       ? {
-          ...updatedData,
-          ...customData,
-          orderUuid,
-          preferredLanguage: values.preferredLanguage,
-          customerUuid: orderDetails?.customerDetails?.uuid
-            ? orderDetails?.customerDetails?.uuid
-            : null,
-        }
+        ...updatedData,
+        ...customData,
+        orderUuid: orderDetails?.orderNo || "",
+        currency: orderDetails?.currency || "",
+        customerUuid: orderDetails?.customerDetails?.uuid
+          ? orderDetails?.customerDetails?.uuid
+          : null,
+      }
       : {
-          ...values,
-          ...customData,
-          orderUuid,
-          preferredLanguage: values.preferredLanguage,
-          customerUuid: orderDetails?.customerDetails?.uuid
-            ? orderDetails?.customerDetails?.uuid
-            : null,
-        };
-    OrdersService.updateOrder(data)
+        ...values,
+        ...customData,
+        orderUuid: orderDetails?.orderNo || "",
+        currency: orderDetails?.currency || "",
+        customerUuid: orderDetails?.customerDetails?.uuid
+          ? orderDetails?.customerDetails?.uuid
+          : null,
+      };
+
+    OrdersService.subscriptionPayNow(data)
       .then((response) => {
         if (
-          response?.status_code === 202 &&
+          response?.status_code === 201 &&
           response?.is_data &&
-          response?.data?.paymentUrl
+          response?.data?.url
         ) {
           setOpen(false);
           // navigate("/payment/checkout/status");
@@ -169,23 +163,23 @@ const paymentInformation = () => {
               sentBy: orderDetails?.sendOrderBy?.sms ? "sms" : "email",
               phoneOrEmail: orderDetails?.sendOrderBy?.sms
                 ? orderDetails?.customerDetails?.countryCode +
-                  orderDetails?.customerDetails?.msisdn
+                orderDetails?.customerDetails?.msisdn
                 : orderDetails?.customerDetails?.email,
             })
           );
-          window.location.href = `${response?.data?.paymentUrl}`;
+          window.location.href = `${response?.data?.url}`;
         } else if (response?.status_code === 202 && !response?.is_data) {
-          navigate(`/order/details/${orderUuid}/confirmation`);
+          navigate(`'/subscription/payment/details/${orderUuid}/confirmation`);
         }
       })
       .catch((e) => {
         enqueueSnackbar(t(`message:${e}`), { variant: "error" });
         setOpen(false);
       });
-    // setTimeout(()=>{
-    //     setOpen(false);
-    //     navigate('/payment/checkout/status')
-    // },2000)
+    setTimeout(() => {
+      setOpen(false);
+      navigate("/payment/checkout/status");
+    }, 2000);
   };
 
   useEffect(() => {
@@ -260,7 +254,7 @@ const paymentInformation = () => {
           // enqueueSnackbar(e, { variant: "error" });
           return navigate("404");
         });
-    }else {
+    } else {
       OrdersService.getOrdersDetailsByUUIDPayment(orderUuid)
         .then((response) => {
           if (response?.status_code === 200 && response?.is_data) {
@@ -285,56 +279,52 @@ const paymentInformation = () => {
               : response?.data?.customerDetails?.organizationId
                 ? response?.data?.customerDetails?.organizationId
                 : "";
-            PaymentDefaultValue.orgIdCreditCheck = response?.data?.customerDetails
-              ?.personalNumber
+            PaymentDefaultValue.orgIdCreditCheck = response?.data
+              ?.customerDetails?.personalNumber
               ? response?.data?.customerDetails?.personalNumber
               : response?.data?.customerDetails?.organizationId
                 ? response?.data?.customerDetails?.organizationId
                 : "";
 
-          PaymentDefaultValue.billingAddress =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.street
-              ? response?.data?.customerDetails?.address?.street
-              : "";
-          PaymentDefaultValue.billingZip =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.zip
-              ? response?.data?.customerDetails?.address?.zip
-              : "";
-          PaymentDefaultValue.billingCity =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.city
-              ? response?.data?.customerDetails?.address?.city
-              : "";
-          PaymentDefaultValue.billingCountry =
-            response?.data?.customerDetails?.address &&
-            response?.data?.customerDetails?.address?.country
-              ? response?.data?.customerDetails?.address?.country
-              : "";
-          PaymentDefaultValue.preferredLanguage = response?.data
-            ?.customerDetails?.preferredLanguage
-            ? response?.data?.customerDetails?.preferredLanguage
-            : "";
-          setCustomData({
-            ...customData,
-            customerType:
-              response?.data?.customerDetails?.type === "Private"
-                ? "private"
-                : "corporate",
-            isCeditCheck: response?.data?.creditCheck
-              ? response?.data?.creditCheck
-              : false,
-          });
-          reset({ ...PaymentDefaultValue });
-        }
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        // enqueueSnackbar(e, { variant: "error" });
-        return navigate("404");
-      });
+            PaymentDefaultValue.billingAddress =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.street
+                ? response?.data?.customerDetails?.address?.street
+                : "";
+            PaymentDefaultValue.billingZip =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.zip
+                ? response?.data?.customerDetails?.address?.zip
+                : "";
+            PaymentDefaultValue.billingCity =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.city
+                ? response?.data?.customerDetails?.address?.city
+                : "";
+            PaymentDefaultValue.billingCountry =
+              response?.data?.customerDetails?.address &&
+              response?.data?.customerDetails?.address?.country
+                ? response?.data?.customerDetails?.address?.country
+                : "";
+            setCustomData({
+              ...customData,
+              customerType:
+                response?.data?.customerDetails?.type === "Private"
+                  ? "private"
+                  : "corporate",
+              isCeditCheck: response?.data?.creditCheck
+                ? response?.data?.creditCheck
+                : false,
+            });
+            reset({ ...PaymentDefaultValue });
+          }
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          // enqueueSnackbar(e, { variant: "error" });
+          return navigate("404");
+        });
     }
   }, [isLoading]);
 
@@ -349,12 +339,10 @@ const paymentInformation = () => {
     const creditCheckPrivateData = {
       personalId: params.creditCheckId,
       type: params.type,
-      orderUuid: orderUuid,
     };
     const creditCheckCorporateData = {
       organizationId: params.creditCheckId,
       type: params.type,
-      orderUuid: orderUuid,
     };
     const preparedPayload =
       params.type === "private"
@@ -424,8 +412,8 @@ const paymentInformation = () => {
                         {updatedData?.customerName
                           ? updatedData.customerName
                           : orderDetails?.customerDetails?.name
-                          ? orderDetails?.customerDetails?.name
-                          : "-"}
+                            ? orderDetails?.customerDetails?.name
+                            : "-"}
                       </div>
                       <div>
                         <IconButton
@@ -444,51 +432,51 @@ const paymentInformation = () => {
                         {updatedData?.orgIdOrPNumber
                           ? updatedData.orgIdOrPNumber
                           : orderDetails?.customerDetails?.personalNumber
-                          ? orderDetails?.customerDetails?.personalNumber
-                          : "-"}
+                            ? orderDetails?.customerDetails?.personalNumber
+                            : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2 mt-16">
                         {updatedData?.phone
                           ? updatedData.phone
                           : orderDetails?.customerDetails?.countryCode &&
+                          orderDetails?.customerDetails?.msisdn
+                            ? orderDetails?.customerDetails?.countryCode +
                             orderDetails?.customerDetails?.msisdn
-                          ? orderDetails?.customerDetails?.countryCode +
-                            orderDetails?.customerDetails?.msisdn
-                          : "-"}
+                            : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
                         {updatedData?.email
                           ? updatedData.email
                           : orderDetails?.customerDetails?.email
-                          ? orderDetails?.customerDetails?.email
-                          : "-"}
+                            ? orderDetails?.customerDetails?.email
+                            : "-"}
                       </div>
                       <div className="text-MonochromeGray-700 body2">
                         {updatedData?.billingAddress
                           ? updatedData.billingAddress + ", "
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.street
-                          ? orderDetails?.customerDetails?.address?.street +
+                          orderDetails?.customerDetails?.address?.street
+                            ? orderDetails?.customerDetails?.address?.street +
                             ", "
-                          : "-, "}
+                            : "-, "}
                         {updatedData?.billingCity
                           ? updatedData.billingCity + ", "
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.city
-                          ? orderDetails?.customerDetails?.address?.city + " "
-                          : "-"}
+                          orderDetails?.customerDetails?.address?.city
+                            ? orderDetails?.customerDetails?.address?.city + " "
+                            : "-"}
                         {updatedData?.billingZip
                           ? updatedData.billingZip + ", "
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.zip
-                          ? orderDetails?.customerDetails?.address?.zip + ", "
-                          : "-, "}
+                          orderDetails?.customerDetails?.address?.zip
+                            ? orderDetails?.customerDetails?.address?.zip + ", "
+                            : "-, "}
                         {updatedData?.billingCountry
                           ? updatedData.billingCountry
                           : orderDetails?.customerDetails?.address &&
-                            orderDetails?.customerDetails?.address?.country
-                          ? orderDetails?.customerDetails?.address?.country
-                          : "-"}
+                          orderDetails?.customerDetails?.address?.country
+                            ? orderDetails?.customerDetails?.address?.country
+                            : "-"}
                       </div>
                     </div>
                   </div>
@@ -529,7 +517,7 @@ const paymentInformation = () => {
                                   disabled={
                                     orderDetails.type === "REGULAR" &&
                                     orderDetails?.customerDetails?.type ===
-                                      "Corporate"
+                                    "Corporate"
                                   }
                                   // disabled={
                                   //   orderDetails &&
@@ -557,7 +545,7 @@ const paymentInformation = () => {
                                   disabled={
                                     orderDetails.type === "REGULAR" &&
                                     orderDetails?.customerDetails?.type ===
-                                      "Private"
+                                    "Private"
                                   }
                                   // disabled={
                                   //   orderDetails &&
@@ -597,8 +585,8 @@ const paymentInformation = () => {
                                       <FormHelperText>
                                         {errors?.phone?.message
                                           ? t(
-                                              `validation:${errors?.phone?.message}`
-                                            )
+                                            `validation:${errors?.phone?.message}`
+                                          )
                                           : ""}
                                       </FormHelperText>
                                     </FormControl>
@@ -618,8 +606,8 @@ const paymentInformation = () => {
                                       helperText={
                                         errors?.email?.message
                                           ? t(
-                                              `validation:${errors?.email?.message}`
-                                            )
+                                            `validation:${errors?.email?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -636,7 +624,13 @@ const paymentInformation = () => {
                                 />
                               </div>
                               <div className="">
-                                <div className="form-pair-input gap-x-20">
+                                <div
+                                  className={`${
+                                    customData.customerType === "corporate"
+                                      ? "form-pair-input"
+                                      : ""
+                                  } gap-x-20 `}
+                                >
                                   <Controller
                                     name="customerName"
                                     control={control}
@@ -650,8 +644,8 @@ const paymentInformation = () => {
                                         helperText={
                                           errors?.customerName?.message
                                             ? t(
-                                                `validation:${errors?.customerName?.message}`
-                                              )
+                                              `validation:${errors?.customerName?.message}`
+                                            )
                                             : ""
                                         }
                                         required
@@ -661,36 +655,43 @@ const paymentInformation = () => {
                                       />
                                     )}
                                   />
-                                  <Controller
-                                    name="orgIdOrPNumber"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={
-                                          customData.customerType === "private"
-                                            ? t("label:pNumber")
-                                            : t("label:organizationId")
-                                        }
-                                        type="number"
-                                        autoComplete="off"
-                                        error={!!errors.orgIdOrPNumber}
-                                        required={
-                                          customData.customerType !== "private"
-                                        }
-                                        helperText={
-                                          errors?.orgIdOrPNumber?.message
-                                            ? t(
+                                  {customData.customerType === "corporate" && (
+                                    <Controller
+                                      name="orgIdOrPNumber"
+                                      control={control}
+                                      render={({ field }) => (
+                                        <TextField
+                                          {...field}
+                                          label={
+                                            t("label:organizationId")
+                                            // customData.customerType === "private"
+                                            //     ? t("label:pNumber")
+                                            //     : t("label:organizationId")
+                                          }
+                                          type="number"
+                                          onWheel={(event) => {
+                                            event.target.blur();
+                                          }}
+                                          autoComplete="off"
+                                          error={!!errors.orgIdOrPNumber}
+                                          required={
+                                            customData.customerType !==
+                                            "private"
+                                          }
+                                          helperText={
+                                            errors?.orgIdOrPNumber?.message
+                                              ? t(
                                                 `validation:${errors?.orgIdOrPNumber?.message}`
                                               )
-                                            : ""
-                                        }
-                                        variant="outlined"
-                                        fullWidth
-                                        value={field.value || ""}
-                                      />
-                                    )}
-                                  />
+                                              : ""
+                                          }
+                                          variant="outlined"
+                                          fullWidth
+                                          value={field.value || ""}
+                                        />
+                                      )}
+                                    />
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -713,8 +714,8 @@ const paymentInformation = () => {
                                       helperText={
                                         errors?.billingAddress?.message
                                           ? t(
-                                              `validation:${errors?.billingAddress?.message}`
-                                            )
+                                            `validation:${errors?.billingAddress?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -740,8 +741,8 @@ const paymentInformation = () => {
                                       helperText={
                                         errors?.billingZip?.message
                                           ? t(
-                                              `validation:${errors?.billingZip?.message}`
-                                            )
+                                            `validation:${errors?.billingZip?.message}`
+                                          )
                                           : ""
                                       }
                                       variant="outlined"
@@ -767,8 +768,8 @@ const paymentInformation = () => {
                                     helperText={
                                       errors?.billingCity?.message
                                         ? t(
-                                            `validation:${errors?.billingCity?.message}`
-                                          )
+                                          `validation:${errors?.billingCity?.message}`
+                                        )
                                         : ""
                                     }
                                     variant="outlined"
@@ -833,15 +834,6 @@ const paymentInformation = () => {
                                 )}
                               /> */}
                             </div>
-                            <FrontPaymentLanguageSelect
-                              error={errors.preferredLanguage}
-                              control={control}
-                              name="preferredLanguage"
-                              label="preferredLanguage"
-                              required={true}
-                              disable={false}
-                              // value ={info?.preferredLanguage ? info?.preferredLanguage : ""}
-                            />
                           </div>
                         </div>
 
@@ -913,59 +905,47 @@ const paymentInformation = () => {
                             <div className="caption2 text-MonochromeGray-300 mb-20">
                               {t("label:informationForCreditCheck")}
                             </div>
-
-                            {orderDetails.creditCheckHistory &&
-                            orderDetails.creditCheckHistory.status ? (
-                              <div className="text-green-600">
-                                {t("message:CreditCheckAlreadyDone")}
-                              </div>
-                            ) : (
-                              <>
-                                <div className="flex gap-10 justify-start items-center flex-col md:flex-row gap-y-10 w-full md:w-3/4">
-                                  <Controller
-                                    name="orgIdCreditCheck"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <TextField
-                                        {...field}
-                                        label={t("label:orgIdPNumber")}
-                                        type="text"
-                                        autoComplete="off"
-                                        error={!!errors.orgIdCreditCheck}
-                                        // helperText={
-                                        //   errors?.orgIdCreditCheck?.message
-                                        // }
-                                        variant="outlined"
-                                        fullWidth
-                                        value={field.value || ""}
-                                      />
-                                    )}
+                            <div className="flex gap-10 justify-start items-center flex-col md:flex-row gap-y-10 w-full md:w-3/4">
+                              <Controller
+                                name="orgIdCreditCheck"
+                                control={control}
+                                render={({ field }) => (
+                                  <TextField
+                                    {...field}
+                                    label={t("label:orgIdPNumber")}
+                                    type="text"
+                                    autoComplete="off"
+                                    error={!!errors.orgIdCreditCheck}
+                                    // helperText={
+                                    //   errors?.orgIdCreditCheck?.message
+                                    // }
+                                    variant="outlined"
+                                    fullWidth
+                                    value={field.value || ""}
                                   />
-                                  <LoadingButton
-                                    variant="contained"
-                                    color="secondary"
-                                    className="w-full md:w-auto font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800"
-                                    aria-label="Confirm"
-                                    size="large"
-                                    type="button"
-                                    loading={apiLoading}
-                                    loadingPosition="center"
-                                    onClick={() => handleCreditCheck()}
-                                  >
-                                    {t("label:check")}
-                                  </LoadingButton>
-                                </div>
-                                <div
-                                  className={`${
-                                    !!isApproved
-                                      ? "text-green-600"
-                                      : "text-red-500"
-                                  } text-MonochromeGray-300 my-8 mx-8`}
-                                >
-                                  {creditCheckMessage}
-                                </div>
-                              </>
-                            )}
+                                )}
+                              />
+                              <LoadingButton
+                                variant="contained"
+                                color="secondary"
+                                className="w-full md:w-auto font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800"
+                                aria-label="Confirm"
+                                size="large"
+                                type="button"
+                                loading={apiLoading}
+                                loadingPosition="center"
+                                onClick={() => handleCreditCheck()}
+                              >
+                                {t("label:check")}
+                              </LoadingButton>
+                            </div>
+                            <div
+                              className={`${
+                                !!isApproved ? "text-green-600" : "text-red-500"
+                              } text-MonochromeGray-300 my-8 mx-8`}
+                            >
+                              {creditCheckMessage}
+                            </div>
                           </div>
                         )}
                     </div>
@@ -984,8 +964,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.subTotal
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.subTotal
-                                )
+                                orderDetails?.orderSummary?.subTotal
+                              )
                               : ""}
                           </div>
                         </div>
@@ -997,8 +977,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.tax
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.tax
-                                )
+                                orderDetails?.orderSummary?.tax
+                              )
                               : 0}
                           </div>
                         </div>
@@ -1010,8 +990,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.discount
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.discount
-                                )
+                                orderDetails?.orderSummary?.discount
+                              )
                               : 0}
                           </div>
                         </div>
@@ -1025,8 +1005,8 @@ const paymentInformation = () => {
                             {t("label:nok")}{" "}
                             {orderDetails?.orderSummary?.grandTotal
                               ? ThousandSeparator(
-                                  orderDetails?.orderSummary?.grandTotal
-                                )
+                                orderDetails?.orderSummary?.grandTotal
+                              )
                               : ""}
                           </div>
                         </div>
@@ -1049,9 +1029,22 @@ const paymentInformation = () => {
                           {t("label:nok")}{" "}
                           {orderDetails?.orderSummary?.subTotal
                             ? ThousandSeparator(
-                                orderDetails?.orderSummary?.subTotal
-                              )
+                              orderDetails?.orderSummary?.subTotal
+                            )
                             : ""}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center  my-20">
+                        <div className="subtitle3 text-MonochromeGray-700">
+                          {t("label:discount")}
+                        </div>
+                        <div className="body3 text-MonochromeGray-700">
+                          {t("label:nok")}{" "}
+                          {orderDetails?.orderSummary?.discount
+                            ? ThousandSeparator(
+                              orderDetails?.orderSummary?.discount
+                            )
+                            : 0}
                         </div>
                       </div>
                       <div className="flex justify-between items-center  my-20">
@@ -1065,32 +1058,38 @@ const paymentInformation = () => {
                             : 0}
                         </div>
                       </div>
-                      <div className="flex justify-between items-center  my-20">
-                        <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:discount")}
-                        </div>
-                        <div className="body3 text-MonochromeGray-700">
-                          {t("label:nok")}{" "}
-                          {orderDetails?.orderSummary?.discount
-                            ? ThousandSeparator(
-                                orderDetails?.orderSummary?.discount
-                              )
-                            : 0}
-                        </div>
-                      </div>
                     </div>
                     <div className="px-14">
                       <div className="flex justify-between items-center bg-MonochromeGray-25 py-20 px-16 my-20">
                         <div className="subtitle3 text-MonochromeGray-700">
-                          {t("label:grandTotal")}
+                          {t("label:payablePerCycle")}
                         </div>
                         <div className="body3 text-MonochromeGray-700">
                           {t("label:nok")}{" "}
-                          {orderDetails?.orderSummary?.grandTotal
-                            ? ThousandSeparator(
-                                orderDetails?.orderSummary?.grandTotal
-                              )
+                          {orderDetails?.payablePerCycle
+                            ? ThousandSeparator(orderDetails?.payablePerCycle)
                             : ""}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="px-32 bg-white">
+                      <div className="flex justify-between items-center  my-20">
+                        <div className="subtitle3 text-MonochromeGray-700">
+                          {t("label:frequency")}
+                        </div>
+                        <div className="body3 text-MonochromeGray-700">
+                          {t(`${orderDetails?.frequency}`)}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center  my-20">
+                        <div className="subtitle3 text-MonochromeGray-700">
+                          {t("label:repeats")}
+                        </div>
+                        <div className="body3 text-MonochromeGray-700">
+                          {orderDetails?.orderSummary?.tax
+                            ? ThousandSeparator(orderDetails?.orderSummary?.tax)
+                            : 0}{" "}
+                          {t("label:times")}
                         </div>
                       </div>
                     </div>
@@ -1111,21 +1110,18 @@ const paymentInformation = () => {
                   variant="contained"
                   type="submit"
                   className="font-semibold rounded-4 bg-primary-500 text-white hover:text-primary-800 w-full md:w-auto px-40 "
-                  onClick={() => {
+                  onClick={() =>
                     setCustomData({
                       ...customData,
                       isCeditCheck: false,
-                    });
-                    if (!orderDetails?.customerDetails?.preferredLanguage) {
-                      enqueueSnackbar("Please add language", { variant: "error" });
-                    }
-                  }}
+                    })
+                  }
                   disabled={
                     apiLoading ||
                     (customData.paymentMethod === "invoice" &&
                       ((orderDetails.type.toLowerCase() === "regular" &&
-                        orderDetails?.creditCheck &&
-                        !isCreditChecked) ||
+                          orderDetails?.creditCheck &&
+                          !isCreditChecked) ||
                         (orderDetails.type.toLowerCase() === "quick" &&
                           !Object.keys(updatedData).length &&
                           !orderDetails?.customerDetails?.address)))
@@ -1163,8 +1159,8 @@ const paymentInformation = () => {
                   apiLoading ||
                   (customData.paymentMethod === "invoice" &&
                     ((orderDetails.type.toLowerCase() === "regular" &&
-                      orderDetails?.creditCheck &&
-                      !isCreditChecked) ||
+                        orderDetails?.creditCheck &&
+                        !isCreditChecked) ||
                       (orderDetails.type.toLowerCase() === "quick" &&
                         !Object.keys(updatedData).length &&
                         !orderDetails?.customerDetails?.address)))

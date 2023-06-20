@@ -37,6 +37,7 @@ import {
   creditChecksListOverview,
   customerOrdersListOverview,
   customersListOverview,
+  failedPaymentsListOverview,
   fpAdminUsersOverview,
   ordersListOverview,
   organizationWiseUsersOverview,
@@ -46,6 +47,7 @@ import {
   subClientAdminOverview,
   userListOverview,
   reservationListOverview,
+  subscriptionsListOverview,
 } from "./TablesName";
 import OverviewFloatingButtons from "../overviewFloatingButtons/OverviewFloatingButtons";
 import UtilsService from "../../../utils/UtilsService";
@@ -621,6 +623,46 @@ export default function OverviewMainTable(props) {
     }
   };
 
+  const failedPaymentsListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "paid")
+        );
+        setFilteredData(
+          props.tableData.filter((row) => row.status.toLowerCase() === "paid")
+        );
+        break;
+      case 2:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "invoiced"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "invoiced"
+          )
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "debt collection"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.status.toLowerCase() === "debt collection"
+          )
+        );
+    }
+  };
+
   const payoutListTableTabPanelsData = (event, newValue) => {
     switch (newValue) {
       case 0:
@@ -643,6 +685,63 @@ export default function OverviewMainTable(props) {
         setFilteredData(
           props.tableData.filter(
             (row) => row.status.toLowerCase() === "inactive"
+          )
+        );
+        break;
+    }
+  };
+
+  const subscriptionsListTableTabPanelsData = (event, newValue) => {
+    switch (newValue) {
+      case 0:
+        setData(props.tableData);
+        setFilteredData(props.tableData);
+        break;
+      case 1:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "sent"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "sent"
+          )
+        );
+        break;
+      case 2:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "ongoing"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "ongoing"
+          )
+        );
+        break;
+      case 3:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "completed"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "completed"
+          )
+        );
+        break;
+      case 4:
+        setData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "cancelled"
+          )
+        );
+        setFilteredData(
+          props.tableData.filter(
+            (row) => row.stage.toLowerCase() === "cancelled"
           )
         );
         break;
@@ -706,11 +805,17 @@ export default function OverviewMainTable(props) {
       case refundRequestsOverview:
         refundRequestsListTableTabPanelsData(event, newValue);
         break;
+      case failedPaymentsListOverview:
+        failedPaymentsListTableTabPanelsData(event, newValue);
+        break;
       case reservationListOverview:
         reserveationListTableTabPanelsData(event, newValue);
         break;
       case payoutReportsListOverview:
         payoutListTableTabPanelsData(event, newValue);
+        break;
+      case subscriptionsListOverview:
+        subscriptionsListTableTabPanelsData(event, newValue);
         break;
     }
     setValue(newValue);
@@ -856,6 +961,9 @@ export default function OverviewMainTable(props) {
       case ordersListOverview:
         navigate(`/create-order/details/${info.uuid}`);
         break;
+      case failedPaymentsListOverview:
+        navigate(`/subscription/failed/${info.uuid}`);
+        break;
       case reservationListOverview:
         navigate(`/reservations-view/details/${info.uuid}`);
         break;
@@ -865,6 +973,9 @@ export default function OverviewMainTable(props) {
             orgName: info.name,
           },
         });
+        break;
+      case subscriptionsListOverview:
+        navigate(`/subscription/details/${info.uuid}`);
         break;
     }
   };
@@ -974,7 +1085,9 @@ export default function OverviewMainTable(props) {
                         if (
                           props.tableName !== ordersListOverview &&
                           props.tableName !== customerOrdersListOverview &&
-                          props.tableName !== reservationListOverview
+                          props.tableName !== failedPaymentsListOverview &&
+                          props.tableName !== reservationListOverview &&
+                          props.tableName !== subscriptionsListOverview
                         )
                           handleTableRowClick(row);
                       }}
@@ -1096,7 +1209,10 @@ export default function OverviewMainTable(props) {
                                   props.tableName !==
                                     customerOrdersListOverview &&
                                   props.tableName !== refundRequestsOverview &&
-                                  props.tableName !== reservationListOverview
+                                  props.tableName !==
+                                    failedPaymentsListOverview &&
+                                  props.tableName !== reservationListOverview &&
+                                  props.tableName !== subscriptionsListOverview
                                 )
                                   handleTableRowClick(row);
                               }}
