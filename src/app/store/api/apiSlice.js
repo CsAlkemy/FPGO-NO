@@ -537,6 +537,7 @@ export const apiSlice = createApi({
         body: {
           isApproved: params.isApproved,
           note: params?.note ? params?.note : null,
+          amount: params?.amount
         },
       }),
       invalidatesTags: ["RefundRequestsList"],

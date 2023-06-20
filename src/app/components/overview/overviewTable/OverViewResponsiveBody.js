@@ -2079,6 +2079,7 @@ export default function OverViewResponsiveBody(props) {
                 setOpen={setOpenApprove}
                 // reset={reset}
                 modalRef="confirmRefundRequestApprove"
+                orderType={props?.row?.isSubscription ? "SUBSCRIPTION" : null}
                 values={{
                   amount: props.row.refundAmount,
                   orderUuid: props.row.id,
