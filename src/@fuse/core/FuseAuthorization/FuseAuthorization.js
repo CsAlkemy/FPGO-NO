@@ -108,7 +108,7 @@ class FuseAuthorization extends Component {
       window.location.pathname.includes("/reservations/details/") ||
       window.location.pathname.includes("/order/details/") ||
       window.location.pathname.includes("/order/receipt/") ||
-      pathname.includes("/subscription/payment/details") ? (
+      window.location.pathname.includes("/subscription/payment/details") ? (
       <>{this.props.children}</>
     ) : null;
   }
